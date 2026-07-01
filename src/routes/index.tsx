@@ -171,11 +171,11 @@ function Home() {
       };
       const offset = setupDone ? 0 : 4;
       const rest: BentoItem[] = [
-        { id: "recap", x: 0, y: offset, w: 1, h: 3, minH: 2, node: <RecapCard /> },
-        { id: "workload", x: 0, y: offset + 3, w: 1, h: 3, minH: 2, node: <WorkloadCard /> },
-        { id: "planner", x: 0, y: offset + 6, w: 1, h: 5, minH: 3, node: <PlannerCard /> },
-        { id: "team", x: 0, y: offset + 11, w: 1, h: 4, minH: 3, node: <TeamCard /> },
-        { id: "channels", x: 0, y: offset + 15, w: 1, h: 4, minH: 3, node: <ChannelsCard /> },
+        { id: "recap", x: 0, y: offset, w: 1, h: 3, minH: 2, maxH: 5, node: <RecapCard /> },
+        { id: "workload", x: 0, y: offset + 3, w: 1, h: 3, minH: 2, maxH: 5, node: <WorkloadCard /> },
+        { id: "planner", x: 0, y: offset + 6, w: 1, h: 5, minH: 3, maxH: 10, node: <PlannerCard /> },
+        { id: "team", x: 0, y: offset + 11, w: 1, h: 4, minH: 3, maxH: 8, node: <TeamCard /> },
+        { id: "channels", x: 0, y: offset + 15, w: 1, h: 4, minH: 3, maxH: 8, node: <ChannelsCard /> },
       ];
       return setupDone ? rest : [onboarding, ...rest];
     },
