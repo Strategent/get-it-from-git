@@ -78,7 +78,7 @@ export function AppSidebar() {
   ) => (
     <SidebarGroup>
       {!collapsed && (
-        <SidebarGroupLabel className="font-serif-display text-[11px] uppercase tracking-[0.04em] text-muted-foreground/70 px-3" style={{ fontFamily: '"Radley", Georgia, serif' }}>
+        <SidebarGroupLabel className="font-serif-display text-[11px] tracking-[0.04em] text-muted-foreground/70 px-3" style={{ fontFamily: '"Radley", Georgia, serif' }}>
           {label}
         </SidebarGroupLabel>
       )}
