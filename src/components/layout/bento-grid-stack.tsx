@@ -314,25 +314,17 @@ function BentoGridStackImpl({
     };
   }, [editMode]);
 
-  // While in edit mode, swap gridstack's drag handle so the whole card is
-  // draggable — matching iOS/macOS "jiggle to rearrange".
+  // While in edit mode, tag every card's content wrapper with the drag
+  // handle class so the entire surface acts as a drag origin — matching
+  // iOS/macOS "jiggle to rearrange".
   useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-    try {
-      if (editMode) {
-        grid.opts.handle = ".bento-edit-handle";
-        grid.enableMove(true);
-      } else {
-        grid.opts.handle = ".bento-drag-handle";
-        grid.enableMove(true);
-      }
-      // Force gridstack to re-wire draggable with the new handle.
-      grid.setStatic(true);
-      grid.setStatic(false);
-    } catch {
-      /* ignore */
-    }
+    const root = elRef.current;
+    if (!root) return;
+    const contents = root.querySelectorAll<HTMLElement>(".grid-stack-item > .grid-stack-item-content");
+    contents.forEach((el) => {
+      if (editMode) el.classList.add("bento-drag-handle");
+      else el.classList.remove("bento-drag-handle");
+    });
   }, [editMode]);
 
   return (
