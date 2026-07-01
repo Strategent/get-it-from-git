@@ -1352,9 +1352,9 @@ function ComposeWindow({
             setFontSelectionRects([]);
             syncEditor();
           }}
-          onKeyUp={saveSelection}
-          onMouseUp={saveSelection}
-          onBlur={saveSelection}
+          onKeyUp={() => saveSelection()}
+          onMouseUp={() => saveSelection()}
+          onBlur={() => saveSelection()}
           dangerouslySetInnerHTML={{ __html: draft.body }}
           className="block w-full min-h-[180px] bg-transparent px-4 py-4 text-[13.5px] leading-relaxed text-foreground/90 outline-none empty:before:content-['Write_a_reply...'] empty:before:text-muted-foreground/60 [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
         />
