@@ -272,7 +272,7 @@ export function ChannelsCard() {
       <div className="flex min-h-0 flex-1 flex-col gap-1.5">
         {channels.slice(0, 4).map((c) => (
           <div key={c.name} className="flex items-center gap-2.5 py-1">
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg border border-border bg-foreground/[0.06] text-[12px] font-semibold text-foreground/70">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border bg-foreground/[0.06] text-[12px] font-semibold text-foreground/70">
               #
             </div>
             <div className="min-w-0 flex-1 leading-tight">
@@ -280,10 +280,11 @@ export function ChannelsCard() {
               <div className="truncate text-[10.5px] text-muted-foreground">{c.preview}</div>
             </div>
             {c.unread > 0 && (
-              <span className="grid h-5 min-w-5 place-items-center rounded-full bg-primary px-1.5 text-[10px] font-semibold tabular-nums text-primary-foreground">
+              <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[10px] font-semibold tabular-nums text-background">
                 {c.unread}
               </span>
             )}
+
           </div>
         ))}
       </div>
