@@ -124,9 +124,10 @@ function Home() {
         y: 0,
         w: 12,
         h: heroH,
-        minW: 6,
-        minH: 3,
+        minW: 8,
+        minH: heroH,
         maxH: 6,
+
         node: (
           // data-density scales the hero to banner height via wrapper-scoped
           // CSS (styles.css) — the card component itself stays untouched.
