@@ -228,6 +228,20 @@ function BentoGridStackImpl({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Sync edit mode across every BentoGridStack instance on the page — so
+  // long-pressing any card puts the whole dashboard (main + rail) into
+  // jiggle mode together, matching Apple's global "wiggle" state.
+  useEffect(() => {
+    const onEnter = () => setEditMode(true);
+    const onExit = () => setEditMode(false);
+    window.addEventListener("bento:edit-enter", onEnter);
+    window.addEventListener("bento:edit-exit", onExit);
+    return () => {
+      window.removeEventListener("bento:edit-enter", onEnter);
+      window.removeEventListener("bento:edit-exit", onExit);
+    };
+  }, []);
+
   // Long-press to enter edit mode — Apple's "tap and hold to rearrange".
   useEffect(() => {
     const root = elRef.current;
@@ -261,8 +275,7 @@ function BentoGridStackImpl({
       startY = e.clientY;
       timer = window.setTimeout(() => {
         if (!armed) return;
-        setEditMode(true);
-        // Subtle haptic on supported devices.
+        window.dispatchEvent(new Event("bento:edit-enter"));
         if ("vibrate" in navigator) {
           try {
             navigator.vibrate?.(12);
@@ -295,24 +308,41 @@ function BentoGridStackImpl({
     };
   }, []);
 
-  // Exit edit mode on Escape or on a click that lands outside the grid.
+  // In edit mode: any click (anywhere — inside or outside the grid) that
+  // isn't a drag/resize gesture exits. Apple-style tap-to-finish.
   useEffect(() => {
     if (!editMode) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setEditMode(false);
+      if (e.key === "Escape") window.dispatchEvent(new Event("bento:edit-exit"));
     };
-    const onDocDown = (e: MouseEvent) => {
-      const el = elRef.current;
-      if (!el) return;
-      if (!el.contains(e.target as Node)) setEditMode(false);
+    let downX = 0;
+    let downY = 0;
+    const onDown = (e: PointerEvent) => {
+      downX = e.clientX;
+      downY = e.clientY;
+    };
+    const onUp = (e: PointerEvent) => {
+      // Ignore if the pointer moved (a drag/resize completed).
+      const dx = e.clientX - downX;
+      const dy = e.clientY - downY;
+      if (dx * dx + dy * dy > 25) return;
+      const target = e.target as HTMLElement | null;
+      // The floating Done button handles its own exit.
+      if (target?.closest("[data-bento-done]")) return;
+      // Ignore interactive controls inside cards.
+      if (target?.closest("button, a, input, textarea, select")) return;
+      window.dispatchEvent(new Event("bento:edit-exit"));
     };
     window.addEventListener("keydown", onKey);
-    document.addEventListener("mousedown", onDocDown);
+    document.addEventListener("pointerdown", onDown, true);
+    document.addEventListener("pointerup", onUp, true);
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.removeEventListener("mousedown", onDocDown);
+      document.removeEventListener("pointerdown", onDown, true);
+      document.removeEventListener("pointerup", onUp, true);
     };
   }, [editMode]);
+
 
   // While in edit mode, tag every card's content wrapper with the drag
   // handle class so the entire surface acts as a drag origin — matching
