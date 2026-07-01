@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 
 /** Drag/resize is disabled and cards stack below this viewport width. */
 const STATIC_QUERY = "(max-width: 1023px)";
+/** How long the pointer must be held on a card to enter Apple-style edit mode. */
+const LONG_PRESS_MS = 550;
 
 export type BentoItem = {
   id: string;
@@ -17,20 +19,29 @@ export type BentoItem = {
   y?: number;
   minW?: number;
   minH?: number;
+  /** Optional caps to protect card content from breaking layouts. */
+  maxW?: number;
+  maxH?: number;
   node: ReactNode;
 };
 
 /**
- * BentoGridStack — a gridstack.js-powered region whose cards can be dragged to
- * reorder (via their `.bento-drag-handle` header) and resized by their
- * corner/edge handles. Layout persists to localStorage under `storageKey`.
+ * BentoGridStack — a gridstack.js-powered region that mirrors Apple's macOS
+ * widget behavior:
  *
- * Below 1024px the grid goes fully static (no drag/resize) and collapses to a
- * single column so it never fights touch scrolling.
+ *  • Cards snap to a fixed grid on rearrange (gridstack native).
+ *  • Every move/resize is followed by a `compact` pass so cards never leave
+ *    a hole above them — the stack reflows Apple-style to stay aligned.
+ *  • Press-and-hold any card for ~550ms to enter "edit mode": the whole
+ *    surface starts a gentle jiggle, resize handles appear, and the entire
+ *    card becomes a drag target (not just the header grip).
+ *  • Tap outside, press Escape, or click the floating "Done" pill to exit.
+ *  • min/max width & height on each item stop cards from stretching or
+ *    shrinking into a broken shape.
  *
- * The grid initializes once; the parent must pass a stable `items` array (and
- * must not re-render on a timer) or gridstack and React will fight over the same
- * DOM. This component is memoized to help enforce that.
+ * Layout persists to localStorage under `storageKey`. Below 1024px the grid
+ * goes fully static (no drag/resize, no jiggle) and collapses to one column
+ * so it never fights touch scrolling.
  */
 function BentoGridStackImpl({
   items,
@@ -52,6 +63,11 @@ function BentoGridStackImpl({
   const elRef = useRef<HTMLDivElement>(null);
   const gridRef = useRef<GridStack | null>(null);
   const [ready, setReady] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  // Expose the latest editMode value to gridstack's async callbacks without
+  // re-initializing the grid on every state change.
+  const editModeRef = useRef(false);
+  editModeRef.current = editMode;
 
   useEffect(() => {
     if (!elRef.current) return;
@@ -61,6 +77,8 @@ function BentoGridStackImpl({
       cellHeight,
       margin: 10,
       float,
+      // In edit mode the entire card is draggable; otherwise only the
+      // header grip (`.bento-drag-handle`) starts a drag.
       handle: ".bento-drag-handle",
       draggable: { cancel: ".cancel-drag" },
       resizable: { handles: resizeHandles },
@@ -86,6 +104,8 @@ function BentoGridStackImpl({
       set("gs-y", it.y);
       set("gs-min-w", it.minW);
       set("gs-min-h", it.minH);
+      set("gs-max-w", it.maxW);
+      set("gs-max-h", it.maxH);
     });
 
     let disposed = false;
@@ -172,7 +192,10 @@ function BentoGridStackImpl({
 
     // Disable drag/resize on small screens; re-enable above the breakpoint.
       const mq = window.matchMedia(STATIC_QUERY);
-      const applyStatic = () => grid.setStatic(mq.matches);
+      const applyStatic = () => {
+        grid.setStatic(mq.matches);
+        if (mq.matches && editModeRef.current) setEditMode(false);
+      };
       applyStatic();
       mq.addEventListener("change", applyStatic);
 
@@ -205,22 +228,146 @@ function BentoGridStackImpl({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Long-press to enter edit mode — Apple's "tap and hold to rearrange".
+  useEffect(() => {
+    const root = elRef.current;
+    if (!root) return;
+
+    let timer: number | null = null;
+    let startX = 0;
+    let startY = 0;
+    let armed = false;
+
+    const cancel = () => {
+      if (timer != null) {
+        window.clearTimeout(timer);
+        timer = null;
+      }
+      armed = false;
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      if (editModeRef.current) return; // already in edit mode
+      if (window.matchMedia(STATIC_QUERY).matches) return;
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      // Don't arm on interactive elements — buttons/inputs/links stay clickable.
+      if (target.closest("button, a, input, textarea, select, [role='button'], .cancel-drag")) {
+        return;
+      }
+      if (!target.closest(".grid-stack-item")) return;
+      armed = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      timer = window.setTimeout(() => {
+        if (!armed) return;
+        setEditMode(true);
+        // Subtle haptic on supported devices.
+        if ("vibrate" in navigator) {
+          try {
+            navigator.vibrate?.(12);
+          } catch {
+            /* ignore */
+          }
+        }
+      }, LONG_PRESS_MS);
+    };
+
+    const onPointerMove = (e: PointerEvent) => {
+      if (!armed) return;
+      const dx = e.clientX - startX;
+      const dy = e.clientY - startY;
+      if (dx * dx + dy * dy > 36) cancel();
+    };
+
+    root.addEventListener("pointerdown", onPointerDown);
+    root.addEventListener("pointermove", onPointerMove);
+    root.addEventListener("pointerup", cancel);
+    root.addEventListener("pointercancel", cancel);
+    root.addEventListener("pointerleave", cancel);
+    return () => {
+      cancel();
+      root.removeEventListener("pointerdown", onPointerDown);
+      root.removeEventListener("pointermove", onPointerMove);
+      root.removeEventListener("pointerup", cancel);
+      root.removeEventListener("pointercancel", cancel);
+      root.removeEventListener("pointerleave", cancel);
+    };
+  }, []);
+
+  // Exit edit mode on Escape or on a click that lands outside the grid.
+  useEffect(() => {
+    if (!editMode) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setEditMode(false);
+    };
+    const onDocDown = (e: MouseEvent) => {
+      const el = elRef.current;
+      if (!el) return;
+      if (!el.contains(e.target as Node)) setEditMode(false);
+    };
+    window.addEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onDocDown);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onDocDown);
+    };
+  }, [editMode]);
+
+  // While in edit mode, swap gridstack's drag handle so the whole card is
+  // draggable — matching iOS/macOS "jiggle to rearrange".
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    try {
+      if (editMode) {
+        grid.opts.handle = ".bento-edit-handle";
+        grid.enableMove(true);
+      } else {
+        grid.opts.handle = ".bento-drag-handle";
+        grid.enableMove(true);
+      }
+      // Force gridstack to re-wire draggable with the new handle.
+      grid.setStatic(true);
+      grid.setStatic(false);
+    } catch {
+      /* ignore */
+    }
+  }, [editMode]);
+
   return (
-    <div
-      ref={elRef}
-      className={cn(
-        "grid-stack transition-opacity duration-150",
-        ready ? "opacity-100" : "opacity-0",
-        className,
-      )}
-    >
-      {items.map((it) => (
-        <div key={it.id} className="grid-stack-item" data-gs-id={it.id}>
-          <div className="grid-stack-item-content">
-            <div className="h-full w-full">{it.node}</div>
+    <div className="relative">
+      <div
+        ref={elRef}
+        className={cn(
+          "grid-stack transition-opacity duration-150",
+          ready ? "opacity-100" : "opacity-0",
+          editMode && "bento-edit-mode",
+          className,
+        )}
+      >
+        {items.map((it) => (
+          <div
+            key={it.id}
+            className={cn("grid-stack-item", editMode && "bento-edit-handle")}
+            data-gs-id={it.id}
+          >
+            <div className="grid-stack-item-content">
+              <div className="h-full w-full">{it.node}</div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
+      {editMode && (
+        <button
+          type="button"
+          onClick={() => setEditMode(false)}
+          className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-border bg-foreground px-5 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-background shadow-lg backdrop-blur transition hover:opacity-90"
+          aria-label="Finish arranging widgets"
+        >
+          Done
+        </button>
+      )}
     </div>
   );
 }
