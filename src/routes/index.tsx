@@ -142,20 +142,6 @@ function Home() {
     ],
     [heroH, rowShift],
   );
-          // data-density scales the hero to banner height via wrapper-scoped
-          // CSS (styles.css) — the card component itself stays untouched.
-          <div data-density="compact" className="h-full w-full">
-            <DailyBriefHero />
-          </div>
-        ),
-      },
-      { id: "inbox", x: 0, y: 4 + rowShift, w: 8, h: 6, minW: 6, minH: 5, node: <InboxCard /> },
-      { id: "bulletin", x: 8, y: 4 + rowShift, w: 4, h: 6, minW: 4, minH: 4, node: <BulletinCard /> },
-      { id: "calls", x: 0, y: 10 + rowShift, w: 4, h: 5, minW: 4, minH: 4, node: <CallsCard /> },
-      { id: "calendar", x: 4, y: 10 + rowShift, w: 8, h: 5, minW: 4, minH: 4, node: <CalendarCard /> },
-    ],
-    [heroH, rowShift],
-  );
 
   const railItems = useMemo<BentoItem[]>(
     () => {
