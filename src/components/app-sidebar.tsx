@@ -140,7 +140,7 @@ export function AppSidebar() {
           {!collapsed && (
             <div className="min-w-0">
               <div className="text-sm font-medium tracking-tight truncate">John Harwick</div>
-              <div className="text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground truncate">
+              <div className="text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground truncate font-sans">
                 Partner
               </div>
             </div>
