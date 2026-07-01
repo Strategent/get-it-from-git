@@ -34,7 +34,7 @@ export function SyraMark({
       <img
         src={syraLogo}
         alt=""
-        className="grayscale brightness-0 dark:invert"
+        className="grayscale"
         style={{
           width: Math.round(size * 0.62),
           height: Math.round(size * 0.62),
