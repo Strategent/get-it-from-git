@@ -376,7 +376,7 @@
     background: var(--sparkle-soft);
   }
 
-  /* Resize handles — invisible, but the drag hit-area stays functional. */
+  /* Resize handles — invisible by default, but hit-area stays functional. */
   .grid-stack-item > .ui-resizable-handle {
     opacity: 0 !important;
     background-image: none !important;
@@ -389,6 +389,65 @@
     right: 5px;
     bottom: 5px;
     transform: none;
+  }
+
+  /* ---- Apple-style edit ("jiggle") mode ---- */
+  @keyframes bento-jiggle {
+    0%   { transform: rotate(-0.55deg) translate(0.4px, -0.3px); }
+    50%  { transform: rotate(0.55deg)  translate(-0.4px, 0.3px); }
+    100% { transform: rotate(-0.55deg) translate(0.4px, -0.3px); }
+  }
+  @keyframes bento-jiggle-alt {
+    0%   { transform: rotate(0.5deg)  translate(-0.3px, 0.4px); }
+    50%  { transform: rotate(-0.5deg) translate(0.3px, -0.4px); }
+    100% { transform: rotate(0.5deg)  translate(-0.3px, 0.4px); }
+  }
+  .bento-edit-mode .grid-stack-item > .grid-stack-item-content {
+    animation: bento-jiggle 0.32s ease-in-out infinite;
+    transform-origin: 50% 50%;
+    cursor: grab;
+  }
+  .bento-edit-mode .grid-stack-item:nth-child(2n) > .grid-stack-item-content {
+    animation-name: bento-jiggle-alt;
+    animation-duration: 0.36s;
+  }
+  .bento-edit-mode .grid-stack-item:nth-child(3n) > .grid-stack-item-content {
+    animation-duration: 0.30s;
+  }
+  .bento-edit-mode .grid-stack-item.ui-draggable-dragging > .grid-stack-item-content,
+  .bento-edit-mode .grid-stack-item.ui-resizable-resizing > .grid-stack-item-content {
+    animation: none;
+    cursor: grabbing;
+  }
+  /* Show a soft dashed outline + visible corner grip while arranging. */
+  .bento-edit-mode .grid-stack-item > .grid-stack-item-content::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    border: 1px dashed color-mix(in oklab, var(--foreground) 22%, transparent);
+    pointer-events: none;
+  }
+  .bento-edit-mode .grid-stack-item > .ui-resizable-se {
+    opacity: 1 !important;
+    background: color-mix(in oklab, var(--foreground) 55%, transparent);
+    border: 2px solid var(--background);
+    border-radius: 9999px;
+    width: 12px;
+    height: 12px;
+    right: -6px;
+    bottom: -6px;
+  }
+  /* Reveal every resize edge so users can grab any side. */
+  .bento-edit-mode .grid-stack-item > .ui-resizable-e,
+  .bento-edit-mode .grid-stack-item > .ui-resizable-w,
+  .bento-edit-mode .grid-stack-item > .ui-resizable-s,
+  .bento-edit-mode .grid-stack-item > .ui-resizable-sw {
+    opacity: 1 !important;
+    background: color-mix(in oklab, var(--foreground) 20%, transparent);
+  }
+  .bento-edit-mode .bento-drag-grip {
+    opacity: 1;
   }
 }
 

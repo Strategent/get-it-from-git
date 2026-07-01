@@ -104,9 +104,9 @@ export function CallsCard() {
       bodyClassName="gap-4"
       action={
         <span
-          className={`inline-flex h-6 items-center gap-1.5 rounded-full border border-border/60 bg-foreground/[0.04] px-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${status.text}`}
+          className={`inline-flex h-6 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border border-border/60 bg-foreground/[0.04] px-2.5 text-[10px] font-semibold uppercase tracking-[0.16em] ${status.text}`}
         >
-          <span className="relative grid h-1.5 w-1.5 place-items-center">
+          <span className="relative grid h-1.5 w-1.5 shrink-0 place-items-center">
             {status.ping && (
               <span className={`absolute inset-0 animate-ping rounded-full ${status.dot} opacity-60`} />
             )}
