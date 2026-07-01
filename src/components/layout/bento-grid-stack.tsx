@@ -383,13 +383,15 @@ function BentoGridStackImpl({
       {editMode && (
         <button
           type="button"
-          onClick={() => setEditMode(false)}
+          data-bento-done
+          onClick={() => window.dispatchEvent(new Event("bento:edit-exit"))}
           className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 rounded-full border border-border bg-foreground px-5 py-2 text-[12px] font-semibold uppercase tracking-[0.14em] text-background shadow-lg backdrop-blur transition hover:opacity-90"
           aria-label="Finish arranging widgets"
         >
           Done
         </button>
       )}
+
     </div>
   );
 }
