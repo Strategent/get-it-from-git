@@ -1538,7 +1538,7 @@ function ComposeWindow({
               aria-label="Emoji"
               title="Emoji"
               onMouseDown={(e) => e.preventDefault()}
-              onClick={saveSelection}
+              onClick={() => saveSelection()}
               className="inline-flex h-7 items-center gap-0.5 rounded px-1.5 text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
             >
               <Smile className="h-3.5 w-3.5" strokeWidth={1.85} />
