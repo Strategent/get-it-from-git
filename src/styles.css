@@ -419,36 +419,15 @@
     animation: none;
     cursor: grabbing;
   }
-  /* Show a soft dashed outline + visible corner grip while arranging. */
-  .bento-edit-mode .grid-stack-item > .grid-stack-item-content::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius);
-    border: 1px dashed color-mix(in oklab, var(--foreground) 22%, transparent);
-    pointer-events: none;
+  /* Apple keeps edit mode clean: no dashed outlines, no visible resize
+     nubs, no drag grips. Just the jiggle. Resize hit-areas stay live so
+     users can still drag the edges. */
+  .bento-edit-mode .grid-stack-item > .ui-resizable-handle {
+    opacity: 0 !important;
+    background: transparent !important;
+    border: none !important;
   }
-  .bento-edit-mode .grid-stack-item > .ui-resizable-se {
-    opacity: 1 !important;
-    background: color-mix(in oklab, var(--foreground) 55%, transparent);
-    border: 2px solid var(--background);
-    border-radius: 9999px;
-    width: 12px;
-    height: 12px;
-    right: -6px;
-    bottom: -6px;
-  }
-  /* Reveal every resize edge so users can grab any side. */
-  .bento-edit-mode .grid-stack-item > .ui-resizable-e,
-  .bento-edit-mode .grid-stack-item > .ui-resizable-w,
-  .bento-edit-mode .grid-stack-item > .ui-resizable-s,
-  .bento-edit-mode .grid-stack-item > .ui-resizable-sw {
-    opacity: 1 !important;
-    background: color-mix(in oklab, var(--foreground) 20%, transparent);
-  }
-  .bento-edit-mode .bento-drag-grip {
-    opacity: 1;
-  }
+
 }
 
 /* ---- Daily Brief hero — compact (banner) density ------------------------
