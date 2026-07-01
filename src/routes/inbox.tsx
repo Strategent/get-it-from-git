@@ -1352,9 +1352,9 @@ function ComposeWindow({
             setFontSelectionRects([]);
             syncEditor();
           }}
-          onKeyUp={saveSelection}
-          onMouseUp={saveSelection}
-          onBlur={saveSelection}
+          onKeyUp={() => saveSelection()}
+          onMouseUp={() => saveSelection()}
+          onBlur={() => saveSelection()}
           dangerouslySetInnerHTML={{ __html: draft.body }}
           className="block w-full min-h-[180px] bg-transparent px-4 py-4 text-[13.5px] leading-relaxed text-foreground/90 outline-none empty:before:content-['Write_a_reply...'] empty:before:text-muted-foreground/60 [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
         />
@@ -1538,7 +1538,7 @@ function ComposeWindow({
               aria-label="Emoji"
               title="Emoji"
               onMouseDown={(e) => e.preventDefault()}
-              onClick={saveSelection}
+              onClick={() => saveSelection()}
               className="inline-flex h-7 items-center gap-0.5 rounded px-1.5 text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
             >
               <Smile className="h-3.5 w-3.5" strokeWidth={1.85} />

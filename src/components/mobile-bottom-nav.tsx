@@ -180,9 +180,9 @@ export function MobileBottomNav() {
             >
               {item.isSyra ? (
                 <SyraIcon dark={isDark} />
-              ) : (
+              ) : item.icon ? (
                 <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
-              )}
+              ) : null}
             </Link>
           );
         })}
