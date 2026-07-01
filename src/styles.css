@@ -354,14 +354,12 @@
     cursor: grabbing;
   }
   /* Subtle grip affordance next to the label, revealed on card hover. */
+  /* Apple-style: no visible drag grip glyph. Cards are draggable by their
+     whole surface in edit mode; nothing decorates them at rest. */
   .bento-drag-grip {
-    color: color-mix(in oklab, var(--foreground) 40%, transparent);
-    opacity: 0;
-    transition: opacity 0.15s ease;
+    display: none !important;
   }
-  .grid-stack-item:hover .bento-drag-grip {
-    opacity: 1;
-  }
+
   /* On touch / small screens the grid is static — hide the grip. */
   @media (max-width: 1023px) {
     .bento-drag-grip {
