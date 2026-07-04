@@ -171,7 +171,7 @@ function BentoGridStackImpl({
       // gaps inherited from a previous layout or an out-of-date seed.
       try {
         grid.float(false);
-        grid.compact("compact", false);
+        grid.compact("list", false);
       } catch {
         /* ignore */
       }
@@ -194,7 +194,7 @@ function BentoGridStackImpl({
           return;
         }
         try {
-          grid.compact("compact", false);
+          grid.compact("list", false);
         } catch {
           /* older gridstack signatures — fall through */
         }
@@ -208,7 +208,7 @@ function BentoGridStackImpl({
       // up to fill any gap the resize would otherwise open.
       grid.on("resize", () => {
         try {
-          grid.compact("compact", false);
+          grid.compact("list", false);
         } catch {
           /* ignore */
         }
@@ -216,7 +216,7 @@ function BentoGridStackImpl({
       grid.on("dragstop resizestop", () => {
         interacting = false;
         try {
-          grid.compact("compact", false);
+          grid.compact("list", false);
         } catch {
           /* ignore */
         }
