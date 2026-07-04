@@ -78,7 +78,7 @@ export function AppSidebar() {
   ) => (
     <SidebarGroup>
       {!collapsed && (
-        <SidebarGroupLabel className="font-sans text-[10px] uppercase tracking-[0.06em] text-muted-foreground/45 px-3">
+        <SidebarGroupLabel className="font-sans text-[10px] uppercase tracking-[0.06em] text-muted-foreground/45 px-2">
           {label}
         </SidebarGroupLabel>
       )}
