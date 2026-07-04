@@ -125,7 +125,7 @@ export function AppSidebar() {
     >
       <SidebarHeader className="p-4">
         {!collapsed && (
-          <div className="px-1 pb-3 font-serif-display text-[11px] uppercase tracking-[0.04em] text-muted-foreground/80" style={{ fontFamily: '"Radley", Georgia, serif' }}>
+          <div className="px-1 pb-3 font-sans text-[11px] uppercase tracking-[0.04em] text-muted-foreground/80">
             Harwick & Sterne
           </div>
         )}
