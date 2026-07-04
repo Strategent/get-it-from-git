@@ -78,7 +78,7 @@ export function AppSidebar() {
   ) => (
     <SidebarGroup>
       {!collapsed && (
-        <SidebarGroupLabel className="font-serif-display text-[11px] tracking-[0.04em] text-muted-foreground/70 px-3" style={{ fontFamily: '"Young Serif", Georgia, serif' }}>
+        <SidebarGroupLabel className="font-sans text-[11px] tracking-[0.04em] text-muted-foreground/70 px-3">
           {label}
         </SidebarGroupLabel>
       )}
@@ -125,7 +125,7 @@ export function AppSidebar() {
     >
       <SidebarHeader className="p-4">
         {!collapsed && (
-          <div className="px-1 pb-3 font-serif-display text-[11px] uppercase tracking-[0.04em] text-muted-foreground/80" style={{ fontFamily: '"Radley", Georgia, serif' }}>
+          <div className="px-1 pb-3 font-sans text-[11px] uppercase tracking-[0.04em] text-muted-foreground/80">
             Harwick & Sterne
           </div>
         )}
@@ -155,17 +155,17 @@ export function AppSidebar() {
       <SidebarFooter className="px-5 pb-7 pt-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:pb-7 group-data-[collapsible=icon]:pt-3">
         {!collapsed ? (
           <div className="flex flex-col items-start gap-1.5">
-            <span className="font-serif-display text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground/55" style={{ fontFamily: '"Radley", Georgia, serif' }}>
+            <span className="font-sans text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground/55">
               Powered by
             </span>
-            <span className="font-serif-display text-[23px] font-light leading-none text-neutral-400/80" style={{ fontFamily: '"Radley", Georgia, serif' }}>strategent</span>
+            <span className="font-sans text-[23px] font-light leading-none text-neutral-400/80">strategent</span>
           </div>
         ) : (
           <div className="flex w-full flex-col items-start gap-0.5 pl-[7px]">
-            <span className="font-serif-display text-[3px] uppercase leading-none tracking-[0.02em] text-muted-foreground/55" style={{ fontFamily: '"Radley", Georgia, serif' }}>
+            <span className="font-sans text-[3px] uppercase leading-none tracking-[0.02em] text-muted-foreground/55">
               Powered by
             </span>
-            <span className="font-serif-display text-[7px] font-light leading-none text-neutral-400/80" style={{ fontFamily: '"Radley", Georgia, serif' }}>strategent</span>
+            <span className="font-sans text-[7px] font-light leading-none text-neutral-400/80">strategent</span>
           </div>
         )}
       </SidebarFooter>
