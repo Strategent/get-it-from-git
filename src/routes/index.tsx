@@ -138,7 +138,7 @@ function Home() {
       },
       { id: "inbox", x: 0, y: 4 + rowShift, w: 8, h: 6, minW: 6, minH: 5, maxH: 10, node: <InboxCard /> },
       { id: "bulletin", x: 8, y: 4 + rowShift, w: 4, h: 6, minW: 4, minH: 4, maxW: 8, maxH: 10, node: <BulletinCard /> },
-      { id: "calls", x: 0, y: 10 + rowShift, w: 5, h: 5, minW: 5, minH: 5, maxW: 8, maxH: 8, node: <CallsCard /> },
+      { id: "calls", x: 0, y: 10 + rowShift, w: 5, h: 5, minW: 4, minH: 4, maxW: 8, maxH: 8, node: <CallsCard /> },
       { id: "calendar", x: 5, y: 10 + rowShift, w: 7, h: 5, minW: 6, minH: 5, maxH: 8, node: <CalendarCard /> },
     ],
     [heroH, rowShift],
