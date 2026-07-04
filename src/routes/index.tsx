@@ -136,10 +136,10 @@ function Home() {
           </div>
         ),
       },
-      { id: "inbox", x: 0, y: 4 + rowShift, w: 8, h: 6, minW: 6, minH: 5, maxH: 10, node: <InboxCard /> },
-      { id: "bulletin", x: 8, y: 4 + rowShift, w: 4, h: 6, minW: 4, minH: 4, maxW: 8, maxH: 10, node: <BulletinCard /> },
-      { id: "calls", x: 0, y: 10 + rowShift, w: 5, h: 5, minW: 4, minH: 4, maxW: 8, maxH: 8, node: <CallsCard /> },
-      { id: "calendar", x: 5, y: 10 + rowShift, w: 7, h: 5, minW: 6, minH: 5, maxH: 8, node: <CalendarCard /> },
+      { id: "inbox", x: 0, y: 4 + rowShift, w: 8, h: 6, minW: 5, minH: 5, maxH: 10, node: <InboxCard /> },
+      { id: "bulletin", x: 8, y: 4 + rowShift, w: 4, h: 6, minW: 3, minH: 4, maxW: 8, maxH: 10, node: <BulletinCard /> },
+      { id: "calls", x: 0, y: 10 + rowShift, w: 4, h: 5, minW: 3, minH: 4, maxW: 8, maxH: 8, node: <CallsCard /> },
+      { id: "calendar", x: 4, y: 10 + rowShift, w: 8, h: 5, minW: 5, minH: 4, maxH: 8, node: <CalendarCard /> },
     ],
     [heroH, rowShift],
   );
@@ -192,20 +192,20 @@ function Home() {
       <DashboardShell
         rail={
           <BentoGridStack
-            key={setupDone ? "rail-v5-done" : "rail-v5-setup"}
+            key={setupDone ? "rail-v4-done" : "rail-v4-setup"}
             items={railItems}
             column={1}
-            storageKey={setupDone ? "hs-rail-layout-v5-done" : "hs-rail-layout-v5"}
+            storageKey={setupDone ? "hs-rail-layout-v4-done" : "hs-rail-layout-v4"}
             resizeHandles="s"
             className="-mx-2.5"
           />
         }
       >
         <BentoGridStack
-          key={setupDone ? "main-v7-done" : "main-v7-setup"}
+          key={setupDone ? "main-v6-done" : "main-v6-setup"}
           items={mainItems}
           column={12}
-          storageKey={setupDone ? "hs-main-layout-v7-done" : "hs-main-layout-v7"}
+          storageKey={setupDone ? "hs-main-layout-v6-done" : "hs-main-layout-v6"}
           className="-mx-2.5"
         />
       </DashboardShell>

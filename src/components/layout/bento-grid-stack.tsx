@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import type { GridItemHTMLElement, GridStack, GridStackOptions, GridStackWidget } from "gridstack";
+import type { GridStack, GridStackOptions } from "gridstack";
 // gridstack base CSS is imported in styles.css (before our Origin overrides).
 import { cn } from "@/lib/utils";
 
@@ -91,25 +91,6 @@ function BentoGridStackImpl({
     // Seed each rendered item's gridstack attributes from its layout before
     // init (set imperatively to keep the JSX free of untyped gs-* props).
     const layout = new Map(items.map((it) => [it.id, it]));
-    const clamp = (value: number, min?: number, max?: number) => {
-      const withMin = min == null ? value : Math.max(value, min);
-      return max == null ? withMin : Math.min(withMin, max);
-    };
-    const withItemRules = (widget: GridStackWidget): GridStackWidget => {
-      const it = widget.id ? layout.get(String(widget.id)) : undefined;
-      if (!it) return widget;
-      const w = clamp(widget.w ?? it.w, it.minW, it.maxW);
-      const h = clamp(widget.h ?? it.h, it.minH, it.maxH);
-      return {
-        ...widget,
-        w,
-        h,
-        minW: it.minW,
-        minH: it.minH,
-        maxW: it.maxW,
-        maxH: it.maxH,
-      };
-    };
     elRef.current.querySelectorAll<HTMLElement>(".grid-stack-item").forEach((el) => {
       const it = layout.get(el.dataset.gsId ?? "");
       if (!it) return;
@@ -139,39 +120,19 @@ function BentoGridStackImpl({
       // Snapshot the seeded default layout so "Reset layout" can restore it.
       const defaultLayout = grid.save(false);
 
-      // Restore a previously saved layout (positions only; match by id), but
-      // re-apply today's min/max rules so stale saved sizes can't squish cards.
+      // Restore a previously saved layout (positions only; match by id).
       try {
         const raw = localStorage.getItem(storageKey);
-        if (raw) grid.load((JSON.parse(raw) as GridStackWidget[]).map(withItemRules), false);
+        if (raw) grid.load(JSON.parse(raw), false);
       } catch {
         /* ignore malformed/absent layout */
       }
-
-      // Belt-and-suspenders: keep constraints attached to live widgets too, so
-      // resize handles and future saves respect the same content-safe bounds.
-      items.forEach((it) => {
-        const widget = elRef.current?.querySelector<GridItemHTMLElement>(`[gs-id="${it.id}"]`);
-        if (widget) {
-          const node = widget.gridstackNode;
-          grid.update(
-            widget,
-            withItemRules({
-              id: it.id,
-              x: node?.x ?? it.x,
-              y: node?.y ?? it.y,
-              w: node?.w ?? it.w,
-              h: node?.h ?? it.h,
-            }),
-          );
-        }
-      });
 
       // Apple-like default: always start cleanly stacked — no incongruent
       // gaps inherited from a previous layout or an out-of-date seed.
       try {
         grid.float(false);
-        grid.compact("list", false);
+        grid.compact("compact", false);
       } catch {
         /* ignore */
       }
@@ -194,7 +155,7 @@ function BentoGridStackImpl({
           return;
         }
         try {
-          grid.compact("list", false);
+          grid.compact("compact", false);
         } catch {
           /* older gridstack signatures — fall through */
         }
@@ -208,7 +169,7 @@ function BentoGridStackImpl({
       // up to fill any gap the resize would otherwise open.
       grid.on("resize", () => {
         try {
-          grid.compact("list", false);
+          grid.compact("compact", false);
         } catch {
           /* ignore */
         }
@@ -216,7 +177,7 @@ function BentoGridStackImpl({
       grid.on("dragstop resizestop", () => {
         interacting = false;
         try {
-          grid.compact("list", false);
+          grid.compact("compact", false);
         } catch {
           /* ignore */
         }
@@ -245,7 +206,7 @@ function BentoGridStackImpl({
         } catch {
           /* ignore */
         }
-        grid.load((defaultLayout as GridStackWidget[]).map(withItemRules), false);
+        grid.load(defaultLayout as Parameters<typeof grid.load>[0], false);
       };
       window.addEventListener("bento:reset", onReset);
 
