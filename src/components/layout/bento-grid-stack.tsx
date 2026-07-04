@@ -1,6 +1,6 @@
 import { memo, useEffect, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import type { GridStack, GridStackOptions, GridStackWidget } from "gridstack";
+import type { GridItemHTMLElement, GridStack, GridStackOptions, GridStackWidget } from "gridstack";
 // gridstack base CSS is imported in styles.css (before our Origin overrides).
 import { cn } from "@/lib/utils";
 
@@ -151,10 +151,11 @@ function BentoGridStackImpl({
       // Belt-and-suspenders: keep constraints attached to live widgets too, so
       // resize handles and future saves respect the same content-safe bounds.
       items.forEach((it) => {
-        const widget = elRef.current?.querySelector<HTMLElement>(`[gs-id="${it.id}"]`);
+        const widget = elRef.current?.querySelector<GridItemHTMLElement>(`[gs-id="${it.id}"]`);
         if (widget) {
           const node = widget.gridstackNode;
-          grid.update(widget,
+          grid.update(
+            widget,
             withItemRules({
               id: it.id,
               x: node?.x ?? it.x,
