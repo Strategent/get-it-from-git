@@ -34,11 +34,11 @@ export const Route = createFileRoute("/crm")({
 type Stage = "Lead" | "Qualified" | "Proposal" | "Negotiation" | "Closed";
 
 const stageStyle: Record<Stage, { dot: string; chip: string }> = {
-  Lead:        { dot: "bg-foreground/25", chip: "bg-foreground/[0.06] text-foreground/80 border-foreground/10" },
-  Qualified:   { dot: "bg-foreground/35", chip: "bg-foreground/[0.08] text-foreground/85 border-foreground/12" },
-  Proposal:    { dot: "bg-foreground/45", chip: "bg-foreground/[0.10] text-foreground/90 border-foreground/14" },
-  Negotiation: { dot: "bg-foreground/55", chip: "bg-foreground/[0.12] text-foreground/95 border-foreground/16" },
-  Closed:      { dot: "bg-foreground/70", chip: "bg-foreground/[0.16] text-foreground border-foreground/18" },
+  Lead:        { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
+  Qualified:   { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
+  Proposal:    { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
+  Negotiation: { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
+  Closed:      { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
 };
 
 type Client = {
