@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { toast } from "sonner";
-import { UserPlus, Mail, MessageSquare, MessageCircle, Copy, Send } from "lucide-react";
+import { UserPlus, Mail, MessageSquare, MessageCircle, Copy, Send, Users } from "lucide-react";
 import { avatarUrl } from "@/lib/avatar";
 
 export const Route = createFileRoute("/team")({
@@ -144,12 +144,15 @@ function TeamPage() {
         actions={<InviteDialog onInvite={addInvite} />}
       />
 
-      {/* Teams — filter the people grid below by clicking a team. */}
-      <section aria-label="Teams">
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <h2 className="text-[13px] font-semibold tracking-tight text-foreground/90">
-            Teams <span className="text-muted-foreground font-normal">· {visibleTeams.length}</span>
-          </h2>
+      {/* Teams — horizontal command surface for filtering the roster. */}
+      <section aria-label="Teams" className="pb-1">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2">
+            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Teams <span className="text-muted-foreground/70 font-normal normal-case">· {visibleTeams.length}</span>
+            </h2>
+          </div>
           {activeTeam !== null && (
             <Button
               variant="ghost"
@@ -161,12 +164,21 @@ function TeamPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {/* "All" tile */}
-          <AllTeamsCard
-            active={activeTeam === null}
+        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+          <TeamSelector
+            id={null}
+            label="All teams"
+            description="Everyone across the firm"
             members={team}
+            active={activeTeam === null}
             onClick={() => setActiveTeam(null)}
+            metrics={[
+              {
+                label: "Open tasks",
+                value: team.filter((m) => !m.pending).reduce((s, m) => s + m.tasks, 0),
+              },
+              { label: "Teams", value: TEAMS.length },
+            ]}
           />
           {visibleTeams.map((t) => {
             const members = counts.get(t.id) ?? [];
@@ -177,69 +189,38 @@ function TeamPage() {
               ? Math.round(realMembers.reduce((s, m) => s + m.score, 0) / realMembers.length)
               : 0;
             return (
-              <button
+              <TeamSelector
                 key={t.id}
-                type="button"
-                aria-pressed={active}
+                id={t.id}
+                label={t.name}
+                description={t.tagline}
+                members={members}
+                active={active}
                 onClick={() => setActiveTeam(active ? null : t.id)}
-                className={`bento group relative p-5 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
-                  active ? "ring-2 ring-offset-2 ring-offset-background" : "hover:bg-foreground/[0.02]"
-                }`}
-                style={active ? ({ ["--tw-ring-color" as string]: t.accent } as CSSProperties) : undefined}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="inline-block h-2 w-2 rounded-full shrink-0"
-                        style={{ background: t.accent }}
-                      />
-                      <span className="text-sm font-semibold truncate">{t.name}</span>
-                    </div>
-                    <div className="mt-0.5 text-[12px] text-muted-foreground truncate">{t.tagline}</div>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 border-border/60 text-muted-foreground tabular-nums"
-                  >
-                    {members.length}
-                  </Badge>
-                </div>
-
-                <AvatarStack members={members} accent={t.accent} />
-
-                <div className="mt-4 flex items-center gap-4 text-[12px] text-muted-foreground">
-                  {t.id === "invited" ? (
-                    <span>Awaiting sign-up</span>
-                  ) : (
-                    <>
-                      <span>
-                        <span className="font-semibold text-foreground tabular-nums">{openTasks}</span> open tasks
-                      </span>
-                      <span className="h-3 w-px bg-border" aria-hidden />
-                      <span>
-                        <span className="font-semibold text-foreground tabular-nums">{avgScore}%</span> avg
-                      </span>
-                    </>
-                  )}
-                </div>
-              </button>
+                metrics={
+                  t.id === "invited"
+                    ? undefined
+                    : [
+                        { label: "Open tasks", value: openTasks },
+                        { label: "Avg", value: `${avgScore}%` },
+                      ]
+                }
+              />
             );
           })}
         </div>
       </section>
 
+      <div className="h-px w-full bg-border/60" aria-hidden />
+
       {/* Members — reflects the current team filter. */}
-      <section aria-label="Members">
-        <div className="flex items-center gap-2 mb-3">
-          <h2 className="text-[13px] font-semibold tracking-tight text-foreground/90">
-            Members <span className="text-muted-foreground font-normal">· {filtered.length}</span>
+      <section aria-label="Members" className="pt-2">
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Members <span className="text-muted-foreground/70 font-normal normal-case">· {filtered.length}</span>
           </h2>
           {activeTeam !== null && (
-            <Badge
-              className="border-0 text-white text-[11px]"
-              style={{ background: teamById(activeTeam).accent }}
-            >
+            <Badge variant="outline" className="border-foreground/20 text-foreground text-[11px]">
               {activeLabel}
             </Badge>
           )}
@@ -273,17 +254,13 @@ function TeamPage() {
                   </Badge>
                 </div>
 
-                {/* Team chip — ties the member back to their team accent. */}
+                {/* Team chip — ties the member back to their team. */}
                 <button
                   type="button"
                   onClick={() => setActiveTeam(m.team)}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors hover:bg-foreground/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30"
-                  style={{
-                    borderColor: `color-mix(in oklab, ${t.accent} 40%, transparent)`,
-                    color: t.accent,
-                  }}
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-sm border border-border/70 bg-transparent px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30"
                 >
-                  <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: t.accent }} />
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-foreground/60" />
                   {t.name}
                 </button>
 
@@ -330,8 +307,8 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
   const shown = members.slice(0, 4);
   const extra = members.length - shown.length;
   return (
-    <div className="mt-4 flex items-center">
-      <div className="flex -space-x-2.5">
+    <div className="flex items-center">
+      <div className="flex -space-x-2">
         {shown.map((m) => (
           <img
             key={m.name}
@@ -339,13 +316,13 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
             alt={m.name}
             title={m.name}
             loading="lazy"
-            className={`h-8 w-8 rounded-full object-cover ring-2 ring-card bg-card ${m.pending ? "grayscale opacity-80" : ""}`}
+            className={`h-7 w-7 rounded-full object-cover ring-2 ring-card bg-card ${m.pending ? "grayscale opacity-80" : ""}`}
             style={{ boxShadow: `0 0 0 1px color-mix(in oklab, ${accent} 50%, transparent)` }}
           />
         ))}
         {extra > 0 && (
           <span
-            className="grid h-8 w-8 place-items-center rounded-full ring-2 ring-card bg-foreground/[0.06] text-[10px] font-semibold text-muted-foreground tabular-nums"
+            className="grid h-7 w-7 place-items-center rounded-full ring-2 ring-card bg-foreground/[0.06] text-[10px] font-semibold text-muted-foreground tabular-nums"
             title={`+${extra} more`}
           >
             +{extra}
@@ -360,56 +337,64 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
 }
 
 /**
- * "All" tile — selected by default, shows the whole roster as one stack.
+ * Sleek horizontal team selector card used in the Teams command surface.
+ * Differentiated from the Members grid by its wide, low-profile shape and
+ * neutral monochrome treatment.
  */
-function AllTeamsCard({
-  active,
+function TeamSelector({
+  id,
+  label,
+  description,
   members,
+  active,
   onClick,
+  metrics,
 }: {
-  active: boolean;
+  id: TeamId | null;
+  label: string;
+  description: string;
   members: Member[];
+  active: boolean;
   onClick: () => void;
+  metrics?: { label: string; value: string | number }[];
 }) {
-  const total = members.length;
-  const real = members.filter((m) => !m.pending);
-  const openTasks = real.reduce((s, m) => s + m.tasks, 0);
   return (
     <button
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`bento group relative p-5 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
-        active ? "ring-2 ring-foreground/40 ring-offset-2 ring-offset-background" : "hover:bg-foreground/[0.02]"
+      className={`group relative flex min-w-[300px] max-w-[360px] flex-1 shrink-0 flex-col rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
+        active
+          ? "bg-card border-foreground/20 shadow-md"
+          : "bg-card/40 border-border/60 hover:bg-card/75 hover:border-foreground/10"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span
-              className="inline-block h-2 w-2 rounded-full shrink-0"
-              style={{ background: "var(--gradient-primary)" }}
-            />
-            <span className="text-sm font-semibold truncate">All teams</span>
+            <span className="text-sm font-semibold truncate">{label}</span>
+            <Badge
+              variant="outline"
+              className="shrink-0 border-border/60 text-muted-foreground tabular-nums text-[10px]"
+            >
+              {members.length}
+            </Badge>
           </div>
-          <div className="mt-0.5 text-[12px] text-muted-foreground truncate">Everyone across the firm</div>
+          <div className="mt-0.5 text-[12px] text-muted-foreground truncate">{description}</div>
         </div>
-        <Badge variant="outline" className="shrink-0 border-border/60 text-muted-foreground tabular-nums">
-          {total}
-        </Badge>
+        <AvatarStack members={members} accent={active ? "#666" : "#999"} />
       </div>
 
-      <AvatarStack members={members} accent="#6366F1" />
-
-      <div className="mt-4 flex items-center gap-4 text-[12px] text-muted-foreground">
-        <span>
-          <span className="font-semibold text-foreground tabular-nums">{openTasks}</span> open tasks
-        </span>
-        <span className="h-3 w-px bg-border" aria-hidden />
-        <span>
-          <span className="font-semibold text-foreground tabular-nums">{TEAMS.length}</span> teams
-        </span>
-      </div>
+      {metrics && metrics.length > 0 && (
+        <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
+          {metrics.map((m) => (
+            <span key={m.label} className="flex items-center gap-1">
+              <span className="font-semibold text-foreground tabular-nums">{m.value}</span>
+              <span>{m.label}</span>
+            </span>
+          ))}
+        </div>
+      )}
     </button>
   );
 }
