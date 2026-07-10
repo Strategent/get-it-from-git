@@ -1269,7 +1269,34 @@ function ComposeWindow({
         </div>
       </div>
 
+      {draft.mode !== "forward" && (
+        <div className="flex items-center justify-between gap-3 px-4 py-2 border-b border-border/60 bg-gradient-to-r from-foreground/[0.04] to-transparent">
+          <div className="flex items-center gap-2 text-[11.5px]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/70 px-2 py-0.5 font-medium text-foreground/85">
+              <Sparkles className="h-3 w-3" strokeWidth={2} />
+              Drafted by Syra
+            </span>
+            <span className="text-muted-foreground">
+              Reviewed reply · Review, edit, and send as John
+            </span>
+          </div>
+          <button
+            onClick={onRegenerate}
+            disabled={regenerating}
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-70"
+          >
+            {regenerating ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3 w-3" />
+            )}
+            Regenerate
+          </button>
+        </div>
+      )}
+
       <div className="text-[13px]">
+
         <div className="flex items-center gap-3 px-4 min-h-9 border-b border-border/50 py-1.5">
           <span className="text-muted-foreground w-12 shrink-0">To</span>
           <div className="flex flex-1 flex-wrap items-center gap-1.5">
