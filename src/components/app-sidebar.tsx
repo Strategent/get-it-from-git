@@ -33,13 +33,12 @@ const johnHarwickAvatar = { url: "/john-harwick.png" };
 const syraSIcon = { url: syraSidebarIcon.url };
 
 const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
-  <span aria-hidden className={`relative inline-grid place-items-center overflow-hidden ${className ?? ""}`}>
+  <span aria-hidden className={`relative inline-grid place-items-center ${className ?? ""}`}>
     <img
       src={syraSIcon.url}
       alt=""
-      className="absolute h-full w-full object-contain scale-[3.4] [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
+      className="h-full w-full object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
     />
-
   </span>
 );
 
