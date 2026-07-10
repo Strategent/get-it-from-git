@@ -35,11 +35,11 @@ export const Route = createFileRoute("/crm")({
 type Stage = "Lead" | "Qualified" | "Proposal" | "Negotiation" | "Closed";
 
 const stageStyle: Record<Stage, { dot: string; chip: string }> = {
-  Lead:        { dot: "#3b82f6", chip: "bg-blue-500/10 text-blue-700 dark:text-blue-200 border-blue-500/30" },
-  Qualified:   { dot: "#8b5cf6", chip: "bg-violet-500/10 text-violet-700 dark:text-violet-200 border-violet-500/30" },
-  Proposal:    { dot: "#d97706", chip: "bg-amber-500/10 text-amber-700 dark:text-amber-200 border-amber-500/30" },
-  Negotiation: { dot: "#0891b2", chip: "bg-cyan-500/10 text-cyan-700 dark:text-cyan-200 border-cyan-500/30" },
-  Closed:      { dot: "#059669", chip: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-200 border-emerald-500/30" },
+  Lead:        { dot: "bg-foreground/25", chip: "bg-foreground/[0.06] text-foreground/80 border-foreground/10" },
+  Qualified:   { dot: "bg-foreground/35", chip: "bg-foreground/[0.08] text-foreground/85 border-foreground/12" },
+  Proposal:    { dot: "bg-foreground/45", chip: "bg-foreground/[0.10] text-foreground/90 border-foreground/14" },
+  Negotiation: { dot: "bg-foreground/55", chip: "bg-foreground/[0.12] text-foreground/95 border-foreground/16" },
+  Closed:      { dot: "bg-foreground/70", chip: "bg-foreground/[0.16] text-foreground border-foreground/18" },
 };
 
 type Client = {
@@ -81,7 +81,6 @@ function CrmPage() {
   const [clients, setClients] = useState<Client[]>(seedClients);
   const [query, setQuery] = useState("");
   const [stage, setStage] = useState<(typeof STAGES)[number]>("All");
-  const [selected, setSelected] = useState<Set<number>>(new Set());
 
   // Prepend the new client and clear filters so it's immediately visible.
   const addClient = (c: Client) => {
@@ -109,27 +108,6 @@ function CrmPage() {
     return { aum, open, count: filtered.length };
   }, [filtered]);
 
-  const toggle = (id: number) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
-  const allChecked = filtered.length > 0 && filtered.every((c) => selected.has(c.id));
-  const toggleAll = () => {
-    setSelected((prev) => {
-      if (allChecked) {
-        const next = new Set(prev);
-        filtered.forEach((c) => next.delete(c.id));
-        return next;
-      }
-      const next = new Set(prev);
-      filtered.forEach((c) => next.add(c.id));
-      return next;
-    });
-  };
-
   return (
     <>
     <div className="w-full bg-background flex flex-col" style={{ minHeight: "calc(100dvh - 53px)" }}>
@@ -146,7 +124,7 @@ function CrmPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="border-border bg-transparent">
+          <Button variant="outline" className="border-border bg-transparent rounded-sm hover:bg-foreground/[0.04]">
             <Filter className="h-4 w-4 mr-2" /> Filter
           </Button>
           <NewClientDialog onAdd={addClient} />
@@ -176,15 +154,15 @@ function CrmPage() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search clients, companies, email…"
-            className="w-full h-9 pl-9 pr-3 rounded-lg bg-muted/50 border border-border text-[13px] placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30"
+            className="w-full h-9 pl-9 pr-3 rounded-sm bg-muted/50 border border-border text-[13px] placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30"
           />
         </div>
-        <div className="flex items-center gap-1 p-0.5 rounded-full bg-muted/50 border border-border">
+        <div className="flex items-center gap-1 p-0.5 rounded-sm bg-muted/50 border border-border">
           {STAGES.map((s) => (
             <button
               key={s}
               onClick={() => setStage(s)}
-              className={`h-7 px-3 rounded-full text-[11px] font-medium transition-colors ${
+              className={`h-7 px-3 rounded-sm text-[11px] font-medium transition-colors ${
                 stage === s ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -192,68 +170,43 @@ function CrmPage() {
             </button>
           ))}
         </div>
-        {selected.size > 0 && (
-          <div className="text-[11px] text-muted-foreground">
-            {selected.size} selected
-          </div>
-        )}
       </div>
 
       {/* Table — full width, no card */}
-      <div className="flex-1 overflow-x-auto">
-        <table className="w-full text-left">
-          <thead className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground border-b border-border/60 bg-muted/20">
+      <div className="flex-1 overflow-x-auto px-2 pb-2">
+        <table className="w-full text-left border-separate border-spacing-y-1">
+          <thead className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               <tr>
-                <th className="py-3 pl-4 pr-2 w-8">
-                  <input
-                    type="checkbox"
-                    checked={allChecked}
-                    onChange={toggleAll}
-                    className="h-3.5 w-3.5 accent-foreground cursor-pointer"
-                  />
-                </th>
-                <th className="py-3 px-2 w-6"></th>
-                <th className="py-3 px-2">
+                <th className="py-2 pl-4 pr-2 w-8"></th>
+                <th className="py-2 px-2">
                   <span className="inline-flex items-center gap-1">Client <ArrowUpDown className="h-3 w-3 opacity-50" /></span>
                 </th>
-                <th className="py-3 px-2">Stage</th>
-                <th className="py-3 px-2 text-right">
+                <th className="py-2 px-2">Stage</th>
+                <th className="py-2 px-2 text-right">
                   <span className="inline-flex items-center gap-1">AUM <ArrowUpDown className="h-3 w-3 opacity-50" /></span>
                 </th>
-                <th className="py-3 px-2">Owner</th>
-                <th className="py-3 px-2">Last contact</th>
-                <th className="py-3 px-2">Next action</th>
-                <th className="py-3 px-2 w-24 text-right pr-4">Actions</th>
+                <th className="py-2 px-2">Owner</th>
+                <th className="py-2 px-2">Last contact</th>
+                <th className="py-2 px-2">Next action</th>
+                <th className="py-2 px-2 w-24 text-right pr-4">Actions</th>
               </tr>
             </thead>
             <tbody className="text-[13px]">
               {filtered.map((c) => {
-                const checked = selected.has(c.id);
                 const sty = stageStyle[c.stage];
                 return (
                   <tr
                     key={c.id}
-                    className={`border-b border-border/40 hover:bg-foreground/[0.025] transition-colors ${checked ? "bg-foreground/[0.04]" : ""}`}
+                    className="group bg-card/40 hover:bg-card/70 border border-border/40 rounded-sm transition-colors"
                   >
-                    <td className="py-3 pl-4 pr-2">
-                      <input
-                        type="checkbox"
-                        checked={checked}
-                        onChange={() => toggle(c.id)}
-                        className="h-3.5 w-3.5 accent-foreground cursor-pointer"
-                      />
-                    </td>
-                    <td className="py-3 px-2">
+                    <td className="py-3 pl-4 pr-2 rounded-l-sm">
                       <Star
                         className={`h-3.5 w-3.5 ${c.starred ? "text-amber-400 fill-amber-400" : "text-muted-foreground/40"}`}
                       />
                     </td>
                     <td className="py-3 px-2">
                       <div className="flex items-center gap-3 min-w-0">
-                        <div
-                          className="h-8 w-8 shrink-0 rounded-full grid place-items-center text-[11px] font-semibold text-white"
-                          style={{ background: "var(--gradient-primary)" }}
-                        >
+                        <div className="h-8 w-8 shrink-0 rounded-full grid place-items-center text-[11px] font-semibold text-foreground/80 bg-muted border border-border">
                           {c.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                         </div>
                         <div className="min-w-0">
@@ -263,8 +216,8 @@ function CrmPage() {
                       </div>
                     </td>
                     <td className="py-3 px-2">
-                      <span className={`inline-flex items-center gap-1.5 h-6 px-2 rounded-full text-[10px] font-medium border ${sty.chip}`}>
-                        <span className="h-1.5 w-1.5 rounded-full" style={{ background: sty.dot }} />
+                      <span className={`inline-flex items-center gap-1.5 h-6 px-2 rounded-sm text-[10px] font-medium border ${sty.chip}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${sty.dot}`} />
                         {c.stage}
                       </span>
                     </td>
@@ -279,15 +232,15 @@ function CrmPage() {
                     </td>
                     <td className="py-3 px-2 text-[12px] text-muted-foreground whitespace-nowrap">{c.lastContact}</td>
                     <td className="py-3 px-2 text-[12px] text-foreground/80 truncate max-w-[220px]">{c.nextAction}</td>
-                    <td className="py-3 px-2 pr-4">
+                    <td className="py-3 px-2 pr-4 rounded-r-sm">
                       <div className="flex items-center justify-end gap-1">
-                        <button className="h-7 w-7 grid place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Call">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Call">
                           <Phone className="h-3.5 w-3.5" />
                         </button>
-                        <button className="h-7 w-7 grid place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Email">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Email">
                           <Mail className="h-3.5 w-3.5" />
                         </button>
-                        <button className="h-7 w-7 grid place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="More">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="More">
                           <MoreHorizontal className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -297,7 +250,7 @@ function CrmPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="py-12 text-center text-[13px] text-muted-foreground">
+                  <td colSpan={8} className="py-12 text-center text-[13px] text-muted-foreground">
                     No clients match your filters.
                   </td>
                 </tr>
@@ -314,10 +267,10 @@ function CrmPage() {
 type Source = "email" | "whatsapp" | "contacts" | "direct";
 
 const SOURCES: { id: Source; label: string; sub: string; Icon: typeof Mail; dot: string }[] = [
-  { id: "email", label: "Email", sub: "Add by email", Icon: Mail, dot: "bg-blue-500" },
-  { id: "whatsapp", label: "WhatsApp", sub: "Add by WhatsApp", Icon: MessageCircle, dot: "bg-emerald-500" },
-  { id: "contacts", label: "iPhone Contacts", sub: "Import from device", Icon: Smartphone, dot: "bg-foreground/70" },
-  { id: "direct", label: "Direct number", sub: "Add by phone", Icon: Phone, dot: "bg-violet-500" },
+  { id: "email", label: "Email", sub: "Add by email", Icon: Mail, dot: "bg-foreground/70" },
+  { id: "whatsapp", label: "WhatsApp", sub: "Add by WhatsApp", Icon: MessageCircle, dot: "bg-foreground/60" },
+  { id: "contacts", label: "iPhone Contacts", sub: "Import from device", Icon: Smartphone, dot: "bg-foreground/50" },
+  { id: "direct", label: "Direct number", sub: "Add by phone", Icon: Phone, dot: "bg-foreground/55" },
 ];
 
 const NEW_STAGES: Stage[] = ["Lead", "Qualified", "Proposal", "Negotiation", "Closed"];
@@ -421,7 +374,7 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
+        <Button className="rounded-sm bg-foreground text-background hover:bg-foreground/90">
           <Plus className="h-4 w-4 mr-2" /> New client
         </Button>
       </DialogTrigger>
@@ -531,13 +484,13 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
           {/* Stage */}
           <div className="space-y-1.5">
             <Label>Stage</Label>
-            <div className="flex w-fit flex-wrap items-center gap-1 rounded-lg border border-border bg-muted/50 p-0.5">
+            <div className="flex w-fit flex-wrap items-center gap-1 rounded-sm border border-border bg-muted/50 p-0.5">
               {NEW_STAGES.map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => setStage(s)}
-                  className={`h-7 rounded-full px-3 text-[11px] font-medium transition-colors ${
+                  className={`h-7 rounded-sm px-3 text-[11px] font-medium transition-colors ${
                     stage === s ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -565,6 +518,7 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
             variant="outline"
+            className="rounded-sm"
             onClick={() => {
               setOpen(false);
               reset();
@@ -575,8 +529,7 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
           <Button
             onClick={submit}
             disabled={!canSubmit}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
+            className="rounded-sm bg-foreground text-background hover:bg-foreground/90"
           >
             <Plus className="h-4 w-4 mr-2" /> Add client
           </Button>
