@@ -198,7 +198,7 @@ function ContactRow({ contact: c }: { contact: Contact }) {
       </div>
       <div className="flex items-center gap-1 text-muted-foreground">
         {c.phone && (
-          <ContactAction href={`tel:${c.phone.trim()}`} label={`Call ${c.name}`} icon={PhoneCall} tone="call" />
+          <ContactAction href={`tel:${c.phone.trim()}`} label={`Call ${c.name}`} icon={Phone} tone="call" />
         )}
         {c.phone && (
           <ContactAction
