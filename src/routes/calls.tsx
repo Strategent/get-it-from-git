@@ -370,12 +370,7 @@ function PlaceCallDialog() {
           <Button variant="outline" onClick={() => { setOpen(false); reset(); }}>
             Cancel
           </Button>
-          <Button
-            onClick={call}
-            disabled={!hasNumber}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
-          >
+          <Button onClick={call} disabled={!hasNumber}>
             <Phone className="h-4 w-4 mr-2" /> Call
           </Button>
         </DialogFooter>
