@@ -18,7 +18,6 @@ import {
   Search,
   ArrowUpDown,
   MoreHorizontal,
-  Star,
   Phone,
   Mail,
   MessageCircle,
@@ -124,8 +123,13 @@ function CrmPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="border-border bg-transparent rounded-sm hover:bg-foreground/[0.04]">
-            <Filter className="h-4 w-4 mr-2" /> Filter
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Filter"
+            className="rounded-sm border-border bg-background shadow-[0_1px_2px_0_hsl(var(--foreground)/0.05)] hover:bg-foreground/[0.04] hover:shadow-[0_3px_6px_-2px_hsl(var(--foreground)/0.1)] hover:border-foreground/20 transition-all"
+          >
+            <Filter className="h-4 w-4" />
           </Button>
           <NewClientDialog onAdd={addClient} />
         </div>
@@ -177,7 +181,6 @@ function CrmPage() {
         <table className="w-full text-left border-separate border-spacing-y-1">
           <thead className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               <tr>
-                <th className="py-2 pl-4 pr-2 w-8"></th>
                 <th className="py-2 px-2">
                   <span className="inline-flex items-center gap-1">Client <ArrowUpDown className="h-3 w-3 opacity-50" /></span>
                 </th>
