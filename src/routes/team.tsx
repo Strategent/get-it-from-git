@@ -337,56 +337,61 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
 }
 
 /**
- * "All" tile — selected by default, shows the whole roster as one stack.
+ * Sleek horizontal team selector card used in the Teams command surface.
+ * Differentiated from the Members grid by its wide, low-profile shape and
+ * neutral monochrome treatment.
  */
-function AllTeamsCard({
-  active,
+function TeamSelector({
+  id,
+  label,
+  description,
   members,
+  active,
   onClick,
+  metrics,
 }: {
-  active: boolean;
+  id: TeamId | null;
+  label: string;
+  description: string;
   members: Member[];
+  active: boolean;
   onClick: () => void;
+  metrics?: { label: string; value: string | number }[];
 }) {
-  const total = members.length;
-  const real = members.filter((m) => !m.pending);
-  const openTasks = real.reduce((s, m) => s + m.tasks, 0);
   return (
     <button
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`bento group relative p-5 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
-        active ? "ring-2 ring-foreground/40 ring-offset-2 ring-offset-background" : "hover:bg-foreground/[0.02]"
+      className={`group relative flex min-w-[260px] max-w-[320px] flex-1 shrink-0 items-center justify-between gap-4 rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
+        active
+          ? "bg-card border-foreground/20 shadow-md"
+          : "bg-card/40 border-border/60 hover:bg-card/75 hover:border-foreground/10"
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <div className="flex items-center gap-2">
-            <span
-              className="inline-block h-2 w-2 rounded-full shrink-0"
-              style={{ background: "var(--gradient-primary)" }}
-            />
-            <span className="text-sm font-semibold truncate">All teams</span>
-          </div>
-          <div className="mt-0.5 text-[12px] text-muted-foreground truncate">Everyone across the firm</div>
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold truncate">{label}</span>
+          <Badge
+            variant="outline"
+            className="shrink-0 border-border/60 text-muted-foreground tabular-nums text-[10px]"
+          >
+            {members.length}
+          </Badge>
         </div>
-        <Badge variant="outline" className="shrink-0 border-border/60 text-muted-foreground tabular-nums">
-          {total}
-        </Badge>
+        <div className="mt-0.5 text-[12px] text-muted-foreground truncate">{description}</div>
+        {metrics && metrics.length > 0 && (
+          <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
+            {metrics.map((m) => (
+              <span key={m.label} className="flex items-center gap-1">
+                <span className="font-semibold text-foreground tabular-nums">{m.value}</span>
+                <span>{m.label}</span>
+              </span>
+            ))}
+          </div>
+        )}
       </div>
-
-      <AvatarStack members={members} accent="#6366F1" />
-
-      <div className="mt-4 flex items-center gap-4 text-[12px] text-muted-foreground">
-        <span>
-          <span className="font-semibold text-foreground tabular-nums">{openTasks}</span> open tasks
-        </span>
-        <span className="h-3 w-px bg-border" aria-hidden />
-        <span>
-          <span className="font-semibold text-foreground tabular-nums">{TEAMS.length}</span> teams
-        </span>
-      </div>
+      <AvatarStack members={members} accent={active ? "#666" : "#999"} />
     </button>
   );
 }
