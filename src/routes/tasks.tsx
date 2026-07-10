@@ -369,9 +369,9 @@ function AddTaskInline({
       trigger={
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border/60 bg-transparent px-3 py-2.5 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-border hover:bg-muted/30 hover:text-foreground"
+          className="flex w-full items-center gap-2 px-4 py-2 text-left text-[12px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.03] hover:text-foreground"
         >
-          <Plus className="h-3.5 w-3.5" /> Add new task
+          <Plus className="h-3.5 w-3.5" /> Add task
         </button>
       }
     />
