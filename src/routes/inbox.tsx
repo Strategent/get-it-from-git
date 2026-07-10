@@ -1701,8 +1701,10 @@ function ComposeWindow({
         </div>
       </div>
     </div>
+    </div>
   );
 }
+
 
 function AddressLine({
   label,
