@@ -394,12 +394,7 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
           >
             Cancel
           </Button>
-          <Button
-            onClick={commit}
-            disabled={!staged.length}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
-          >
+          <Button onClick={commit} disabled={!staged.length}>
             <Upload className="h-4 w-4 mr-2" />
             Upload{staged.length ? ` ${staged.length}` : ""}
           </Button>
