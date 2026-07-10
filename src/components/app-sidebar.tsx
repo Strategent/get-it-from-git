@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import syraSidebarIcon from "@/assets/sidebar-icon.png.asset.json";
 const johnHarwickAvatar = { url: "/john-harwick.png" };
 const syraSIcon = { url: "/syra-s.png" };
 
