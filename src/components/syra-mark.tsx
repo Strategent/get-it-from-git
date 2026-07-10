@@ -32,7 +32,7 @@ export function SyraMark({
       }}
     >
       <img
-        src={syraLogo}
+        src={syraLogo.url}
         alt=""
         className="grayscale"
         style={{
