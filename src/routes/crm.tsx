@@ -373,8 +373,12 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="rounded-sm bg-foreground text-background hover:bg-foreground/90">
-          <Plus className="h-4 w-4 mr-2" /> New client
+        <Button
+          size="icon"
+          aria-label="New client"
+          className="rounded-sm bg-foreground text-background shadow-[0_1px_2px_0_hsl(var(--foreground)/0.12)] hover:bg-foreground/90 hover:shadow-[0_3px_6px_-2px_hsl(var(--foreground)/0.18)] transition-all"
+        >
+          <Plus className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
