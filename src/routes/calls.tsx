@@ -307,7 +307,7 @@ function PlaceCallDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
+        <Button>
           <Phone className="h-4 w-4 mr-2" /> Place Call
         </Button>
       </DialogTrigger>
