@@ -48,6 +48,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraChatWidget } from "@/components/syra-chat-widget";
+import { SyraMark } from "@/components/syra-mark";
+
 
 export const Route = createFileRoute("/inbox")({
   component: InboxPage,
