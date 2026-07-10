@@ -134,11 +134,14 @@ function CrmPage() {
     <>
     <div className="w-full bg-background flex flex-col" style={{ minHeight: "calc(100dvh - 53px)" }}>
       {/* Header */}
-      <div className="px-8 pt-8 pb-6 border-b border-border/60 flex items-end justify-between flex-wrap gap-4">
+      <div className="px-8 pt-10 pb-8 border-b border-border/50 flex items-end justify-between flex-wrap gap-6">
         <div>
-          <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">Clients</div>
-          <h1 className="mt-2 text-[32px] font-semibold tracking-tight">CRM</h1>
-          <p className="mt-1.5 text-sm text-muted-foreground max-w-2xl">
+          <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-muted-foreground/80">
+            <span aria-hidden className="inline-block h-1 w-1 rounded-full bg-foreground/40" />
+            Clients
+          </div>
+          <h1 className="font-serif-display mt-3 text-4xl md:text-[44px] font-normal leading-[1.05] tracking-[-0.02em] text-foreground">CRM</h1>
+          <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground max-w-xl">
             Every relationship in one place — accounts, owners, AUM and the next move.
           </p>
         </div>
