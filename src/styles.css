@@ -562,3 +562,13 @@
   mix-blend-mode: soft-light;
 }
 
+/* Hide scrollbars while preserving scroll behavior (used for horizontal team
+   selector and similar overflow surfaces). */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
