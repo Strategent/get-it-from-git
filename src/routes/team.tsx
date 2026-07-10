@@ -383,11 +383,6 @@ function AllTeamsCard({
         active ? "ring-2 ring-foreground/40 ring-offset-2 ring-offset-background" : "hover:bg-foreground/[0.02]"
       }`}
     >
-      <span
-        aria-hidden
-        className="absolute left-0 top-5 bottom-5 w-1 rounded-full"
-        style={{ background: "var(--gradient-primary)" }}
-      />
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
