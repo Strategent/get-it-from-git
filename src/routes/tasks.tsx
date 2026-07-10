@@ -17,7 +17,7 @@ import {
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { TEAMS as ORG_TEAMS, seedTeam, type TeamId } from "@/routes/team";
 import { avatarUrl } from "@/lib/avatar";
-import { Plus, Check, Users, User, Building2, Flag, ClipboardList } from "lucide-react";
+import { Plus, Check, Users, ChevronDown, ChevronRight, Circle, CircleDot, CheckCircle2, GitBranch } from "lucide-react";
 
 export const Route = createFileRoute("/tasks")({
   component: TasksPage,
@@ -91,14 +91,37 @@ const seedGroups: Group[] = [
   },
 ];
 
-const priorityClass = (p: Priority) =>
-  p === "High"
-    ? "bg-rose-500/10 text-rose-400 border-rose-500/20 dark:bg-rose-500/10"
-    : p === "Med"
-      ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
-      : "bg-sky-500/10 text-sky-400 border-sky-500/20";
+// Linear-style monotone priority indicator: 3 stacked bars with variable fill
+function PriorityGlyph({ priority }: { priority: Priority }) {
+  const filled = priority === "High" ? 3 : priority === "Med" ? 2 : 1;
+  return (
+    <span
+      className="inline-flex items-end gap-[2px]"
+      title={`${priority} priority`}
+      aria-label={`${priority} priority`}
+    >
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className={`w-[3px] rounded-[1px] ${
+            i < filled ? "bg-foreground/80" : "bg-foreground/20"
+          }`}
+          style={{ height: `${5 + i * 3}px` }}
+        />
+      ))}
+    </span>
+  );
+}
 
-function AssigneeStack({ assignees }: { assignees: Assignee[] }) {
+function StatusIcon({ status }: { status: TaskStatus }) {
+  if (status === "done")
+    return <CheckCircle2 className="h-[15px] w-[15px] text-emerald-500/90" strokeWidth={2} />;
+  if (status === "pending")
+    return <CircleDot className="h-[15px] w-[15px] text-amber-500/90" strokeWidth={2} />;
+  return <Circle className="h-[15px] w-[15px] text-muted-foreground/70" strokeWidth={2} />;
+}
+
+function AssigneeStack({ assignees, size = 20 }: { assignees: Assignee[]; size?: number }) {
   if (assignees.length === 0) {
     return <div className="text-[11px] text-muted-foreground">Unassigned</div>;
   }
@@ -111,11 +134,15 @@ function AssigneeStack({ assignees }: { assignees: Assignee[] }) {
           key={a.name}
           src={avatarUrl(a.name)}
           alt={a.name}
-          className="h-6 w-6 rounded-full object-cover ring-2 ring-background"
+          className="rounded-full object-cover ring-2 ring-background"
+          style={{ height: size, width: size }}
         />
       ))}
       {extra > 0 && (
-        <span className="grid h-6 w-6 place-items-center rounded-full border border-border bg-foreground/[0.08] text-[9.5px] font-semibold text-muted-foreground ring-2 ring-background">
+        <span
+          className="grid place-items-center rounded-full border border-border bg-foreground/[0.08] text-[9.5px] font-semibold text-muted-foreground ring-2 ring-background"
+          style={{ height: size, width: size }}
+        >
           +{extra}
         </span>
       )}
@@ -123,7 +150,7 @@ function AssigneeStack({ assignees }: { assignees: Assignee[] }) {
   );
 }
 
-function TaskCard({
+function TaskRow({
   task,
   confirming,
   onRequestComplete,
@@ -142,63 +169,65 @@ function TaskCard({
   const pending = task.status === "pending";
 
   return (
-    <div className="group rounded-xl border border-border/70 bg-card/60 p-4 transition-colors hover:bg-card/80">
-      <div className="flex items-start justify-between gap-2">
-        <div className="text-[10.5px] font-mono uppercase tracking-wider text-muted-foreground">
-          {task.code}
-        </div>
-        <Checkbox
-          checked={task.status !== "open"}
+    <div className="group relative">
+      <div className="flex items-center gap-3 px-4 py-2.5 transition-colors hover:bg-foreground/[0.025]">
+        <button
+          type="button"
+          onClick={() => (task.status === "open" ? onRequestComplete() : onReopen())}
+          className="grid h-5 w-5 shrink-0 place-items-center rounded-sm transition-colors hover:bg-foreground/[0.06]"
           aria-label={task.status === "open" ? "Complete task" : "Reopen task"}
-          className="mt-0.5 opacity-0 transition-opacity group-hover:opacity-100 data-[state=checked]:opacity-100"
-          onCheckedChange={() => {
-            if (task.status === "open") onRequestComplete();
-            else onReopen();
-          }}
-        />
-      </div>
+        >
+          <StatusIcon status={task.status} />
+        </button>
 
-      <div
-        className={`mt-1.5 text-[14.5px] font-semibold leading-snug ${
-          done ? "line-through text-muted-foreground" : pending ? "text-muted-foreground" : "text-foreground"
-        }`}
-      >
-        {task.title}
-      </div>
+        <PriorityGlyph priority={task.priority} />
 
-      <div className="mt-3.5 space-y-2 text-[12px] text-muted-foreground">
-        <div className="flex items-center gap-2.5">
-          <User className="h-3.5 w-3.5 shrink-0" />
-          <AssigneeStack assignees={task.assignees} />
-        </div>
-        <div className="flex items-center gap-2.5">
-          <Building2 className="h-3.5 w-3.5 shrink-0" />
-          <span className="truncate text-foreground/80">{task.company}</span>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <Flag className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-foreground/80">{task.due}</span>
-          <Badge className={`ml-1 h-4 rounded-sm border px-1.5 text-[10px] font-medium ${priorityClass(task.priority)}`}>
-            {task.priority}
-          </Badge>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <ClipboardList className="h-3.5 w-3.5 shrink-0" />
-          <span>{task.subtasks} subtask{task.subtasks === 1 ? "" : "s"}</span>
+        <span className="font-mono text-[10.5px] uppercase tracking-wider text-muted-foreground/80 shrink-0 w-[46px]">
+          {task.code}
+        </span>
+
+        <span
+          className={`min-w-0 flex-1 truncate text-[13px] leading-snug ${
+            done
+              ? "line-through text-muted-foreground"
+              : pending
+                ? "text-muted-foreground"
+                : "text-foreground"
+          }`}
+        >
+          {task.title}
+        </span>
+
+        <span className="hidden lg:flex items-center gap-1.5 text-[11.5px] text-muted-foreground shrink-0">
+          <span className="inline-block h-1 w-1 rounded-full bg-muted-foreground/50" />
+          <span className="max-w-[180px] truncate">{task.company}</span>
+        </span>
+
+        {task.subtasks > 0 && (
+          <span className="hidden md:inline-flex items-center gap-1 rounded-sm border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[10.5px] font-medium text-muted-foreground shrink-0">
+            <GitBranch className="h-2.5 w-2.5" />
+            {task.subtasks}
+          </span>
+        )}
+
+        <span className="hidden sm:inline-block text-[11.5px] text-muted-foreground tabular-nums shrink-0 w-[72px] text-right">
+          {task.due.replace(/,\s*\d{4}$/, "")}
+        </span>
+
+        <div className="shrink-0">
+          <AssigneeStack assignees={task.assignees} size={20} />
         </div>
       </div>
 
       {confirming && (
-        <div className="mt-3 flex items-center justify-between gap-2 rounded-md border border-amber-500/30 bg-amber-500/[0.06] px-3 py-2">
-          <span className="text-[11.5px] text-foreground/85">Mark complete?</span>
-          <div className="flex items-center gap-1.5">
-            <Button variant="ghost" className="h-6 px-2 text-[11px]" onClick={onCancel}>
-              Cancel
-            </Button>
-            <Button className="h-6 px-2.5 text-[11px]" onClick={onConfirm}>
-              <Check className="h-3 w-3 mr-1" /> Confirm
-            </Button>
-          </div>
+        <div className="flex items-center justify-end gap-2 border-t border-border/50 bg-amber-500/[0.05] px-4 py-1.5">
+          <span className="mr-auto text-[11.5px] text-foreground/85">Mark complete?</span>
+          <Button variant="ghost" className="h-6 px-2 text-[11px]" onClick={onCancel}>
+            Cancel
+          </Button>
+          <Button className="h-6 px-2.5 text-[11px]" onClick={onConfirm}>
+            <Check className="h-3 w-3 mr-1" /> Confirm
+          </Button>
         </div>
       )}
     </div>
@@ -208,6 +237,7 @@ function TaskCard({
 function TasksPage() {
   const [groups, setGroups] = useState<Group[]>(seedGroups);
   const [confirmingId, setConfirmingId] = useState<number | null>(null);
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
 
   const addTask = (groupName: string, task: Task) => {
     setGroups((prev) =>
@@ -224,6 +254,23 @@ function TasksPage() {
     );
   };
 
+  const toggleGroup = (name: string) =>
+    setCollapsed((prev) => {
+      const next = new Set(prev);
+      next.has(name) ? next.delete(name) : next.add(name);
+      return next;
+    });
+
+  const totals = useMemo(() => {
+    const all = groups.flatMap((g) => g.items);
+    return {
+      total: all.length,
+      open: all.filter((t) => t.status === "open").length,
+      pending: all.filter((t) => t.status === "pending").length,
+      done: all.filter((t) => t.status === "done").length,
+    };
+  }, [groups]);
+
   return (
     <PageShell>
       <PageHeader
@@ -232,46 +279,80 @@ function TasksPage() {
         description="Human + agent work, tracked together."
         actions={<NewTaskDialog groups={groups.map((g) => g.name)} onAdd={addTask} />}
       />
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {groups.map((g) => (
-          <div key={g.name} className="flex min-h-[200px] flex-col gap-3">
-            <div className="flex items-center justify-between px-1">
-              <div className="flex items-center gap-2">
-                <span className={`h-1.5 w-1.5 rounded-full ${g.accent}`} />
-                <span className="text-[13px] font-semibold text-foreground">{g.name}</span>
-              </div>
-              <span className="rounded-md border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[10.5px] font-medium text-muted-foreground">
-                {g.items.length}
-              </span>
-            </div>
 
-            <div className="flex flex-col gap-3">
-              {g.items.map((t) => (
-                <TaskCard
-                  key={t.id}
-                  task={t}
-                  confirming={confirmingId === t.id}
-                  onRequestComplete={() => setConfirmingId(t.id)}
-                  onCancel={() => setConfirmingId(null)}
-                  onConfirm={() => {
-                    setStatus(t.id, "pending");
-                    setConfirmingId(null);
-                  }}
-                  onReopen={() => {
-                    setStatus(t.id, "open");
-                    setConfirmingId(null);
-                  }}
-                />
-              ))}
+      {/* Linear-style stat strip */}
+      <div className="mb-4 flex flex-wrap items-center gap-x-6 gap-y-2 border-y border-border/60 py-2.5 text-[11.5px]">
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <span className="font-mono uppercase tracking-wider">Total</span>
+          <span className="tabular-nums text-foreground font-medium">{totals.total}</span>
+        </span>
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <Circle className="h-3 w-3 text-muted-foreground/70" />
+          Open <span className="tabular-nums text-foreground font-medium">{totals.open}</span>
+        </span>
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <CircleDot className="h-3 w-3 text-amber-500/90" />
+          In progress <span className="tabular-nums text-foreground font-medium">{totals.pending}</span>
+        </span>
+        <span className="flex items-center gap-1.5 text-muted-foreground">
+          <CheckCircle2 className="h-3 w-3 text-emerald-500/90" />
+          Done <span className="tabular-nums text-foreground font-medium">{totals.done}</span>
+        </span>
+      </div>
 
-              <AddTaskInline groupName={g.name} onAdd={addTask} />
+      {/* Linear-style single-column grouped list */}
+      <div className="rounded-md border border-border/60 bg-card/30 overflow-hidden">
+        {groups.map((g, gi) => {
+          const isCollapsed = collapsed.has(g.name);
+          return (
+            <div key={g.name} className={gi > 0 ? "border-t border-border/60" : ""}>
+              <button
+                type="button"
+                onClick={() => toggleGroup(g.name)}
+                className="flex w-full items-center gap-2 bg-muted/30 px-4 py-2 text-left transition-colors hover:bg-muted/50"
+              >
+                {isCollapsed ? (
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                ) : (
+                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                )}
+                <span className="text-[12px] font-semibold text-foreground">{g.name}</span>
+                <span className="rounded-sm bg-foreground/[0.06] px-1.5 py-0.5 text-[10px] font-medium tabular-nums text-muted-foreground">
+                  {g.items.length}
+                </span>
+                <span className="ml-auto opacity-0 group-hover:opacity-100" />
+              </button>
+
+              {!isCollapsed && (
+                <div className="divide-y divide-border/50">
+                  {g.items.map((t) => (
+                    <TaskRow
+                      key={t.id}
+                      task={t}
+                      confirming={confirmingId === t.id}
+                      onRequestComplete={() => setConfirmingId(t.id)}
+                      onCancel={() => setConfirmingId(null)}
+                      onConfirm={() => {
+                        setStatus(t.id, "pending");
+                        setConfirmingId(null);
+                      }}
+                      onReopen={() => {
+                        setStatus(t.id, "open");
+                        setConfirmingId(null);
+                      }}
+                    />
+                  ))}
+                  <AddTaskInline groupName={g.name} onAdd={addTask} />
+                </div>
+              )}
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </PageShell>
   );
 }
+
 
 function AddTaskInline({
   groupName,
@@ -288,9 +369,9 @@ function AddTaskInline({
       trigger={
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border/60 bg-transparent px-3 py-2.5 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-border hover:bg-muted/30 hover:text-foreground"
+          className="flex w-full items-center gap-2 px-4 py-2 text-left text-[12px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.03] hover:text-foreground"
         >
-          <Plus className="h-3.5 w-3.5" /> Add new task
+          <Plus className="h-3.5 w-3.5" /> Add task
         </button>
       }
     />
