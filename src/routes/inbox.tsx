@@ -48,6 +48,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraChatWidget } from "@/components/syra-chat-widget";
+import { SyraMark } from "@/components/syra-mark";
+
 
 export const Route = createFileRoute("/inbox")({
   component: InboxPage,
@@ -1237,7 +1239,38 @@ function ComposeWindow({
   }
 
   return (
-    <div className="mt-8 max-w-2xl bg-card border border-border/70 dark:border-white/[0.08] rounded-xl overflow-hidden shadow-xl">
+    <div className="relative mt-8 max-w-2xl">
+      {draft.mode !== "forward" && (
+        <div className="pointer-events-none absolute -top-3 left-6 right-6 z-10 flex justify-start">
+          <div className="pointer-events-auto group relative flex items-center gap-2.5 rounded-full border border-border/70 bg-card/95 px-3 py-1.5 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35),0_2px_6px_-2px_rgba(0,0,0,0.2)] backdrop-blur-md dark:bg-neutral-900/90 dark:border-white/10">
+            <SyraMark size={18} />
+            <div className="flex flex-col leading-tight">
+              <span className="text-[11.5px] font-semibold tracking-tight">Suggested reply from Syra</span>
+              <span className="text-[10.5px] text-muted-foreground">Review, edit, and send as John — signature attached</span>
+            </div>
+            <span className="mx-1 h-4 w-px bg-border/70" />
+            <button
+              onClick={onRegenerate}
+              disabled={regenerating}
+              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] disabled:opacity-70"
+            >
+              {regenerating ? (
+                <Loader2 className="h-3 w-3 animate-spin" />
+              ) : (
+                <RefreshCw className="h-3 w-3" />
+              )}
+              Regenerate
+            </button>
+            {/* pointer tail into compose window */}
+            <span
+              aria-hidden
+              className="absolute -bottom-[5px] left-8 h-2.5 w-2.5 rotate-45 border-b border-r border-border/70 bg-card/95 dark:bg-neutral-900/90 dark:border-white/10"
+            />
+          </div>
+        </div>
+      )}
+
+    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-xl overflow-hidden shadow-xl">
       <div className="flex items-center justify-between px-3.5 h-9 bg-foreground/[0.04] dark:bg-white/[0.04] border-b border-border/60">
         <div className="flex items-center gap-2 text-[12px] font-medium text-foreground/85">
           <CornerUpLeft className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.85} />
@@ -1270,31 +1303,6 @@ function ComposeWindow({
         </div>
       </div>
 
-      {draft.mode !== "forward" && (
-        <div className="flex items-center justify-between gap-3 px-4 py-2 border-b border-border/60 bg-gradient-to-r from-foreground/[0.04] to-transparent">
-          <div className="flex items-center gap-2 text-[11.5px]">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/70 px-2 py-0.5 font-medium text-foreground/85">
-              <Sparkles className="h-3 w-3" strokeWidth={2} />
-              Drafted by Syra
-            </span>
-            <span className="text-muted-foreground">
-              Reviewed reply · Review, edit, and send as John
-            </span>
-          </div>
-          <button
-            onClick={onRegenerate}
-            disabled={regenerating}
-            className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-70"
-          >
-            {regenerating ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
-            ) : (
-              <RefreshCw className="h-3 w-3" />
-            )}
-            Regenerate
-          </button>
-        </div>
-      )}
 
       <div className="text-[13px]">
 
@@ -1695,8 +1703,10 @@ function ComposeWindow({
         </div>
       </div>
     </div>
+    </div>
   );
 }
+
 
 function AddressLine({
   label,
