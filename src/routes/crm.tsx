@@ -267,10 +267,10 @@ function CrmPage() {
 type Source = "email" | "whatsapp" | "contacts" | "direct";
 
 const SOURCES: { id: Source; label: string; sub: string; Icon: typeof Mail; dot: string }[] = [
-  { id: "email", label: "Email", sub: "Add by email", Icon: Mail, dot: "bg-blue-500" },
-  { id: "whatsapp", label: "WhatsApp", sub: "Add by WhatsApp", Icon: MessageCircle, dot: "bg-emerald-500" },
-  { id: "contacts", label: "iPhone Contacts", sub: "Import from device", Icon: Smartphone, dot: "bg-foreground/70" },
-  { id: "direct", label: "Direct number", sub: "Add by phone", Icon: Phone, dot: "bg-violet-500" },
+  { id: "email", label: "Email", sub: "Add by email", Icon: Mail, dot: "bg-foreground/70" },
+  { id: "whatsapp", label: "WhatsApp", sub: "Add by WhatsApp", Icon: MessageCircle, dot: "bg-foreground/60" },
+  { id: "contacts", label: "iPhone Contacts", sub: "Import from device", Icon: Smartphone, dot: "bg-foreground/50" },
+  { id: "direct", label: "Direct number", sub: "Add by phone", Icon: Phone, dot: "bg-foreground/55" },
 ];
 
 const NEW_STAGES: Stage[] = ["Lead", "Qualified", "Proposal", "Negotiation", "Closed"];
@@ -374,7 +374,7 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
+        <Button className="rounded-sm bg-foreground text-background hover:bg-foreground/90">
           <Plus className="h-4 w-4 mr-2" /> New client
         </Button>
       </DialogTrigger>
@@ -484,13 +484,13 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
           {/* Stage */}
           <div className="space-y-1.5">
             <Label>Stage</Label>
-            <div className="flex w-fit flex-wrap items-center gap-1 rounded-lg border border-border bg-muted/50 p-0.5">
+            <div className="flex w-fit flex-wrap items-center gap-1 rounded-sm border border-border bg-muted/50 p-0.5">
               {NEW_STAGES.map((s) => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => setStage(s)}
-                  className={`h-7 rounded-full px-3 text-[11px] font-medium transition-colors ${
+                  className={`h-7 rounded-sm px-3 text-[11px] font-medium transition-colors ${
                     stage === s ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -518,6 +518,7 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
         <DialogFooter className="gap-2 sm:gap-2">
           <Button
             variant="outline"
+            className="rounded-sm"
             onClick={() => {
               setOpen(false);
               reset();
@@ -528,8 +529,7 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
           <Button
             onClick={submit}
             disabled={!canSubmit}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
+            className="rounded-sm bg-foreground text-background hover:bg-foreground/90"
           >
             <Plus className="h-4 w-4 mr-2" /> Add client
           </Button>
