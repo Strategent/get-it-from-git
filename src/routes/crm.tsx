@@ -200,9 +200,7 @@ function CrmPage() {
                 return (
                   <tr
                     key={c.id}
-                    tabIndex={0}
-                    className="group bg-card/40 border border-border/40 rounded-sm shadow-[0_1px_2px_0_hsl(var(--foreground)/0.03)] transition-all hover:bg-card/70 hover:border-foreground/15 hover:shadow-[0_4px_10px_-3px_hsl(var(--foreground)/0.09)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground/15 focus-visible:border-foreground/25"
-                  >
+                    className="group bg-card/40 border border-border/40 rounded-sm shadow-[0_1px_2px_0_hsl(var(--foreground)/0.04)] transition-all hover:bg-card/75 hover:border-foreground/18 hover:shadow-[0_5px_14px_-4px_hsl(var(--foreground)/0.12)] focus-within:bg-card/75 focus-within:border-foreground/18 focus-within:shadow-[0_5px_14px_-4px_hsl(var(--foreground)/0.12)]"
                     <td className="py-3 px-2 rounded-l-sm">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="h-8 w-8 shrink-0 rounded-full grid place-items-center text-[11px] font-semibold text-foreground/80 bg-muted border border-border">
