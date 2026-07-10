@@ -18,7 +18,6 @@ import {
   Search,
   ArrowUpDown,
   MoreHorizontal,
-  Star,
   Phone,
   Mail,
   MessageCircle,
@@ -124,8 +123,13 @@ function CrmPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" className="border-border bg-transparent rounded-sm hover:bg-foreground/[0.04]">
-            <Filter className="h-4 w-4 mr-2" /> Filter
+          <Button
+            variant="outline"
+            size="icon"
+            aria-label="Filter"
+            className="rounded-sm border-border bg-background shadow-[0_1px_2px_0_hsl(var(--foreground)/0.05)] hover:bg-foreground/[0.04] hover:shadow-[0_3px_6px_-2px_hsl(var(--foreground)/0.1)] hover:border-foreground/20 transition-all"
+          >
+            <Filter className="h-4 w-4" />
           </Button>
           <NewClientDialog onAdd={addClient} />
         </div>
@@ -177,7 +181,6 @@ function CrmPage() {
         <table className="w-full text-left border-separate border-spacing-y-1">
           <thead className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               <tr>
-                <th className="py-2 pl-4 pr-2 w-8"></th>
                 <th className="py-2 px-2">
                   <span className="inline-flex items-center gap-1">Client <ArrowUpDown className="h-3 w-3 opacity-50" /></span>
                 </th>
@@ -197,14 +200,9 @@ function CrmPage() {
                 return (
                   <tr
                     key={c.id}
-                    className="group bg-card/40 hover:bg-card/70 border border-border/40 rounded-sm transition-colors"
+                    className="group bg-card/40 border border-border/40 rounded-sm shadow-[0_1px_2px_0_hsl(var(--foreground)/0.04)] transition-all hover:bg-card/75 hover:border-foreground/18 hover:shadow-[0_5px_14px_-4px_hsl(var(--foreground)/0.12)] focus-within:bg-card/75 focus-within:border-foreground/18 focus-within:shadow-[0_5px_14px_-4px_hsl(var(--foreground)/0.12)]"
                   >
-                    <td className="py-3 pl-4 pr-2 rounded-l-sm">
-                      <Star
-                        className={`h-3.5 w-3.5 ${c.starred ? "text-amber-400 fill-amber-400" : "text-muted-foreground/40"}`}
-                      />
-                    </td>
-                    <td className="py-3 px-2">
+                    <td className="py-3 px-2 rounded-l-sm">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="h-8 w-8 shrink-0 rounded-full grid place-items-center text-[11px] font-semibold text-foreground/80 bg-muted border border-border">
                           {c.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
@@ -234,13 +232,13 @@ function CrmPage() {
                     <td className="py-3 px-2 text-[12px] text-foreground/80 truncate max-w-[220px]">{c.nextAction}</td>
                     <td className="py-3 px-2 pr-4 rounded-r-sm">
                       <div className="flex items-center justify-end gap-1">
-                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Call">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Call">
                           <Phone className="h-3.5 w-3.5" />
                         </button>
-                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Email">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Email">
                           <Mail className="h-3.5 w-3.5" />
                         </button>
-                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="More">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="More">
                           <MoreHorizontal className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -250,7 +248,7 @@ function CrmPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[13px] text-muted-foreground">
+                  <td colSpan={7} className="py-12 text-center text-[13px] text-muted-foreground">
                     No clients match your filters.
                   </td>
                 </tr>
@@ -374,8 +372,12 @@ function NewClientDialog({ onAdd }: { onAdd: (c: Client) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="rounded-sm bg-foreground text-background hover:bg-foreground/90">
-          <Plus className="h-4 w-4 mr-2" /> New client
+        <Button
+          size="icon"
+          aria-label="New client"
+          className="rounded-sm bg-foreground text-background shadow-[0_1px_2px_0_hsl(var(--foreground)/0.12)] hover:bg-foreground/90 hover:shadow-[0_3px_6px_-2px_hsl(var(--foreground)/0.18)] transition-all"
+        >
+          <Plus className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
