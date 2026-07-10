@@ -307,8 +307,8 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
   const shown = members.slice(0, 4);
   const extra = members.length - shown.length;
   return (
-    <div className="mt-4 flex items-center">
-      <div className="flex -space-x-2.5">
+    <div className="flex items-center">
+      <div className="flex -space-x-2">
         {shown.map((m) => (
           <img
             key={m.name}
@@ -316,13 +316,13 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
             alt={m.name}
             title={m.name}
             loading="lazy"
-            className={`h-8 w-8 rounded-full object-cover ring-2 ring-card bg-card ${m.pending ? "grayscale opacity-80" : ""}`}
+            className={`h-7 w-7 rounded-full object-cover ring-2 ring-card bg-card ${m.pending ? "grayscale opacity-80" : ""}`}
             style={{ boxShadow: `0 0 0 1px color-mix(in oklab, ${accent} 50%, transparent)` }}
           />
         ))}
         {extra > 0 && (
           <span
-            className="grid h-8 w-8 place-items-center rounded-full ring-2 ring-card bg-foreground/[0.06] text-[10px] font-semibold text-muted-foreground tabular-nums"
+            className="grid h-7 w-7 place-items-center rounded-full ring-2 ring-card bg-foreground/[0.06] text-[10px] font-semibold text-muted-foreground tabular-nums"
             title={`+${extra} more`}
           >
             +{extra}
