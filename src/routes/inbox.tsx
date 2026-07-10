@@ -501,7 +501,7 @@ function InboxPage() {
     window.setTimeout(() => {
       const next = regenerateOptions[Math.floor(Math.random() * regenerateOptions.length)];
       updateDraft({
-        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\nBest,\nSyra`),
+        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\n${SIGNATURE_BLOCK}`),
         status: "open",
       });
       setRegeneratingId(null);
