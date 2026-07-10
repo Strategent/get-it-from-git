@@ -104,7 +104,10 @@ export function AppSidebar() {
                     to={item.url}
                     className={`flex items-center ${collapsed ? "justify-center w-full" : "gap-2.5"}`}
                   >
-                    <item.icon strokeWidth={1.5} className="h-[18px] w-[18px] shrink-0" />
+                    <item.icon
+                      strokeWidth={1.5}
+                      className={`shrink-0 ${item.title === "Syra" ? "h-[20px] w-[20px]" : "h-[18px] w-[18px]"}`}
+                    />
                     {!collapsed && (
                       <span className="text-[13px] font-medium tracking-tight">{item.title}</span>
                     )}
