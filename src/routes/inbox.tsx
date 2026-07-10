@@ -34,6 +34,7 @@ import {
   Clock,
   Loader2,
   Sparkles,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -282,6 +283,13 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+const SIGNATURE_BLOCK = `Best,
+
+John Harwick
+Managing Partner  ·  Harwick & Sterne
+john.harwick@harwicksterne.com  ·  +1 (212) 555-0136
+harwicksterne.com`;
+
 function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
   const firstName = thread.from.split(" ")[0];
   const subjectPrefix = mode === "forward" ? "Fwd:" : "Re:";
@@ -295,7 +303,7 @@ function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
     body: textToHtml(
       mode === "forward"
         ? `\n\n---------- Forwarded message ---------\nFrom: ${thread.from} <${thread.email}>\nSubject: ${thread.subject}\n\n${thread.body}`
-        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\nBest,\nSyra`,
+        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\n${SIGNATURE_BLOCK}`,
     ),
     attachments: [],
     links: [],
@@ -494,7 +502,7 @@ function InboxPage() {
     window.setTimeout(() => {
       const next = regenerateOptions[Math.floor(Math.random() * regenerateOptions.length)];
       updateDraft({
-        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\nBest,\nSyra`),
+        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\n${SIGNATURE_BLOCK}`),
         status: "open",
       });
       setRegeneratingId(null);
@@ -1262,7 +1270,34 @@ function ComposeWindow({
         </div>
       </div>
 
+      {draft.mode !== "forward" && (
+        <div className="flex items-center justify-between gap-3 px-4 py-2 border-b border-border/60 bg-gradient-to-r from-foreground/[0.04] to-transparent">
+          <div className="flex items-center gap-2 text-[11.5px]">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-border/70 bg-background/70 px-2 py-0.5 font-medium text-foreground/85">
+              <Sparkles className="h-3 w-3" strokeWidth={2} />
+              Drafted by Syra
+            </span>
+            <span className="text-muted-foreground">
+              Reviewed reply · Review, edit, and send as John
+            </span>
+          </div>
+          <button
+            onClick={onRegenerate}
+            disabled={regenerating}
+            className="inline-flex items-center gap-1 text-[11px] font-medium text-muted-foreground hover:text-foreground disabled:opacity-70"
+          >
+            {regenerating ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3 w-3" />
+            )}
+            Regenerate
+          </button>
+        </div>
+      )}
+
       <div className="text-[13px]">
+
         <div className="flex items-center gap-3 px-4 min-h-9 border-b border-border/50 py-1.5">
           <span className="text-muted-foreground w-12 shrink-0">To</span>
           <div className="flex flex-1 flex-wrap items-center gap-1.5">
