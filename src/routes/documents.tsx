@@ -194,7 +194,7 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
+        <Button>
           <Upload className="h-4 w-4 mr-2" /> Upload
         </Button>
       </DialogTrigger>
