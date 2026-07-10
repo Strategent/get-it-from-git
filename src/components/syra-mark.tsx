@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import syraLogo from "@/assets/syra-mark.png";
+import syraLogo from "@/assets/stg-icon.png.asset.json";
 
 /**
  * SyraMark — the canonical brand mark for Syra.
