@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,7 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { TEAMS as ORG_TEAMS, seedTeam, type TeamId } from "@/routes/team";
-import { Plus, Check, Users, Clock } from "lucide-react";
+import { avatarUrl } from "@/lib/avatar";
+import { Plus, Check, Users, User, Building2, Flag, ClipboardList } from "lucide-react";
 
 export const Route = createFileRoute("/tasks")({
   component: TasksPage,
@@ -27,8 +27,18 @@ export const Route = createFileRoute("/tasks")({
 type Priority = "High" | "Med" | "Low";
 type TaskStatus = "open" | "pending" | "done";
 type Assignee = { initials: string; name: string };
-type Task = { id: number; title: string; assignees: Assignee[]; priority: Priority; status: TaskStatus };
-type Group = { name: string; items: Task[] };
+type Task = {
+  id: number;
+  code: string;
+  title: string;
+  assignees: Assignee[];
+  priority: Priority;
+  status: TaskStatus;
+  company: string;
+  due: string;
+  subtasks: number;
+};
+type Group = { name: string; accent: string; items: Task[] };
 
 const initialsOf = (name: string) => {
   const parts = name.trim().split(/\s+/);
@@ -37,16 +47,11 @@ const initialsOf = (name: string) => {
 };
 const A = (name: string): Assignee => ({ initials: initialsOf(name), name });
 
-// Assignable roster — the org's team (from the Team page) plus the Syra agent.
-// Derived from team.tsx so the people here always match the Team page.
 const PEOPLE: { initials: string; name: string; role: string }[] = [
   ...seedTeam.map((m) => ({ initials: initialsOf(m.name), name: m.name, role: m.role })),
   { initials: "SY", name: "Syra", role: "AI agent" },
 ];
 
-// Functional teams that expand to their members on assignment — built by
-// grouping the Team page's roster by team id (the "invited" pseudo-team is
-// excluded since ORG_TEAMS only contains the four real teams).
 const TEAMS: { name: string; members: string[] }[] = ORG_TEAMS.map((t) => ({
   name: t.name,
   members: seedTeam.filter((m) => m.team === (t.id as TeamId)).map((m) => m.name),
@@ -60,35 +65,38 @@ const assigneeFor = (name: string): Assignee => {
 const seedGroups: Group[] = [
   {
     name: "Today",
+    accent: "bg-muted-foreground/70",
     items: [
-      { id: 1, title: "Review Q2 onboarding playbook", assignees: [A("Avery")], priority: "High", status: "open" },
-      { id: 2, title: "Finalize Acme proposal v2", assignees: [assigneeFor("Syra")], priority: "High", status: "open" },
-      { id: 3, title: "Approve Stripe payout", assignees: [A("Avery")], priority: "Med", status: "done" },
+      { id: 1, code: "HS-01", title: "Review Q2 onboarding playbook", assignees: [A("Avery")], priority: "High", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 10, 2026", subtasks: 3 },
+      { id: 2, code: "HS-02", title: "Finalize Acme proposal v2", assignees: [assigneeFor("Syra")], priority: "High", status: "open", company: "Acme Holdings, Inc.", due: "Jul 10, 2026", subtasks: 4 },
+      { id: 3, code: "HS-03", title: "Approve Stripe payout", assignees: [A("Avery")], priority: "Med", status: "done", company: "Stripe, Inc.", due: "Jul 9, 2026", subtasks: 1 },
     ],
   },
   {
     name: "This week",
+    accent: "bg-foreground/60",
     items: [
-      { id: 4, title: "Migrate CRM custom fields", assignees: [assigneeFor("Marcus Lee")], priority: "Med", status: "open" },
-      { id: 5, title: "Record agent training data", assignees: [assigneeFor("Syra")], priority: "Low", status: "open" },
-      { id: 6, title: "QA new voice prompt set", assignees: [A("Jenna")], priority: "Med", status: "open" },
+      { id: 4, code: "HS-04", title: "Migrate CRM custom fields", assignees: [assigneeFor("Marcus Lee")], priority: "Med", status: "open", company: "Northwind Capital, LLC.", due: "Jul 13, 2026", subtasks: 5 },
+      { id: 5, code: "HS-05", title: "Record agent training data", assignees: [assigneeFor("Syra")], priority: "Low", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 14, 2026", subtasks: 2 },
+      { id: 6, code: "HS-06", title: "QA new voice prompt set", assignees: [A("Jenna")], priority: "Med", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 15, 2026", subtasks: 3 },
     ],
   },
   {
     name: "This month",
+    accent: "bg-foreground/40",
     items: [
-      { id: 7, title: "Plan Q3 advisor offsite", assignees: [assigneeFor("David Mensah")], priority: "Low", status: "open" },
-      { id: 8, title: "Annual KYC refresh — top accounts", assignees: [assigneeFor("Rina Cho")], priority: "Med", status: "open" },
+      { id: 7, code: "HS-07", title: "Plan Q3 advisor offsite", assignees: [assigneeFor("David Mensah")], priority: "Low", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 24, 2026", subtasks: 4 },
+      { id: 8, code: "HS-08", title: "Annual KYC refresh — top accounts", assignees: [assigneeFor("Rina Cho")], priority: "Med", status: "open", company: "Meridian Trust Co.", due: "Jul 28, 2026", subtasks: 6 },
     ],
   },
 ];
 
 const priorityClass = (p: Priority) =>
   p === "High"
-    ? "bg-accent/15 text-accent border-accent/30"
+    ? "bg-rose-500/10 text-rose-400 border-rose-500/20 dark:bg-rose-500/10"
     : p === "Med"
-      ? "bg-primary/15 text-primary border-primary/30"
-      : "bg-white/5 text-muted-foreground border-border/60";
+      ? "bg-amber-500/10 text-amber-500 border-amber-500/20"
+      : "bg-sky-500/10 text-sky-400 border-sky-500/20";
 
 function AssigneeStack({ assignees }: { assignees: Assignee[] }) {
   if (assignees.length === 0) {
@@ -99,12 +107,12 @@ function AssigneeStack({ assignees }: { assignees: Assignee[] }) {
   return (
     <div className="flex items-center -space-x-1.5" title={assignees.map((a) => a.name).join(", ")}>
       {shown.map((a) => (
-        <span
+        <img
           key={a.name}
-          className="grid h-6 w-6 place-items-center rounded-full border border-border bg-muted text-[9.5px] font-semibold text-foreground/80 ring-2 ring-background"
-        >
-          {a.initials}
-        </span>
+          src={avatarUrl(a.name)}
+          alt={a.name}
+          className="h-6 w-6 rounded-full object-cover ring-2 ring-background"
+        />
       ))}
       {extra > 0 && (
         <span className="grid h-6 w-6 place-items-center rounded-full border border-border bg-foreground/[0.08] text-[9.5px] font-semibold text-muted-foreground ring-2 ring-background">
@@ -115,7 +123,7 @@ function AssigneeStack({ assignees }: { assignees: Assignee[] }) {
   );
 }
 
-function TaskRow({
+function TaskCard({
   task,
   confirming,
   onRequestComplete,
@@ -130,52 +138,65 @@ function TaskRow({
   onCancel: () => void;
   onReopen: () => void;
 }) {
-  const pending = task.status === "pending";
   const done = task.status === "done";
+  const pending = task.status === "pending";
 
   return (
-    <div className="rounded-lg hover:bg-white/[0.04]">
-      <div className="flex items-center gap-3 p-2.5">
+    <div className="group rounded-xl border border-border/70 bg-card/60 p-4 transition-colors hover:bg-card/80">
+      <div className="flex items-start justify-between gap-2">
+        <div className="text-[10.5px] font-mono uppercase tracking-wider text-muted-foreground">
+          {task.code}
+        </div>
         <Checkbox
           checked={task.status !== "open"}
           aria-label={task.status === "open" ? "Complete task" : "Reopen task"}
+          className="mt-0.5 opacity-0 transition-opacity group-hover:opacity-100 data-[state=checked]:opacity-100"
           onCheckedChange={() => {
-            // Clicking an open task asks for confirmation rather than completing
-            // outright; a pending/done task is reopened.
             if (task.status === "open") onRequestComplete();
             else onReopen();
           }}
         />
-        <div
-          className={`flex-1 text-[13px] ${
-            done ? "line-through text-muted-foreground" : pending ? "text-muted-foreground" : ""
-          }`}
-        >
-          {task.title}
+      </div>
+
+      <div
+        className={`mt-1.5 text-[14.5px] font-semibold leading-snug ${
+          done ? "line-through text-muted-foreground" : pending ? "text-muted-foreground" : "text-foreground"
+        }`}
+      >
+        {task.title}
+      </div>
+
+      <div className="mt-3.5 space-y-2 text-[12px] text-muted-foreground">
+        <div className="flex items-center gap-2.5">
+          <User className="h-3.5 w-3.5 shrink-0" />
+          <AssigneeStack assignees={task.assignees} />
         </div>
-        {pending ? (
-          <Badge className="border bg-amber-500/15 text-amber-500 border-amber-500/30 whitespace-nowrap">
-            <Clock className="h-3 w-3 mr-1" /> Pending Confirmation
+        <div className="flex items-center gap-2.5">
+          <Building2 className="h-3.5 w-3.5 shrink-0" />
+          <span className="truncate text-foreground/80">{task.company}</span>
+        </div>
+        <div className="flex items-center gap-2.5">
+          <Flag className="h-3.5 w-3.5 shrink-0" />
+          <span className="text-foreground/80">{task.due}</span>
+          <Badge className={`ml-1 h-4 rounded-sm border px-1.5 text-[10px] font-medium ${priorityClass(task.priority)}`}>
+            {task.priority}
           </Badge>
-        ) : (
-          <Badge className={`border ${priorityClass(task.priority)}`}>{task.priority}</Badge>
-        )}
-        <AssigneeStack assignees={task.assignees} />
+        </div>
+        <div className="flex items-center gap-2.5">
+          <ClipboardList className="h-3.5 w-3.5 shrink-0" />
+          <span>{task.subtasks} subtask{task.subtasks === 1 ? "" : "s"}</span>
+        </div>
       </div>
 
       {confirming && (
-        <div className="mx-2.5 mb-2 flex items-center justify-between gap-2 rounded-md border border-amber-500/30 bg-amber-500/[0.06] px-3 py-2">
-          <span className="text-[12px] text-foreground/85">Mark this task complete?</span>
+        <div className="mt-3 flex items-center justify-between gap-2 rounded-md border border-amber-500/30 bg-amber-500/[0.06] px-3 py-2">
+          <span className="text-[11.5px] text-foreground/85">Mark complete?</span>
           <div className="flex items-center gap-1.5">
-            <Button variant="ghost" className="h-7 px-2.5 text-[12px]" onClick={onCancel}>
+            <Button variant="ghost" className="h-6 px-2 text-[11px]" onClick={onCancel}>
               Cancel
             </Button>
-            <Button
-              className="h-7 px-3 text-[12px] text-white border-0"
-              style={{ background: "var(--gradient-primary)" }}
-              onClick={onConfirm}
-            >
-              <Check className="h-3.5 w-3.5 mr-1" /> Confirm
+            <Button className="h-6 px-2.5 text-[11px]" onClick={onConfirm}>
+              <Check className="h-3 w-3 mr-1" /> Confirm
             </Button>
           </div>
         </div>
@@ -186,7 +207,6 @@ function TaskRow({
 
 function TasksPage() {
   const [groups, setGroups] = useState<Group[]>(seedGroups);
-  // Task awaiting completion confirmation after its checkbox was clicked.
   const [confirmingId, setConfirmingId] = useState<number | null>(null);
 
   const addTask = (groupName: string, task: Task) => {
@@ -212,16 +232,22 @@ function TasksPage() {
         description="Human + agent work, tracked together."
         actions={<NewTaskDialog groups={groups.map((g) => g.name)} onAdd={addTask} />}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
         {groups.map((g) => (
-          <Card key={g.name} className="bento p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className="text-sm font-semibold">{g.name}</div>
-              <div className="text-[11px] text-muted-foreground">{g.items.length} items</div>
+          <div key={g.name} className="flex min-h-[200px] flex-col gap-3">
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                <span className={`h-1.5 w-1.5 rounded-full ${g.accent}`} />
+                <span className="text-[13px] font-semibold text-foreground">{g.name}</span>
+              </div>
+              <span className="rounded-md border border-border/60 bg-muted/40 px-1.5 py-0.5 text-[10.5px] font-medium text-muted-foreground">
+                {g.items.length}
+              </span>
             </div>
-            <div className="space-y-1">
+
+            <div className="flex flex-col gap-3">
               {g.items.map((t) => (
-                <TaskRow
+                <TaskCard
                   key={t.id}
                   task={t}
                   confirming={confirmingId === t.id}
@@ -237,30 +263,56 @@ function TasksPage() {
                   }}
                 />
               ))}
+
+              <AddTaskInline groupName={g.name} onAdd={addTask} />
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </PageShell>
   );
 }
 
+function AddTaskInline({
+  groupName,
+  onAdd,
+}: {
+  groupName: string;
+  onAdd: (groupName: string, task: Task) => void;
+}) {
+  return (
+    <NewTaskDialog
+      groups={[groupName]}
+      onAdd={onAdd}
+      defaultGroup={groupName}
+      trigger={
+        <button
+          type="button"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-border/60 bg-transparent px-3 py-2.5 text-[12.5px] font-medium text-muted-foreground transition-colors hover:border-border hover:bg-muted/30 hover:text-foreground"
+        >
+          <Plus className="h-3.5 w-3.5" /> Add new task
+        </button>
+      }
+    />
+  );
+}
+
 const PRIORITIES: Priority[] = ["High", "Med", "Low"];
 
-/**
- * NewTaskDialog — the "New Task" action. Create a task in a chosen list with a
- * priority, and assign individual people from the org's team and/or whole teams.
- */
 function NewTaskDialog({
   groups,
   onAdd,
+  defaultGroup,
+  trigger,
 }: {
   groups: string[];
   onAdd: (groupName: string, task: Task) => void;
+  defaultGroup?: string;
+  trigger?: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
   const [title, setTitle] = useState("");
-  const [group, setGroup] = useState(groups[0] ?? "Today");
+  const [group, setGroup] = useState(defaultGroup ?? groups[0] ?? "Today");
   const [priority, setPriority] = useState<Priority>("Med");
   const [mode, setMode] = useState<"people" | "teams">("people");
   const [people, setPeople] = useState<Set<string>>(new Set());
@@ -268,7 +320,7 @@ function NewTaskDialog({
 
   const reset = () => {
     setTitle("");
-    setGroup(groups[0] ?? "Today");
+    setGroup(defaultGroup ?? groups[0] ?? "Today");
     setPriority("Med");
     setMode("people");
     setPeople(new Set());
@@ -288,7 +340,6 @@ function NewTaskDialog({
       return next;
     });
 
-  // Union of directly-picked people and the members of every selected team.
   const assignees = useMemo<Assignee[]>(() => {
     const byName = new Map<string, Assignee>();
     PEOPLE.filter((p) => people.has(p.name)).forEach((p) =>
@@ -301,10 +352,18 @@ function NewTaskDialog({
   }, [people, teams]);
 
   const submit = () => {
-    if (!title.trim()) {
-      return;
-    }
-    onAdd(group, { id: Date.now(), title: title.trim(), assignees, priority, status: "open" });
+    if (!title.trim()) return;
+    onAdd(group, {
+      id: Date.now(),
+      code: `HS-${String(Math.floor(Math.random() * 900) + 100)}`,
+      title: title.trim(),
+      assignees,
+      priority,
+      status: "open",
+      company: "Harwick & Sterne, LLC.",
+      due: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      subtasks: 0,
+    });
     reset();
     setOpen(false);
   };
@@ -318,9 +377,11 @@ function NewTaskDialog({
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
-          <Plus className="h-4 w-4 mr-2" /> New Task
-        </Button>
+        {trigger ?? (
+          <Button>
+            <Plus className="h-4 w-4 mr-2" /> New Task
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="sm:max-w-md max-h-[85vh] overflow-y-auto">
         <DialogHeader>
@@ -329,7 +390,6 @@ function NewTaskDialog({
         </DialogHeader>
 
         <div className="space-y-4 py-1">
-          {/* Title */}
           <div className="space-y-1.5">
             <Label htmlFor="nt-title">
               Task <span className="text-muted-foreground">*</span>
@@ -343,7 +403,6 @@ function NewTaskDialog({
             />
           </div>
 
-          {/* List — full row so Today / This week / This month are all visible */}
           <div className="space-y-1.5">
             <Label>List</Label>
             <div className="flex items-center gap-1 rounded-lg border border-border bg-muted/50 p-0.5">
@@ -362,7 +421,6 @@ function NewTaskDialog({
             </div>
           </div>
 
-          {/* Priority */}
           <div className="space-y-1.5">
             <Label>Priority</Label>
             <div className="flex items-center gap-1 rounded-lg border border-border bg-muted/50 p-0.5">
@@ -381,7 +439,6 @@ function NewTaskDialog({
             </div>
           </div>
 
-          {/* Assignment */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>Assign to</Label>
@@ -415,9 +472,11 @@ function NewTaskDialog({
                         on ? "border-foreground/40 bg-foreground/[0.06]" : "border-border hover:bg-foreground/[0.03]"
                       }`}
                     >
-                      <span className="grid h-6 w-6 place-items-center rounded-full border border-border bg-muted text-[9.5px] font-semibold text-foreground/80">
-                        {p.initials}
-                      </span>
+                      <img
+                        src={avatarUrl(p.name)}
+                        alt={p.name}
+                        className="h-6 w-6 rounded-full object-cover"
+                      />
                       <span className="text-[12px] font-medium leading-none">{p.name}</span>
                       {on && <Check className="h-3.5 w-3.5 text-foreground/70" />}
                     </button>
@@ -454,7 +513,6 @@ function NewTaskDialog({
               </div>
             )}
 
-            {/* Live preview of everyone who'll be assigned */}
             <div className="flex min-h-6 items-center gap-2 pt-0.5">
               <span className="text-[11px] text-muted-foreground">Assignees</span>
               <AssigneeStack assignees={assignees} />
@@ -472,12 +530,7 @@ function NewTaskDialog({
           >
             Cancel
           </Button>
-          <Button
-            onClick={submit}
-            disabled={!title.trim()}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
-          >
+          <Button onClick={submit} disabled={!title.trim()}>
             <Plus className="h-4 w-4 mr-2" /> Add task
           </Button>
         </DialogFooter>
