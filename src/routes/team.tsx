@@ -363,7 +363,7 @@ function TeamSelector({
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`group relative flex min-w-[260px] max-w-[320px] flex-1 shrink-0 flex-col rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
+      className={`group relative flex min-w-[300px] max-w-[360px] flex-1 shrink-0 flex-col rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
         active
           ? "bg-card border-foreground/20 shadow-md"
           : "bg-card/40 border-border/60 hover:bg-card/75 hover:border-foreground/10"
