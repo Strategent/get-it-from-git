@@ -77,10 +77,10 @@ function DocumentsPage() {
         {docs.map((d) => {
           const Icon = icon(d.type);
           return (
-            <Card key={d.name} className="bento p-5 hover:border-primary/30 transition-colors">
+            <Card key={d.name} className="bento p-5 hover:bg-foreground/[0.02] transition-colors">
               <div className="flex items-start gap-3">
-                <div className="h-11 w-11 rounded-lg grid place-items-center bg-primary/10 text-primary shrink-0">
-                  <Icon className="h-5 w-5" />
+                <div className="h-11 w-11 rounded-md grid place-items-center border border-border/60 bg-foreground/[0.03] text-foreground/70 shrink-0">
+                  <Icon className="h-5 w-5" strokeWidth={1.5} />
                 </div>
                 <div className="min-w-0 flex-1">
                   <div className="text-[13px] font-semibold truncate">{d.name}</div>
@@ -194,7 +194,7 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
+        <Button>
           <Upload className="h-4 w-4 mr-2" /> Upload
         </Button>
       </DialogTrigger>
@@ -394,12 +394,7 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
           >
             Cancel
           </Button>
-          <Button
-            onClick={commit}
-            disabled={!staged.length}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
-          >
+          <Button onClick={commit} disabled={!staged.length}>
             <Upload className="h-4 w-4 mr-2" />
             Upload{staged.length ? ` ${staged.length}` : ""}
           </Button>

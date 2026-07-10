@@ -53,33 +53,27 @@ function CallsPage() {
         description="Inbound and outbound calls handled by your team and the Syra voice agent."
         actions={<PlaceCallDialog />}
       />
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-border/50 divide-x divide-border/50 -mx-4 sm:-mx-6 md:-mx-8">
         {[
           { label: "Handled today", value: "42" },
-          { label: "AI deflected", value: "68%", accent: true },
+          { label: "AI deflected", value: "68%" },
           { label: "Avg duration", value: "3m 12s" },
           { label: "Escalations", value: "5" },
         ].map((s) => (
-          <Card key={s.label} className="bento p-5">
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
-            <div className={`mt-2 text-2xl font-semibold tracking-tight ${s.accent ? "text-accent" : ""}`}>{s.value}</div>
-          </Card>
+          <div key={s.label} className="px-6 py-5">
+            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
+            <div className="mt-1.5 text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
+          </div>
         ))}
       </div>
       <Card className="bento p-2">
         {calls.map((c, i) => (
-          <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-white/[0.04]">
-            <div
-              className={`h-9 w-9 rounded-full grid place-items-center shadow-[inset_0_1px_0_rgba(255,255,255,0.18),0_1px_2px_rgba(0,0,0,0.35)] ${
-                c.dir === "in"
-                  ? "bg-[radial-gradient(120%_120%_at_50%_0%,color-mix(in_oklab,var(--primary)_30%,transparent),color-mix(in_oklab,var(--primary)_12%,transparent))]"
-                  : "bg-[radial-gradient(120%_120%_at_50%_0%,color-mix(in_oklab,var(--accent)_30%,transparent),color-mix(in_oklab,var(--accent)_12%,transparent))]"
-              }`}
-            >
+          <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-foreground/[0.03]">
+            <div className="h-9 w-9 rounded-full grid place-items-center border border-border/60 bg-foreground/[0.03] text-foreground/70">
               {c.dir === "in" ? (
-                <PhoneIncoming className="h-4 w-4 text-primary" strokeWidth={2.25} fill="currentColor" fillOpacity={0.18} />
+                <PhoneIncoming className="h-4 w-4" strokeWidth={1.75} />
               ) : (
-                <PhoneOutgoing className="h-4 w-4 text-accent" strokeWidth={2.25} fill="currentColor" fillOpacity={0.18} />
+                <PhoneOutgoing className="h-4 w-4" strokeWidth={1.75} />
               )}
             </div>
             <div className="flex-1 min-w-0">
@@ -87,12 +81,12 @@ function CallsPage() {
               <div className="text-xs text-muted-foreground">{c.outcome}</div>
             </div>
             {c.ai && (
-              <Badge className="bg-accent/15 text-accent border border-accent/30 hover:bg-accent/15">
-                <Bot className="h-3 w-3 mr-1" /> Syra
+              <Badge variant="outline" className="border-border/60 text-muted-foreground gap-1">
+                <Bot className="h-3 w-3" /> Syra
               </Badge>
             )}
-            <div className="text-xs text-muted-foreground w-16 text-right">{c.duration}</div>
-            <div className="text-xs text-muted-foreground w-14 text-right">{c.time}</div>
+            <div className="text-xs text-muted-foreground w-16 text-right tabular-nums">{c.duration}</div>
+            <div className="text-xs text-muted-foreground w-14 text-right tabular-nums">{c.time}</div>
             <Button variant="ghost" size="icon"><Play className="h-4 w-4" /></Button>
           </div>
         ))}
@@ -313,7 +307,7 @@ function PlaceCallDialog() {
       }}
     >
       <DialogTrigger asChild>
-        <Button className="text-white border-0" style={{ background: "var(--gradient-primary)" }}>
+        <Button>
           <Phone className="h-4 w-4 mr-2" /> Place Call
         </Button>
       </DialogTrigger>
@@ -376,12 +370,7 @@ function PlaceCallDialog() {
           <Button variant="outline" onClick={() => { setOpen(false); reset(); }}>
             Cancel
           </Button>
-          <Button
-            onClick={call}
-            disabled={!hasNumber}
-            className="text-white border-0"
-            style={{ background: "var(--gradient-primary)" }}
-          >
+          <Button onClick={call} disabled={!hasNumber}>
             <Phone className="h-4 w-4 mr-2" /> Call
           </Button>
         </DialogFooter>
