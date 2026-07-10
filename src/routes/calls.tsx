@@ -21,7 +21,6 @@ import { team } from "@/components/dashboard/data";
 import { senderEmailAddress } from "@/lib/avatar";
 import {
   Phone,
-  PhoneCall,
   PhoneIncoming,
   PhoneOutgoing,
   Play,
