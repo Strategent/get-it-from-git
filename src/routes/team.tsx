@@ -363,35 +363,38 @@ function TeamSelector({
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`group relative flex min-w-[280px] max-w-[340px] flex-1 shrink-0 items-center justify-between gap-4 rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
+      className={`group relative flex min-w-[260px] max-w-[320px] flex-1 shrink-0 flex-col rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
         active
           ? "bg-card border-foreground/20 shadow-md"
           : "bg-card/40 border-border/60 hover:bg-card/75 hover:border-foreground/10"
       }`}
     >
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold truncate">{label}</span>
-          <Badge
-            variant="outline"
-            className="shrink-0 border-border/60 text-muted-foreground tabular-nums text-[10px]"
-          >
-            {members.length}
-          </Badge>
-        </div>
-        <div className="mt-0.5 text-[12px] text-muted-foreground truncate">{description}</div>
-        {metrics && metrics.length > 0 && (
-          <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
-            {metrics.map((m) => (
-              <span key={m.label} className="flex items-center gap-1">
-                <span className="font-semibold text-foreground tabular-nums">{m.value}</span>
-                <span>{m.label}</span>
-              </span>
-            ))}
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold truncate">{label}</span>
+            <Badge
+              variant="outline"
+              className="shrink-0 border-border/60 text-muted-foreground tabular-nums text-[10px]"
+            >
+              {members.length}
+            </Badge>
           </div>
-        )}
+          <div className="mt-0.5 text-[12px] text-muted-foreground truncate">{description}</div>
+        </div>
+        <AvatarStack members={members} accent={active ? "#666" : "#999"} />
       </div>
-      <AvatarStack members={members} accent={active ? "#666" : "#999"} />
+
+      {metrics && metrics.length > 0 && (
+        <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
+          {metrics.map((m) => (
+            <span key={m.label} className="flex items-center gap-1">
+              <span className="font-semibold text-foreground tabular-nums">{m.value}</span>
+              <span>{m.label}</span>
+            </span>
+          ))}
+        </div>
+      )}
     </button>
   );
 }
