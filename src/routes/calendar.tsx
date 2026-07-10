@@ -71,15 +71,19 @@ function CalendarPage() {
   return (
     <>
       <div className="w-full bg-background flex flex-col" style={{ minHeight: "calc(100dvh - 53px)" }}>
-        {/* Top bar — Calendly-style */}
-        <div className="px-8 pt-7 pb-5 border-b border-border/60 flex items-end justify-between flex-wrap gap-4">
-          <div>
-            <div className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground font-medium">
-              Harwick & Sterne · Scheduling
+        {/* Top bar — matches Calls / CRM PageHeader */}
+        <div className="px-4 sm:px-6 md:px-8 pt-5 md:pt-6 pb-6 border-b border-border/50 flex items-end justify-between flex-wrap gap-6">
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-muted-foreground/80">
+              <span aria-hidden className="inline-block h-1 w-1 rounded-full bg-foreground/40" />
+              Scheduling
             </div>
-            <h1 className="mt-2 text-[28px] font-semibold tracking-tight">
-              Book a meeting
+            <h1 className="font-serif-display mt-3 text-4xl md:text-[44px] font-normal leading-[1.05] tracking-[-0.02em] text-foreground">
+              Calendar
             </h1>
+            <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground max-w-xl">
+              Book meetings across the firm — clients see availability in their timezone.
+            </p>
           </div>
           <div className="flex items-center gap-2 text-[12px] text-muted-foreground">
             <Globe className="h-3.5 w-3.5" />
