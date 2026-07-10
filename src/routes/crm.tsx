@@ -200,14 +200,10 @@ function CrmPage() {
                 return (
                   <tr
                     key={c.id}
-                    className="group bg-card/40 hover:bg-card/70 border border-border/40 rounded-sm transition-colors"
+                    tabIndex={0}
+                    className="group bg-card/40 border border-border/40 rounded-sm shadow-[0_1px_2px_0_hsl(var(--foreground)/0.03)] transition-all hover:bg-card/70 hover:border-foreground/15 hover:shadow-[0_4px_10px_-3px_hsl(var(--foreground)/0.09)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-foreground/15 focus-visible:border-foreground/25"
                   >
-                    <td className="py-3 pl-4 pr-2 rounded-l-sm">
-                      <Star
-                        className={`h-3.5 w-3.5 ${c.starred ? "text-amber-400 fill-amber-400" : "text-muted-foreground/40"}`}
-                      />
-                    </td>
-                    <td className="py-3 px-2">
+                    <td className="py-3 px-2 rounded-l-sm">
                       <div className="flex items-center gap-3 min-w-0">
                         <div className="h-8 w-8 shrink-0 rounded-full grid place-items-center text-[11px] font-semibold text-foreground/80 bg-muted border border-border">
                           {c.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
@@ -237,13 +233,13 @@ function CrmPage() {
                     <td className="py-3 px-2 text-[12px] text-foreground/80 truncate max-w-[220px]">{c.nextAction}</td>
                     <td className="py-3 px-2 pr-4 rounded-r-sm">
                       <div className="flex items-center justify-end gap-1">
-                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Call">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Call">
                           <Phone className="h-3.5 w-3.5" />
                         </button>
-                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="Email">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Email">
                           <Mail className="h-3.5 w-3.5" />
                         </button>
-                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" aria-label="More">
+                        <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="More">
                           <MoreHorizontal className="h-3.5 w-3.5" />
                         </button>
                       </div>
@@ -253,7 +249,7 @@ function CrmPage() {
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[13px] text-muted-foreground">
+                  <td colSpan={7} className="py-12 text-center text-[13px] text-muted-foreground">
                     No clients match your filters.
                   </td>
                 </tr>
