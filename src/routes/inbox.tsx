@@ -282,6 +282,13 @@ function initials(name: string) {
     .toUpperCase();
 }
 
+const SIGNATURE_BLOCK = `Best,
+
+John Harwick
+Managing Partner  ·  Harwick & Sterne
+john.harwick@harwicksterne.com  ·  +1 (212) 555-0136
+harwicksterne.com`;
+
 function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
   const firstName = thread.from.split(" ")[0];
   const subjectPrefix = mode === "forward" ? "Fwd:" : "Re:";
@@ -295,7 +302,7 @@ function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
     body: textToHtml(
       mode === "forward"
         ? `\n\n---------- Forwarded message ---------\nFrom: ${thread.from} <${thread.email}>\nSubject: ${thread.subject}\n\n${thread.body}`
-        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\nBest,\nSyra`,
+        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\n${SIGNATURE_BLOCK}`,
     ),
     attachments: [],
     links: [],
