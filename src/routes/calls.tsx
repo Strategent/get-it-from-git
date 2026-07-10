@@ -21,7 +21,6 @@ import { team } from "@/components/dashboard/data";
 import { senderEmailAddress } from "@/lib/avatar";
 import {
   Phone,
-  PhoneCall,
   PhoneIncoming,
   PhoneOutgoing,
   Play,
@@ -198,7 +197,7 @@ function ContactRow({ contact: c }: { contact: Contact }) {
       </div>
       <div className="flex items-center gap-1 text-muted-foreground">
         {c.phone && (
-          <ContactAction href={`tel:${c.phone.trim()}`} label={`Call ${c.name}`} icon={PhoneCall} tone="call" />
+          <ContactAction href={`tel:${c.phone.trim()}`} label={`Call ${c.name}`} icon={Phone} tone="call" />
         )}
         {c.phone && (
           <ContactAction
@@ -230,14 +229,14 @@ function ContactAction({
   tone?: "call";
 }) {
   if (tone === "call") {
-    // iOS Phone-app call affordance: filled handset in a green circular button.
+    // Apple Phone-app style: white handset icon on a subtle neutral circular surface.
     return (
       <a
         href={href}
         aria-label={label}
         title={label}
         {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-        className="grid h-7 w-7 place-items-center rounded-full text-white bg-[linear-gradient(180deg,#3ad165,#22b34d)] shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_1px_2px_rgba(0,0,0,0.35)] transition-transform hover:scale-105 active:scale-95"
+        className="grid h-7 w-7 place-items-center rounded-full bg-foreground/[0.06] text-foreground/90 transition-colors hover:bg-foreground/[0.12] hover:text-foreground active:scale-95"
       >
         <Icon className="h-3.5 w-3.5" fill="currentColor" strokeWidth={1.75} />
       </a>
