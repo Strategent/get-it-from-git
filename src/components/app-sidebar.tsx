@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/sidebar";
 import syraSidebarIcon from "@/assets/sidebar-icon.png.asset.json";
 const johnHarwickAvatar = { url: "/john-harwick.png" };
-const syraSIcon = { url: "/syra-s.png" };
+const syraSIcon = { url: syraSidebarIcon.url };
 
 const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
   <span aria-hidden className={`relative inline-grid place-items-center overflow-hidden ${className ?? ""}`}>
