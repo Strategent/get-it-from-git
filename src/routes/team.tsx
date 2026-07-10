@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { toast } from "sonner";
-import { UserPlus, Mail, MessageSquare, MessageCircle, Copy, Send } from "lucide-react";
+import { UserPlus, Mail, MessageSquare, MessageCircle, Copy, Send, Users } from "lucide-react";
 import { avatarUrl } from "@/lib/avatar";
 
 export const Route = createFileRoute("/team")({
@@ -144,12 +144,15 @@ function TeamPage() {
         actions={<InviteDialog onInvite={addInvite} />}
       />
 
-      {/* Teams — filter the people grid below by clicking a team. */}
-      <section aria-label="Teams">
-        <div className="flex items-center justify-between gap-3 mb-3">
-          <h2 className="text-[13px] font-semibold tracking-tight text-foreground/90">
-            Teams <span className="text-muted-foreground font-normal">· {visibleTeams.length}</span>
-          </h2>
+      {/* Teams — horizontal command surface for filtering the roster. */}
+      <section aria-label="Teams" className="pb-1">
+        <div className="flex items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2">
+            <Users className="h-3.5 w-3.5 text-muted-foreground" />
+            <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+              Teams <span className="text-muted-foreground/70 font-normal normal-case">· {visibleTeams.length}</span>
+            </h2>
+          </div>
           {activeTeam !== null && (
             <Button
               variant="ghost"
@@ -161,12 +164,21 @@ function TeamPage() {
           )}
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-          {/* "All" tile */}
-          <AllTeamsCard
-            active={activeTeam === null}
+        <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
+          <TeamSelector
+            id={null}
+            label="All teams"
+            description="Everyone across the firm"
             members={team}
+            active={activeTeam === null}
             onClick={() => setActiveTeam(null)}
+            metrics={[
+              {
+                label: "Open tasks",
+                value: team.filter((m) => !m.pending).reduce((s, m) => s + m.tasks, 0),
+              },
+              { label: "Teams", value: TEAMS.length },
+            ]}
           />
           {visibleTeams.map((t) => {
             const members = counts.get(t.id) ?? [];
@@ -177,69 +189,38 @@ function TeamPage() {
               ? Math.round(realMembers.reduce((s, m) => s + m.score, 0) / realMembers.length)
               : 0;
             return (
-              <button
+              <TeamSelector
                 key={t.id}
-                type="button"
-                aria-pressed={active}
+                id={t.id}
+                label={t.name}
+                description={t.tagline}
+                members={members}
+                active={active}
                 onClick={() => setActiveTeam(active ? null : t.id)}
-                className={`bento group relative p-5 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
-                  active ? "ring-2 ring-offset-2 ring-offset-background" : "hover:bg-foreground/[0.02]"
-                }`}
-                style={active ? ({ ["--tw-ring-color" as string]: t.accent } as CSSProperties) : undefined}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="inline-block h-2 w-2 rounded-full shrink-0"
-                        style={{ background: t.accent }}
-                      />
-                      <span className="text-sm font-semibold truncate">{t.name}</span>
-                    </div>
-                    <div className="mt-0.5 text-[12px] text-muted-foreground truncate">{t.tagline}</div>
-                  </div>
-                  <Badge
-                    variant="outline"
-                    className="shrink-0 border-border/60 text-muted-foreground tabular-nums"
-                  >
-                    {members.length}
-                  </Badge>
-                </div>
-
-                <AvatarStack members={members} accent={t.accent} />
-
-                <div className="mt-4 flex items-center gap-4 text-[12px] text-muted-foreground">
-                  {t.id === "invited" ? (
-                    <span>Awaiting sign-up</span>
-                  ) : (
-                    <>
-                      <span>
-                        <span className="font-semibold text-foreground tabular-nums">{openTasks}</span> open tasks
-                      </span>
-                      <span className="h-3 w-px bg-border" aria-hidden />
-                      <span>
-                        <span className="font-semibold text-foreground tabular-nums">{avgScore}%</span> avg
-                      </span>
-                    </>
-                  )}
-                </div>
-              </button>
+                metrics={
+                  t.id === "invited"
+                    ? undefined
+                    : [
+                        { label: "Open tasks", value: openTasks },
+                        { label: "Avg", value: `${avgScore}%` },
+                      ]
+                }
+              />
             );
           })}
         </div>
       </section>
 
+      <div className="h-px w-full bg-border/60" aria-hidden />
+
       {/* Members — reflects the current team filter. */}
-      <section aria-label="Members">
-        <div className="flex items-center gap-2 mb-3">
-          <h2 className="text-[13px] font-semibold tracking-tight text-foreground/90">
-            Members <span className="text-muted-foreground font-normal">· {filtered.length}</span>
+      <section aria-label="Members" className="pt-2">
+        <div className="flex items-center gap-2 mb-4">
+          <h2 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+            Members <span className="text-muted-foreground/70 font-normal normal-case">· {filtered.length}</span>
           </h2>
           {activeTeam !== null && (
-            <Badge
-              className="border-0 text-white text-[11px]"
-              style={{ background: teamById(activeTeam).accent }}
-            >
+            <Badge variant="outline" className="border-foreground/20 text-foreground text-[11px]">
               {activeLabel}
             </Badge>
           )}
@@ -273,17 +254,13 @@ function TeamPage() {
                   </Badge>
                 </div>
 
-                {/* Team chip — ties the member back to their team accent. */}
+                {/* Team chip — ties the member back to their team. */}
                 <button
                   type="button"
                   onClick={() => setActiveTeam(m.team)}
-                  className="mt-3 inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-medium transition-colors hover:bg-foreground/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30"
-                  style={{
-                    borderColor: `color-mix(in oklab, ${t.accent} 40%, transparent)`,
-                    color: t.accent,
-                  }}
+                  className="mt-3 inline-flex items-center gap-1.5 rounded-sm border border-border/70 bg-transparent px-2.5 py-1 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.04] focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30"
                 >
-                  <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: t.accent }} />
+                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-foreground/60" />
                   {t.name}
                 </button>
 
