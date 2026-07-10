@@ -17,7 +17,7 @@ import {
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { TEAMS as ORG_TEAMS, seedTeam, type TeamId } from "@/routes/team";
 import { avatarUrl } from "@/lib/avatar";
-import { Plus, Check, Users, User, Building2, Flag, ClipboardList } from "lucide-react";
+import { Plus, Check, Users, ChevronDown, ChevronRight, Circle, CircleDot, CheckCircle2, GitBranch } from "lucide-react";
 
 export const Route = createFileRoute("/tasks")({
   component: TasksPage,
