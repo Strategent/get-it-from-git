@@ -642,7 +642,7 @@ function InboxPage() {
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-2">
+          <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1.5">
             {visibleThreads.length === 0 ? (
               <div className="px-4 py-10 text-center text-[12px] text-muted-foreground">
                 No messages match this view.
@@ -654,12 +654,13 @@ function InboxPage() {
                 return (
                   <div
                     key={thread.id}
-                    className={`group relative rounded-2xl border transition-all ${
+                    className={`group relative rounded-md border transition-all ${
                       active
-                        ? "border-border bg-background shadow-[0_4px_14px_-8px_rgba(0,0,0,0.35)]"
-                        : "border-border/50 bg-background/60 hover:bg-background hover:border-border/70"
+                        ? "border-border bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_8px_24px_-12px_rgba(0,0,0,0.55),0_2px_6px_-2px_rgba(0,0,0,0.35)] ring-1 ring-foreground/5"
+                        : "border-border/60 bg-card/80 shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_2px_6px_-3px_rgba(0,0,0,0.3)] hover:bg-card hover:border-border hover:shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_6px_16px_-8px_rgba(0,0,0,0.45)]"
                     }`}
                   >
+
                     <button
                       onClick={() => selectThread(thread)}
                       className="w-full text-left px-3.5 pt-3 pb-2"
