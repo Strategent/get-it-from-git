@@ -925,6 +925,45 @@ function InboxPage() {
   );
 }
 
+function FolderGroup({
+  title,
+  defaultOpen = false,
+  children,
+}: {
+  title: string;
+  defaultOpen?: boolean;
+  children: React.ReactNode;
+}) {
+  const [open, setOpen] = useState(defaultOpen);
+  return (
+    <div className="pt-3">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center gap-1 px-3 h-7 text-[11px] uppercase tracking-wider text-muted-foreground hover:text-foreground"
+      >
+        <span className="flex-1 text-left">{title}</span>
+        <ChevronDown
+          className={`h-3 w-3 transition-transform ${open ? "" : "-rotate-90"}`}
+        />
+      </button>
+      {open && <div className="mt-0.5 space-y-0.5">{children}</div>}
+    </div>
+  );
+}
+
+function FolderLabelRow({ label }: { label: string }) {
+  return (
+    <button
+      onClick={() => toast.message(`${label} filter coming soon`)}
+      className="w-full flex items-center gap-2.5 px-3 h-9 rounded-xl text-[13px] text-foreground/70 hover:bg-foreground/[0.04] hover:text-foreground transition-colors"
+    >
+      <span className="h-1.5 w-1.5 rounded-full bg-foreground/40" />
+      <span className="flex-1 text-left">{label}</span>
+    </button>
+  );
+}
+
+
 function ToolbarBtn({
   icon: Icon,
   label,
