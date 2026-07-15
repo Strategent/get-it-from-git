@@ -521,26 +521,30 @@ function InboxPage() {
         style={{ height: "calc(100dvh - 53px)" }}
       >
         <section className="w-[400px] shrink-0 flex flex-col border-r border-border/60 min-w-0 bg-muted/30">
-          {/* Compose + folder pill */}
+          {/* Compose + folder */}
           <div className="px-4 pt-4 pb-3 flex items-center gap-2">
             <button
               onClick={() => openComposer("reply")}
-              className="flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-primary text-primary-foreground text-[13.5px] font-semibold shadow-[0_6px_18px_-6px_rgba(0,0,0,0.35)] hover:brightness-110 transition"
+              aria-label="Compose"
+              title="Compose"
+              className="inline-flex items-center justify-center gap-2 h-9 px-3 rounded-sm border border-border bg-background text-foreground text-[12.5px] font-medium hover:bg-foreground/[0.05] transition-colors"
             >
-              <SyraMark className="h-4 w-4" />
+              <FileEdit className="h-3.5 w-3.5" strokeWidth={1.85} />
               Compose
             </button>
-            <div className="relative" ref={popoverRef}>
+            <div className="relative ml-auto" ref={popoverRef}>
               <button
                 onClick={() => setFoldersOpen((v) => !v)}
                 aria-label="Mailboxes"
                 aria-expanded={foldersOpen}
-                className="inline-flex items-center gap-1 h-11 w-11 justify-center rounded-full border border-border/70 bg-background text-foreground/80 hover:bg-foreground/[0.05] transition-colors"
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-sm border border-border bg-background text-foreground/80 text-[12px] hover:bg-foreground/[0.05] transition-colors"
               >
-                <ActiveIcon className="h-4 w-4" strokeWidth={1.75} />
+                <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <span>{activeFolder}</span>
+                <ChevronDown className="h-3 w-3 opacity-60" />
               </button>
               {foldersOpen && (
-                <div className="absolute right-0 top-12 z-30 w-56 p-1.5 rounded-2xl border border-border/70 bg-popover/90 backdrop-blur-xl shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 top-11 z-30 w-56 p-1.5 rounded-sm border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-150">
                   {folderMeta.map((f) => {
                     const Icon = f.icon;
                     const active = f.name === activeFolder;
@@ -551,7 +555,7 @@ function InboxPage() {
                           setActiveFolder(f.name);
                           setFoldersOpen(false);
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] transition-colors ${
+                        className={`w-full flex items-center gap-2.5 px-3 h-9 rounded-sm text-[13px] transition-colors ${
                           active
                             ? "bg-foreground/[0.08] text-foreground font-medium"
                             : "text-foreground/80 hover:bg-foreground/[0.05]"
@@ -569,6 +573,7 @@ function InboxPage() {
               )}
             </div>
           </div>
+
 
           {/* Search */}
           <div className="px-4 pb-3">
