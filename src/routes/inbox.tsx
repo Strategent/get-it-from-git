@@ -839,53 +839,41 @@ function InboxPage() {
                 </div>
               </div>
 
-
-          <div className="flex-1 overflow-y-auto px-8 py-6">
-            <div className="max-w-2xl text-[14px] leading-relaxed text-foreground/90 whitespace-pre-line">
-              {selected.body}
+              {selectedDraft.status === "closed" ? (
+                <button
+                  onClick={() => openComposer("reply")}
+                  className="mt-6 inline-flex items-center gap-2 rounded-sm border border-border/70 px-3 py-2 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
+                >
+                  <Reply className="h-3.5 w-3.5" />
+                  Reply
+                </button>
+              ) : (
+                <div className="mt-6">
+                  <ComposeWindow
+                    draft={selectedDraft}
+                    from={selected.from}
+                    sending={sendingId === selected.id}
+                    regenerating={regeneratingId === selected.id}
+                    justSent={lastSentId === selected.id && selected.folder === "Sent"}
+                    onUpdate={updateDraft}
+                    onSend={sendDraft}
+                    onRegenerate={regenerateDraft}
+                    onDiscard={() => {
+                      setDrafts((current) => ({
+                        ...current,
+                        [selected.id]: { ...selectedDraft, status: "closed" },
+                      }));
+                      toast.success("Draft discarded");
+                    }}
+                    onMinimize={() => updateDraft({ status: "minimized" })}
+                    onRestore={() => updateDraft({ status: "open" })}
+                  />
+                </div>
+              )}
             </div>
-            {selected.hasAttachment && (
-              <button className="mt-5 inline-flex items-center gap-2 rounded-lg border border-border/70 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85 hover:bg-muted">
-                <Paperclip className="h-3.5 w-3.5" />
-                {selected.tag === "Legal"
-                  ? "Completed_MSA.pdf"
-                  : selected.tag === "Billing"
-                    ? "Stripe_reconciliation.csv"
-                    : "Security_questionnaire.pdf"}
-              </button>
-            )}
-
-            {selectedDraft.status === "closed" ? (
-              <button
-                onClick={() => openComposer("reply")}
-                className="mt-8 inline-flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
-              >
-                <Reply className="h-3.5 w-3.5" />
-                Reply
-              </button>
-            ) : (
-              <ComposeWindow
-                draft={selectedDraft}
-                from={selected.from}
-                sending={sendingId === selected.id}
-                regenerating={regeneratingId === selected.id}
-                justSent={lastSentId === selected.id && selected.folder === "Sent"}
-                onUpdate={updateDraft}
-                onSend={sendDraft}
-                onRegenerate={regenerateDraft}
-                onDiscard={() => {
-                  setDrafts((current) => ({
-                    ...current,
-                    [selected.id]: { ...selectedDraft, status: "closed" },
-                  }));
-                  toast.success("Draft discarded");
-                }}
-                onMinimize={() => updateDraft({ status: "minimized" })}
-                onRestore={() => updateDraft({ status: "open" })}
-              />
-            )}
           </div>
         </main>
+
       </div>
       <SyraChatWidget
         inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${threads.filter((t) => t.needsReply).length} need reply`}
