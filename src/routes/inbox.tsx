@@ -523,55 +523,63 @@ function InboxPage() {
         className="flex w-full bg-muted/20 overflow-hidden"
         style={{ height: "calc(100dvh - 53px)" }}
       >
-        <section className="w-[400px] shrink-0 flex flex-col border-r border-border/60 min-w-0 bg-background">
-          {/* Compose + folder pill */}
-          <div className="px-4 pt-4 pb-3 flex items-center gap-2">
+        {/* Folder column */}
+        <aside className="w-[260px] shrink-0 flex flex-col border-r border-border/60 bg-background">
+          <div className="px-4 pt-4 pb-3">
             <button
               onClick={() => openComposer("reply")}
-              className="flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-primary text-primary-foreground text-[13.5px] font-semibold shadow-[0_6px_18px_-6px_rgba(0,0,0,0.35)] hover:brightness-110 transition"
+              className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-full bg-primary text-primary-foreground text-[13.5px] font-semibold shadow-[0_6px_18px_-6px_rgba(0,0,0,0.35)] hover:brightness-110 transition"
             >
               <SyraMark className="h-4 w-4" />
               Compose
             </button>
-            <div className="relative" ref={popoverRef}>
-              <button
-                onClick={() => setFoldersOpen((v) => !v)}
-                aria-label="Mailboxes"
-                aria-expanded={foldersOpen}
-                className="inline-flex items-center gap-1 h-11 w-11 justify-center rounded-full border border-border/70 bg-background text-foreground/80 hover:bg-foreground/[0.05] transition-colors"
-              >
-                <ActiveIcon className="h-4 w-4" strokeWidth={1.75} />
-              </button>
-              {foldersOpen && (
-                <div className="absolute right-0 top-12 z-30 w-56 p-1.5 rounded-2xl border border-border/70 bg-popover/90 backdrop-blur-xl shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
-                  {folderMeta.map((f) => {
-                    const Icon = f.icon;
-                    const active = f.name === activeFolder;
-                    return (
-                      <button
-                        key={f.name}
-                        onClick={() => {
-                          setActiveFolder(f.name);
-                          setFoldersOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] transition-colors ${
-                          active
-                            ? "bg-foreground/[0.08] text-foreground font-medium"
-                            : "text-foreground/80 hover:bg-foreground/[0.05]"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" strokeWidth={1.75} />
-                        <span className="flex-1 text-left">{f.name}</span>
-                        <span className="text-[11px] text-muted-foreground tabular-nums">
-                          {folderCounts[f.name]}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
           </div>
+          <nav className="flex-1 overflow-y-auto px-2.5 pb-4 space-y-0.5">
+            {folderMeta.map((f) => {
+              const Icon = f.icon;
+              const active = f.name === activeFolder;
+              return (
+                <button
+                  key={f.name}
+                  onClick={() => setActiveFolder(f.name)}
+                  className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] transition-colors ${
+                    active
+                      ? "bg-foreground/[0.07] text-foreground font-medium border border-border/60"
+                      : "text-foreground/75 hover:bg-foreground/[0.04] border border-transparent"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" strokeWidth={1.75} />
+                  <span className="flex-1 text-left">{f.name}</span>
+                  {folderCounts[f.name] > 0 && (
+                    <span className="text-[11px] text-muted-foreground tabular-nums">
+                      {folderCounts[f.name]}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+
+            <FolderGroup title="Categories" defaultOpen={true}>
+              {[
+                { name: "Social", icon: "👥" },
+                { name: "Updates", icon: "🔔" },
+                { name: "Forums", icon: "💬" },
+                { name: "Promotions", icon: "🏷️" },
+              ].map((c) => (
+                <FolderLabelRow key={c.name} label={c.name} />
+              ))}
+            </FolderGroup>
+
+            <FolderGroup title="Less" defaultOpen={false}>
+              {["Chats", "Scheduled", "All mail", "Spam", "Manage labels"].map((c) => (
+                <FolderLabelRow key={c} label={c} />
+              ))}
+            </FolderGroup>
+          </nav>
+        </aside>
+
+        <section className="w-[420px] shrink-0 flex flex-col border-r border-border/60 min-w-0 bg-background">
+
 
           {/* Search */}
           <div className="px-4 pb-3">
