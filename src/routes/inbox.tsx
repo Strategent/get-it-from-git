@@ -265,16 +265,21 @@ function textToHtml(value: string) {
 }
 
 function htmlToText(value: string) {
-  if (typeof document === "undefined") {
-    return value
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-  const el = document.createElement("div");
-  el.innerHTML = value;
-  return (el.innerText || el.textContent || "").trim();
+  // Deterministic across SSR/client to avoid hydration mismatch.
+  return value
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/(div|p)>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/[ \t]+\n/g, "\n")
+    .replace(/\n{2,}/g, "\n")
+    .replace(/\s+/g, " ")
+    .trim();
 }
+
 
 function initials(name: string) {
   return name
