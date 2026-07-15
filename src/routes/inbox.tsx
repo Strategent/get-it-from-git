@@ -716,8 +716,8 @@ function InboxPage() {
         </section>
 
 
-        <main className="flex-1 flex flex-col min-w-0 bg-background">
-          <div className="h-12 px-4 flex items-center justify-between border-b border-border/60">
+        <main className="flex-1 flex flex-col min-w-0 bg-muted/20">
+          <div className="h-12 px-4 flex items-center justify-between border-b border-border/60 bg-background">
             <div className="flex items-center gap-1">
               <ToolbarBtn
                 icon={Archive}
@@ -758,7 +758,7 @@ function InboxPage() {
                   <button
                     aria-label="More"
                     title="More"
-                    className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    className="grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
                   >
                     <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
                   </button>
@@ -787,38 +787,58 @@ function InboxPage() {
             </div>
           </div>
 
-          <div className="px-8 pt-7 pb-5 border-b border-border/60">
-            <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground grid place-items-center text-[12px] font-semibold shrink-0">
-                {initials(selected.from)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-[14px] font-semibold tracking-tight truncate">
-                      {selected.from}{" "}
-                      <span className="text-muted-foreground font-normal">
-                        &lt;{selected.email}&gt; - {selected.company}
-                      </span>
+          <div className="flex-1 overflow-y-auto no-scrollbar px-8 py-6">
+            <div className="max-w-2xl mx-auto">
+              <div className="rounded-sm border border-border/70 bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_8px_24px_-16px_rgba(0,0,0,0.35),0_2px_6px_-3px_rgba(0,0,0,0.15)]">
+                <div className="px-6 pt-5 pb-4 border-b border-border/60">
+                  <div className="flex items-start gap-4">
+                    <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground grid place-items-center text-[12px] font-semibold shrink-0">
+                      {initials(selected.from)}
                     </div>
-                    <div className="text-[12px] text-muted-foreground mt-0.5">
-                      To: me - {selected.sentAt ?? `${selected.time} ago`}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="text-[14px] font-semibold tracking-tight truncate">
+                            {selected.from}{" "}
+                            <span className="text-muted-foreground font-normal">
+                              &lt;{selected.email}&gt; - {selected.company}
+                            </span>
+                          </div>
+                          <div className="text-[12px] text-muted-foreground mt-0.5">
+                            To: me - {selected.sentAt ?? `${selected.time} ago`}
+                          </div>
+                        </div>
+                        <button
+                          aria-label={selected.starred ? "Unstar" : "Star"}
+                          onClick={() => updateThread(selected.id, { starred: !selected.starred })}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          <Star className="h-4 w-4" fill={selected.starred ? "currentColor" : "none"} />
+                        </button>
+                      </div>
+                      <h2 className="mt-3 text-[22px] font-semibold tracking-tight leading-tight">
+                        {selected.subject}
+                      </h2>
                     </div>
                   </div>
-                  <button
-                    aria-label={selected.starred ? "Unstar" : "Star"}
-                    onClick={() => updateThread(selected.id, { starred: !selected.starred })}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Star className="h-4 w-4" fill={selected.starred ? "currentColor" : "none"} />
-                  </button>
                 </div>
-                <h2 className="mt-3 text-[22px] font-semibold tracking-tight leading-tight">
-                  {selected.subject}
-                </h2>
+                <div className="px-6 py-5">
+                  <div className="text-[14px] leading-relaxed text-foreground/90 whitespace-pre-line">
+                    {selected.body}
+                  </div>
+                  {selected.hasAttachment && (
+                    <button className="mt-5 inline-flex items-center gap-2 rounded-sm border border-border/70 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85 hover:bg-muted">
+                      <Paperclip className="h-3.5 w-3.5" />
+                      {selected.tag === "Legal"
+                        ? "Completed_MSA.pdf"
+                        : selected.tag === "Billing"
+                          ? "Stripe_reconciliation.csv"
+                          : "Security_questionnaire.pdf"}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
+
 
           <div className="flex-1 overflow-y-auto px-8 py-6">
             <div className="max-w-2xl text-[14px] leading-relaxed text-foreground/90 whitespace-pre-line">
