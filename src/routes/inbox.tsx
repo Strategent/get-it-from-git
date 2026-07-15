@@ -650,7 +650,7 @@ function InboxPage() {
 
           </div>
 
-          <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1.5">
+          <div className="flex-1 overflow-y-auto no-scrollbar border-t border-border/60">
             {visibleThreads.length === 0 ? (
               <div className="px-4 py-10 text-center text-[12px] text-muted-foreground">
                 No messages match this view.
@@ -660,108 +660,59 @@ function InboxPage() {
                 const active = selected.id === thread.id;
                 const draft = drafts[thread.id];
                 return (
-                  <div
+                  <button
                     key={thread.id}
-                    className={`group relative rounded-md border transition-all ${
+                    onClick={() => selectThread(thread)}
+                    className={`w-full text-left px-4 py-3 border-b border-border/50 transition-colors relative ${
                       active
-                        ? "border-border bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_8px_24px_-12px_rgba(0,0,0,0.55),0_2px_6px_-2px_rgba(0,0,0,0.35)] ring-1 ring-foreground/5"
-                        : "border-border/60 bg-card/80 shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_2px_6px_-3px_rgba(0,0,0,0.3)] hover:bg-card hover:border-border hover:shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_6px_16px_-8px_rgba(0,0,0,0.45)]"
+                        ? "bg-foreground/[0.06]"
+                        : "hover:bg-foreground/[0.03]"
                     }`}
                   >
-
-                    <button
-                      onClick={() => selectThread(thread)}
-                      className="w-full text-left px-3.5 pt-3 pb-2"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="relative shrink-0">
-                          <div className="h-9 w-9 rounded-full bg-muted text-muted-foreground grid place-items-center text-[11px] font-semibold">
-                            {initials(thread.from)}
-                          </div>
-                          {thread.unread && (
-                            <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-primary" />
-                          )}
+                    {active && (
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground" />
+                    )}
+                    <div className="flex items-start gap-3">
+                      <div className="relative shrink-0">
+                        <div className="h-9 w-9 rounded-full bg-muted text-muted-foreground grid place-items-center text-[11px] font-semibold">
+                          {initials(thread.from)}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <div
-                              className={`text-[13px] truncate ${thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"}`}
-                            >
-                              {thread.from}
-                            </div>
-                            <div className="text-[11px] text-muted-foreground shrink-0 tabular-nums">
-                              {thread.sentAt ?? thread.time}
-                            </div>
-                          </div>
+                        {thread.unread && (
+                          <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-foreground" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
                           <div
-                            className={`text-[12.5px] truncate mt-0.5 ${thread.unread ? "text-foreground" : "text-foreground/85"}`}
+                            className={`text-[13px] truncate ${thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"}`}
                           >
-                            {draft && draft.status !== "closed" && (
-                              <span className="text-primary">Draft - </span>
-                            )}
-                            {thread.subject}
+                            {thread.from}
                           </div>
-                          <div className="text-[11.5px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
-                            {draft && draft.status !== "closed"
-                              ? htmlToText(draft.body)
-                              : thread.preview}
+                          <div className="text-[11px] text-muted-foreground shrink-0 tabular-nums">
+                            {thread.sentAt ?? thread.time}
                           </div>
                         </div>
-                      </div>
-                    </button>
-                    <div className="flex items-center justify-between px-3.5 pb-3 pt-1">
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            updateThread(thread.id, { flagged: !thread.flagged });
-                          }}
-                          aria-label="Flag"
-                          className="grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-background text-muted-foreground hover:text-foreground"
+                        <div
+                          className={`text-[12.5px] truncate mt-0.5 ${thread.unread ? "text-foreground" : "text-foreground/85"}`}
                         >
-                          <Star
-                            className="h-3 w-3"
-                            fill={thread.starred || thread.flagged ? "currentColor" : "none"}
-                          />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            selectThread(thread);
-                            openComposer("reply");
-                          }}
-                          className="inline-flex items-center gap-1.5 h-6 pl-2 pr-2.5 rounded-full border border-border/60 bg-background text-[11px] text-foreground/85 hover:bg-foreground/[0.05]"
-                        >
-                          <Reply className="h-3 w-3" strokeWidth={1.85} />
-                          Reply
-                        </button>
-                        <span className="inline-flex items-center px-1.5 h-5 rounded-full text-[9.5px] uppercase tracking-wider bg-muted text-muted-foreground border border-border/50">
-                          {thread.tag}
-                        </span>
+                          {draft && draft.status !== "closed" && (
+                            <span className="text-muted-foreground">Draft · </span>
+                          )}
+                          {thread.subject}
+                        </div>
+                        <div className="text-[11.5px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
+                          {draft && draft.status !== "closed"
+                            ? htmlToText(draft.body)
+                            : thread.preview}
+                        </div>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const previous = thread.folder;
-                          updateThread(thread.id, { folder: "Archive", unread: false });
-                          toast.success("Archived", {
-                            action: {
-                              label: "Undo",
-                              onClick: () => updateThread(thread.id, { folder: previous }),
-                            },
-                          });
-                        }}
-                        aria-label="Archive"
-                        className="grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-background text-muted-foreground hover:text-foreground"
-                      >
-                        <Archive className="h-3 w-3" strokeWidth={1.85} />
-                      </button>
                     </div>
-                  </div>
+                  </button>
                 );
               })
             )}
           </div>
+
         </section>
 
 
