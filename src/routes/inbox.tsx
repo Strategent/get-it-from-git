@@ -521,26 +521,30 @@ function InboxPage() {
         style={{ height: "calc(100dvh - 53px)" }}
       >
         <section className="w-[400px] shrink-0 flex flex-col border-r border-border/60 min-w-0 bg-muted/30">
-          {/* Compose + folder pill */}
+          {/* Compose + folder */}
           <div className="px-4 pt-4 pb-3 flex items-center gap-2">
             <button
               onClick={() => openComposer("reply")}
-              className="flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-primary text-primary-foreground text-[13.5px] font-semibold shadow-[0_6px_18px_-6px_rgba(0,0,0,0.35)] hover:brightness-110 transition"
+              aria-label="Compose"
+              title="Compose"
+              className="inline-flex items-center justify-center gap-2 h-9 px-3 rounded-sm border border-border bg-background text-foreground text-[12.5px] font-medium hover:bg-foreground/[0.05] transition-colors"
             >
-              <SyraMark className="h-4 w-4" />
+              <FileEdit className="h-3.5 w-3.5" strokeWidth={1.85} />
               Compose
             </button>
-            <div className="relative" ref={popoverRef}>
+            <div className="relative ml-auto" ref={popoverRef}>
               <button
                 onClick={() => setFoldersOpen((v) => !v)}
                 aria-label="Mailboxes"
                 aria-expanded={foldersOpen}
-                className="inline-flex items-center gap-1 h-11 w-11 justify-center rounded-full border border-border/70 bg-background text-foreground/80 hover:bg-foreground/[0.05] transition-colors"
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-sm border border-border bg-background text-foreground/80 text-[12px] hover:bg-foreground/[0.05] transition-colors"
               >
-                <ActiveIcon className="h-4 w-4" strokeWidth={1.75} />
+                <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <span>{activeFolder}</span>
+                <ChevronDown className="h-3 w-3 opacity-60" />
               </button>
               {foldersOpen && (
-                <div className="absolute right-0 top-12 z-30 w-56 p-1.5 rounded-2xl border border-border/70 bg-popover/90 backdrop-blur-xl shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 top-11 z-30 w-56 p-1.5 rounded-sm border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-150">
                   {folderMeta.map((f) => {
                     const Icon = f.icon;
                     const active = f.name === activeFolder;
@@ -551,7 +555,7 @@ function InboxPage() {
                           setActiveFolder(f.name);
                           setFoldersOpen(false);
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-xl text-[13px] transition-colors ${
+                        className={`w-full flex items-center gap-2.5 px-3 h-9 rounded-sm text-[13px] transition-colors ${
                           active
                             ? "bg-foreground/[0.08] text-foreground font-medium"
                             : "text-foreground/80 hover:bg-foreground/[0.05]"
@@ -570,9 +574,10 @@ function InboxPage() {
             </div>
           </div>
 
+
           {/* Search */}
           <div className="px-4 pb-3">
-            <div className="flex items-center gap-2 h-10 px-3.5 rounded-full bg-muted/60 border border-border/50">
+            <div className="flex items-center gap-2 h-9 px-3 rounded-sm bg-muted/60 border border-border/60">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <input
                 value={query}
@@ -616,8 +621,8 @@ function InboxPage() {
 
           {/* Segmented tabs */}
           <div className="px-4 pb-3">
-            <div className="flex items-center p-1 rounded-full bg-muted/50 border border-border/50">
-              {(["All", "Unread", "Flagged"] as const).map((t) => {
+            <div className="flex items-center rounded-sm border border-border/60 bg-muted/40 overflow-hidden">
+              {(["All", "Unread", "Flagged"] as const).map((t, i) => {
                 const active =
                   (t === "All" && !filters.includes("Unread") && !filters.includes("Flagged")) ||
                   (t === "Unread" && filters.includes("Unread")) ||
@@ -629,9 +634,11 @@ function InboxPage() {
                       if (t === "All") setFilters([]);
                       else setFilters([t as FilterName]);
                     }}
-                    className={`flex-1 h-8 rounded-full text-[12px] font-medium transition-colors ${
+                    className={`flex-1 h-8 text-[12px] font-medium transition-colors ${
+                      i > 0 ? "border-l border-border/60" : ""
+                    } ${
                       active
-                        ? "bg-background text-foreground shadow-sm border border-border/60"
+                        ? "bg-background text-foreground"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -640,9 +647,10 @@ function InboxPage() {
                 );
               })}
             </div>
+
           </div>
 
-          <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1.5">
+          <div className="flex-1 overflow-y-auto no-scrollbar border-t border-border/60">
             {visibleThreads.length === 0 ? (
               <div className="px-4 py-10 text-center text-[12px] text-muted-foreground">
                 No messages match this view.
@@ -652,113 +660,64 @@ function InboxPage() {
                 const active = selected.id === thread.id;
                 const draft = drafts[thread.id];
                 return (
-                  <div
+                  <button
                     key={thread.id}
-                    className={`group relative rounded-md border transition-all ${
+                    onClick={() => selectThread(thread)}
+                    className={`w-full text-left px-4 py-3 border-b border-border/50 transition-colors relative ${
                       active
-                        ? "border-border bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_8px_24px_-12px_rgba(0,0,0,0.55),0_2px_6px_-2px_rgba(0,0,0,0.35)] ring-1 ring-foreground/5"
-                        : "border-border/60 bg-card/80 shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_2px_6px_-3px_rgba(0,0,0,0.3)] hover:bg-card hover:border-border hover:shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_6px_16px_-8px_rgba(0,0,0,0.45)]"
+                        ? "bg-foreground/[0.06]"
+                        : "hover:bg-foreground/[0.03]"
                     }`}
                   >
-
-                    <button
-                      onClick={() => selectThread(thread)}
-                      className="w-full text-left px-3.5 pt-3 pb-2"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className="relative shrink-0">
-                          <div className="h-9 w-9 rounded-full bg-muted text-muted-foreground grid place-items-center text-[11px] font-semibold">
-                            {initials(thread.from)}
-                          </div>
-                          {thread.unread && (
-                            <span className="absolute -left-1 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-primary" />
-                          )}
+                    {active && (
+                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground" />
+                    )}
+                    <div className="flex items-start gap-3">
+                      <div className="relative shrink-0">
+                        <div className="h-9 w-9 rounded-full bg-muted text-muted-foreground grid place-items-center text-[11px] font-semibold">
+                          {initials(thread.from)}
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center justify-between gap-2">
-                            <div
-                              className={`text-[13px] truncate ${thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"}`}
-                            >
-                              {thread.from}
-                            </div>
-                            <div className="text-[11px] text-muted-foreground shrink-0 tabular-nums">
-                              {thread.sentAt ?? thread.time}
-                            </div>
-                          </div>
+                        {thread.unread && (
+                          <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-foreground" />
+                        )}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between gap-2">
                           <div
-                            className={`text-[12.5px] truncate mt-0.5 ${thread.unread ? "text-foreground" : "text-foreground/85"}`}
+                            className={`text-[13px] truncate ${thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"}`}
                           >
-                            {draft && draft.status !== "closed" && (
-                              <span className="text-primary">Draft - </span>
-                            )}
-                            {thread.subject}
+                            {thread.from}
                           </div>
-                          <div className="text-[11.5px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
-                            {draft && draft.status !== "closed"
-                              ? htmlToText(draft.body)
-                              : thread.preview}
+                          <div className="text-[11px] text-muted-foreground shrink-0 tabular-nums">
+                            {thread.sentAt ?? thread.time}
                           </div>
                         </div>
-                      </div>
-                    </button>
-                    <div className="flex items-center justify-between px-3.5 pb-3 pt-1">
-                      <div className="flex items-center gap-1.5">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            updateThread(thread.id, { flagged: !thread.flagged });
-                          }}
-                          aria-label="Flag"
-                          className="grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-background text-muted-foreground hover:text-foreground"
+                        <div
+                          className={`text-[12.5px] truncate mt-0.5 ${thread.unread ? "text-foreground" : "text-foreground/85"}`}
                         >
-                          <Star
-                            className="h-3 w-3"
-                            fill={thread.starred || thread.flagged ? "currentColor" : "none"}
-                          />
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            selectThread(thread);
-                            openComposer("reply");
-                          }}
-                          className="inline-flex items-center gap-1.5 h-6 pl-2 pr-2.5 rounded-full border border-border/60 bg-background text-[11px] text-foreground/85 hover:bg-foreground/[0.05]"
-                        >
-                          <Reply className="h-3 w-3" strokeWidth={1.85} />
-                          Reply
-                        </button>
-                        <span className="inline-flex items-center px-1.5 h-5 rounded-full text-[9.5px] uppercase tracking-wider bg-muted text-muted-foreground border border-border/50">
-                          {thread.tag}
-                        </span>
+                          {draft && draft.status !== "closed" && (
+                            <span className="text-muted-foreground">Draft · </span>
+                          )}
+                          {thread.subject}
+                        </div>
+                        <div className="text-[11.5px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
+                          {draft && draft.status !== "closed"
+                            ? htmlToText(draft.body)
+                            : thread.preview}
+                        </div>
                       </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const previous = thread.folder;
-                          updateThread(thread.id, { folder: "Archive", unread: false });
-                          toast.success("Archived", {
-                            action: {
-                              label: "Undo",
-                              onClick: () => updateThread(thread.id, { folder: previous }),
-                            },
-                          });
-                        }}
-                        aria-label="Archive"
-                        className="grid h-6 w-6 place-items-center rounded-full border border-border/60 bg-background text-muted-foreground hover:text-foreground"
-                      >
-                        <Archive className="h-3 w-3" strokeWidth={1.85} />
-                      </button>
                     </div>
-                  </div>
+                  </button>
                 );
               })
             )}
           </div>
+
         </section>
 
 
-        <main className="flex-1 flex flex-col min-w-0 bg-background">
-          <div className="h-12 px-4 flex items-center justify-between border-b border-border/60">
+        <main className="flex-1 flex flex-col min-w-0 bg-muted/20">
+          <div className="h-12 px-4 flex items-center justify-between border-b border-border/60 bg-background">
             <div className="flex items-center gap-1">
               <ToolbarBtn
                 icon={Archive}
@@ -799,7 +758,7 @@ function InboxPage() {
                   <button
                     aria-label="More"
                     title="More"
-                    className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    className="grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
                   >
                     <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
                   </button>
@@ -828,85 +787,93 @@ function InboxPage() {
             </div>
           </div>
 
-          <div className="px-8 pt-7 pb-5 border-b border-border/60">
-            <div className="flex items-start gap-4">
-              <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground grid place-items-center text-[12px] font-semibold shrink-0">
-                {initials(selected.from)}
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <div className="min-w-0">
-                    <div className="text-[14px] font-semibold tracking-tight truncate">
-                      {selected.from}{" "}
-                      <span className="text-muted-foreground font-normal">
-                        &lt;{selected.email}&gt; - {selected.company}
-                      </span>
+          <div className="flex-1 overflow-y-auto no-scrollbar px-8 py-6">
+            <div className="max-w-2xl mx-auto">
+              <div className="rounded-sm border border-border/70 bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_8px_24px_-16px_rgba(0,0,0,0.35),0_2px_6px_-3px_rgba(0,0,0,0.15)]">
+                <div className="px-6 pt-5 pb-4 border-b border-border/60">
+                  <div className="flex items-start gap-4">
+                    <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground grid place-items-center text-[12px] font-semibold shrink-0">
+                      {initials(selected.from)}
                     </div>
-                    <div className="text-[12px] text-muted-foreground mt-0.5">
-                      To: me - {selected.sentAt ?? `${selected.time} ago`}
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="text-[14px] font-semibold tracking-tight truncate">
+                            {selected.from}{" "}
+                            <span className="text-muted-foreground font-normal">
+                              &lt;{selected.email}&gt; - {selected.company}
+                            </span>
+                          </div>
+                          <div className="text-[12px] text-muted-foreground mt-0.5">
+                            To: me - {selected.sentAt ?? `${selected.time} ago`}
+                          </div>
+                        </div>
+                        <button
+                          aria-label={selected.starred ? "Unstar" : "Star"}
+                          onClick={() => updateThread(selected.id, { starred: !selected.starred })}
+                          className="text-muted-foreground hover:text-foreground"
+                        >
+                          <Star className="h-4 w-4" fill={selected.starred ? "currentColor" : "none"} />
+                        </button>
+                      </div>
+                      <h2 className="mt-3 text-[22px] font-semibold tracking-tight leading-tight">
+                        {selected.subject}
+                      </h2>
                     </div>
                   </div>
-                  <button
-                    aria-label={selected.starred ? "Unstar" : "Star"}
-                    onClick={() => updateThread(selected.id, { starred: !selected.starred })}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Star className="h-4 w-4" fill={selected.starred ? "currentColor" : "none"} />
-                  </button>
                 </div>
-                <h2 className="mt-3 text-[22px] font-semibold tracking-tight leading-tight">
-                  {selected.subject}
-                </h2>
+                <div className="px-6 py-5">
+                  <div className="text-[14px] leading-relaxed text-foreground/90 whitespace-pre-line">
+                    {selected.body}
+                  </div>
+                  {selected.hasAttachment && (
+                    <button className="mt-5 inline-flex items-center gap-2 rounded-sm border border-border/70 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85 hover:bg-muted">
+                      <Paperclip className="h-3.5 w-3.5" />
+                      {selected.tag === "Legal"
+                        ? "Completed_MSA.pdf"
+                        : selected.tag === "Billing"
+                          ? "Stripe_reconciliation.csv"
+                          : "Security_questionnaire.pdf"}
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div className="flex-1 overflow-y-auto px-8 py-6">
-            <div className="max-w-2xl text-[14px] leading-relaxed text-foreground/90 whitespace-pre-line">
-              {selected.body}
+              {selectedDraft.status === "closed" ? (
+                <button
+                  onClick={() => openComposer("reply")}
+                  className="mt-6 inline-flex items-center gap-2 rounded-sm border border-border/70 px-3 py-2 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
+                >
+                  <Reply className="h-3.5 w-3.5" />
+                  Reply
+                </button>
+              ) : (
+                <div className="mt-6">
+                  <ComposeWindow
+                    draft={selectedDraft}
+                    from={selected.from}
+                    sending={sendingId === selected.id}
+                    regenerating={regeneratingId === selected.id}
+                    justSent={lastSentId === selected.id && selected.folder === "Sent"}
+                    onUpdate={updateDraft}
+                    onSend={sendDraft}
+                    onRegenerate={regenerateDraft}
+                    onDiscard={() => {
+                      setDrafts((current) => ({
+                        ...current,
+                        [selected.id]: { ...selectedDraft, status: "closed" },
+                      }));
+                      toast.success("Draft discarded");
+                    }}
+                    onMinimize={() => updateDraft({ status: "minimized" })}
+                    onRestore={() => updateDraft({ status: "open" })}
+                  />
+                </div>
+              )}
             </div>
-            {selected.hasAttachment && (
-              <button className="mt-5 inline-flex items-center gap-2 rounded-lg border border-border/70 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85 hover:bg-muted">
-                <Paperclip className="h-3.5 w-3.5" />
-                {selected.tag === "Legal"
-                  ? "Completed_MSA.pdf"
-                  : selected.tag === "Billing"
-                    ? "Stripe_reconciliation.csv"
-                    : "Security_questionnaire.pdf"}
-              </button>
-            )}
-
-            {selectedDraft.status === "closed" ? (
-              <button
-                onClick={() => openComposer("reply")}
-                className="mt-8 inline-flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
-              >
-                <Reply className="h-3.5 w-3.5" />
-                Reply
-              </button>
-            ) : (
-              <ComposeWindow
-                draft={selectedDraft}
-                from={selected.from}
-                sending={sendingId === selected.id}
-                regenerating={regeneratingId === selected.id}
-                justSent={lastSentId === selected.id && selected.folder === "Sent"}
-                onUpdate={updateDraft}
-                onSend={sendDraft}
-                onRegenerate={regenerateDraft}
-                onDiscard={() => {
-                  setDrafts((current) => ({
-                    ...current,
-                    [selected.id]: { ...selectedDraft, status: "closed" },
-                  }));
-                  toast.success("Draft discarded");
-                }}
-                onMinimize={() => updateDraft({ status: "minimized" })}
-                onRestore={() => updateDraft({ status: "open" })}
-              />
-            )}
           </div>
         </main>
+
       </div>
       <SyraChatWidget
         inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${threads.filter((t) => t.needsReply).length} need reply`}
@@ -1338,7 +1305,7 @@ function ComposeWindow({
         </div>
       )}
 
-    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-xl overflow-hidden shadow-xl">
+    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_16px_40px_-16px_rgba(0,0,0,0.5),0_4px_12px_-4px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between px-3.5 h-9 bg-foreground/[0.04] dark:bg-white/[0.04] border-b border-border/60">
         <div className="flex items-center gap-2 text-[12px] font-medium text-foreground/85">
           <CornerUpLeft className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.85} />
