@@ -577,7 +577,7 @@ function InboxPage() {
 
           {/* Search */}
           <div className="px-4 pb-3">
-            <div className="flex items-center gap-2 h-10 px-3.5 rounded-full bg-muted/60 border border-border/50">
+            <div className="flex items-center gap-2 h-9 px-3 rounded-sm bg-muted/60 border border-border/60">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <input
                 value={query}
