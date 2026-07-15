@@ -1305,7 +1305,7 @@ function ComposeWindow({
         </div>
       )}
 
-    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-xl overflow-hidden shadow-xl">
+    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_16px_40px_-16px_rgba(0,0,0,0.5),0_4px_12px_-4px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between px-3.5 h-9 bg-foreground/[0.04] dark:bg-white/[0.04] border-b border-border/60">
         <div className="flex items-center gap-2 text-[12px] font-medium text-foreground/85">
           <CornerUpLeft className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.85} />
