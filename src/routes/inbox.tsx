@@ -265,15 +265,17 @@ function textToHtml(value: string) {
 }
 
 function htmlToText(value: string) {
-  if (typeof document === "undefined") {
-    return value
-      .replace(/<[^>]+>/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-  }
-  const el = document.createElement("div");
-  el.innerHTML = value;
-  return (el.innerText || el.textContent || "").trim();
+  // Normalize identically on server & client to avoid hydration mismatches.
+  return value
+    .replace(/<\/(div|p|li)>/gi, " ")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function initials(name: string) {
