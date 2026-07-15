@@ -621,8 +621,8 @@ function InboxPage() {
 
           {/* Segmented tabs */}
           <div className="px-4 pb-3">
-            <div className="flex items-center p-1 rounded-full bg-muted/50 border border-border/50">
-              {(["All", "Unread", "Flagged"] as const).map((t) => {
+            <div className="flex items-center rounded-sm border border-border/60 bg-muted/40 overflow-hidden">
+              {(["All", "Unread", "Flagged"] as const).map((t, i) => {
                 const active =
                   (t === "All" && !filters.includes("Unread") && !filters.includes("Flagged")) ||
                   (t === "Unread" && filters.includes("Unread")) ||
@@ -634,9 +634,11 @@ function InboxPage() {
                       if (t === "All") setFilters([]);
                       else setFilters([t as FilterName]);
                     }}
-                    className={`flex-1 h-8 rounded-full text-[12px] font-medium transition-colors ${
+                    className={`flex-1 h-8 text-[12px] font-medium transition-colors ${
+                      i > 0 ? "border-l border-border/60" : ""
+                    } ${
                       active
-                        ? "bg-background text-foreground shadow-sm border border-border/60"
+                        ? "bg-background text-foreground"
                         : "text-muted-foreground hover:text-foreground"
                     }`}
                   >
@@ -645,6 +647,7 @@ function InboxPage() {
                 );
               })}
             </div>
+
           </div>
 
           <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1.5">
