@@ -18,18 +18,14 @@ import {
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
+import mobileLogoIcon from "@/assets/mobile-logo-icon.png.asset.json";
 
-const syraSIcon = { url: "/syra-s.png" };
-
-const SyraIcon = ({ dark }: { dark: boolean }) => (
-  <span className="relative inline-grid h-[18px] w-[18px] place-items-center overflow-hidden">
-    <img
-      src={syraSIcon.url}
-      alt=""
-      className="absolute h-full w-full scale-[3.4] object-contain"
-      style={{ filter: dark ? "brightness(0) invert(1)" : "brightness(0)" }}
-    />
-  </span>
+const SyraIcon = () => (
+  <img
+    src={mobileLogoIcon.url}
+    alt=""
+    className="h-full w-full object-contain"
+  />
 );
 
 const primaryNav = [
