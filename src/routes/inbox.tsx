@@ -1350,19 +1350,24 @@ function ComposeWindow({
         <div className="flex items-center gap-3 px-4 min-h-9 border-b border-border/50 py-1.5">
           <span className="text-muted-foreground w-12 shrink-0">To</span>
           <div className="flex flex-1 flex-wrap items-center gap-1.5">
-            {draft.to.map((email) => (
-              <button
-                key={email}
-                onClick={() => onUpdate({ to: draft.to.filter((item) => item !== email) })}
-                className="inline-flex items-center gap-1.5 h-6 pl-1 pr-2 rounded-full bg-foreground/[0.06] text-[12px] hover:bg-foreground/[0.1]"
-              >
-                <span className="grid h-4 w-4 place-items-center rounded-full bg-foreground/15 text-[9px] font-semibold">
-                  {email[0].toUpperCase()}
-                </span>
-                {email}
-                <X className="h-2.5 w-2.5" />
-              </button>
-            ))}
+            {draft.to.map((email) => {
+              const local = email.split("@")[0] ?? email;
+              return (
+                <button
+                  key={email}
+                  onClick={() => onUpdate({ to: draft.to.filter((item) => item !== email) })}
+                  className="group inline-flex items-center gap-1.5 h-7 pl-0.5 pr-2.5 rounded-full bg-background border border-border/70 text-[12px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-foreground/[0.04] dark:bg-white/[0.04] dark:border-white/10"
+                >
+                  <img
+                    src={avatarUrl(local, 40)}
+                    alt=""
+                    className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60"
+                  />
+                  <span className="text-foreground/85">{email}</span>
+                  <X className="h-2.5 w-2.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              );
+            })}
             <input
               onKeyDown={(e) => {
                 if (e.key === "Enter" && e.currentTarget.value.trim()) {
