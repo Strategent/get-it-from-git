@@ -87,11 +87,6 @@ export function DailyBriefHero({
       className="daily-brief-hero-bg relative h-full w-full overflow-hidden"
       style={{ borderRadius: "var(--radius)" }}
     >
-      {/* Scrim — guarantees left-side text legibility over gradient bloom */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/55 via-black/30 to-transparent"
-      />
 
       {/* Left zone — eyebrow, headline, summary (no button) */}
       <div className="relative z-10 flex h-full flex-col justify-center px-7 py-8 lg:max-w-[52%] lg:px-12 lg:py-12">
