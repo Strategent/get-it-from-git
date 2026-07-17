@@ -39,7 +39,7 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
     <PageShell>
       <div className="flex flex-col gap-3 pb-6">
         {/* 1. Hero */}
-        <div data-density="compact" className="w-full h-[300px] overflow-hidden rounded-2xl">
+        <div data-density="compact" className="w-full h-[340px] overflow-hidden rounded-2xl">
           <DailyBriefHero />
         </div>
 
