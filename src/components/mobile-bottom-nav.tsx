@@ -24,7 +24,7 @@ const SyraIcon = () => (
   <img
     src={mobileLogoIcon.url}
     alt=""
-    className="h-full w-full object-contain"
+    className="h-7 w-7 object-contain rounded-[10px]"
   />
 );
 
