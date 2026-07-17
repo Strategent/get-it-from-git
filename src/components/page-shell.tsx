@@ -43,7 +43,7 @@ export function Topbar() {
             Harwick &amp; Sterne
           </div>
           <div className="font-serif-display mt-0.5 text-[22px] font-normal leading-[1.1] tracking-[-0.01em] text-foreground/[0.92]">
-            Strategent
+            strategent
           </div>
         </div>
         <div className="ml-auto flex items-center gap-1">
