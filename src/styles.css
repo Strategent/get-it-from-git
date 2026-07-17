@@ -458,11 +458,7 @@
 }
 [data-density="compact"] > section > div:nth-child(1) > p {
   margin-top: clamp(10px, 3.5cqh, 16px);
-  display: -webkit-box;
   max-width: min(26rem, 44cqw);
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
   font-size: clamp(12px, min(4.2cqh, 1.25cqw), 14px);
   line-height: 1.55;
 }
