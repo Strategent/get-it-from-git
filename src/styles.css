@@ -498,6 +498,29 @@
   }
 }
 
+/* Narrow container (mobile) — dock the brief document as a small preview
+   pinned to the bottom-right, and let the left text zone use full width. */
+@container daily-brief-card (max-width: 640px) {
+  [data-density="compact"] > section > div:nth-child(1) {
+    max-width: 100%;
+    padding: 20px 22px;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > p {
+    max-width: 62cqw;
+  }
+  .daily-brief-document {
+    right: 14px;
+    bottom: 14px;
+    width: 34cqw;
+    min-width: 130px;
+    max-width: 180px;
+    height: auto;
+    max-height: 62cqh;
+    padding: 10px 12px;
+    border-radius: 6px;
+  }
+}
+
 [data-density="compact"] .daily-brief-document > p:first-child {
   font-size: 5px;
   letter-spacing: 0.1em;
