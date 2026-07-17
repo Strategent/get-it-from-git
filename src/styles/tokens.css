@@ -28,8 +28,8 @@
   --label-fg: #8a8a8e;
 
   /* ---- Raised sub-surface overlay (draft cards, stat tiles, queue rows) ---- */
-  --surface-raised: rgba(255, 255, 255, 0.035);
-  --surface-raised-hover: rgba(255, 255, 255, 0.06);
+  --surface-raised: rgba(255, 255, 255, 0.045);
+  --surface-raised-hover: rgba(255, 255, 255, 0.075);
 
   /* ---- Strategent brand spotlight gradient (recolored from Origin's green) ---- */
   --spotlight: linear-gradient(
