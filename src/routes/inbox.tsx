@@ -1585,7 +1585,7 @@ function ComposeWindow({
 
       <div
         onPointerDownCapture={() => saveSelection(false)}
-        className="px-3 py-1.5 border-t border-border/60 bg-foreground/[0.025] flex items-center gap-0.5 overflow-visible"
+        className="px-3 py-2 border-t border-border/60 bg-card flex items-center justify-between gap-2"
       >
         <input
           ref={attachmentInputRef}
@@ -1608,233 +1608,138 @@ function ComposeWindow({
             e.currentTarget.value = "";
           }}
         />
-        <div className="relative">
-          <button
-            type="button"
-            aria-label="Font"
-            title="Font"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              if (fontOpen) {
-                clearFontPreview();
-                setFontOpen(false);
-                return;
-              }
-              if (markFontSelection()) setFontOpen(true);
-            }}
-            className="inline-flex h-7 items-center gap-0.5 rounded px-1.5 text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
-          >
-            <Type className="h-3.5 w-3.5" strokeWidth={1.85} />
-            <ChevronDown className="h-3 w-3 opacity-60" />
-          </button>
-          {fontOpen && (
-            <div className="absolute bottom-8 left-0 z-50 w-48 rounded-md border border-border bg-popover p-1.5 text-popover-foreground shadow-md">
-              {[
-                ["Sans serif", "Arial"],
-                ["Serif", "Georgia"],
-                ["Mono", "Courier New"],
-                ["Trebuchet", "Trebuchet MS"],
-                ["Newsreader", "Newsreader"],
-              ].map(([label, font]) => (
-                <button
-                  key={font}
-                  type="button"
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    applyFont(font);
-                  }}
-                  className="flex h-8 w-full items-center rounded-md px-2.5 text-left text-[12px] hover:bg-foreground/[0.06]"
-                  style={{ fontFamily: font }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        <FmtDivider />
-        <FmtBtn icon={Bold} label="Bold" onClick={() => runEditorCommand("bold")} />
-        <FmtBtn icon={Italic} label="Italic" onClick={() => runEditorCommand("italic")} />
-        <FmtBtn icon={Underline} label="Underline" onClick={() => runEditorCommand("underline")} />
-        <FmtDivider />
-        <FmtBtn
-          icon={AlignLeft}
-          label="Align"
-          withCaret
-          onClick={() => runEditorCommand("justifyCenter")}
-        />
-        <FmtBtn
-          icon={List}
-          label="Bulleted list"
-          onClick={() => runEditorCommand("insertUnorderedList")}
-        />
-        <FmtBtn
-          icon={ListOrdered}
-          label="Numbered list"
-          onClick={() => runEditorCommand("insertOrderedList")}
-        />
-        <FmtDivider />
-        <FmtBtn
-          icon={Paperclip}
-          label="Attach files"
-          onClick={() => attachmentInputRef.current?.click()}
-        />
-        <Popover>
-          <PopoverTrigger asChild>
-            <span>
-              <FmtBtn icon={Link2} label="Insert link" onClick={saveSelection} />
-            </span>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-72 p-3">
-            <div className="space-y-2">
-              <div className="text-[12px] font-medium">Insert link</div>
-              <input
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && insertLink()}
-                placeholder="https://example.com"
-                className="h-8 w-full rounded-md border border-border bg-background px-2.5 text-[12px] outline-none focus:border-foreground/30"
-              />
-              <button
-                type="button"
-                onClick={insertLink}
-                className="h-8 rounded-md bg-foreground px-3 text-[12px] font-medium text-background hover:bg-foreground/90"
-              >
-                Apply link
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
-        <FmtBtn
-          icon={ImageIcon}
-          label="Insert image"
-          onClick={() => imageInputRef.current?.click()}
-        />
-        <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
-          <PopoverTrigger asChild>
+        <div className="flex items-center gap-0.5">
+          <IconOnlyBtn
+            icon={Paperclip}
+            label="Attach files"
+            onClick={() => attachmentInputRef.current?.click()}
+          />
+          <IconOnlyBtn
+            icon={ImageIcon}
+            label="Insert image"
+            onClick={() => imageInputRef.current?.click()}
+          />
+          <IconOnlyBtn
+            icon={FileText}
+            label="Use template"
+            onClick={() => toast.success("Template inserted")}
+          />
+          <div className="relative">
             <button
               type="button"
-              aria-label="Emoji"
-              title="Emoji"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => saveSelection()}
-              className="inline-flex h-7 items-center gap-0.5 rounded px-1.5 text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+              aria-label="Font"
+              title="Font"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                if (fontOpen) {
+                  clearFontPreview();
+                  setFontOpen(false);
+                  return;
+                }
+                if (markFontSelection()) setFontOpen(true);
+              }}
+              className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
             >
-              <Smile className="h-3.5 w-3.5" strokeWidth={1.85} />
+              <Type className="h-4 w-4" strokeWidth={1.85} />
             </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-52 p-2">
-            <div className="grid grid-cols-6 gap-1">
-              {emojiChoices.map((emoji) => (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={() => {
-                    insertTextAtSelection(emoji);
-                    onUpdate({ emoji: [...draft.emoji, emoji] });
-                    setEmojiOpen(false);
-                  }}
-                  className="grid h-8 w-8 place-items-center rounded-md text-lg hover:bg-foreground/[0.06]"
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      <div className="px-3 py-2 border-t border-border/60 bg-card flex items-center justify-between">
-        <div className="flex items-center">
-          <button
-            onClick={onSend}
-            disabled={sending}
-            className="inline-flex items-center h-8 pl-3 pr-3 rounded-l-md bg-foreground text-background text-[12.5px] font-medium hover:bg-foreground/90 disabled:opacity-70"
-          >
-            {sending ? (
-              <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
-            ) : (
-              <Send className="h-3.5 w-3.5 mr-2" strokeWidth={2} />
+            {fontOpen && (
+              <div className="absolute bottom-10 left-0 z-50 w-48 rounded-md border border-border bg-popover p-1.5 text-popover-foreground shadow-md">
+                {[
+                  ["Sans serif", "Arial"],
+                  ["Serif", "Georgia"],
+                  ["Mono", "Courier New"],
+                  ["Trebuchet", "Trebuchet MS"],
+                  ["Newsreader", "Newsreader"],
+                ].map(([label, font]) => (
+                  <button
+                    key={font}
+                    type="button"
+                    onPointerDown={(e) => {
+                      e.preventDefault();
+                      applyFont(font);
+                    }}
+                    className="flex h-8 w-full items-center rounded-md px-2.5 text-left text-[12px] hover:bg-foreground/[0.06]"
+                    style={{ fontFamily: font }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             )}
-            {sending ? "Sending..." : "Send"}
-          </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          </div>
+          <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+            <PopoverTrigger asChild>
               <button
-                aria-label="Send options"
-                className="grid place-items-center h-8 w-7 rounded-r-md bg-foreground text-background hover:bg-foreground/90 border-l border-background/20"
+                type="button"
+                aria-label="Emoji"
+                title="Emoji"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => saveSelection()}
+                className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
               >
-                <ChevronDown className="h-3.5 w-3.5" />
+                <Smile className="h-4 w-4" strokeWidth={1.85} />
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-44">
-              <DropdownMenuItem onClick={onSend} className="text-xs">
-                Send now
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-                className="text-xs"
-              >
-                <Clock className="h-3.5 w-3.5" /> Schedule send
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  onSend();
-                  toast.message("Will archive after send");
-                }}
-                className="text-xs"
-              >
-                Send and archive
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-52 p-2">
+              <div className="grid grid-cols-6 gap-1">
+                {emojiChoices.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => {
+                      insertTextAtSelection(emoji);
+                      onUpdate({ emoji: [...draft.emoji, emoji] });
+                      setEmojiOpen(false);
+                    }}
+                    className="grid h-8 w-8 place-items-center rounded-md text-lg hover:bg-foreground/[0.06]"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+          <IconOnlyBtn
+            icon={UserIcon}
+            label="Contacts"
+            onClick={() => toast.message("Contacts")}
+          />
+          <span className="mx-1 h-5 w-px bg-border/70" />
+          <IconOnlyBtn
+            icon={Clock}
+            label="Schedule send"
+            onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
+          />
+          <IconOnlyBtn icon={Trash2} label="Discard" onClick={onDiscard} />
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={onRegenerate}
             disabled={regenerating}
-            className="inline-flex h-7 items-center gap-1 px-2.5 text-[11.5px] rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] disabled:opacity-70"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-border/70 bg-background text-[12px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
           >
             {regenerating ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <Sparkles className="h-3 w-3" />
+              <SyraMark size={14} />
             )}
-            Syra: Regenerate
+            Ask AI
           </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06]"
-                aria-label="More"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={() => toast.success("Draft saved")} className="text-xs">
-                Save draft
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => toast.success("Plain text mode enabled")}
-                className="text-xs"
-              >
-                Plain text mode
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => toast.success("Marked high priority")}
-                className="text-xs"
-              >
-                High priority
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <button
-            onClick={onDiscard}
-            className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06]"
-            aria-label="Discard"
+            onClick={onSend}
+            disabled={sending}
+            className="inline-flex items-center gap-1.5 h-8 px-4 rounded-md bg-foreground text-background text-[12.5px] font-medium hover:bg-foreground/90 disabled:opacity-70"
           >
-            <Trash2 className="h-4 w-4" />
+            {sending ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Sending...
+              </>
+            ) : (
+              <>
+                Send
+                <Send className="h-3.5 w-3.5" strokeWidth={2} />
+              </>
+            )}
           </button>
         </div>
       </div>
