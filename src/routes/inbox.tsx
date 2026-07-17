@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Inbox as InboxIcon,
   Star,
@@ -23,6 +23,9 @@ import {
   List,
   ListOrdered,
   AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Strikethrough,
   Image as ImageIcon,
   Paperclip,
   Smile,
@@ -35,6 +38,8 @@ import {
   Loader2,
   Sparkles,
   RefreshCw,
+  FileText,
+  User as UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -49,6 +54,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { SyraMark } from "@/components/syra-mark";
+import { avatarUrl } from "@/lib/avatar";
 
 
 export const Route = createFileRoute("/inbox")({
@@ -981,6 +987,35 @@ function ComposeWindow({
   const [linkUrl, setLinkUrl] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [fontOpen, setFontOpen] = useState(false);
+  const [selRect, setSelRect] = useState<{ left: number; top: number } | null>(null);
+
+  useEffect(() => {
+    const updateFloatingToolbar = () => {
+      const sel = window.getSelection();
+      const editor = editorRef.current;
+      if (!sel || !editor || sel.rangeCount === 0 || sel.isCollapsed) {
+        setSelRect(null);
+        return;
+      }
+      const range = sel.getRangeAt(0);
+      if (!editor.contains(range.commonAncestorContainer)) {
+        setSelRect(null);
+        return;
+      }
+      const rect = range.getBoundingClientRect();
+      const parent = editor.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        setSelRect(null);
+        return;
+      }
+      setSelRect({
+        left: rect.left - parent.left + rect.width / 2,
+        top: rect.top - parent.top,
+      });
+    };
+    document.addEventListener("selectionchange", updateFloatingToolbar);
+    return () => document.removeEventListener("selectionchange", updateFloatingToolbar);
+  }, []);
 
   useEffect(() => {
     if (document.activeElement === editorRef.current) return;
@@ -1344,19 +1379,24 @@ function ComposeWindow({
         <div className="flex items-center gap-3 px-4 min-h-9 border-b border-border/50 py-1.5">
           <span className="text-muted-foreground w-12 shrink-0">To</span>
           <div className="flex flex-1 flex-wrap items-center gap-1.5">
-            {draft.to.map((email) => (
-              <button
-                key={email}
-                onClick={() => onUpdate({ to: draft.to.filter((item) => item !== email) })}
-                className="inline-flex items-center gap-1.5 h-6 pl-1 pr-2 rounded-full bg-foreground/[0.06] text-[12px] hover:bg-foreground/[0.1]"
-              >
-                <span className="grid h-4 w-4 place-items-center rounded-full bg-foreground/15 text-[9px] font-semibold">
-                  {email[0].toUpperCase()}
-                </span>
-                {email}
-                <X className="h-2.5 w-2.5" />
-              </button>
-            ))}
+            {draft.to.map((email) => {
+              const local = email.split("@")[0] ?? email;
+              return (
+                <button
+                  key={email}
+                  onClick={() => onUpdate({ to: draft.to.filter((item) => item !== email) })}
+                  className="group inline-flex items-center gap-1.5 h-7 pl-0.5 pr-2.5 rounded-full bg-background border border-border/70 text-[12px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-foreground/[0.04] dark:bg-white/[0.04] dark:border-white/10"
+                >
+                  <img
+                    src={avatarUrl(local, 40)}
+                    alt=""
+                    className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60"
+                  />
+                  <span className="text-foreground/85">{email}</span>
+                  <X className="h-2.5 w-2.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              );
+            })}
             <input
               onKeyDown={(e) => {
                 if (e.key === "Enter" && e.currentTarget.value.trim()) {
@@ -1452,39 +1492,100 @@ function ComposeWindow({
             ))}
           </div>
         )}
+        {selRect && (
+          <div
+            onMouseDown={(e) => e.preventDefault()}
+            style={{
+              left: selRect.left,
+              top: Math.max(selRect.top - 44, 4),
+              transform: "translateX(-50%)",
+            }}
+            className="pointer-events-auto absolute z-20 flex items-center gap-0.5 rounded-lg bg-neutral-900 px-1 py-1 text-white shadow-[0_8px_24px_-8px_rgba(0,0,0,0.55),0_2px_6px_-2px_rgba(0,0,0,0.35)]"
+          >
+            <FloatBtn icon={Bold} label="Bold" onClick={() => runEditorCommand("bold")} />
+            <FloatBtn icon={Italic} label="Italic" onClick={() => runEditorCommand("italic")} />
+            <FloatBtn
+              icon={Underline}
+              label="Underline"
+              onClick={() => runEditorCommand("underline")}
+            />
+            <FloatBtn
+              icon={Strikethrough}
+              label="Strikethrough"
+              onClick={() => runEditorCommand("strikeThrough")}
+            />
+            <span className="mx-0.5 h-4 w-px bg-white/20" />
+            <FloatBtn
+              icon={AlignLeft}
+              label="Align left"
+              onClick={() => runEditorCommand("justifyLeft")}
+            />
+            <FloatBtn
+              icon={AlignCenter}
+              label="Align center"
+              onClick={() => runEditorCommand("justifyCenter")}
+            />
+            <FloatBtn
+              icon={AlignRight}
+              label="Align right"
+              onClick={() => runEditorCommand("justifyRight")}
+            />
+            <span className="mx-0.5 h-4 w-px bg-white/20" />
+            <FloatBtn
+              icon={Link2}
+              label="Insert link"
+              onClick={() => {
+                const url = window.prompt("Link URL");
+                if (!url) return;
+                const href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+                runEditorCommand("createLink", href);
+              }}
+            />
+          </div>
+        )}
       </div>
       {(draft.attachments.length > 0 || draft.links.length > 0 || draft.images.length > 0) && (
-        <div className="flex flex-wrap gap-1.5 border-t border-border/50 px-4 py-2">
-          {draft.attachments.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-muted/50 px-2 py-1 text-[11px]"
-            >
-              <Paperclip className="h-3 w-3" /> {item}
-            </span>
-          ))}
-          {draft.images.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-muted/50 px-2 py-1 text-[11px]"
-            >
-              <ImageIcon className="h-3 w-3" /> {item}
-            </span>
-          ))}
-          {draft.links.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-muted/50 px-2 py-1 text-[11px]"
-            >
-              <Link2 className="h-3 w-3" /> {item}
-            </span>
-          ))}
+        <div className="border-t border-border/50 px-4 pt-3 pb-3">
+          {(draft.attachments.length > 0 || draft.images.length > 0) && (
+            <div className="text-[11px] text-muted-foreground mb-2">
+              {draft.attachments.length + draft.images.length} attachment
+              {draft.attachments.length + draft.images.length === 1 ? "" : "s"}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {draft.attachments.map((item) => (
+              <AttachmentTile
+                key={item}
+                name={item}
+                onRemove={() =>
+                  onUpdate({ attachments: draft.attachments.filter((n) => n !== item) })
+                }
+              />
+            ))}
+            {draft.images.map((item) => (
+              <AttachmentTile
+                key={item}
+                name={item}
+                onRemove={() =>
+                  onUpdate({ images: draft.images.filter((n) => n !== item) })
+                }
+              />
+            ))}
+            {draft.links.map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 py-1 text-[11px] text-foreground/80"
+              >
+                <Link2 className="h-3 w-3" /> {item}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
       <div
         onPointerDownCapture={() => saveSelection(false)}
-        className="px-3 py-1.5 border-t border-border/60 bg-foreground/[0.025] flex items-center gap-0.5 overflow-visible"
+        className="px-3 py-2 border-t border-border/60 bg-card flex items-center justify-between gap-2"
       >
         <input
           ref={attachmentInputRef}
@@ -1507,233 +1608,138 @@ function ComposeWindow({
             e.currentTarget.value = "";
           }}
         />
-        <div className="relative">
-          <button
-            type="button"
-            aria-label="Font"
-            title="Font"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              if (fontOpen) {
-                clearFontPreview();
-                setFontOpen(false);
-                return;
-              }
-              if (markFontSelection()) setFontOpen(true);
-            }}
-            className="inline-flex h-7 items-center gap-0.5 rounded px-1.5 text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
-          >
-            <Type className="h-3.5 w-3.5" strokeWidth={1.85} />
-            <ChevronDown className="h-3 w-3 opacity-60" />
-          </button>
-          {fontOpen && (
-            <div className="absolute bottom-8 left-0 z-50 w-48 rounded-md border border-border bg-popover p-1.5 text-popover-foreground shadow-md">
-              {[
-                ["Sans serif", "Arial"],
-                ["Serif", "Georgia"],
-                ["Mono", "Courier New"],
-                ["Trebuchet", "Trebuchet MS"],
-                ["Newsreader", "Newsreader"],
-              ].map(([label, font]) => (
-                <button
-                  key={font}
-                  type="button"
-                  onPointerDown={(e) => {
-                    e.preventDefault();
-                    applyFont(font);
-                  }}
-                  className="flex h-8 w-full items-center rounded-md px-2.5 text-left text-[12px] hover:bg-foreground/[0.06]"
-                  style={{ fontFamily: font }}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-        <FmtDivider />
-        <FmtBtn icon={Bold} label="Bold" onClick={() => runEditorCommand("bold")} />
-        <FmtBtn icon={Italic} label="Italic" onClick={() => runEditorCommand("italic")} />
-        <FmtBtn icon={Underline} label="Underline" onClick={() => runEditorCommand("underline")} />
-        <FmtDivider />
-        <FmtBtn
-          icon={AlignLeft}
-          label="Align"
-          withCaret
-          onClick={() => runEditorCommand("justifyCenter")}
-        />
-        <FmtBtn
-          icon={List}
-          label="Bulleted list"
-          onClick={() => runEditorCommand("insertUnorderedList")}
-        />
-        <FmtBtn
-          icon={ListOrdered}
-          label="Numbered list"
-          onClick={() => runEditorCommand("insertOrderedList")}
-        />
-        <FmtDivider />
-        <FmtBtn
-          icon={Paperclip}
-          label="Attach files"
-          onClick={() => attachmentInputRef.current?.click()}
-        />
-        <Popover>
-          <PopoverTrigger asChild>
-            <span>
-              <FmtBtn icon={Link2} label="Insert link" onClick={saveSelection} />
-            </span>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-72 p-3">
-            <div className="space-y-2">
-              <div className="text-[12px] font-medium">Insert link</div>
-              <input
-                value={linkUrl}
-                onChange={(e) => setLinkUrl(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && insertLink()}
-                placeholder="https://example.com"
-                className="h-8 w-full rounded-md border border-border bg-background px-2.5 text-[12px] outline-none focus:border-foreground/30"
-              />
-              <button
-                type="button"
-                onClick={insertLink}
-                className="h-8 rounded-md bg-foreground px-3 text-[12px] font-medium text-background hover:bg-foreground/90"
-              >
-                Apply link
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
-        <FmtBtn
-          icon={ImageIcon}
-          label="Insert image"
-          onClick={() => imageInputRef.current?.click()}
-        />
-        <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
-          <PopoverTrigger asChild>
+        <div className="flex items-center gap-0.5">
+          <IconOnlyBtn
+            icon={Paperclip}
+            label="Attach files"
+            onClick={() => attachmentInputRef.current?.click()}
+          />
+          <IconOnlyBtn
+            icon={ImageIcon}
+            label="Insert image"
+            onClick={() => imageInputRef.current?.click()}
+          />
+          <IconOnlyBtn
+            icon={FileText}
+            label="Use template"
+            onClick={() => toast.success("Template inserted")}
+          />
+          <div className="relative">
             <button
               type="button"
-              aria-label="Emoji"
-              title="Emoji"
-              onMouseDown={(e) => e.preventDefault()}
-              onClick={() => saveSelection()}
-              className="inline-flex h-7 items-center gap-0.5 rounded px-1.5 text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+              aria-label="Font"
+              title="Font"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                if (fontOpen) {
+                  clearFontPreview();
+                  setFontOpen(false);
+                  return;
+                }
+                if (markFontSelection()) setFontOpen(true);
+              }}
+              className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
             >
-              <Smile className="h-3.5 w-3.5" strokeWidth={1.85} />
+              <Type className="h-4 w-4" strokeWidth={1.85} />
             </button>
-          </PopoverTrigger>
-          <PopoverContent align="start" className="w-52 p-2">
-            <div className="grid grid-cols-6 gap-1">
-              {emojiChoices.map((emoji) => (
-                <button
-                  key={emoji}
-                  type="button"
-                  onClick={() => {
-                    insertTextAtSelection(emoji);
-                    onUpdate({ emoji: [...draft.emoji, emoji] });
-                    setEmojiOpen(false);
-                  }}
-                  className="grid h-8 w-8 place-items-center rounded-md text-lg hover:bg-foreground/[0.06]"
-                >
-                  {emoji}
-                </button>
-              ))}
-            </div>
-          </PopoverContent>
-        </Popover>
-      </div>
-
-      <div className="px-3 py-2 border-t border-border/60 bg-card flex items-center justify-between">
-        <div className="flex items-center">
-          <button
-            onClick={onSend}
-            disabled={sending}
-            className="inline-flex items-center h-8 pl-3 pr-3 rounded-l-md bg-foreground text-background text-[12.5px] font-medium hover:bg-foreground/90 disabled:opacity-70"
-          >
-            {sending ? (
-              <Loader2 className="h-3.5 w-3.5 mr-2 animate-spin" />
-            ) : (
-              <Send className="h-3.5 w-3.5 mr-2" strokeWidth={2} />
+            {fontOpen && (
+              <div className="absolute bottom-10 left-0 z-50 w-48 rounded-md border border-border bg-popover p-1.5 text-popover-foreground shadow-md">
+                {[
+                  ["Sans serif", "Arial"],
+                  ["Serif", "Georgia"],
+                  ["Mono", "Courier New"],
+                  ["Trebuchet", "Trebuchet MS"],
+                  ["Newsreader", "Newsreader"],
+                ].map(([label, font]) => (
+                  <button
+                    key={font}
+                    type="button"
+                    onPointerDown={(e) => {
+                      e.preventDefault();
+                      applyFont(font);
+                    }}
+                    className="flex h-8 w-full items-center rounded-md px-2.5 text-left text-[12px] hover:bg-foreground/[0.06]"
+                    style={{ fontFamily: font }}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
             )}
-            {sending ? "Sending..." : "Send"}
-          </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          </div>
+          <Popover open={emojiOpen} onOpenChange={setEmojiOpen}>
+            <PopoverTrigger asChild>
               <button
-                aria-label="Send options"
-                className="grid place-items-center h-8 w-7 rounded-r-md bg-foreground text-background hover:bg-foreground/90 border-l border-background/20"
+                type="button"
+                aria-label="Emoji"
+                title="Emoji"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => saveSelection()}
+                className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
               >
-                <ChevronDown className="h-3.5 w-3.5" />
+                <Smile className="h-4 w-4" strokeWidth={1.85} />
               </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-44">
-              <DropdownMenuItem onClick={onSend} className="text-xs">
-                Send now
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-                className="text-xs"
-              >
-                <Clock className="h-3.5 w-3.5" /> Schedule send
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => {
-                  onSend();
-                  toast.message("Will archive after send");
-                }}
-                className="text-xs"
-              >
-                Send and archive
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </PopoverTrigger>
+            <PopoverContent align="start" className="w-52 p-2">
+              <div className="grid grid-cols-6 gap-1">
+                {emojiChoices.map((emoji) => (
+                  <button
+                    key={emoji}
+                    type="button"
+                    onClick={() => {
+                      insertTextAtSelection(emoji);
+                      onUpdate({ emoji: [...draft.emoji, emoji] });
+                      setEmojiOpen(false);
+                    }}
+                    className="grid h-8 w-8 place-items-center rounded-md text-lg hover:bg-foreground/[0.06]"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
+          <IconOnlyBtn
+            icon={UserIcon}
+            label="Contacts"
+            onClick={() => toast.message("Contacts")}
+          />
+          <span className="mx-1 h-5 w-px bg-border/70" />
+          <IconOnlyBtn
+            icon={Clock}
+            label="Schedule send"
+            onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
+          />
+          <IconOnlyBtn icon={Trash2} label="Discard" onClick={onDiscard} />
         </div>
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           <button
             onClick={onRegenerate}
             disabled={regenerating}
-            className="inline-flex h-7 items-center gap-1 px-2.5 text-[11.5px] rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] disabled:opacity-70"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-border/70 bg-background text-[12px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
           >
             {regenerating ? (
-              <Loader2 className="h-3 w-3 animate-spin" />
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
             ) : (
-              <Sparkles className="h-3 w-3" />
+              <SyraMark size={14} />
             )}
-            Syra: Regenerate
+            Ask AI
           </button>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <button
-                className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06]"
-                aria-label="More"
-              >
-                <MoreHorizontal className="h-4 w-4" />
-              </button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={() => toast.success("Draft saved")} className="text-xs">
-                Save draft
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => toast.success("Plain text mode enabled")}
-                className="text-xs"
-              >
-                Plain text mode
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => toast.success("Marked high priority")}
-                className="text-xs"
-              >
-                High priority
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
           <button
-            onClick={onDiscard}
-            className="grid h-7 w-7 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06]"
-            aria-label="Discard"
+            onClick={onSend}
+            disabled={sending}
+            className="inline-flex items-center gap-1.5 h-8 px-4 rounded-md bg-foreground text-background text-[12.5px] font-medium hover:bg-foreground/90 disabled:opacity-70"
           >
-            <Trash2 className="h-4 w-4" />
+            {sending ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Sending...
+              </>
+            ) : (
+              <>
+                Send
+                <Send className="h-3.5 w-3.5" strokeWidth={2} />
+              </>
+            )}
           </button>
         </div>
       </div>
@@ -1763,4 +1769,79 @@ function AddressLine({
       />
     </div>
   );
+}
+
+function IconOnlyBtn({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+    >
+      <Icon className="h-4 w-4" strokeWidth={1.85} />
+    </button>
+  );
+}
+
+function FloatBtn({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className="grid h-7 w-7 place-items-center rounded-md text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+    >
+      <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+    </button>
+  );
+}
+
+function AttachmentTile({ name, onRemove }: { name: string; onRemove: () => void }) {
+  const ext = (name.split(".").pop() || "file").toUpperCase().slice(0, 4);
+  const size = `${(Math.abs(hashString(name)) % 900 + 80).toFixed(0)} KB`;
+  return (
+    <div className="group inline-flex items-center gap-2.5 rounded-md border border-border/70 bg-background pl-1.5 pr-2.5 py-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <span className="grid h-8 w-8 place-items-center rounded-md bg-foreground/[0.06] text-[9px] font-semibold tracking-wide text-foreground/70">
+        {ext}
+      </span>
+      <div className="flex flex-col leading-tight">
+        <span className="text-[12px] text-foreground/90 max-w-[160px] truncate">{name}</span>
+        <span className="text-[10.5px] text-muted-foreground">{size}</span>
+      </div>
+      <button
+        onClick={onRemove}
+        aria-label="Remove attachment"
+        className="ml-1 grid h-5 w-5 place-items-center rounded-full text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-foreground/[0.06] hover:text-foreground"
+      >
+        <X className="h-3 w-3" />
+      </button>
+    </div>
+  );
+}
+
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return h;
 }
