@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   Inbox as InboxIcon,
   Star,
@@ -23,6 +23,9 @@ import {
   List,
   ListOrdered,
   AlignLeft,
+  AlignCenter,
+  AlignRight,
+  Strikethrough,
   Image as ImageIcon,
   Paperclip,
   Smile,
@@ -35,6 +38,8 @@ import {
   Loader2,
   Sparkles,
   RefreshCw,
+  FileText,
+  User as UserIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -49,6 +54,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { SyraMark } from "@/components/syra-mark";
+import { avatarUrl } from "@/lib/avatar";
 
 
 export const Route = createFileRoute("/inbox")({
