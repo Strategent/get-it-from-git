@@ -509,7 +509,7 @@
     font-size: clamp(26px, 8cqw, 34px) !important;
   }
   [data-density="compact"] > section > div:nth-child(1) > p {
-    max-width: 52cqw;
+    max-width: 44cqw;
     font-size: 12px;
   }
   [data-density="compact"] > section > div:nth-child(1) > button {
