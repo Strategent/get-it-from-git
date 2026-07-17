@@ -503,19 +503,28 @@
 @container daily-brief-card (max-width: 640px) {
   [data-density="compact"] > section > div:nth-child(1) {
     max-width: 100%;
-    padding: 20px 22px;
+    padding: 18px 20px;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > h1 {
+    font-size: clamp(26px, 8cqw, 34px) !important;
   }
   [data-density="compact"] > section > div:nth-child(1) > p {
-    max-width: 62cqw;
+    max-width: 52cqw;
+    font-size: 12px;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > button {
+    margin-top: 14px;
+    padding: 8px 16px;
+    font-size: 12px;
   }
   .daily-brief-document {
-    right: 14px;
-    bottom: 14px;
-    width: 34cqw;
+    right: 12px;
+    bottom: 12px;
+    width: 38cqw;
     min-width: 130px;
-    max-width: 180px;
+    max-width: 170px;
     height: auto;
-    max-height: 62cqh;
+    max-height: 70cqh;
     padding: 10px 12px;
     border-radius: 6px;
   }
