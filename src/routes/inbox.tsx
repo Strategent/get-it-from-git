@@ -1491,6 +1491,7 @@ function ComposeWindow({
               />
             ))}
           </div>
+        )}
         {selRect && (
           <div
             onMouseDown={(e) => e.preventDefault()}
