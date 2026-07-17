@@ -506,7 +506,8 @@
     padding: 18px 20px;
   }
   [data-density="compact"] > section > div:nth-child(1) > h1 {
-    font-size: clamp(26px, 8cqw, 34px) !important;
+    font-size: clamp(24px, 7cqw, 32px) !important;
+    max-width: 55cqw;
   }
   [data-density="compact"] > section > div:nth-child(1) > p {
     max-width: 32cqw !important;
