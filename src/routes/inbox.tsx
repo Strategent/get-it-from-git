@@ -987,6 +987,35 @@ function ComposeWindow({
   const [linkUrl, setLinkUrl] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [fontOpen, setFontOpen] = useState(false);
+  const [selRect, setSelRect] = useState<{ left: number; top: number } | null>(null);
+
+  useEffect(() => {
+    const updateFloatingToolbar = () => {
+      const sel = window.getSelection();
+      const editor = editorRef.current;
+      if (!sel || !editor || sel.rangeCount === 0 || sel.isCollapsed) {
+        setSelRect(null);
+        return;
+      }
+      const range = sel.getRangeAt(0);
+      if (!editor.contains(range.commonAncestorContainer)) {
+        setSelRect(null);
+        return;
+      }
+      const rect = range.getBoundingClientRect();
+      const parent = editor.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        setSelRect(null);
+        return;
+      }
+      setSelRect({
+        left: rect.left - parent.left + rect.width / 2,
+        top: rect.top - parent.top,
+      });
+    };
+    document.addEventListener("selectionchange", updateFloatingToolbar);
+    return () => document.removeEventListener("selectionchange", updateFloatingToolbar);
+  }, []);
 
   useEffect(() => {
     if (document.activeElement === editorRef.current) return;
