@@ -84,12 +84,13 @@ export function DailyBriefHero({
   return (
     <>
     <section
-      className="daily-brief-hero-bg relative h-full w-full"
+      className="daily-brief-hero-bg relative h-full w-full overflow-hidden"
       style={{ borderRadius: "var(--radius)" }}
     >
+
       {/* Left zone — eyebrow, headline, summary (no button) */}
       <div className="relative z-10 flex h-full flex-col justify-center px-7 py-8 lg:max-w-[52%] lg:px-12 lg:py-12">
-        <span className="font-serif-display text-[12px] uppercase tracking-[0.18em] text-white/85 lg:text-[13px]">
+        <span className="font-serif-display text-[12px] uppercase tracking-[0.18em] text-white/90 lg:text-[13px]">
           Syra <span className="mx-1.5">→</span> Daily Brief
         </span>
 
@@ -100,7 +101,7 @@ export function DailyBriefHero({
           Welcome back, John.
         </h1>
 
-        <p className="mt-5 max-w-[28rem] text-[14px] leading-relaxed text-white/85 lg:text-[15px]">
+        <p className="mt-5 max-w-[28rem] text-[14px] leading-relaxed text-white/90 lg:text-[15px]">
           {summary}
         </p>
 
@@ -115,7 +116,7 @@ export function DailyBriefHero({
 
 
       {/* Right zone — white brief document, top-aligned with margin */}
-      <div className="daily-brief-document absolute z-10 hidden overflow-hidden rounded-[6px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35)] lg:block">
+      <div className="daily-brief-document absolute z-10 overflow-hidden rounded-[6px] bg-white shadow-[0_20px_60px_rgba(0,0,0,0.35)]">
         <p className="font-sans text-[5px] uppercase tracking-[0.1em] text-neutral-500 whitespace-nowrap">
           {brief.date} · {brief.workspace}
         </p>

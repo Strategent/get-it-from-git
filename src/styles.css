@@ -458,11 +458,7 @@
 }
 [data-density="compact"] > section > div:nth-child(1) > p {
   margin-top: clamp(10px, 3.5cqh, 16px);
-  display: -webkit-box;
   max-width: min(26rem, 44cqw);
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
   font-size: clamp(12px, min(4.2cqh, 1.25cqw), 14px);
   line-height: 1.55;
 }
@@ -499,6 +495,40 @@
   .daily-brief-cta {
     padding: 10px 20px;
     font-size: 13px;
+  }
+}
+
+/* Narrow container (mobile) — dock the brief document as a small preview
+   pinned to the bottom-right, and let the left text zone use full width. */
+@container daily-brief-card (max-width: 640px) {
+  [data-density="compact"] > section > div:nth-child(1) {
+    max-width: 100%;
+    padding: 18px 20px;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > h1 {
+    font-size: clamp(22px, 6.4cqw, 30px) !important;
+    max-width: 48cqw !important;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > p {
+    max-width: 32cqw !important;
+    font-size: 12px;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > button {
+    margin-top: 14px;
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+  .daily-brief-document {
+    right: 12px;
+    bottom: 12px;
+    top: auto;
+    width: 42cqw;
+    min-width: 140px;
+    max-width: 170px;
+    height: 52cqh;
+    max-height: 52cqh;
+    padding: 10px 12px;
+    border-radius: 6px;
   }
 }
 
@@ -557,6 +587,15 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
+}
+.daily-brief-hero-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.30) 45%, rgba(0,0,0,0) 75%);
+  z-index: 0;
 }
 .daily-brief-grain {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)'/%3E%3C/svg%3E");
