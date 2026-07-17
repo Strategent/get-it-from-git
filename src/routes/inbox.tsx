@@ -1770,3 +1770,78 @@ function AddressLine({
     </div>
   );
 }
+
+function IconOnlyBtn({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+    >
+      <Icon className="h-4 w-4" strokeWidth={1.85} />
+    </button>
+  );
+}
+
+function FloatBtn({
+  icon: Icon,
+  label,
+  onClick,
+}: {
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  label: string;
+  onClick?: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      title={label}
+      onMouseDown={(e) => e.preventDefault()}
+      onClick={onClick}
+      className="grid h-7 w-7 place-items-center rounded-md text-white/85 transition-colors hover:bg-white/10 hover:text-white"
+    >
+      <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+    </button>
+  );
+}
+
+function AttachmentTile({ name, onRemove }: { name: string; onRemove: () => void }) {
+  const ext = (name.split(".").pop() || "file").toUpperCase().slice(0, 4);
+  const size = `${(Math.abs(hashString(name)) % 900 + 80).toFixed(0)} KB`;
+  return (
+    <div className="group inline-flex items-center gap-2.5 rounded-md border border-border/70 bg-background pl-1.5 pr-2.5 py-1.5 shadow-[0_1px_2px_rgba(0,0,0,0.04)]">
+      <span className="grid h-8 w-8 place-items-center rounded-md bg-foreground/[0.06] text-[9px] font-semibold tracking-wide text-foreground/70">
+        {ext}
+      </span>
+      <div className="flex flex-col leading-tight">
+        <span className="text-[12px] text-foreground/90 max-w-[160px] truncate">{name}</span>
+        <span className="text-[10.5px] text-muted-foreground">{size}</span>
+      </div>
+      <button
+        onClick={onRemove}
+        aria-label="Remove attachment"
+        className="ml-1 grid h-5 w-5 place-items-center rounded-full text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-foreground/[0.06] hover:text-foreground"
+      >
+        <X className="h-3 w-3" />
+      </button>
+    </div>
+  );
+}
+
+function hashString(s: string): number {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0;
+  return h;
+}
