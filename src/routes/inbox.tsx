@@ -1465,31 +1465,41 @@ function ComposeWindow({
         )}
       </div>
       {(draft.attachments.length > 0 || draft.links.length > 0 || draft.images.length > 0) && (
-        <div className="flex flex-wrap gap-1.5 border-t border-border/50 px-4 py-2">
-          {draft.attachments.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-muted/50 px-2 py-1 text-[11px]"
-            >
-              <Paperclip className="h-3 w-3" /> {item}
-            </span>
-          ))}
-          {draft.images.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-muted/50 px-2 py-1 text-[11px]"
-            >
-              <ImageIcon className="h-3 w-3" /> {item}
-            </span>
-          ))}
-          {draft.links.map((item) => (
-            <span
-              key={item}
-              className="inline-flex items-center gap-1 rounded-md border border-border/70 bg-muted/50 px-2 py-1 text-[11px]"
-            >
-              <Link2 className="h-3 w-3" /> {item}
-            </span>
-          ))}
+        <div className="border-t border-border/50 px-4 pt-3 pb-3">
+          {(draft.attachments.length > 0 || draft.images.length > 0) && (
+            <div className="text-[11px] text-muted-foreground mb-2">
+              {draft.attachments.length + draft.images.length} attachment
+              {draft.attachments.length + draft.images.length === 1 ? "" : "s"}
+            </div>
+          )}
+          <div className="flex flex-wrap gap-2">
+            {draft.attachments.map((item) => (
+              <AttachmentTile
+                key={item}
+                name={item}
+                onRemove={() =>
+                  onUpdate({ attachments: draft.attachments.filter((n) => n !== item) })
+                }
+              />
+            ))}
+            {draft.images.map((item) => (
+              <AttachmentTile
+                key={item}
+                name={item}
+                onRemove={() =>
+                  onUpdate({ images: draft.images.filter((n) => n !== item) })
+                }
+              />
+            ))}
+            {draft.links.map((item) => (
+              <span
+                key={item}
+                className="inline-flex items-center gap-1.5 rounded-md border border-border/70 bg-background px-2 py-1 text-[11px] text-foreground/80"
+              >
+                <Link2 className="h-3 w-3" /> {item}
+              </span>
+            ))}
+          </div>
         </div>
       )}
 
