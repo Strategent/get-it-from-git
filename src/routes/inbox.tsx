@@ -1491,6 +1491,56 @@ function ComposeWindow({
               />
             ))}
           </div>
+        {selRect && (
+          <div
+            onMouseDown={(e) => e.preventDefault()}
+            style={{
+              left: selRect.left,
+              top: Math.max(selRect.top - 44, 4),
+              transform: "translateX(-50%)",
+            }}
+            className="pointer-events-auto absolute z-20 flex items-center gap-0.5 rounded-lg bg-neutral-900 px-1 py-1 text-white shadow-[0_8px_24px_-8px_rgba(0,0,0,0.55),0_2px_6px_-2px_rgba(0,0,0,0.35)]"
+          >
+            <FloatBtn icon={Bold} label="Bold" onClick={() => runEditorCommand("bold")} />
+            <FloatBtn icon={Italic} label="Italic" onClick={() => runEditorCommand("italic")} />
+            <FloatBtn
+              icon={Underline}
+              label="Underline"
+              onClick={() => runEditorCommand("underline")}
+            />
+            <FloatBtn
+              icon={Strikethrough}
+              label="Strikethrough"
+              onClick={() => runEditorCommand("strikeThrough")}
+            />
+            <span className="mx-0.5 h-4 w-px bg-white/20" />
+            <FloatBtn
+              icon={AlignLeft}
+              label="Align left"
+              onClick={() => runEditorCommand("justifyLeft")}
+            />
+            <FloatBtn
+              icon={AlignCenter}
+              label="Align center"
+              onClick={() => runEditorCommand("justifyCenter")}
+            />
+            <FloatBtn
+              icon={AlignRight}
+              label="Align right"
+              onClick={() => runEditorCommand("justifyRight")}
+            />
+            <span className="mx-0.5 h-4 w-px bg-white/20" />
+            <FloatBtn
+              icon={Link2}
+              label="Insert link"
+              onClick={() => {
+                const url = window.prompt("Link URL");
+                if (!url) return;
+                const href = /^https?:\/\//i.test(url) ? url : `https://${url}`;
+                runEditorCommand("createLink", href);
+              }}
+            />
+          </div>
         )}
       </div>
       {(draft.attachments.length > 0 || draft.links.length > 0 || draft.images.length > 0) && (
