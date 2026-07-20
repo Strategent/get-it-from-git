@@ -4,10 +4,13 @@ import type { GridStack, GridStackOptions } from "gridstack";
 // gridstack base CSS is imported in styles.css (before our Origin overrides).
 import { cn } from "@/lib/utils";
 
-/** Drag/resize is disabled and cards stack below this viewport width. */
+/** Below this width the grid collapses to one column (touch layout). */
 const STATIC_QUERY = "(max-width: 1023px)";
 /** How long the pointer must be held on a card to enter Apple-style edit mode. */
 const LONG_PRESS_MS = 550;
+/** Slightly longer hold on touch devices — matches iOS "hold to rearrange". */
+const LONG_PRESS_TOUCH_MS = 650;
+
 
 export type BentoItem = {
   id: string;
