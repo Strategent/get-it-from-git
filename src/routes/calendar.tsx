@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -57,12 +57,33 @@ const bookings: Record<number, Meeting[]> = {
   ],
 };
 
-// Host → subtle monochrome pip color (kept desaturated per project style)
-const hostPip: Record<string, string> = {
-  "John Harwick": "#9ca3af",
-  "Avery Sterne": "#71717a",
-  "Priya Shah": "#a3a3a3",
+// iOS system colors — used as meeting-kind tag palette
+type Ios = { name: string; solid: string; tint: string; text: string };
+const IOS: Record<string, Ios> = {
+  blue:    { name: "Blue",    solid: "#0A84FF", tint: "rgba(10,132,255,0.16)",  text: "#7CB8FF" },
+  indigo:  { name: "Indigo",  solid: "#5E5CE6", tint: "rgba(94,92,230,0.16)",   text: "#A6A5F3" },
+  purple:  { name: "Purple",  solid: "#BF5AF2", tint: "rgba(191,90,242,0.16)",  text: "#D9A2F7" },
+  pink:    { name: "Pink",    solid: "#FF375F", tint: "rgba(255,55,95,0.16)",   text: "#FF8FA6" },
+  red:     { name: "Red",     solid: "#FF453A", tint: "rgba(255,69,58,0.16)",   text: "#FF8F87" },
+  orange:  { name: "Orange",  solid: "#FF9F0A", tint: "rgba(255,159,10,0.16)",  text: "#FFC069" },
+  yellow:  { name: "Yellow",  solid: "#FFD60A", tint: "rgba(255,214,10,0.16)",  text: "#FFE066" },
+  green:   { name: "Green",   solid: "#32D74B", tint: "rgba(50,215,75,0.16)",   text: "#78E28C" },
+  mint:    { name: "Mint",    solid: "#66D4CF", tint: "rgba(102,212,207,0.16)", text: "#9EE3DF" },
+  teal:    { name: "Teal",    solid: "#40C8E0", tint: "rgba(64,200,224,0.16)",  text: "#7FDBEC" },
 };
+
+const kindColor: Record<string, keyof typeof IOS> = {
+  "Client review": "blue",
+  "Estate planning": "indigo",
+  "Portfolio review": "mint",
+  "Quarterly review": "orange",
+  "Onboarding": "green",
+  "Roundtable": "purple",
+  "Estate review": "indigo",
+  "Internal": "pink",
+};
+
+const colorFor = (kind: string): Ios => IOS[kindColor[kind] ?? "blue"];
 
 function CalendarPage() {
   const today = new Date(2026, 0, 16);
@@ -102,13 +123,6 @@ function CalendarPage() {
   const confirmed = Object.values(bookings).flat().filter((m) => m.status === "Confirmed").length;
   const pending = totalThisMonth - confirmed;
 
-  // Upcoming (next 3 across month) for the left rail
-  const upcoming = Object.entries(bookings)
-    .flatMap(([d, list]) => list.map((m) => ({ ...m, day: Number(d) })))
-    .filter((m) => m.day >= today.getDate())
-    .sort((a, b) => a.day - b.day || a.time.localeCompare(b.time))
-    .slice(0, 4);
-
   return (
     <PageShell>
       <PageHeader
@@ -124,9 +138,7 @@ function CalendarPage() {
                 <Command className="h-2.5 w-2.5" /> K
               </span>
             </div>
-            <Button variant="outline" size="icon" className="h-9 w-9" aria-label="Filter">
-              <Filter className="h-4 w-4" strokeWidth={1.75} />
-            </Button>
+            <FilterMenu total={totalThisMonth} confirmed={confirmed} pending={pending} />
             <Button size="sm" className="h-9 gap-1.5">
               <Plus className="h-4 w-4" strokeWidth={2} />
               New meeting
@@ -150,62 +162,13 @@ function CalendarPage() {
         ))}
       </div>
 
-      {/* Two-pane workspace — Linear style */}
-      <div className="-mx-4 sm:-mx-6 md:-mx-8 grid grid-cols-1 lg:grid-cols-[240px_1fr] border-b border-border/50">
-        {/* Left context rail */}
-        <aside className="hidden lg:flex flex-col border-r border-border/50 bg-muted/[0.25] dark:bg-white/[0.015]">
-          <RailSection title="Views">
-            <RailItem label="All meetings" count={totalThisMonth} active />
-            <RailItem label="My schedule" count={5} />
-            <RailItem label="Client-facing" count={4} />
-            <RailItem label="Internal" count={1} />
-          </RailSection>
-
-          <RailSection title="Hosts">
-            {Object.entries(hostPip).map(([name, color]) => (
-              <RailItem
-                key={name}
-                label={name}
-                dotColor={color}
-                count={Object.values(bookings).flat().filter((m) => m.host === name).length}
-              />
-            ))}
-          </RailSection>
-
-          <RailSection title="Up next">
-            <div className="px-3 pb-3 space-y-1.5">
-              {upcoming.map((m, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedDay(m.day)}
-                  className="group w-full text-left rounded-sm border border-border/50 bg-card/70 hover:bg-card px-2.5 py-2 transition-colors"
-                >
-                  <div className="flex items-center justify-between text-[10.5px] uppercase tracking-[0.14em] text-muted-foreground">
-                    <span>{monthShort(viewMonth)} {m.day}</span>
-                    <span className="tabular-nums">{m.time}</span>
-                  </div>
-                  <div className="mt-1 text-[12px] font-medium text-foreground/90 truncate">
-                    {m.client}
-                  </div>
-                  <div className="mt-0.5 flex items-center gap-1.5 text-[10.5px] text-muted-foreground">
-                    <span
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: hostPip[m.host] ?? "#9ca3af" }}
-                    />
-                    {m.host}
-                  </div>
-                </button>
-              ))}
-            </div>
-          </RailSection>
-        </aside>
-
-        {/* Main calendar column */}
-        <div className="min-w-0">
-          {/* Sticky toolbar */}
+      {/* Main calendar surface — raised card with subtle depth */}
+      <div className="-mx-4 sm:-mx-6 md:-mx-8 border-b border-border/50">
+        <div className="bg-card/60 dark:bg-white/[0.02] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+          {/* Toolbar */}
           <div className="sticky top-0 z-10 flex items-center justify-between gap-3 flex-wrap px-4 sm:px-6 md:px-8 py-3 border-b border-border/50 bg-background/85 backdrop-blur-md">
             <div className="flex items-center gap-3">
-              <div className="text-[14px] font-semibold tracking-tight">{monthLabel}</div>
+              <div className="text-[15px] font-semibold tracking-tight">{monthLabel}</div>
               <div className="flex items-center gap-0.5">
                 <button
                   onClick={() => navMonth(-1)}
@@ -244,7 +207,7 @@ function CalendarPage() {
           </div>
 
           {/* Day-of-week header */}
-          <div className="grid grid-cols-7 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80 bg-muted/[0.15] dark:bg-white/[0.01]">
+          <div className="grid grid-cols-7 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80 bg-muted/[0.2] dark:bg-white/[0.015]">
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
               <div key={d} className="px-3 py-2 border-r border-border/40 last:border-r-0">
                 {d}
@@ -266,15 +229,15 @@ function CalendarPage() {
                   key={i}
                   onClick={() => d && setSelectedDay(d)}
                   disabled={!d}
-                  className={`group relative text-left min-h-[112px] px-2.5 py-2 border-r border-border/40 last:border-r-0 ${
+                  className={`group relative text-left min-h-[116px] px-2 py-2 border-r border-border/40 last:border-r-0 ${
                     rowEnd ? "" : "border-b"
                   } transition-colors ${
                     !d
                       ? "bg-muted/10 cursor-default"
                       : isSelected
-                      ? "bg-foreground/[0.055] ring-1 ring-inset ring-foreground/15"
+                      ? "bg-foreground/[0.05] ring-1 ring-inset ring-foreground/15"
                       : isWeekend
-                      ? "bg-muted/[0.12] dark:bg-white/[0.008] hover:bg-foreground/[0.03]"
+                      ? "bg-muted/[0.12] dark:bg-white/[0.012] hover:bg-foreground/[0.03]"
                       : "hover:bg-foreground/[0.03]"
                   }`}
                 >
@@ -282,9 +245,9 @@ function CalendarPage() {
                     <>
                       <div className="flex items-center justify-between">
                         <span
-                          className={`inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11.5px] tabular-nums ${
+                          className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[12px] tabular-nums ${
                             isToday
-                              ? "bg-foreground text-background font-semibold"
+                              ? "bg-[#FF453A] text-white font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
                               : isSelected
                               ? "text-foreground font-semibold"
                               : "text-foreground/75"
@@ -293,35 +256,42 @@ function CalendarPage() {
                           {d}
                         </span>
                         {meetings.length > 0 && (
-                          <span className="flex items-center gap-1 text-[10px] tabular-nums text-muted-foreground">
+                          <span className="flex items-center gap-0.5">
                             {meetings.slice(0, 3).map((m, idx) => (
                               <span
                                 key={idx}
                                 className="h-1.5 w-1.5 rounded-full"
-                                style={{ background: hostPip[m.host] ?? "#9ca3af" }}
+                                style={{ background: colorFor(m.kind).solid }}
                               />
                             ))}
                           </span>
                         )}
                       </div>
-                      <div className="mt-1.5 space-y-0.5">
-                        {meetings.slice(0, 3).map((m, mi) => (
-                          <div
-                            key={mi}
-                            className={`flex items-center gap-1.5 truncate rounded-sm px-1 py-0.5 text-[10.5px] leading-tight ${
-                              m.status === "Confirmed"
-                                ? "bg-foreground/[0.06] text-foreground/90 hover:bg-foreground/[0.09]"
-                                : "border border-dashed border-border/70 text-muted-foreground"
-                            }`}
-                          >
-                            <span
-                              className="h-1 w-1 rounded-full shrink-0"
-                              style={{ background: hostPip[m.host] ?? "#9ca3af" }}
-                            />
-                            <span className="tabular-nums font-medium">{m.time}</span>
-                            <span className="text-foreground/70 truncate">{m.client}</span>
-                          </div>
-                        ))}
+                      <div className="mt-1.5 space-y-1">
+                        {meetings.slice(0, 3).map((m, mi) => {
+                          const c = colorFor(m.kind);
+                          const isPending = m.status === "Pending";
+                          return (
+                            <div
+                              key={mi}
+                              className={`flex items-center gap-1.5 truncate rounded-[5px] pl-1.5 pr-1 py-[3px] text-[10.5px] leading-tight transition-colors ${
+                                isPending ? "border border-dashed" : ""
+                              }`}
+                              style={
+                                isPending
+                                  ? { borderColor: `${c.solid}66`, color: c.text }
+                                  : { background: c.tint, color: c.text }
+                              }
+                            >
+                              <span
+                                className="h-2.5 w-[3px] rounded-[1px] shrink-0"
+                                style={{ background: c.solid }}
+                              />
+                              <span className="tabular-nums font-semibold">{m.time}</span>
+                              <span className="truncate opacity-90">{m.client}</span>
+                            </div>
+                          );
+                        })}
                         {meetings.length > 3 && (
                           <div className="text-[10px] text-muted-foreground pl-1">
                             +{meetings.length - 3} more
@@ -337,7 +307,7 @@ function CalendarPage() {
         </div>
       </div>
 
-      {/* Agenda — Linear-style time rail */}
+      {/* Agenda */}
       <div className="pt-6">
         <div className="flex items-end justify-between flex-wrap gap-3 pb-4">
           <div>
@@ -365,131 +335,326 @@ function CalendarPage() {
             </div>
           </div>
         ) : (
-          <div className="relative rounded-sm border border-border/60 bg-card/40 overflow-hidden">
-            {/* left hour-rail vertical guideline */}
-            <div className="absolute left-[76px] top-0 bottom-0 w-px bg-border/50 pointer-events-none" />
+          <div className="relative rounded-sm border border-border/60 bg-card/60 dark:bg-white/[0.02] overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_8px_24px_-16px_rgba(0,0,0,0.6)]">
             <ul className="divide-y divide-border/40">
-              {dayMeetings.map((m, i) => (
-                <li
-                  key={i}
-                  className="group relative flex items-stretch gap-4 pl-4 pr-3 py-3.5 hover:bg-foreground/[0.025] transition-colors"
-                >
-                  <div className="relative w-[60px] shrink-0 py-0.5">
-                    <div className="text-[13px] font-semibold tabular-nums tracking-tight leading-none">
-                      {m.time}
-                    </div>
-                    <div className="mt-1 text-[10.5px] tabular-nums text-muted-foreground leading-none">
-                      → {m.end}
-                    </div>
-                  </div>
-                  {/* rail node */}
-                  <div className="relative w-3 shrink-0 flex justify-center">
+              {dayMeetings.map((m, i) => {
+                const c = colorFor(m.kind);
+                return (
+                  <li
+                    key={i}
+                    className="group relative flex items-stretch gap-4 pl-0 pr-3 py-3.5 hover:bg-foreground/[0.025] transition-colors"
+                  >
+                    {/* Left color bar — iOS style */}
                     <span
-                      className="mt-1.5 h-2.5 w-2.5 rounded-full ring-4 ring-background"
-                      style={{ background: hostPip[m.host] ?? "#9ca3af" }}
+                      aria-hidden
+                      className="w-[3px] shrink-0 self-stretch my-1 rounded-r-sm"
+                      style={{ background: c.solid, boxShadow: `0 0 12px ${c.solid}55` }}
                     />
-                  </div>
-                  <div className="min-w-0 flex-1 py-0.5">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-[13.5px] font-semibold truncate">{m.client}</span>
-                      <span className="inline-flex items-center gap-1 h-4.5 rounded-sm border border-border/60 px-1.5 text-[10px] font-medium text-foreground/75 bg-background/50">
-                        {m.kind}
-                      </span>
-                      {m.status === "Confirmed" ? (
-                        <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-foreground/70">
-                          <Check className="h-2.5 w-2.5" strokeWidth={2.5} />
-                          Confirmed
+                    <div className="relative w-[60px] shrink-0 py-0.5 pl-3">
+                      <div className="text-[13px] font-semibold tabular-nums tracking-tight leading-none">
+                        {m.time}
+                      </div>
+                      <div className="mt-1 text-[10.5px] tabular-nums text-muted-foreground leading-none">
+                        → {m.end}
+                      </div>
+                    </div>
+                    <div className="min-w-0 flex-1 py-0.5">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-[13.5px] font-semibold truncate">{m.client}</span>
+                        <span
+                          className="inline-flex items-center gap-1 h-[18px] rounded-full px-2 text-[10px] font-semibold"
+                          style={{ background: c.tint, color: c.text }}
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full"
+                            style={{ background: c.solid }}
+                          />
+                          {m.kind}
                         </span>
-                      ) : (
-                        <span className="text-[10.5px] italic text-muted-foreground">Pending</span>
-                      )}
+                        {m.status === "Confirmed" ? (
+                          <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-foreground/70">
+                            <Check className="h-2.5 w-2.5" strokeWidth={2.5} />
+                            Confirmed
+                          </span>
+                        ) : (
+                          <span className="text-[10.5px] italic text-muted-foreground">Pending</span>
+                        )}
+                      </div>
+                      <div className="mt-1 flex items-center gap-3 text-[11.5px] text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <img
+                            src={avatarUrl(m.host)}
+                            alt=""
+                            className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60"
+                          />
+                          {m.host}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <MapPin className="h-3 w-3" strokeWidth={1.75} /> {m.location}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <Users className="h-3 w-3" strokeWidth={1.75} /> {m.attendees ?? 2}
+                        </span>
+                      </div>
                     </div>
-                    <div className="mt-1 flex items-center gap-3 text-[11.5px] text-muted-foreground">
-                      <span className="inline-flex items-center gap-1">
-                        <img
-                          src={avatarUrl(m.host)}
-                          alt=""
-                          className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60"
-                        />
-                        {m.host}
-                      </span>
-                      <span className="inline-flex items-center gap-1">
-                        <MapPin className="h-3 w-3" strokeWidth={1.75} /> {m.location}
-                      </span>
-                      <span className="inline-flex items-center gap-1">
-                        <Users className="h-3 w-3" strokeWidth={1.75} /> {m.attendees ?? 2}
-                      </span>
+                    <div className="flex items-center gap-1.5 shrink-0 self-center">
+                      <a
+                        href={m.zoom}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-foreground text-background px-3 text-[11.5px] font-semibold hover:bg-foreground/90 transition-colors"
+                      >
+                        <Video className="h-3.5 w-3.5" strokeWidth={2} /> Join
+                      </a>
+                      <button
+                        aria-label="More"
+                        className="grid h-8 w-8 place-items-center rounded-sm border border-border/70 bg-card text-foreground/70 hover:bg-foreground/[0.05]"
+                      >
+                        <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
+                      </button>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 shrink-0 self-center">
-                    <a
-                      href={m.zoom}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-foreground text-background px-3 text-[11.5px] font-semibold hover:bg-foreground/90 transition-colors"
-                    >
-                      <Video className="h-3.5 w-3.5" strokeWidth={2} /> Join
-                    </a>
-                    <button
-                      aria-label="More"
-                      className="grid h-8 w-8 place-items-center rounded-sm border border-border/70 bg-card text-foreground/70 hover:bg-foreground/[0.05]"
-                    >
-                      <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
-                    </button>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         )}
+      </div>
+
+      {/* Legend */}
+      <div className="flex flex-wrap gap-2 pt-4">
+        {Object.entries(kindColor).map(([kind, key]) => {
+          const c = IOS[key];
+          return (
+            <span
+              key={kind}
+              className="inline-flex items-center gap-1.5 h-[22px] rounded-full px-2.5 text-[10.5px] font-medium"
+              style={{ background: c.tint, color: c.text }}
+            >
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.solid }} />
+              {kind}
+            </span>
+          );
+        })}
       </div>
     </PageShell>
   );
 }
 
-function RailSection({ title, children }: { title: string; children: React.ReactNode }) {
+function FilterMenu({
+  total,
+  confirmed,
+  pending,
+}: {
+  total: number;
+  confirmed: number;
+  pending: number;
+}) {
+  const [open, setOpen] = useState(false);
+  const [view, setView] = useState<"all" | "mine" | "client" | "internal">("all");
+  const [statuses, setStatuses] = useState({ Confirmed: true, Pending: true });
+  const [hosts, setHosts] = useState({
+    "John Harwick": true,
+    "Avery Sterne": true,
+    "Priya Shah": true,
+  });
+  const [kinds, setKinds] = useState<Record<string, boolean>>(
+    Object.fromEntries(Object.keys(kindColor).map((k) => [k, true])),
+  );
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClick = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const activeCount =
+    (view !== "all" ? 1 : 0) +
+    Object.values(statuses).filter((v) => !v).length +
+    Object.values(hosts).filter((v) => !v).length +
+    Object.values(kinds).filter((v) => !v).length;
+
   return (
-    <div className="border-b border-border/40 py-3">
-      <div className="px-3 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
-        {title}
-      </div>
-      <div>{children}</div>
+    <div className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="inline-flex h-9 items-center gap-1.5 rounded-sm border border-border/70 bg-card px-2.5 text-[12px] font-medium text-foreground/85 hover:bg-foreground/[0.05]"
+      >
+        <Filter className="h-3.5 w-3.5" strokeWidth={1.75} />
+        Filters
+        {activeCount > 0 && (
+          <span className="ml-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#0A84FF] px-1 text-[10px] font-semibold text-white">
+            {activeCount}
+          </span>
+        )}
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 top-[calc(100%+6px)] z-30 w-[280px] rounded-md border border-border/70 bg-popover shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6),0_1px_0_0_rgba(255,255,255,0.04)_inset] p-3 space-y-3"
+          role="menu"
+        >
+          <div>
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80 mb-1.5">
+              View
+            </div>
+            <div className="grid grid-cols-2 gap-1">
+              {[
+                { id: "all", label: "All meetings", count: total },
+                { id: "mine", label: "My schedule", count: 5 },
+                { id: "client", label: "Client-facing", count: 4 },
+                { id: "internal", label: "Internal", count: 1 },
+              ].map((v) => (
+                <button
+                  key={v.id}
+                  onClick={() => setView(v.id as typeof view)}
+                  className={`flex items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-[11.5px] transition-colors ${
+                    view === v.id
+                      ? "bg-foreground/[0.08] text-foreground font-medium"
+                      : "text-foreground/75 hover:bg-foreground/[0.04]"
+                  }`}
+                >
+                  <span className="truncate">{v.label}</span>
+                  <span className="text-[10px] tabular-nums text-muted-foreground">
+                    {v.count}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border/50 pt-2.5">
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80 mb-1.5">
+              Status
+            </div>
+            <div className="grid grid-cols-2 gap-1">
+              {(["Confirmed", "Pending"] as const).map((s) => (
+                <Toggle
+                  key={s}
+                  label={s}
+                  count={s === "Confirmed" ? confirmed : pending}
+                  on={statuses[s]}
+                  onChange={() => setStatuses((p) => ({ ...p, [s]: !p[s] }))}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-border/50 pt-2.5">
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80 mb-1.5">
+              Category
+            </div>
+            <div className="max-h-[140px] overflow-y-auto space-y-1 pr-1">
+              {Object.entries(kindColor).map(([k, key]) => {
+                const c = IOS[key];
+                const on = kinds[k];
+                return (
+                  <button
+                    key={k}
+                    onClick={() => setKinds((p) => ({ ...p, [k]: !p[k] }))}
+                    className={`flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-[11.5px] transition-colors ${
+                      on ? "hover:bg-foreground/[0.04]" : "opacity-40 hover:bg-foreground/[0.04]"
+                    }`}
+                  >
+                    <span
+                      className="h-2.5 w-2.5 rounded-full shrink-0"
+                      style={{ background: c.solid }}
+                    />
+                    <span className="flex-1 text-left truncate">{k}</span>
+                    {on && <Check className="h-3 w-3 text-foreground/70" strokeWidth={2.5} />}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="border-t border-border/50 pt-2.5">
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80 mb-1.5">
+              Hosts
+            </div>
+            <div className="space-y-1">
+              {Object.keys(hosts).map((name) => (
+                <Toggle
+                  key={name}
+                  label={name}
+                  on={hosts[name as keyof typeof hosts]}
+                  onChange={() =>
+                    setHosts((p) => ({ ...p, [name]: !p[name as keyof typeof p] }))
+                  }
+                  avatar={avatarUrl(name)}
+                />
+              ))}
+            </div>
+          </div>
+
+          {activeCount > 0 && (
+            <div className="border-t border-border/50 pt-2 flex items-center justify-between">
+              <span className="text-[11px] text-muted-foreground">
+                {activeCount} filter{activeCount === 1 ? "" : "s"} active
+              </span>
+              <button
+                onClick={() => {
+                  setView("all");
+                  setStatuses({ Confirmed: true, Pending: true });
+                  setHosts({ "John Harwick": true, "Avery Sterne": true, "Priya Shah": true });
+                  setKinds(Object.fromEntries(Object.keys(kindColor).map((k) => [k, true])));
+                }}
+                className="text-[11px] font-medium text-foreground/85 hover:text-foreground"
+              >
+                Reset
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
 
-function RailItem({
+function Toggle({
   label,
   count,
-  active,
-  dotColor,
+  on,
+  onChange,
+  avatar,
 }: {
   label: string;
   count?: number;
-  active?: boolean;
-  dotColor?: string;
+  on: boolean;
+  onChange: () => void;
+  avatar?: string;
 }) {
   return (
     <button
-      className={`flex w-full items-center justify-between gap-2 px-3 py-1.5 text-[12px] transition-colors ${
-        active
-          ? "bg-foreground/[0.06] text-foreground font-medium"
-          : "text-foreground/75 hover:bg-foreground/[0.035] hover:text-foreground"
+      onClick={onChange}
+      className={`flex items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-[11.5px] transition-colors ${
+        on ? "text-foreground/90 hover:bg-foreground/[0.04]" : "opacity-40 hover:bg-foreground/[0.04]"
       }`}
     >
-      <span className="inline-flex items-center gap-2 truncate">
-        {dotColor && (
-          <span className="h-1.5 w-1.5 rounded-full" style={{ background: dotColor }} />
+      <span className="flex items-center gap-2 min-w-0">
+        {avatar && (
+          <img
+            src={avatar}
+            alt=""
+            className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60 shrink-0"
+          />
         )}
         <span className="truncate">{label}</span>
       </span>
-      {typeof count === "number" && (
-        <span className="text-[10.5px] tabular-nums text-muted-foreground">{count}</span>
-      )}
+      <span className="flex items-center gap-1.5 shrink-0">
+        {typeof count === "number" && (
+          <span className="text-[10px] tabular-nums text-muted-foreground">{count}</span>
+        )}
+        {on && <Check className="h-3 w-3 text-foreground/70" strokeWidth={2.5} />}
+      </span>
     </button>
   );
-}
-
-function monthShort(d: Date) {
-  return d.toLocaleDateString("en-US", { month: "short" });
 }
