@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useRef, useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,12 +19,13 @@ import {
   FileImage,
   Upload,
   UploadCloud,
-  MoreHorizontal,
   Monitor,
   Camera,
   Link2,
   Cloud,
   X,
+  ChevronLeft,
+  MoreHorizontal,
 } from "lucide-react";
 
 export const Route = createFileRoute("/documents")({
@@ -33,20 +33,66 @@ export const Route = createFileRoute("/documents")({
   head: () => ({ meta: [{ title: "Documents — Harwick & Sterne" }] }),
 });
 
-type Doc = { name: string; type: string; size: string; updated: string; by: string };
+type Doc = {
+  name: string;
+  type: "pdf" | "sheet" | "img";
+  size: string;
+  updated: string;
+  by: string;
+};
 
-const seedDocs: Doc[] = [
-  { name: "Acme — Master Service Agreement.pdf", type: "pdf", size: "1.4 MB", updated: "2m ago", by: "Avery" },
-  { name: "Q2 Pipeline Forecast.xlsx", type: "sheet", size: "248 KB", updated: "1h ago", by: "Syra" },
-  { name: "Brand Guidelines v3.pdf", type: "pdf", size: "8.2 MB", updated: "yesterday", by: "Jenna" },
-  { name: "Onboarding flow.png", type: "img", size: "612 KB", updated: "2d ago", by: "Marcus" },
-  { name: "Northwind — Discovery Notes.pdf", type: "pdf", size: "320 KB", updated: "3d ago", by: "Syra" },
+type Folder = {
+  id: string;
+  name: string;
+  description: string;
+  docs: Doc[];
+};
+
+const seedFolders: Folder[] = [
+  {
+    id: "contracts",
+    name: "Contracts",
+    description: "MSAs, SOWs and executed agreements.",
+    docs: [
+      { name: "Acme — Master Service Agreement.pdf", type: "pdf", size: "1.4 MB", updated: "2m ago", by: "Avery" },
+      { name: "Northwind — SOW v3.pdf", type: "pdf", size: "612 KB", updated: "yesterday", by: "Avery" },
+      { name: "Helios — Renewal.pdf", type: "pdf", size: "480 KB", updated: "3d ago", by: "Syra" },
+    ],
+  },
+  {
+    id: "financials",
+    name: "Financials",
+    description: "Forecasts, pipeline and ledgers.",
+    docs: [
+      { name: "Q2 Pipeline Forecast.xlsx", type: "sheet", size: "248 KB", updated: "1h ago", by: "Syra" },
+      { name: "FY26 Budget.xlsx", type: "sheet", size: "512 KB", updated: "1w ago", by: "Marcus" },
+    ],
+  },
+  {
+    id: "brand",
+    name: "Brand",
+    description: "Guidelines, logos and creative assets.",
+    docs: [
+      { name: "Brand Guidelines v3.pdf", type: "pdf", size: "8.2 MB", updated: "yesterday", by: "Jenna" },
+      { name: "Onboarding flow.png", type: "img", size: "612 KB", updated: "2d ago", by: "Marcus" },
+      { name: "Logo lockup.png", type: "img", size: "180 KB", updated: "5d ago", by: "Jenna" },
+    ],
+  },
+  {
+    id: "discovery",
+    name: "Discovery",
+    description: "Notes and research from client calls.",
+    docs: [
+      { name: "Northwind — Discovery Notes.pdf", type: "pdf", size: "320 KB", updated: "3d ago", by: "Syra" },
+      { name: "Acme — Intro Call.pdf", type: "pdf", size: "210 KB", updated: "1w ago", by: "Avery" },
+    ],
+  },
 ];
 
 const icon = (t: string) =>
   t === "sheet" ? FileSpreadsheet : t === "img" ? FileImage : FileText;
 
-const deriveType = (name: string) => {
+const deriveType = (name: string): Doc["type"] => {
   const ext = name.split(".").pop()?.toLowerCase() ?? "";
   if (["xlsx", "xls", "csv", "numbers"].includes(ext)) return "sheet";
   if (["png", "jpg", "jpeg", "gif", "webp", "svg", "heic"].includes(ext)) return "img";
@@ -60,39 +106,178 @@ const formatBytes = (bytes: number) => {
   return `${bytes} B`;
 };
 
-function DocumentsPage() {
-  const [docs, setDocs] = useState<Doc[]>(seedDocs);
+/** Apple-style folder glyph — light gray, tabbed top, soft depth. */
+function FolderGlyph({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 160 128"
+      className={className}
+      aria-hidden
+      role="presentation"
+    >
+      <defs>
+        <linearGradient id="fldr-body" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#DFE1E5" />
+          <stop offset="100%" stopColor="#B8BBC2" />
+        </linearGradient>
+        <linearGradient id="fldr-back" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#C9CCD2" />
+          <stop offset="100%" stopColor="#A5A9B1" />
+        </linearGradient>
+      </defs>
+      {/* back panel with tab */}
+      <path
+        d="M8 22 Q8 14 16 14 H60 L72 26 H144 Q152 26 152 34 V108 Q152 116 144 116 H16 Q8 116 8 108 Z"
+        fill="url(#fldr-back)"
+      />
+      {/* front pocket */}
+      <path
+        d="M8 42 Q8 34 16 34 H144 Q152 34 152 42 V108 Q152 116 144 116 H16 Q8 116 8 108 Z"
+        fill="url(#fldr-body)"
+      />
+      {/* subtle highlight */}
+      <path
+        d="M8 42 Q8 34 16 34 H144 Q152 34 152 42 V44 H8 Z"
+        fill="rgba(255,255,255,0.35)"
+      />
+    </svg>
+  );
+}
 
-  const addDocs = (incoming: Doc[]) => setDocs((prev) => [...incoming, ...prev]);
+/** Document thumbnail — page-shaped card with faux content lines. */
+function DocThumb({ doc }: { doc: Doc }) {
+  const Icon = icon(doc.type);
+  const tint =
+    doc.type === "sheet"
+      ? "bg-emerald-500/10 text-emerald-300"
+      : doc.type === "img"
+        ? "bg-violet-500/10 text-violet-300"
+        : "bg-rose-500/10 text-rose-300";
+  return (
+    <div className="group cursor-pointer">
+      <div className="relative overflow-hidden rounded-md border border-white/10 bg-gradient-to-b from-neutral-100 to-neutral-300 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)] transition-transform group-hover:-translate-y-0.5 aspect-[3/4]">
+        {doc.type === "img" ? (
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,#c4b5fd,#6d28d9_60%,#1e1b4b)]" />
+        ) : doc.type === "sheet" ? (
+          <div className="absolute inset-3 grid grid-cols-4 grid-rows-6 gap-[2px]">
+            {Array.from({ length: 24 }).map((_, i) => (
+              <div
+                key={i}
+                className={`rounded-[1px] ${
+                  i < 4 ? "bg-neutral-500/60" : i % 3 === 0 ? "bg-neutral-400/40" : "bg-neutral-300/60"
+                }`}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="absolute inset-4 space-y-1.5">
+            <div className="h-2 w-2/3 rounded-sm bg-neutral-500/70" />
+            <div className="h-1 w-full rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-11/12 rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-10/12 rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-full rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-9/12 rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-11/12 rounded-sm bg-neutral-400/50" />
+            <div className="mt-2 h-1 w-8/12 rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-10/12 rounded-sm bg-neutral-400/50" />
+            <div className="h-1 w-7/12 rounded-sm bg-neutral-400/50" />
+          </div>
+        )}
+        <div className={`absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider backdrop-blur-md ${tint}`}>
+          <Icon className="h-2.5 w-2.5" />
+          {doc.type}
+        </div>
+      </div>
+      <div className="mt-2 px-0.5">
+        <div className="truncate text-[12.5px] font-medium text-foreground/90">{doc.name}</div>
+        <div className="text-[11px] text-muted-foreground">{doc.size} · {doc.updated}</div>
+      </div>
+    </div>
+  );
+}
+
+function DocumentsPage() {
+  const [folders, setFolders] = useState<Folder[]>(seedFolders);
+  const [openId, setOpenId] = useState<string | null>(null);
+
+  const open = openId ? folders.find((f) => f.id === openId) ?? null : null;
+
+  const addDocs = (incoming: Doc[]) => {
+    setFolders((prev) => {
+      const targetId = openId ?? prev[0].id;
+      return prev.map((f) =>
+        f.id === targetId ? { ...f, docs: [...incoming, ...f.docs] } : f,
+      );
+    });
+  };
 
   return (
     <PageShell>
       <PageHeader
         eyebrow="Knowledge"
         title="Documents"
-        description="Contracts, briefs and assets — all searchable by Syra."
+        description="Contracts, briefs and assets — organized into folders, searchable by Syra."
         actions={<UploadDialog onUpload={addDocs} />}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {docs.map((d) => {
-          const Icon = icon(d.type);
-          return (
-            <Card key={d.name} className="bento p-5 hover:bg-foreground/[0.02] transition-colors">
-              <div className="flex items-start gap-3">
-                <div className="h-11 w-11 rounded-md grid place-items-center border border-border/60 bg-foreground/[0.03] text-foreground/70 shrink-0">
-                  <Icon className="h-5 w-5" strokeWidth={1.5} />
-                </div>
-                <div className="min-w-0 flex-1">
-                  <div className="text-[13px] font-semibold truncate">{d.name}</div>
-                  <div className="text-xs text-muted-foreground">{d.size} · updated {d.updated}</div>
-                  <div className="text-[11px] text-muted-foreground mt-1">by {d.by}</div>
-                </div>
-                <Button variant="ghost" size="icon"><MoreHorizontal className="h-4 w-4" /></Button>
+
+      {!open ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-8 pt-2">
+          {folders.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setOpenId(f.id)}
+              className="group flex flex-col items-center text-center focus:outline-none"
+            >
+              <div className="relative w-full max-w-[180px] transition-transform group-hover:-translate-y-0.5 group-focus-visible:-translate-y-0.5">
+                <FolderGlyph className="w-full drop-shadow-[0_16px_28px_rgba(0,0,0,0.55)]" />
+                <span className="absolute right-3 top-9 rounded-full bg-black/25 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-sm">
+                  {f.docs.length}
+                </span>
               </div>
-            </Card>
-          );
-        })}
-      </div>
+              <div className="mt-3 text-[13px] font-medium text-foreground/90 group-hover:text-foreground">
+                {f.name}
+              </div>
+              <div className="mt-0.5 line-clamp-1 text-[11px] text-muted-foreground">
+                {f.description}
+              </div>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-5">
+          <div className="flex items-center justify-between">
+            <button
+              type="button"
+              onClick={() => setOpenId(null)}
+              className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1 -ml-2 text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+            >
+              <ChevronLeft className="h-4 w-4" /> All folders
+            </button>
+            <Button variant="ghost" size="icon">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="w-14 shrink-0">
+              <FolderGlyph className="w-full" />
+            </div>
+            <div>
+              <div className="font-serif-display text-2xl leading-tight tracking-tight">
+                {open.name}
+              </div>
+              <div className="text-[12px] text-muted-foreground">
+                {open.docs.length} items · {open.description}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-x-5 gap-y-6">
+            {open.docs.map((d) => (
+              <DocThumb key={d.name} doc={d} />
+            ))}
+          </div>
+        </div>
+      )}
     </PageShell>
   );
 }
@@ -115,11 +300,6 @@ const CLOUD: Record<string, string> = {
   onedrive: "OneDrive",
 };
 
-/**
- * UploadDialog — upload from anywhere. Local device (drag-drop, browse, paste)
- * is the primary path since that's where most uploads originate; Camera, URL
- * import, and cloud providers (Google Drive / Dropbox / OneDrive) round it out.
- */
 function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
   const [open, setOpen] = useState(false);
   const [source, setSource] = useState<Source>("device");
@@ -212,7 +392,6 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
           <DialogDescription>From your device, camera, a link, or a cloud drive.</DialogDescription>
         </DialogHeader>
 
-        {/* Source picker */}
         <div className="grid grid-cols-3 gap-2">
           {SOURCES.map((s) => {
             const active = source === s.id;
@@ -233,7 +412,6 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
           })}
         </div>
 
-        {/* Source panel */}
         <div className="py-1">
           {source === "device" && (
             <button
@@ -327,7 +505,6 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
           )}
         </div>
 
-        {/* Hidden native inputs */}
         <input
           ref={fileInput}
           type="file"
@@ -350,7 +527,6 @@ function UploadDialog({ onUpload }: { onUpload: (docs: Doc[]) => void }) {
           }}
         />
 
-        {/* Staged files */}
         {staged.length > 0 && (
           <div className="space-y-1.5">
             <div className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
