@@ -17,6 +17,7 @@ import {
   FileText,
   FileSpreadsheet,
   FileImage,
+  FileType2,
   Upload,
   UploadCloud,
   Monitor,
