@@ -4,10 +4,13 @@ import type { GridStack, GridStackOptions } from "gridstack";
 // gridstack base CSS is imported in styles.css (before our Origin overrides).
 import { cn } from "@/lib/utils";
 
-/** Drag/resize is disabled and cards stack below this viewport width. */
+/** Below this width the grid collapses to one column (touch layout). */
 const STATIC_QUERY = "(max-width: 1023px)";
 /** How long the pointer must be held on a card to enter Apple-style edit mode. */
 const LONG_PRESS_MS = 550;
+/** Slightly longer hold on touch devices — matches iOS "hold to rearrange". */
+const LONG_PRESS_TOUCH_MS = 650;
+
 
 export type BentoItem = {
   id: string;
@@ -190,14 +193,18 @@ function BentoGridStackImpl({
         if (!disposed) setReady(true);
       });
 
-    // Disable drag/resize on small screens; re-enable above the breakpoint.
+    // On touch/small viewports keep the grid static by default so page
+    // scrolling is never hijacked — a long-press flips it into edit mode
+    // (see the editMode effect below) and re-enables rearranging.
       const mq = window.matchMedia(STATIC_QUERY);
       const applyStatic = () => {
-        grid.setStatic(mq.matches);
-        if (mq.matches && editModeRef.current) setEditMode(false);
+        grid.setStatic(mq.matches && !editModeRef.current);
       };
       applyStatic();
       mq.addEventListener("change", applyStatic);
+      // Expose so the editMode effect can retoggle without re-init.
+      (grid as unknown as { _applyStatic?: () => void })._applyStatic = applyStatic;
+
 
     // Reset to the default layout (and clear storage) on demand — no reload.
       const onReset = () => {
@@ -242,6 +249,14 @@ function BentoGridStackImpl({
     };
   }, []);
 
+  // When edit mode toggles, re-apply the static/interactive state so touch
+  // viewports become draggable only after the long-press activates jiggle.
+  useEffect(() => {
+    const grid = gridRef.current as unknown as { _applyStatic?: () => void } | null;
+    grid?._applyStatic?.();
+  }, [editMode]);
+
+
   // Long-press to enter edit mode — Apple's "tap and hold to rearrange".
   useEffect(() => {
     const root = elRef.current;
@@ -262,7 +277,6 @@ function BentoGridStackImpl({
 
     const onPointerDown = (e: PointerEvent) => {
       if (editModeRef.current) return; // already in edit mode
-      if (window.matchMedia(STATIC_QUERY).matches) return;
       const target = e.target as HTMLElement | null;
       if (!target) return;
       // Don't arm on interactive elements — buttons/inputs/links stay clickable.
@@ -273,6 +287,10 @@ function BentoGridStackImpl({
       armed = true;
       startX = e.clientX;
       startY = e.clientY;
+      // Touch requires a slightly longer hold — matches iOS "hold to jiggle"
+      // and gives the user room to start a scroll gesture without arming
+      // rearrange mode by accident.
+      const holdMs = e.pointerType === "touch" ? LONG_PRESS_TOUCH_MS : LONG_PRESS_MS;
       timer = window.setTimeout(() => {
         if (!armed) return;
         window.dispatchEvent(new Event("bento:edit-enter"));
@@ -283,15 +301,19 @@ function BentoGridStackImpl({
             /* ignore */
           }
         }
-      }, LONG_PRESS_MS);
+      }, holdMs);
     };
 
     const onPointerMove = (e: PointerEvent) => {
       if (!armed) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      if (dx * dx + dy * dy > 36) cancel();
+      // Larger threshold on touch — any scroll intent should cancel the
+      // long-press instantly so the page scrolls fluidly.
+      const threshold = e.pointerType === "touch" ? 64 : 36;
+      if (dx * dx + dy * dy > threshold) cancel();
     };
+
 
     root.addEventListener("pointerdown", onPointerDown);
     root.addEventListener("pointermove", onPointerMove);
