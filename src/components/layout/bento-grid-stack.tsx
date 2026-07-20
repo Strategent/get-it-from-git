@@ -269,7 +269,6 @@ function BentoGridStackImpl({
 
     const onPointerDown = (e: PointerEvent) => {
       if (editModeRef.current) return; // already in edit mode
-      if (window.matchMedia(STATIC_QUERY).matches) return;
       const target = e.target as HTMLElement | null;
       if (!target) return;
       // Don't arm on interactive elements — buttons/inputs/links stay clickable.
@@ -280,6 +279,10 @@ function BentoGridStackImpl({
       armed = true;
       startX = e.clientX;
       startY = e.clientY;
+      // Touch requires a slightly longer hold — matches iOS "hold to jiggle"
+      // and gives the user room to start a scroll gesture without arming
+      // rearrange mode by accident.
+      const holdMs = e.pointerType === "touch" ? LONG_PRESS_TOUCH_MS : LONG_PRESS_MS;
       timer = window.setTimeout(() => {
         if (!armed) return;
         window.dispatchEvent(new Event("bento:edit-enter"));
@@ -290,15 +293,19 @@ function BentoGridStackImpl({
             /* ignore */
           }
         }
-      }, LONG_PRESS_MS);
+      }, holdMs);
     };
 
     const onPointerMove = (e: PointerEvent) => {
       if (!armed) return;
       const dx = e.clientX - startX;
       const dy = e.clientY - startY;
-      if (dx * dx + dy * dy > 36) cancel();
+      // Larger threshold on touch — any scroll intent should cancel the
+      // long-press instantly so the page scrolls fluidly.
+      const threshold = e.pointerType === "touch" ? 64 : 36;
+      if (dx * dx + dy * dy > threshold) cancel();
     };
+
 
     root.addEventListener("pointerdown", onPointerDown);
     root.addEventListener("pointermove", onPointerMove);
