@@ -17,6 +17,7 @@ import {
   FileText,
   FileSpreadsheet,
   FileImage,
+  FileType2,
   Upload,
   UploadCloud,
   Monitor,
@@ -146,13 +147,13 @@ function FolderGlyph({ className = "" }: { className?: string }) {
 
 /** Document thumbnail — page-shaped card with faux content lines. */
 function DocThumb({ doc }: { doc: Doc }) {
-  const Icon = icon(doc.type);
-  const tint =
+  const Icon = doc.type === "pdf" ? FileType2 : icon(doc.type);
+  const badge =
     doc.type === "sheet"
-      ? "bg-emerald-500/10 text-emerald-300"
+      ? { bg: "#065F46", fg: "#D1FAE5" } // dark emerald
       : doc.type === "img"
-        ? "bg-violet-500/10 text-violet-300"
-        : "bg-rose-500/10 text-rose-300";
+        ? { bg: "#4C1D95", fg: "#E9D5FF" } // dark violet
+        : { bg: "#7F1D1D", fg: "#FECACA" }; // dark red for PDF
   return (
     <div className="group cursor-pointer">
       <div className="relative overflow-hidden rounded-md border border-white/10 bg-gradient-to-b from-neutral-100 to-neutral-300 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.7)] transition-transform group-hover:-translate-y-0.5 aspect-[3/4]">
@@ -183,8 +184,11 @@ function DocThumb({ doc }: { doc: Doc }) {
             <div className="h-1 w-7/12 rounded-sm bg-neutral-400/50" />
           </div>
         )}
-        <div className={`absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider backdrop-blur-md ${tint}`}>
-          <Icon className="h-2.5 w-2.5" />
+        <div
+          className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider shadow-[0_2px_6px_rgba(0,0,0,0.35)]"
+          style={{ background: badge.bg, color: badge.fg }}
+        >
+          <Icon className="h-2.5 w-2.5" strokeWidth={2} />
           {doc.type}
         </div>
       </div>
