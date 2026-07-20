@@ -184,8 +184,11 @@ function DocThumb({ doc }: { doc: Doc }) {
             <div className="h-1 w-7/12 rounded-sm bg-neutral-400/50" />
           </div>
         )}
-        <div className={`absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wider backdrop-blur-md ${tint}`}>
-          <Icon className="h-2.5 w-2.5" />
+        <div
+          className="absolute bottom-2 left-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider shadow-[0_2px_6px_rgba(0,0,0,0.35)]"
+          style={{ background: badge.bg, color: badge.fg }}
+        >
+          <Icon className="h-2.5 w-2.5" strokeWidth={2} />
           {doc.type}
         </div>
       </div>
