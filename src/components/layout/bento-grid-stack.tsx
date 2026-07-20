@@ -193,14 +193,18 @@ function BentoGridStackImpl({
         if (!disposed) setReady(true);
       });
 
-    // Disable drag/resize on small screens; re-enable above the breakpoint.
+    // On touch/small viewports keep the grid static by default so page
+    // scrolling is never hijacked — a long-press flips it into edit mode
+    // (see the editMode effect below) and re-enables rearranging.
       const mq = window.matchMedia(STATIC_QUERY);
       const applyStatic = () => {
-        grid.setStatic(mq.matches);
-        if (mq.matches && editModeRef.current) setEditMode(false);
+        grid.setStatic(mq.matches && !editModeRef.current);
       };
       applyStatic();
       mq.addEventListener("change", applyStatic);
+      // Expose so the editMode effect can retoggle without re-init.
+      (grid as unknown as { _applyStatic?: () => void })._applyStatic = applyStatic;
+
 
     // Reset to the default layout (and clear storage) on demand — no reload.
       const onReset = () => {
