@@ -249,6 +249,14 @@ function BentoGridStackImpl({
     };
   }, []);
 
+  // When edit mode toggles, re-apply the static/interactive state so touch
+  // viewports become draggable only after the long-press activates jiggle.
+  useEffect(() => {
+    const grid = gridRef.current as unknown as { _applyStatic?: () => void } | null;
+    grid?._applyStatic?.();
+  }, [editMode]);
+
+
   // Long-press to enter edit mode — Apple's "tap and hold to rearrange".
   useEffect(() => {
     const root = elRef.current;
