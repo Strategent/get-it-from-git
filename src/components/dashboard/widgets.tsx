@@ -66,30 +66,48 @@ export function MobileTeamCard() {
   );
 }
 
-/** MobileDailyBriefCard — compact square hero for mobile grid. */
+/** MobileDailyBriefCard — mobile hero styled after the onboarding gradient card. */
 export function MobileDailyBriefCard() {
   return (
-    <Link
-      to="/"
-      className="daily-brief-hero-bg relative flex aspect-square flex-col justify-between overflow-hidden rounded-2xl p-4 text-white"
+    <section
+      className="relative col-span-2 overflow-hidden p-5"
+      style={{
+        background: "linear-gradient(150deg, #1a1d33 0%, #1f2340 55%, #262a4a 100%)",
+        border: "1px solid rgba(255,255,255,0.06)",
+        borderRadius: "var(--radius)",
+        boxShadow:
+          "0 1px 0 0 rgba(255,255,255,0.06) inset, 0 20px 50px -36px rgba(15,18,40,0.7)",
+      }}
     >
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-black/55 via-black/25 to-transparent" />
-      <div className="relative z-10 flex flex-col gap-1">
-        <span className="font-serif-display text-[10px] uppercase tracking-[0.16em] text-white/80">
-          Daily brief
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(90% 80% at 100% 100%, rgba(140,150,200,0.10), transparent 60%)",
+        }}
+      />
+      <div className="relative">
+        <span className="font-serif-display text-[10px] uppercase tracking-[0.18em] text-white/55">
+          Syra <span className="mx-1">→</span> Daily brief
         </span>
-        <h3 className="font-serif-display text-[22px] leading-[1.05]">Welcome back, John.</h3>
-      </div>
-      <div className="relative z-10 flex items-end justify-between gap-2">
-        <p className="line-clamp-3 max-w-[80%] text-[11px] leading-snug text-white/85">
-          4 meetings today. Hartley Trust is priority.
+        <h3 className="font-serif-display mt-2 text-[22px] leading-tight text-white">
+          Welcome back, John.
+        </h3>
+        <p className="mt-1.5 text-[12.5px] leading-relaxed text-white/70">
+          4 meetings today. Hartley Trust is your first priority — IPS ready for sign-off.
         </p>
-        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/15 backdrop-blur-sm">
-          <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-        </span>
+        <div className="mt-4">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-1.5 rounded-md bg-white/95 px-3.5 py-1.5 text-[12px] font-medium text-neutral-900 transition-colors hover:bg-white"
+          >
+            Read daily brief
+            <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+          </Link>
+        </div>
       </div>
-      <div aria-hidden className="daily-brief-grain pointer-events-none absolute inset-0" />
-    </Link>
+    </section>
   );
 }
 

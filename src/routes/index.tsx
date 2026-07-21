@@ -42,17 +42,17 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
   return (
     <PageShell>
       <div className="flex flex-col gap-3 pb-6">
-        {/* 1. Hero + Markets — two smaller squares */}
+        {/* 1. Hero full-width up top */}
+        <MobileDailyBriefCard />
+
+        {/* 2. Markets + Workload */}
         <div className="grid grid-cols-2 gap-3">
-          <MobileDailyBriefCard />
           <MobileRecapCard />
+          <MobileWorkloadCard />
         </div>
 
-        {/* 2. Workload + Team side by side */}
-        <div className="grid grid-cols-2 gap-3">
-          <MobileWorkloadCard />
-          <MobileTeamCard />
-        </div>
+        {/* 3. Team full width */}
+        <MobileTeamCard />
 
         {/* 3. Onboarding */}
         {!setupDone && (
