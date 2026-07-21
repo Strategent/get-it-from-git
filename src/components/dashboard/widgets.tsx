@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus, Paperclip } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Plus, Paperclip, ArrowUpRight, TrendingUp } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
@@ -62,6 +63,129 @@ export function MobileTeamCard() {
         ))}
       </div>
     </section>
+  );
+}
+
+/** MobileDailyBriefCard — compact square hero for mobile grid. */
+export function MobileDailyBriefCard() {
+  return (
+    <Link
+      to="/"
+      className="daily-brief-hero-bg relative flex aspect-square flex-col justify-between overflow-hidden rounded-2xl p-4 text-white"
+    >
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-br from-black/55 via-black/25 to-transparent" />
+      <div className="relative z-10 flex flex-col gap-1">
+        <span className="font-serif-display text-[10px] uppercase tracking-[0.16em] text-white/80">
+          Daily brief
+        </span>
+        <h3 className="font-serif-display text-[22px] leading-[1.05]">Welcome back, John.</h3>
+      </div>
+      <div className="relative z-10 flex items-end justify-between gap-2">
+        <p className="line-clamp-3 max-w-[80%] text-[11px] leading-snug text-white/85">
+          4 meetings today. Hartley Trust is priority.
+        </p>
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white/15 backdrop-blur-sm">
+          <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
+        </span>
+      </div>
+      <div aria-hidden className="daily-brief-grain pointer-events-none absolute inset-0" />
+    </Link>
+  );
+}
+
+/** MobileRecapCard — square market-brief tile for mobile. */
+export function MobileRecapCard() {
+  return (
+    <section className="origin-card relative flex aspect-square flex-col justify-between overflow-hidden p-4">
+      <div className="flex items-start justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
+          Markets
+        </span>
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-500/12 text-emerald-500">
+          <TrendingUp className="h-3 w-3" strokeWidth={2.25} />
+        </span>
+      </div>
+      <div className="flex flex-col gap-1">
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[22px] font-semibold leading-none tracking-tight">+0.42%</span>
+          <span className="text-[10.5px] text-muted-foreground">S&amp;P · open</span>
+        </div>
+        <h3 className="font-serif-display text-[15px] leading-tight text-foreground">
+          Daily market brief
+        </h3>
+        <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+          Treasuries firmed and breadth improved. 3 items flagged for your book.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/** MobilePlannerCard — condensed planner tile for mobile. */
+export function MobilePlannerCard() {
+  const open = planner.filter((p) => !p.done).length;
+  const first = planner.filter((p) => !p.done).slice(0, 2);
+  return (
+    <Link
+      to="/tasks"
+      className="origin-card flex flex-col gap-2.5 p-4"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
+          Planner
+        </span>
+        <span className="text-[10.5px] tabular-nums text-muted-foreground">{open} open</span>
+      </div>
+      <div className="flex flex-col divide-y divide-border/50">
+        {first.map((t) => (
+          <div key={t.label} className="flex items-center gap-2 py-1.5">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
+            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-foreground/90">
+              {t.label}
+            </span>
+            <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">{t.date}</span>
+          </div>
+        ))}
+      </div>
+    </Link>
+  );
+}
+
+/** MobileChannelsCard — condensed channels tile for mobile. */
+export function MobileChannelsCard() {
+  const unread = channels.reduce((a, c) => a + c.unread, 0);
+  const top = channels.slice(0, 3);
+  return (
+    <Link
+      to="/channels"
+      className="origin-card flex flex-col gap-2.5 p-4"
+    >
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
+          Channels
+        </span>
+        <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[10px] font-semibold tabular-nums text-background">
+          {unread}
+        </span>
+      </div>
+      <div className="flex flex-col divide-y divide-border/50">
+        {top.map((c) => (
+          <div key={c.name} className="flex items-center gap-2 py-1.5">
+            <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md border border-border bg-foreground/[0.05] text-[10px] font-semibold text-foreground/60">
+              #
+            </span>
+            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-foreground/90">
+              {c.name}
+            </span>
+            {c.unread > 0 && (
+              <span className="shrink-0 text-[10px] font-semibold tabular-nums text-foreground/70">
+                {c.unread}
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </Link>
   );
 }
 

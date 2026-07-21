@@ -18,6 +18,10 @@ import {
   TeamCard,
   MobileTeamCard,
   ChannelsCard,
+  MobileDailyBriefCard,
+  MobileRecapCard,
+  MobilePlannerCard,
+  MobileChannelsCard,
 } from "@/components/dashboard/widgets";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -38,9 +42,10 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
   return (
     <PageShell>
       <div className="flex flex-col gap-3 pb-6">
-        {/* 1. Hero */}
-        <div data-density="compact" className="w-full h-[380px] overflow-hidden rounded-2xl">
-          <DailyBriefHero />
+        {/* 1. Hero + Markets — two smaller squares */}
+        <div className="grid grid-cols-2 gap-3">
+          <MobileDailyBriefCard />
+          <MobileRecapCard />
         </div>
 
         {/* 2. Workload + Team side by side */}
@@ -73,14 +78,17 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
         {/* 5. Calendar */}
         <CalendarCard />
 
-        {/* 6. Recap + Bulletin */}
-        <RecapCard />
+        {/* 6. Bulletin */}
         <BulletinCard />
 
-        {/* 7. Calls + Planner + Channels */}
+        {/* 7. Planner + Channels — condensed side by side */}
+        <div className="grid grid-cols-2 gap-3">
+          <MobilePlannerCard />
+          <MobileChannelsCard />
+        </div>
+
+        {/* 8. Calls */}
         <CallsCard />
-        <PlannerCard />
-        <ChannelsCard />
       </div>
     </PageShell>
   );
