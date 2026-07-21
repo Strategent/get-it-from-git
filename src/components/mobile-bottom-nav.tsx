@@ -18,13 +18,13 @@ import {
 import { useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
-import mobileLogoIcon from "@/assets/mobile-logo-icon.png.asset.json";
+import syraSidebarIcon from "@/assets/sidebar-icon.png.asset.json";
 
 const SyraIcon = () => (
   <img
-    src={mobileLogoIcon.url}
+    src={syraSidebarIcon.url}
     alt=""
-    className="h-7 w-7 object-contain rounded-[10px]"
+    className="h-[22px] w-[22px] object-contain"
   />
 );
 
