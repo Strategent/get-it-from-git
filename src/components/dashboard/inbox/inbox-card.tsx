@@ -161,44 +161,53 @@ export function InboxCard() {
         ))}
       </div>
 
-      {/* Mobile: horizontal quick-switch strip */}
-      <div className="shrink-0 border-b border-border/50 md:hidden">
-        <div className="flex gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide">
+      {/* Mobile: full-width thread list (shown when no email is opened) */}
+      {!mobileOpen && (
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto py-1 md:hidden">
           {visibleEmails.map((m, i) => {
-            const active = i === selectedIdx;
             const unread = m.chips.includes("Draft ready");
             return (
               <button
                 key={m.originalIndex}
-                onClick={() => setSelected(i)}
-                className={`relative flex shrink-0 items-center gap-2 rounded-full border px-2 py-1 transition-colors ${
-                  active
-                    ? "border-foreground/25 bg-foreground/[0.08]"
-                    : "border-border/60 bg-foreground/[0.02] hover:bg-foreground/[0.05]"
-                }`}
+                onClick={() => {
+                  setSelected(i);
+                  setMobileOpen(true);
+                }}
+                className="flex items-start gap-3 border-b border-border/40 px-4 py-3 text-left transition-colors active:bg-foreground/[0.05]"
               >
-                <div className="relative">
-                  <img
-                    src={avatarUrl(m.sender, 48)}
-                    alt=""
-                    loading="lazy"
-                    className="h-6 w-6 rounded-full border border-border object-cover"
-                  />
-                  {unread && (
-                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-primary ring-2 ring-card" />
-                  )}
+                <img
+                  src={avatarUrl(m.sender, 72)}
+                  alt={m.sender}
+                  loading="lazy"
+                  className="h-9 w-9 shrink-0 rounded-full border border-border object-cover"
+                />
+                <div className="min-w-0 flex-1 leading-tight">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className={`truncate text-[13.5px] ${unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"}`}>
+                      {m.sender}
+                    </div>
+                    <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+                      {m.time}
+                    </div>
+                  </div>
+                  <div className={`mt-0.5 truncate text-[12px] ${unread ? "font-medium text-foreground/85" : "font-medium text-foreground/70"}`}>
+                    {m.subject}
+                  </div>
+                  <div className="mt-0.5 line-clamp-2 text-[11.5px] font-normal text-muted-foreground/85">
+                    {m.preview}
+                  </div>
                 </div>
-                <span className={`text-[11.5px] ${active ? "font-semibold text-foreground" : "font-medium text-foreground/75"}`}>
-                  {m.sender.split(" ")[0]}
-                </span>
+                {unread && (
+                  <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                )}
               </button>
             );
           })}
         </div>
-      </div>
+      )}
 
-      <div className="grid min-h-0 flex-1 grid-cols-12">
-        {/* Thread list — hidden on mobile in favor of the quick-switch strip */}
+      <div className={`min-h-0 flex-1 grid-cols-12 md:grid ${mobileOpen ? "grid" : "hidden md:grid"}`}>
+        {/* Thread list — desktop only */}
         <div className="hidden min-h-0 flex-col overflow-hidden py-1 md:col-span-4 md:flex md:border-r md:border-border/50">
           {visibleEmails.map((m, i) => {
             const unread = m.chips.includes("Draft ready");
@@ -253,9 +262,20 @@ export function InboxCard() {
         <div className="col-span-12 flex min-w-0 flex-col overflow-hidden md:col-span-8">
           {/* Subject row */}
           <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-2.5">
-            <h2 className="truncate text-[15px] font-semibold tracking-tight text-foreground">
-              {e.subject}
-            </h2>
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Back to inbox"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground md:hidden"
+              >
+                <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+              <h2 className="truncate text-[15px] font-semibold tracking-tight text-foreground">
+                {e.subject}
+              </h2>
+            </div>
+
             <div className="flex shrink-0 items-center gap-0.5">
               {/* Prev/next on mobile only */}
               <button
