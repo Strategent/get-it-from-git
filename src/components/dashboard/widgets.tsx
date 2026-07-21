@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus, Paperclip } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { Plus, Paperclip, ArrowUpRight, TrendingUp } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
