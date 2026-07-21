@@ -114,7 +114,7 @@ export function MobileDailyBriefCard() {
 /** MobileRecapCard — square market-brief tile for mobile. */
 export function MobileRecapCard() {
   return (
-    <section className="origin-card relative flex aspect-square flex-col justify-between overflow-hidden p-4">
+    <section className="origin-card relative flex flex-col justify-between gap-3 overflow-hidden p-4">
       <div className="flex items-start justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Markets
