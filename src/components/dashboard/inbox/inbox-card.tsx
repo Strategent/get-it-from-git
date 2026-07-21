@@ -277,26 +277,8 @@ export function InboxCard() {
             </div>
 
             <div className="flex shrink-0 items-center gap-0.5">
-              {/* Prev/next on mobile only */}
               <button
-                type="button"
-                onClick={() => setSelected(Math.max(0, selectedIdx - 1))}
-                disabled={selectedIdx === 0}
-                aria-label="Previous email"
-                className="grid h-6 w-6 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground disabled:pointer-events-none disabled:opacity-30 md:hidden"
-              >
-                <ChevronLeft className="h-3.5 w-3.5" strokeWidth={1.75} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelected(Math.min(visibleEmails.length - 1, selectedIdx + 1))}
-                disabled={selectedIdx >= visibleEmails.length - 1}
-                aria-label="Next email"
-                className="grid h-6 w-6 place-items-center rounded-md text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground disabled:pointer-events-none disabled:opacity-30 md:hidden"
-              >
-                <ChevronRight className="h-3.5 w-3.5" strokeWidth={1.75} />
-              </button>
-              <button
+
                 type="button"
                 onClick={toggleFlag}
                 aria-label="Flag"
