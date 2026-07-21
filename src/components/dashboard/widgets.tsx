@@ -41,22 +41,22 @@ export function MobileWorkloadCard() {
 export function MobileTeamCard() {
   const online = team.filter((t) => t.status === "online").length;
   return (
-    <section className="origin-card flex flex-col p-4">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.22]">
-        Team
-      </span>
-      <div className="mt-1 text-[13.5px] font-semibold">
-        {online} <span className="text-[11px] font-normal text-foreground/40">online</span>
+    <section className="origin-card relative flex aspect-square flex-col overflow-hidden p-4">
+      <div className="flex items-start justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
+          Team
+        </span>
+        <span className="text-[10.5px] text-muted-foreground">{online} online</span>
       </div>
-      <div className="mt-2 flex flex-col gap-0">
+      <div className="mt-auto flex -space-x-2">
         {team.slice(0, 4).map((m) => (
-          <div key={m.name} className="grid items-center gap-2 py-[4px]" style={{ gridTemplateColumns: "24px 1fr auto" }}>
-            <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.06] text-[9.5px] font-semibold text-foreground/40">
-              {m.initials}
-            </div>
-            <span className="truncate text-[12px] font-medium text-foreground/80">{m.name}</span>
+          <div
+            key={m.name}
+            className="relative grid h-8 w-8 place-items-center rounded-full border-2 border-card bg-foreground/[0.08] text-[10px] font-semibold text-foreground/60"
+          >
+            {m.initials}
             <span
-              className="h-[6px] w-[6px] shrink-0 rounded-full"
+              className="absolute -bottom-0 -right-0 h-2 w-2 rounded-full ring-2 ring-card"
               style={{ background: m.status === "online" ? "#3a9a3a" : "#c4930a" }}
             />
           </div>
@@ -114,7 +114,7 @@ export function MobileDailyBriefCard() {
 /** MobileRecapCard — square market-brief tile for mobile. */
 export function MobileRecapCard() {
   return (
-    <section className="origin-card relative flex aspect-square flex-col justify-between overflow-hidden p-4">
+    <section className="origin-card relative flex flex-col justify-between gap-3 overflow-hidden p-4">
       <div className="flex items-start justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Markets
@@ -129,7 +129,7 @@ export function MobileRecapCard() {
           <span className="text-[10.5px] text-muted-foreground">S&amp;P · open</span>
         </div>
         <h3 className="font-serif-display text-[15px] leading-tight text-foreground">
-          Daily market brief
+          Daily market
         </h3>
         <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
           Treasuries firmed and breadth improved. 3 items flagged for your book.
