@@ -54,24 +54,6 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
         {/* 3. Team full width */}
         <MobileTeamCard />
 
-        {/* 3. Onboarding */}
-        {!setupDone && (
-          <div className="[&>section]:rounded-2xl">
-            <GradientFeatureCard
-              label="Get started"
-              title="Make the most of Syra"
-              description="Connect your inbox, calendar and phone line to unlock automated drafting and call handling."
-              progress={99}
-              cta={
-                <PillButton variant="primary" onClick={finishSetup}>
-                  Finish setup
-                </PillButton>
-              }
-              onDismiss={finishSetup}
-            />
-          </div>
-        )}
-
         {/* 4. Inbox */}
         <InboxCard />
 
