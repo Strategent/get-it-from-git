@@ -129,7 +129,7 @@ export function MobileRecapCard() {
           <span className="text-[10.5px] text-muted-foreground">S&amp;P · open</span>
         </div>
         <h3 className="font-serif-display text-[15px] leading-tight text-foreground">
-          Daily market brief
+          Daily market
         </h3>
         <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
           Treasuries firmed and breadth improved. 3 items flagged for your book.
