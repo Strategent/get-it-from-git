@@ -22,6 +22,7 @@ export function InboxCard() {
   const [mode, setMode] = useState<"reply" | "replyAll" | "forward">("reply");
   const [sending, setSending] = useState(false);
   const [justSent, setJustSent] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const composerRef = useRef<HTMLTextAreaElement>(null);
 
   const visibleEmails = useMemo(
