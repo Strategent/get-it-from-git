@@ -473,8 +473,8 @@
   bottom: 0;
   right: clamp(120px, 14cqw, 200px);
   width: clamp(280px, 30cqw, 420px);
-  height: clamp(200px, 72cqh, 300px);
-  max-height: 100%;
+  height: clamp(140px, 72cqh, 300px);
+  max-height: calc(100% - 12px);
   padding: clamp(16px, 4cqh, 24px) clamp(18px, 3cqw, 28px);
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
@@ -498,19 +498,20 @@
   }
 }
 
-/* Narrow container (mobile) — dock the brief document as a small preview
-   pinned to the bottom-right, and let the left text zone use full width. */
-@container daily-brief-card (max-width: 640px) {
+/* Narrow container (tablet & mobile) — dock brief doc bottom-right, let
+   the text zone flow to full width. */
+@container daily-brief-card (max-width: 900px) {
   [data-density="compact"] > section > div:nth-child(1) {
     max-width: 100%;
     padding: 18px 20px;
   }
   [data-density="compact"] > section > div:nth-child(1) > h1 {
-    font-size: clamp(22px, 6.4cqw, 30px) !important;
-    max-width: 48cqw !important;
+    font-size: clamp(22px, 6.4cqw, 32px) !important;
+    max-width: 52cqw !important;
+    margin-top: clamp(10px, 4cqh, 18px);
   }
   [data-density="compact"] > section > div:nth-child(1) > p {
-    max-width: 32cqw !important;
+    max-width: 42cqw !important;
     font-size: 12px;
   }
   [data-density="compact"] > section > div:nth-child(1) > button {
@@ -519,16 +520,30 @@
     font-size: 12px;
   }
   .daily-brief-document {
-    right: 12px;
-    bottom: 12px;
+    right: 14px;
+    bottom: 14px;
     top: auto;
-    width: 42cqw;
+    width: clamp(150px, 32cqw, 230px);
+    height: auto;
+    max-height: calc(100% - 28px);
+    aspect-ratio: 3 / 4;
+    padding: 12px 14px;
+    border-radius: 8px;
+  }
+}
+
+@container daily-brief-card (max-width: 560px) {
+  [data-density="compact"] > section > div:nth-child(1) > h1 {
+    font-size: clamp(20px, 7cqw, 26px) !important;
+    max-width: 58cqw !important;
+  }
+  [data-density="compact"] > section > div:nth-child(1) > p {
+    max-width: 56cqw !important;
+  }
+  .daily-brief-document {
+    width: 40cqw;
     min-width: 140px;
-    max-width: 170px;
-    height: 52cqh;
-    max-height: 52cqh;
-    padding: 10px 12px;
-    border-radius: 6px;
+    max-width: 175px;
   }
 }
 
