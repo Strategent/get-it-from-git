@@ -177,8 +177,59 @@ function CrmPage() {
       </div>
 
 
-      {/* Table — full width, no card */}
-      <div className="flex-1 overflow-x-auto px-2 pb-2">
+      {/* Mobile: card list */}
+      <div className="md:hidden flex-1 px-3 py-3 space-y-2">
+        {filtered.map((c) => {
+          const sty = stageStyle[c.stage];
+          return (
+            <div
+              key={c.id}
+              className="bg-card/60 border border-border/50 rounded-md p-3 shadow-[0_1px_2px_0_hsl(var(--foreground)/0.04)]"
+            >
+              <div className="flex items-start gap-3">
+                <div className="h-10 w-10 shrink-0 rounded-full grid place-items-center text-[12px] font-semibold text-foreground/80 bg-muted border border-border">
+                  {c.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-medium text-foreground/95 truncate text-[14px]">{c.name}</div>
+                    <div className="text-[13px] font-semibold tabular-nums text-foreground/90 shrink-0">{fmtAum(c.aum)}</div>
+                  </div>
+                  <div className="text-[11.5px] text-muted-foreground truncate">{c.company}</div>
+                  <div className="mt-2 flex items-center gap-2 flex-wrap">
+                    <span className={`inline-flex items-center gap-1.5 h-5 px-2 rounded-sm text-[10px] font-medium border ${sty.chip}`}>
+                      <span className={`h-1.5 w-1.5 rounded-full ${sty.dot}`} />
+                      {c.stage}
+                    </span>
+                    <span className="text-[10.5px] text-muted-foreground">{c.owner.initials} · {c.lastContact}</span>
+                  </div>
+                  <div className="mt-1.5 text-[11.5px] text-foreground/75 truncate">{c.nextAction}</div>
+                </div>
+              </div>
+              <div className="mt-2 flex items-center justify-end gap-1">
+                <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Call">
+                  <Phone className="h-3.5 w-3.5" />
+                </button>
+                <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Email">
+                  <Mail className="h-3.5 w-3.5" />
+                </button>
+                <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="More">
+                  <MoreHorizontal className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="py-12 text-center text-[13px] text-muted-foreground">
+            No clients match your filters.
+          </div>
+        )}
+      </div>
+
+      {/* Table — desktop only */}
+      <div className="hidden md:block flex-1 overflow-x-auto px-2 pb-2">
+
         <table className="w-full text-left border-separate border-spacing-y-1">
           <thead className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               <tr>
