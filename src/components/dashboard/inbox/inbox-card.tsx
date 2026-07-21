@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Reply, ReplyAll, Forward, Star, Paperclip, Archive, Check, ChevronLeft, ChevronRight } from "lucide-react";
+import { Reply, ReplyAll, Forward, Star, Paperclip, Archive, Check, ChevronLeft, ChevronRight, ArrowLeft } from "lucide-react";
+
 import { toast } from "sonner";
 import { Panel } from "@/components/ui/panel";
 import { PillButton } from "@/components/ui/pill-button";
