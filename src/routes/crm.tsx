@@ -111,13 +111,13 @@ function CrmPage() {
     <>
     <div className="w-full bg-background flex flex-col" style={{ minHeight: "calc(100dvh - 53px)" }}>
       {/* Header */}
-      <div className="px-8 pt-10 pb-8 border-b border-border/50 flex items-end justify-between flex-wrap gap-6">
-        <div>
+      <div className="px-4 md:px-8 pt-6 md:pt-10 pb-6 md:pb-8 border-b border-border/50 flex items-end justify-between flex-wrap gap-6">
+        <div className="min-w-0">
           <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-muted-foreground/80">
             <span aria-hidden className="inline-block h-1 w-1 rounded-full bg-foreground/40" />
             Clients
           </div>
-          <h1 className="font-serif-display mt-3 text-4xl md:text-[44px] font-normal leading-[1.05] tracking-[-0.02em] text-foreground">CRM</h1>
+          <h1 className="font-serif-display mt-3 text-3xl md:text-[44px] font-normal leading-[1.05] tracking-[-0.02em] text-foreground">CRM</h1>
           <p className="mt-3 text-[13.5px] leading-relaxed text-muted-foreground max-w-xl">
             Every relationship in one place — accounts, owners, AUM and the next move.
           </p>
@@ -143,16 +143,16 @@ function CrmPage() {
           { label: "Open relationships", value: totals.open.toString() },
           { label: "AUM (filtered)", value: fmtAum(totals.aum) },
         ].map((s) => (
-          <div key={s.label} className="px-8 py-5">
+          <div key={s.label} className="px-4 md:px-8 py-4 md:py-5">
             <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
-            <div className="mt-1.5 text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
+            <div className="mt-1.5 text-[18px] md:text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
           </div>
         ))}
       </div>
 
       {/* Toolbar */}
-      <div className="px-8 py-3 border-b border-border/60 flex flex-wrap items-center gap-3">
-        <div className="relative flex-1 min-w-[220px] max-w-md">
+      <div className="px-4 md:px-8 py-3 border-b border-border/60 flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <input
             value={query}
@@ -161,12 +161,12 @@ function CrmPage() {
             className="w-full h-9 pl-9 pr-3 rounded-sm bg-muted/50 border border-border text-[13px] placeholder:text-muted-foreground focus:outline-none focus:border-foreground/30"
           />
         </div>
-        <div className="flex items-center gap-1 p-0.5 rounded-sm bg-muted/50 border border-border">
+        <div className="flex items-center gap-1 p-0.5 rounded-sm bg-muted/50 border border-border overflow-x-auto scrollbar-hide max-w-full">
           {STAGES.map((s) => (
             <button
               key={s}
               onClick={() => setStage(s)}
-              className={`h-7 px-3 rounded-sm text-[11px] font-medium transition-colors ${
+              className={`h-7 px-3 rounded-sm text-[11px] font-medium transition-colors shrink-0 ${
                 stage === s ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -176,8 +176,60 @@ function CrmPage() {
         </div>
       </div>
 
-      {/* Table — full width, no card */}
-      <div className="flex-1 overflow-x-auto px-2 pb-2">
+
+      {/* Mobile: card list */}
+      <div className="md:hidden flex-1 px-3 py-3 space-y-2">
+        {filtered.map((c) => {
+          const sty = stageStyle[c.stage];
+          return (
+            <div
+              key={c.id}
+              className="bg-card/60 border border-border/50 rounded-md p-3 shadow-[0_1px_2px_0_hsl(var(--foreground)/0.04)]"
+            >
+              <div className="flex items-start gap-3">
+                <div className="h-10 w-10 shrink-0 rounded-full grid place-items-center text-[12px] font-semibold text-foreground/80 bg-muted border border-border">
+                  {c.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="font-medium text-foreground/95 truncate text-[14px]">{c.name}</div>
+                    <div className="text-[13px] font-semibold tabular-nums text-foreground/90 shrink-0">{fmtAum(c.aum)}</div>
+                  </div>
+                  <div className="text-[11.5px] text-muted-foreground truncate">{c.company}</div>
+                  <div className="mt-2 flex items-center gap-2 flex-wrap">
+                    <span className={`inline-flex items-center gap-1.5 h-5 px-2 rounded-sm text-[10px] font-medium border ${sty.chip}`}>
+                      <span className={`h-1.5 w-1.5 rounded-full ${sty.dot}`} />
+                      {c.stage}
+                    </span>
+                    <span className="text-[10.5px] text-muted-foreground">{c.owner.initials} · {c.lastContact}</span>
+                  </div>
+                  <div className="mt-1.5 text-[11.5px] text-foreground/75 truncate">{c.nextAction}</div>
+                </div>
+              </div>
+              <div className="mt-2 flex items-center justify-end gap-1">
+                <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Call">
+                  <Phone className="h-3.5 w-3.5" />
+                </button>
+                <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="Email">
+                  <Mail className="h-3.5 w-3.5" />
+                </button>
+                <button className="h-7 w-7 grid place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors" aria-label="More">
+                  <MoreHorizontal className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          );
+        })}
+        {filtered.length === 0 && (
+          <div className="py-12 text-center text-[13px] text-muted-foreground">
+            No clients match your filters.
+          </div>
+        )}
+      </div>
+
+      {/* Table — desktop only */}
+      <div className="hidden md:block flex-1 overflow-x-auto px-2 pb-2">
+
         <table className="w-full text-left border-separate border-spacing-y-1">
           <thead className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">
               <tr>
