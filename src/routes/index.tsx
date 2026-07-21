@@ -45,15 +45,14 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
         {/* 1. Hero full-width up top */}
         <MobileDailyBriefCard />
 
-        {/* 2. Markets + Workload + Team */}
+        {/* 2. Markets + Workload */}
         <div className="grid grid-cols-2 gap-3">
           <MobileRecapCard />
           <MobileWorkloadCard />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <MobileTeamCard />
-          <MobilePlannerCard />
-        </div>
+
+        {/* 3. Team full width */}
+        <MobileTeamCard />
 
         {/* 3. Onboarding */}
         {!setupDone && (
