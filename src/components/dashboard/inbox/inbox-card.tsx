@@ -159,9 +159,45 @@ export function InboxCard() {
         ))}
       </div>
 
+      {/* Mobile: horizontal quick-switch strip */}
+      <div className="shrink-0 border-b border-border/50 md:hidden">
+        <div className="flex gap-1.5 overflow-x-auto px-3 py-2 scrollbar-hide">
+          {visibleEmails.map((m, i) => {
+            const active = i === selectedIdx;
+            const unread = m.chips.includes("Draft ready");
+            return (
+              <button
+                key={m.originalIndex}
+                onClick={() => setSelected(i)}
+                className={`relative flex shrink-0 items-center gap-2 rounded-full border px-2 py-1 transition-colors ${
+                  active
+                    ? "border-foreground/25 bg-foreground/[0.08]"
+                    : "border-border/60 bg-foreground/[0.02] hover:bg-foreground/[0.05]"
+                }`}
+              >
+                <div className="relative">
+                  <img
+                    src={avatarUrl(m.sender, 48)}
+                    alt=""
+                    loading="lazy"
+                    className="h-6 w-6 rounded-full border border-border object-cover"
+                  />
+                  {unread && (
+                    <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-primary ring-2 ring-card" />
+                  )}
+                </div>
+                <span className={`text-[11.5px] ${active ? "font-semibold text-foreground" : "font-medium text-foreground/75"}`}>
+                  {m.sender.split(" ")[0]}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="grid min-h-0 flex-1 grid-cols-12">
-        {/* Thread list */}
-        <div className="col-span-12 flex min-h-0 flex-col overflow-hidden py-1 md:col-span-4 md:border-r md:border-border/50">
+        {/* Thread list — hidden on mobile in favor of the quick-switch strip */}
+        <div className="hidden min-h-0 flex-col overflow-hidden py-1 md:col-span-4 md:flex md:border-r md:border-border/50">
           {visibleEmails.map((m, i) => {
             const unread = m.chips.includes("Draft ready");
             const active = i === selectedIdx;
