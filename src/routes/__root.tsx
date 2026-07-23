@@ -207,7 +207,7 @@ function RootComponent() {
             <AppSidebar />
             <div className="relative flex-1 min-w-0 flex flex-col">
               <Topbar />
-              <main className="flex-1 min-w-0">
+              <main className="flex-1 min-w-0 overflow-auto scrollbar-hide">
                 <Outlet />
               </main>
             </div>
