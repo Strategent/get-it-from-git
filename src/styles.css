@@ -310,6 +310,17 @@
     background: color-mix(in oklab, var(--foreground) 28%, transparent);
   }
 
+  /* ---- Hide sidebar scrollbar on desktop while keeping scroll ---- */
+  @media (min-width: 768px) {
+    [data-sidebar="content"] {
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    [data-sidebar="content"]::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   /* ---- gridstack — Origin theme overrides ---- */
 
   /* Apple-like spring easing for reflow. Gridstack toggles inline
