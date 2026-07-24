@@ -334,43 +334,68 @@ function CallAction({
 }
 
 /**
- * PitchWave — Apple Voice Memo–style row of a single line of vertical bars
- * that breathe while a call is active. One line, monotone, edges faded.
+ * PitchWave — Apple Voice Memo–style single continuous waveform line that
+ * scrolls left while a call is active. One monotone line, edges faded.
  */
 function PitchWave({ active }: { active: boolean }) {
-  // Deterministic bar pattern — mimics a live pitch trace without randomness.
-  const BARS = 44;
-  const pattern = [
-    0.22, 0.38, 0.55, 0.32, 0.72, 0.48, 0.28, 0.62, 0.85, 0.44,
-    0.58, 0.34, 0.72, 0.5, 0.9, 0.4, 0.24, 0.66, 0.52, 0.78,
-    0.36, 0.6,
-  ];
+  // Two identical wave paths laid end-to-end so the horizontal scroll loops
+  // seamlessly. Amplitude modulation gives it a lemni-style "breathing" feel.
+  const W = 400; // logical width of one repeat
+  const H = 24;
+  const mid = H / 2;
+  const points: string[] = [];
+  const steps = 80;
+  for (let i = 0; i <= steps; i++) {
+    const x = (i / steps) * W;
+    const t = (i / steps) * Math.PI * 6;
+    // Mixed sines create an organic, non-repetitive pitch trace.
+    const amp =
+      (Math.sin(t) * 0.55 +
+        Math.sin(t * 1.9 + 0.7) * 0.28 +
+        Math.sin(t * 0.6 + 1.3) * 0.17) *
+      (mid - 2);
+    points.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)},${(mid + amp).toFixed(2)}`);
+  }
+  const d = points.join(" ");
   return (
     <div
       className="pointer-events-none relative flex-1 h-6 min-w-0 overflow-hidden"
       style={{
         maskImage:
-          "linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%)",
       }}
       aria-hidden="true"
     >
-      <div className={`flex h-full w-full items-center gap-[3px] ${active ? "pitch-run" : "pitch-idle"}`}>
-        {Array.from({ length: BARS }).map((_, i) => {
-          const h = pattern[i % pattern.length];
-          return (
-            <span
-              key={i}
-              className="pitch-bar block flex-1 rounded-full bg-foreground/70"
-              style={{
-                height: `${Math.round(h * 100)}%`,
-                animationDelay: `${(i * 0.06).toFixed(2)}s`,
-              }}
-            />
-          );
-        })}
-      </div>
+      <svg
+        viewBox={`0 0 ${W * 2} ${H}`}
+        preserveAspectRatio="none"
+        className={`h-full w-[200%] ${active ? "pitch-scroll" : ""}`}
+        style={{ opacity: active ? 0.9 : 0.35 }}
+      >
+        <path
+          d={`${d} ${d.replace(/M/g, "L").replace(/L0\.00/, `L${W}`)}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="text-foreground"
+        />
+        {/* second repeat, translated */}
+        <g transform={`translate(${W},0)`}>
+          <path
+            d={d}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-foreground"
+          />
+        </g>
+      </svg>
     </div>
   );
 }
