@@ -70,34 +70,14 @@ export function MobileTeamCard() {
 export function MobileDailyBriefCard() {
   return (
     <section
-      className="relative col-span-2 overflow-hidden p-5"
+      className="mobile-hero-fluid relative col-span-2 overflow-hidden p-5"
       style={{
-        background:
-          "linear-gradient(155deg, #0b0b0d 0%, #141418 45%, #1c1c22 100%)",
         border: "1px solid rgba(255,255,255,0.07)",
         borderRadius: "var(--radius)",
         boxShadow:
           "0 1px 0 0 rgba(255,255,255,0.06) inset, 0 30px 60px -40px rgba(0,0,0,0.9)",
       }}
     >
-      {/* Soft top-left highlight */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.06), transparent 55%)",
-        }}
-      />
-      {/* Warm accent glow, bottom-right */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(80% 70% at 100% 100%, rgba(180,150,220,0.10), transparent 60%)",
-        }}
-      />
       {/* Subtle grain */}
       <div
         aria-hidden

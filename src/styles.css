@@ -654,17 +654,28 @@
 }
 
 
-/* Apple Voice Memo–style pitch bars for the live call bento. */
-@keyframes pitch-bar {
-  0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
-  50%      { transform: scaleY(1);    opacity: 1; }
+/* Apple Voice Memo–style scrolling waveform for the live call bento. */
+@keyframes pitch-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-.pitch-run .pitch-bar {
-  transform-origin: 50% 50%;
-  animation: pitch-bar 1.2s ease-in-out infinite;
-  will-change: transform, opacity;
+.pitch-scroll {
+  animation: pitch-scroll 4.5s linear infinite;
+  will-change: transform;
 }
-.pitch-idle .pitch-bar {
-  transform: scaleY(0.35);
-  opacity: 0.35;
+
+/* Mobile hero — slow, fluid gradient drift for the daily-brief bento. */
+@keyframes hero-drift {
+  0%   { background-position: 0% 50%, 100% 100%, 0% 0%; }
+  50%  { background-position: 100% 50%, 0% 60%, 40% 30%; }
+  100% { background-position: 0% 50%, 100% 100%, 0% 0%; }
 }
+.mobile-hero-fluid {
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgba(255,255,255,0.08), transparent 55%),
+    radial-gradient(80% 70% at 100% 100%, rgba(180,150,220,0.14), transparent 60%),
+    linear-gradient(155deg, #0b0b0d 0%, #141418 45%, #1c1c22 100%);
+  background-size: 220% 220%, 200% 200%, 200% 200%;
+  animation: hero-drift 18s ease-in-out infinite;
+}
+
