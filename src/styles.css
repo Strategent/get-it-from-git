@@ -654,20 +654,17 @@
 }
 
 
-/* Lemni-style pitch/waveform animation for the live call bento. */
-@keyframes pitch-scroll {
-  0%   { transform: translate3d(0, 0, 0); }
-  100% { transform: translate3d(-50%, 0, 0); }
+/* Apple Voice Memo–style pitch bars for the live call bento. */
+@keyframes pitch-bar {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.55; }
+  50%      { transform: scaleY(1);    opacity: 1; }
 }
-@keyframes pitch-breathe {
-  0%, 100% { transform: scaleY(0.85); }
-  50%      { transform: scaleY(1.15); }
-}
-.pitch-run > path {
+.pitch-run .pitch-bar {
   transform-origin: 50% 50%;
-  transform-box: fill-box;
-  animation: pitch-breathe 2.4s ease-in-out infinite;
+  animation: pitch-bar 1.2s ease-in-out infinite;
+  will-change: transform, opacity;
 }
-.pitch-idle > path {
+.pitch-idle .pitch-bar {
+  transform: scaleY(0.35);
   opacity: 0.35;
 }

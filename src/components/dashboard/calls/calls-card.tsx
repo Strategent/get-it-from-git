@@ -334,39 +334,43 @@ function CallAction({
 }
 
 /**
- * PitchWave — lemni.com-style layered sine waves that breathe while a call is
- * active. Pure SVG + CSS, no external libs. Animation pauses on hold/ended.
+ * PitchWave — Apple Voice Memo–style row of a single line of vertical bars
+ * that breathe while a call is active. One line, monotone, edges faded.
  */
 function PitchWave({ active }: { active: boolean }) {
+  // Deterministic bar pattern — mimics a live pitch trace without randomness.
+  const BARS = 44;
+  const pattern = [
+    0.22, 0.38, 0.55, 0.32, 0.72, 0.48, 0.28, 0.62, 0.85, 0.44,
+    0.58, 0.34, 0.72, 0.5, 0.9, 0.4, 0.24, 0.66, 0.52, 0.78,
+    0.36, 0.6,
+  ];
   return (
-    <div className="pointer-events-none relative flex-1 h-8 min-w-0">
-      <svg
-        viewBox="0 0 400 32"
-        preserveAspectRatio="none"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id="pitchFade" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="currentColor" stopOpacity="0" />
-            <stop offset="0.15" stopColor="currentColor" stopOpacity="0.55" />
-            <stop offset="0.85" stopColor="currentColor" stopOpacity="0.55" />
-            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <g
-          className={`text-foreground/70 ${active ? "pitch-run" : "pitch-idle"}`}
-          fill="none"
-          stroke="url(#pitchFade)"
-          strokeWidth="1"
-          strokeLinecap="round"
-        >
-          <path d="M0 16 Q 25 4 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.9" />
-          <path d="M0 16 Q 25 10 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.55" style={{ animationDelay: "-0.6s" }} />
-          <path d="M0 16 Q 25 22 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.4" style={{ animationDelay: "-1.2s" }} />
-          <path d="M0 16 Q 25 13 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.25" style={{ animationDelay: "-1.8s" }} />
-        </g>
-      </svg>
+    <div
+      className="pointer-events-none relative flex-1 h-6 min-w-0 overflow-hidden"
+      style={{
+        maskImage:
+          "linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(90deg, transparent 0%, black 12%, black 88%, transparent 100%)",
+      }}
+      aria-hidden="true"
+    >
+      <div className={`flex h-full w-full items-center gap-[3px] ${active ? "pitch-run" : "pitch-idle"}`}>
+        {Array.from({ length: BARS }).map((_, i) => {
+          const h = pattern[i % pattern.length];
+          return (
+            <span
+              key={i}
+              className="pitch-bar block flex-1 rounded-full bg-foreground/70"
+              style={{
+                height: `${Math.round(h * 100)}%`,
+                animationDelay: `${(i * 0.06).toFixed(2)}s`,
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }

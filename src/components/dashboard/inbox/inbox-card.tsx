@@ -143,7 +143,7 @@ export function InboxCard() {
       }
       bodyClassName="overflow-hidden"
     >
-      {/* Focused / Other tabs */}
+      {/* Focused / Other tabs — Linear-style monochrome underline */}
       <div className="flex shrink-0 items-center gap-0 border-b border-border/50 px-5 pb-2">
         {(["focused", "other"] as const).map((t) => (
           <button
@@ -155,7 +155,7 @@ export function InboxCard() {
           >
             {t === "other" ? "\n" : t}
             {tab === t && (
-              <span className="absolute -bottom-[8px] left-2.5 right-2.5 h-[2px] rounded-full bg-primary" />
+              <span className="absolute -bottom-[8px] left-2.5 right-2.5 h-[1.5px] rounded-full bg-foreground" />
             )}
           </button>
         ))}
@@ -198,7 +198,7 @@ export function InboxCard() {
                   </div>
                 </div>
                 {unread && (
-                  <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                 )}
               </button>
             );
@@ -207,8 +207,8 @@ export function InboxCard() {
       )}
 
       <div className={`min-h-0 flex-1 grid-cols-12 md:grid ${mobileOpen ? "grid" : "hidden md:grid"}`}>
-        {/* Thread list — desktop only */}
-        <div className="hidden min-h-0 flex-col overflow-hidden py-1 md:col-span-4 md:flex md:border-r md:border-border/50">
+        {/* Thread list — Linear-style: hairline dividers, neutral active state */}
+        <div className="hidden min-h-0 flex-col overflow-hidden py-0 md:col-span-4 md:flex md:border-r md:border-border/50">
           {visibleEmails.map((m, i) => {
             const unread = m.chips.includes("Draft ready");
             const active = i === selectedIdx;
@@ -216,12 +216,17 @@ export function InboxCard() {
               <button
                 key={m.originalIndex}
                 onClick={() => setSelected(i)}
-                className={`relative flex items-start gap-2.5 px-3 py-1.5 text-left transition-colors ${
-                  active ? "bg-primary/[0.08]" : "hover:bg-foreground/[0.035]"
+                className={`group relative flex items-start gap-2.5 border-b border-border/30 px-3 py-2 text-left transition-colors ${
+                  active
+                    ? "bg-foreground/[0.045]"
+                    : "hover:bg-foreground/[0.025]"
                 }`}
               >
                 {active && (
-                  <span className="absolute bottom-1.5 left-0 top-1.5 w-[2.5px] rounded-r-full bg-primary" />
+                  <span className="absolute inset-y-0 left-0 w-[1.5px] bg-foreground/70" />
+                )}
+                {unread && !active && (
+                  <span className="absolute left-1 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-foreground/70" />
                 )}
                 <img
                   src={avatarUrl(m.sender, 64)}
@@ -232,24 +237,24 @@ export function InboxCard() {
                 <div className="min-w-0 flex-1 leading-tight">
                   <div className="flex items-center justify-between gap-2">
                     <div
-                      className={`truncate text-[12.5px] ${
-                        unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"
+                      className={`truncate text-[12.5px] tracking-tight ${
+                        unread ? "font-semibold text-foreground" : "font-medium text-foreground/85"
                       }`}
                     >
                       {m.sender}
                     </div>
-                    <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+                    <div className="shrink-0 text-[10px] tabular-nums text-muted-foreground/80">
                       {m.time}
                     </div>
                   </div>
                   <div
-                    className={`mt-px truncate text-[11.5px] ${
-                      unread ? "font-medium text-foreground/85" : "font-medium text-foreground/70"
+                    className={`mt-0.5 truncate text-[11.5px] tracking-tight ${
+                      unread ? "text-foreground/80" : "text-foreground/60"
                     }`}
                   >
                     {m.subject}
                   </div>
-                  <div className="truncate text-[10.5px] font-normal text-muted-foreground/80">
+                  <div className="truncate text-[10.5px] font-normal text-muted-foreground/70">
                     {m.preview}
                   </div>
                 </div>
@@ -257,6 +262,7 @@ export function InboxCard() {
             );
           })}
         </div>
+
 
         {/* Reading pane — Gmail-style */}
         <div className="col-span-12 flex min-w-0 flex-col overflow-hidden md:col-span-8">
