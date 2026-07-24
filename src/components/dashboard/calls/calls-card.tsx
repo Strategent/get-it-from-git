@@ -332,3 +332,41 @@ function CallAction({
     </button>
   );
 }
+
+/**
+ * PitchWave — lemni.com-style layered sine waves that breathe while a call is
+ * active. Pure SVG + CSS, no external libs. Animation pauses on hold/ended.
+ */
+function PitchWave({ active }: { active: boolean }) {
+  return (
+    <div className="pointer-events-none relative flex-1 h-8 min-w-0">
+      <svg
+        viewBox="0 0 400 32"
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="pitchFade" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+            <stop offset="0.15" stopColor="currentColor" stopOpacity="0.55" />
+            <stop offset="0.85" stopColor="currentColor" stopOpacity="0.55" />
+            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <g
+          className={`text-foreground/70 ${active ? "pitch-run" : "pitch-idle"}`}
+          fill="none"
+          stroke="url(#pitchFade)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        >
+          <path d="M0 16 Q 25 4 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.9" />
+          <path d="M0 16 Q 25 10 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.55" style={{ animationDelay: "-0.6s" }} />
+          <path d="M0 16 Q 25 22 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.4" style={{ animationDelay: "-1.2s" }} />
+          <path d="M0 16 Q 25 13 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.25" style={{ animationDelay: "-1.8s" }} />
+        </g>
+      </svg>
+    </div>
+  );
+}
