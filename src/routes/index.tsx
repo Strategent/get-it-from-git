@@ -54,8 +54,10 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
           <MobileTeamCard />
         </div>
 
-        {/* 4. Inbox */}
-        <InboxCard />
+        {/* 4. Inbox — fixed height so tapping a thread doesn't morph the card */}
+        <div className="h-[520px]">
+          <InboxCard />
+        </div>
 
         {/* 5. Calendar */}
         <CalendarCard />
