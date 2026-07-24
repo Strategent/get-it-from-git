@@ -653,3 +653,21 @@
   display: none;
 }
 
+
+/* Lemni-style pitch/waveform animation for the live call bento. */
+@keyframes pitch-scroll {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes pitch-breathe {
+  0%, 100% { transform: scaleY(0.85); }
+  50%      { transform: scaleY(1.15); }
+}
+.pitch-run > path {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  animation: pitch-breathe 2.4s ease-in-out infinite;
+}
+.pitch-idle > path {
+  opacity: 0.35;
+}

@@ -29,18 +29,23 @@ function fmtDur(total: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+const CALLER_NAME = "Adrian Whitfield";
+const CALLER_PHONE = "+1 (561) 555‑7689";
+const CALLER_EMAIL = "adrian.whitfield@whitfieldco.com";
+const CALLER_INITIALS = "AW";
+
 const transcript: { who: "client" | "agent"; text: string }[] = [
   { who: "agent", text: "Thanks for calling Harwick & Sterne — may I grab your name and best email?" },
-  { who: "client", text: "Marcus Vahlen. marcus.vahlen@vahlencap.com — best number is this one." },
+  { who: "client", text: `${CALLER_NAME}. ${CALLER_EMAIL} — best number is this one.` },
   { who: "agent", text: "Got it. What's prompting the call today?" },
   { who: "client", text: "Rollover — two old 401(k)s, around $480K combined." },
   { who: "agent", text: "Perfect. I'll log you as a new lead and have an advisor reach out this week." },
 ];
 
 const capturedFields = [
-  { label: "Name", value: "Marcus Vahlen", done: true },
-  { label: "Email", value: "marcus.vahlen@vahlencap.com", done: true },
-  { label: "Phone", value: "+1 (415) 555‑0148", done: true },
+  { label: "Name", value: CALLER_NAME, done: true },
+  { label: "Email", value: CALLER_EMAIL, done: true },
+  { label: "Phone", value: CALLER_PHONE, done: true },
   { label: "Intent", value: "401(k) rollover · ~$480K", done: true },
   { label: "CRM", value: "Logging as new lead…", done: false },
 ];
@@ -116,15 +121,15 @@ export function CallsCard() {
         </span>
       }
     >
-      {/* Live call header — single avatar, no inner card */}
+      {/* Live call header — lemni.com-inspired: quiet avatar, waveform pitch line */}
       <div className="flex shrink-0 flex-col gap-3">
         <div className="flex items-center gap-3">
           <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.06] text-[15px] font-semibold tracking-tight text-foreground/90">
-            MV
+            {CALLER_INITIALS}
           </div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[15px] font-semibold tracking-tight text-foreground">
-              {live.name}
+              {CALLER_NAME}
             </div>
             <div className="truncate text-[11.5px] text-muted-foreground">
               {callState === "ended"
@@ -146,6 +151,33 @@ export function CallsCard() {
             </div>
           </div>
         </div>
+
+        {/* Pitch line — lemni-style animated waveform behind phone/status */}
+        <div className="relative flex items-center gap-3 rounded-xl border border-border/60 bg-foreground/[0.03] px-3 py-2.5 overflow-hidden">
+          <div className="flex items-center gap-2 shrink-0 z-10">
+            <span className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.06] text-foreground/80">
+              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
+                <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 0 0-1.02.24l-2.2 2.2a15.05 15.05 0 0 1-6.59-6.59l2.2-2.2a1 1 0 0 0 .25-1.02A11.36 11.36 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.39 7.61 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1z" />
+              </svg>
+            </span>
+            <span className="text-[12px] font-medium tabular-nums text-foreground/90">
+              {CALLER_PHONE}
+            </span>
+          </div>
+          <PitchWave active={isLive && !onHold} />
+          <span
+            className={`shrink-0 z-10 text-[10.5px] font-semibold uppercase tracking-[0.18em] ${
+              isLive && !onHold
+                ? "text-emerald-400"
+                : callState === "ended"
+                  ? "text-muted-foreground"
+                  : "text-amber-400"
+            }`}
+          >
+            {callState === "ended" ? "Ended" : onHold ? "Hold" : "Active"}
+          </span>
+        </div>
+
 
         {/* Controls — Discord-style mute/deafen toggles, hold, and End call. */}
         <div className="flex items-center justify-between px-1">
@@ -298,5 +330,43 @@ function CallAction({
     >
       <Icon className="h-4 w-4" strokeWidth={1.75} />
     </button>
+  );
+}
+
+/**
+ * PitchWave — lemni.com-style layered sine waves that breathe while a call is
+ * active. Pure SVG + CSS, no external libs. Animation pauses on hold/ended.
+ */
+function PitchWave({ active }: { active: boolean }) {
+  return (
+    <div className="pointer-events-none relative flex-1 h-8 min-w-0">
+      <svg
+        viewBox="0 0 400 32"
+        preserveAspectRatio="none"
+        className="absolute inset-0 h-full w-full"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="pitchFade" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0" stopColor="currentColor" stopOpacity="0" />
+            <stop offset="0.15" stopColor="currentColor" stopOpacity="0.55" />
+            <stop offset="0.85" stopColor="currentColor" stopOpacity="0.55" />
+            <stop offset="1" stopColor="currentColor" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <g
+          className={`text-foreground/70 ${active ? "pitch-run" : "pitch-idle"}`}
+          fill="none"
+          stroke="url(#pitchFade)"
+          strokeWidth="1"
+          strokeLinecap="round"
+        >
+          <path d="M0 16 Q 25 4 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.9" />
+          <path d="M0 16 Q 25 10 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.55" style={{ animationDelay: "-0.6s" }} />
+          <path d="M0 16 Q 25 22 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.4" style={{ animationDelay: "-1.2s" }} />
+          <path d="M0 16 Q 25 13 50 16 T 100 16 T 150 16 T 200 16 T 250 16 T 300 16 T 350 16 T 400 16" opacity="0.25" style={{ animationDelay: "-1.8s" }} />
+        </g>
+      </svg>
+    </div>
   );
 }
