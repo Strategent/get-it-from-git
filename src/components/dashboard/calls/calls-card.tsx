@@ -29,18 +29,23 @@ function fmtDur(total: number): string {
   return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 }
 
+const CALLER_NAME = "Adrian Whitfield";
+const CALLER_PHONE = "+1 (561) 555‑7689";
+const CALLER_EMAIL = "adrian.whitfield@whitfieldco.com";
+const CALLER_INITIALS = "AW";
+
 const transcript: { who: "client" | "agent"; text: string }[] = [
   { who: "agent", text: "Thanks for calling Harwick & Sterne — may I grab your name and best email?" },
-  { who: "client", text: "Marcus Vahlen. marcus.vahlen@vahlencap.com — best number is this one." },
+  { who: "client", text: `${CALLER_NAME}. ${CALLER_EMAIL} — best number is this one.` },
   { who: "agent", text: "Got it. What's prompting the call today?" },
   { who: "client", text: "Rollover — two old 401(k)s, around $480K combined." },
   { who: "agent", text: "Perfect. I'll log you as a new lead and have an advisor reach out this week." },
 ];
 
 const capturedFields = [
-  { label: "Name", value: "Marcus Vahlen", done: true },
-  { label: "Email", value: "marcus.vahlen@vahlencap.com", done: true },
-  { label: "Phone", value: "+1 (415) 555‑0148", done: true },
+  { label: "Name", value: CALLER_NAME, done: true },
+  { label: "Email", value: CALLER_EMAIL, done: true },
+  { label: "Phone", value: CALLER_PHONE, done: true },
   { label: "Intent", value: "401(k) rollover · ~$480K", done: true },
   { label: "CRM", value: "Logging as new lead…", done: false },
 ];
