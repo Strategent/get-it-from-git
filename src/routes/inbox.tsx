@@ -426,6 +426,7 @@ function InboxPage() {
 
   const selectThread = (thread: Thread) => {
     setSelectedId(thread.id);
+    setMobileReading(true);
     if (thread.unread) updateThread(thread.id, { unread: false });
   };
 
