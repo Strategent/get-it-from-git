@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Reply, ReplyAll, Forward, Star, Paperclip, Archive, Check, ArrowLeft } from "lucide-react";
+import { createPortal } from "react-dom";
+import {
+  Reply,
+  ReplyAll,
+  Forward,
+  Star,
+  Paperclip,
+  Archive,
+  Check,
+  ArrowLeft,
+  Sparkles,
+  ArrowRight,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
 
 import { toast } from "sonner";
 import { Panel } from "@/components/ui/panel";
