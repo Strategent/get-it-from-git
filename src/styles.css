@@ -188,11 +188,17 @@
   .bento::after {
     content: none;
   }
+  .bento {
+    box-shadow:
+      0 1px 0 0 color-mix(in oklab, black 3%, transparent),
+      0 1px 3px -1px color-mix(in oklab, black 6%, transparent);
+  }
   .dark .bento {
     /* Midday: matte lift, hairline border, top sheen + soft depth. */
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+    box-shadow: none;
   }
   .dark .bento-raised {
     background: var(--surface-raised);
@@ -247,9 +253,16 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
+    /* Subtle lift in light mode so cards separate from the warm-gray bg. */
+    box-shadow:
+      0 1px 0 0 color-mix(in oklab, black 3%, transparent),
+      0 1px 3px -1px color-mix(in oklab, black 6%, transparent);
     /* Clip content at the rounded border — sections that can outgrow a card
        must scroll themselves (see .scroll-slim). */
     overflow: hidden;
+  }
+  .dark .origin-card {
+    box-shadow: none;
   }
   /* Raised sub-surface inside a card (draft blocks, stat tiles, queue rows). */
   .origin-raised {

@@ -142,7 +142,7 @@ export function MobileRecapCard() {
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Markets
         </span>
-        <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-500/12 text-emerald-500">
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-600/15 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
           <TrendingUp className="h-3 w-3" strokeWidth={2.25} />
         </span>
       </div>
