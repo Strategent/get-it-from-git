@@ -164,7 +164,7 @@ export function InboxCard() {
       {/* Mobile: full-width thread list (shown when no email is opened) */}
       {!mobileOpen && (
         <div className="flex min-h-0 flex-1 flex-col overflow-y-auto py-1 md:hidden">
-          {visibleEmails.map((m, i) => {
+          {visibleEmails.slice(0, 4).map((m, i) => {
             const unread = m.chips.includes("Draft ready");
             return (
               <button
