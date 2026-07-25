@@ -528,7 +528,7 @@ function InboxPage() {
         className="flex w-full bg-muted/20 overflow-hidden"
         style={{ height: "calc(100dvh - 53px)" }}
       >
-        <section className="w-[400px] shrink-0 flex flex-col border-r border-border/60 min-w-0 bg-muted/30">
+        <section className={`${mobileReading ? "hidden md:flex" : "flex"} w-full md:w-[400px] shrink-0 flex-col border-r border-border/60 min-w-0 bg-muted/30`}>
           {/* Compose + folder */}
           <div className="px-4 pt-4 pb-3 flex items-center gap-2">
             <button
