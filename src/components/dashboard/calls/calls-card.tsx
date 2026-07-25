@@ -121,63 +121,32 @@ export function CallsCard() {
         </span>
       }
     >
-      {/* Live call header — lemni.com-inspired: quiet avatar, waveform pitch line */}
-      <div className="flex shrink-0 flex-col gap-3">
+      {/* Live call header — lemni-inspired: quiet avatar, name + phone, duration */}
+      <div className="flex shrink-0 flex-col gap-4">
         <div className="flex items-center gap-3">
-          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.06] text-[15px] font-semibold tracking-tight text-foreground/90">
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-foreground/[0.06] text-[15px] font-semibold tracking-tight text-foreground/90">
             {CALLER_INITIALS}
           </div>
           <div className="min-w-0 flex-1">
             <div className="truncate text-[15px] font-semibold tracking-tight text-foreground">
               {CALLER_NAME}
             </div>
-            <div className="truncate text-[11.5px] text-muted-foreground">
-              {callState === "ended"
-                ? "Call ended"
-                : onHold
-                  ? "On hold"
-                  : "Handled by Syra · AI agent"}
-            </div>
-          </div>
-          <div className="text-right leading-tight">
-            <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
-              Duration
-            </div>
-            <div
-              className="mt-1 text-[15px] font-semibold tabular-nums text-foreground"
-              suppressHydrationWarning
-            >
-              {duration}
-            </div>
-          </div>
-        </div>
-
-        {/* Pitch line — lemni-style animated waveform behind phone/status */}
-        <div className="relative flex items-center gap-3 rounded-xl border border-border/60 bg-foreground/[0.03] px-3 py-2.5 overflow-hidden">
-          <div className="flex items-center gap-2 shrink-0 z-10">
-            <span className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.06] text-foreground/80">
-              <svg viewBox="0 0 24 24" className="h-3 w-3" fill="currentColor">
-                <path d="M20 15.5c-1.25 0-2.45-.2-3.57-.57a1 1 0 0 0-1.02.24l-2.2 2.2a15.05 15.05 0 0 1-6.59-6.59l2.2-2.2a1 1 0 0 0 .25-1.02A11.36 11.36 0 0 1 8.5 4a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1c0 9.39 7.61 17 17 17a1 1 0 0 0 1-1v-3.5a1 1 0 0 0-1-1z" />
-              </svg>
-            </span>
-            <span className="text-[12px] font-medium tabular-nums text-foreground/90">
+            <div className="truncate text-[12px] tabular-nums text-muted-foreground">
               {CALLER_PHONE}
-            </span>
+            </div>
           </div>
-          <PitchWave active={isLive && !onHold} />
-          <span
-            className={`shrink-0 z-10 text-[10.5px] font-semibold uppercase tracking-[0.18em] ${
-              isLive && !onHold
-                ? "text-emerald-400"
-                : callState === "ended"
-                  ? "text-muted-foreground"
-                  : "text-amber-400"
-            }`}
+          <div
+            className="shrink-0 text-[15px] font-semibold tabular-nums text-foreground"
+            suppressHydrationWarning
           >
-            {callState === "ended" ? "Ended" : onHold ? "Hold" : "Active"}
-          </span>
+            {duration}
+          </div>
         </div>
 
+        {/* Full-bleed waveform — edge-to-edge lemni pitch line, no container */}
+        <div className="-mx-5">
+          <PitchWave active={isLive && !onHold} />
+        </div>
 
         {/* Controls — Discord-style mute/deafen toggles, hold, and End call. */}
         <div className="flex items-center justify-between px-1">
@@ -341,30 +310,29 @@ function PitchWave({ active }: { active: boolean }) {
   // Two identical wave paths laid end-to-end so the horizontal scroll loops
   // seamlessly. Amplitude modulation gives it a lemni-style "breathing" feel.
   const W = 400; // logical width of one repeat
-  const H = 24;
+  const H = 40;
   const mid = H / 2;
   const points: string[] = [];
-  const steps = 80;
+  const steps = 120;
   for (let i = 0; i <= steps; i++) {
     const x = (i / steps) * W;
     const t = (i / steps) * Math.PI * 6;
-    // Mixed sines create an organic, non-repetitive pitch trace.
     const amp =
       (Math.sin(t) * 0.55 +
         Math.sin(t * 1.9 + 0.7) * 0.28 +
         Math.sin(t * 0.6 + 1.3) * 0.17) *
-      (mid - 2);
+      (mid - 3);
     points.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)},${(mid + amp).toFixed(2)}`);
   }
   const d = points.join(" ");
   return (
     <div
-      className="pointer-events-none relative flex-1 h-6 min-w-0 overflow-hidden"
+      className="pointer-events-none relative h-10 w-full overflow-hidden"
       style={{
         maskImage:
-          "linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
       }}
       aria-hidden="true"
     >
