@@ -328,6 +328,7 @@ function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
 function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
+  const [mobileReading, setMobileReading] = useState(false);
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
   const [foldersOpen, setFoldersOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -425,6 +426,7 @@ function InboxPage() {
 
   const selectThread = (thread: Thread) => {
     setSelectedId(thread.id);
+    setMobileReading(true);
     if (thread.unread) updateThread(thread.id, { unread: false });
   };
 
@@ -526,7 +528,7 @@ function InboxPage() {
         className="flex w-full bg-muted/20 overflow-hidden"
         style={{ height: "calc(100dvh - 53px)" }}
       >
-        <section className="w-[400px] shrink-0 flex flex-col border-r border-border/60 min-w-0 bg-muted/30">
+        <section className={`${mobileReading ? "hidden md:flex" : "flex"} w-full md:w-[400px] shrink-0 flex-col border-r border-border/60 min-w-0 bg-muted/30`}>
           {/* Compose + folder */}
           <div className="px-4 pt-4 pb-3 flex items-center gap-2">
             <button
@@ -722,9 +724,17 @@ function InboxPage() {
         </section>
 
 
-        <main className="flex-1 flex flex-col min-w-0 bg-muted/20">
+        <main className={`${mobileReading ? "flex" : "hidden md:flex"} flex-1 flex-col min-w-0 bg-muted/20`}>
           <div className="h-12 px-4 flex items-center justify-between border-b border-border/60 bg-background">
             <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileReading(false)}
+                aria-label="Back to inbox"
+                className="md:hidden grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+              >
+                <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
+              </button>
               <ToolbarBtn
                 icon={Archive}
                 label="Archive"
