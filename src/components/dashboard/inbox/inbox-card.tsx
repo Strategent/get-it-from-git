@@ -521,49 +521,61 @@ function MobileThreadPortal(props: {
 
   return createPortal(
     <div
-      className="fixed inset-0 z-[70] flex flex-col bg-background md:hidden"
+      className="fixed inset-0 z-[70] flex flex-col md:hidden"
       role="dialog"
       aria-modal="true"
       aria-label={`Conversation with ${e.sender}`}
       style={{
         paddingTop: "env(safe-area-inset-top)",
         paddingBottom: "env(safe-area-inset-bottom)",
+        background:
+          "radial-gradient(120% 60% at 50% 0%, color-mix(in oklab, var(--foreground) 4%, transparent) 0%, transparent 60%), var(--background)",
       }}
     >
-      {/* Top bar */}
-      <div className="flex shrink-0 items-center gap-1 border-b border-border/50 px-2 py-2">
+      {/* Top bar — Linear style: dense, hairline, breadcrumb */}
+      <div
+        className="flex shrink-0 items-center gap-1 px-2 py-2"
+        style={{
+          borderBottom: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+          background: "color-mix(in oklab, var(--background) 92%, transparent)",
+          backdropFilter: "blur(14px)",
+          WebkitBackdropFilter: "blur(14px)",
+        }}
+      >
         <button
           type="button"
           onClick={props.onClose}
           aria-label="Back to inbox"
-          className="grid h-9 w-9 place-items-center rounded-full text-foreground/85 transition-colors active:bg-foreground/[0.08]"
+          className="grid h-9 w-9 place-items-center rounded-md text-foreground/85 transition-colors active:bg-foreground/[0.08]"
         >
-          <ArrowLeft className="h-5 w-5" strokeWidth={1.75} />
+          <ArrowLeft className="h-[18px] w-[18px]" strokeWidth={1.75} />
         </button>
         <div className="min-w-0 flex-1 px-1">
-          <div className="truncate text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
-            Inbox
+          <div className="flex items-center gap-1.5 text-[10.5px] tracking-[0.14em] text-muted-foreground">
+            <span className="uppercase">Inbox</span>
+            <span className="text-foreground/25">/</span>
+            <span className="truncate uppercase text-foreground/70">{e.sender.split(" ")[0]}</span>
           </div>
         </div>
         <button
           type="button"
           onClick={props.onArchive}
           aria-label="Archive"
-          className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 transition-colors active:bg-foreground/[0.08]"
+          className="grid h-9 w-9 place-items-center rounded-md text-foreground/70 transition-colors active:bg-foreground/[0.08]"
         >
-          <Archive className="h-4.5 w-4.5 h-[18px] w-[18px]" strokeWidth={1.75} />
+          <Archive className="h-[17px] w-[17px]" strokeWidth={1.75} />
         </button>
         <button
           type="button"
           onClick={props.onToggleFlag}
           aria-label="Flag"
           aria-pressed={isFlagged}
-          className={`grid h-9 w-9 place-items-center rounded-full transition-colors active:bg-foreground/[0.08] ${
+          className={`grid h-9 w-9 place-items-center rounded-md transition-colors active:bg-foreground/[0.08] ${
             isFlagged ? "text-amber-400" : "text-foreground/70"
           }`}
         >
           <Star
-            className="h-[18px] w-[18px]"
+            className="h-[17px] w-[17px]"
             strokeWidth={1.75}
             {...(isFlagged ? { fill: "currentColor" } : {})}
           />
@@ -571,56 +583,125 @@ function MobileThreadPortal(props: {
         <button
           type="button"
           aria-label="More"
-          className="grid h-9 w-9 place-items-center rounded-full text-foreground/70 transition-colors active:bg-foreground/[0.08]"
+          className="grid h-9 w-9 place-items-center rounded-md text-foreground/70 transition-colors active:bg-foreground/[0.08]"
         >
-          <MoreHorizontal className="h-[18px] w-[18px]" strokeWidth={1.75} />
+          <MoreHorizontal className="h-[17px] w-[17px]" strokeWidth={1.75} />
         </button>
       </div>
 
       {/* Scrollable thread */}
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {/* Subject header */}
-        <div className="px-4 pb-3 pt-4">
-          <h1 className="text-[19px] font-semibold leading-snug tracking-tight text-foreground">
+        {/* Subject header — editorial */}
+        <div className="px-4 pb-3 pt-5">
+          <div className="mb-1.5 flex items-center gap-1.5">
+            <span className="inline-flex h-[18px] items-center rounded-[4px] border border-border/70 bg-foreground/[0.03] px-1.5 text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Thread
+            </span>
+            <span className="text-[10.5px] tabular-nums text-muted-foreground">
+              {String(e.originalIndex + 1).padStart(3, "0")}
+            </span>
+          </div>
+          <h1 className="text-[20px] font-semibold leading-[1.15] tracking-[-0.01em] text-foreground">
             {e.subject}
           </h1>
-          <div className="mt-1 flex items-center gap-1.5 text-[11.5px] text-muted-foreground">
-            <span>{thread.length} messages</span>
-            <span className="text-foreground/30">·</span>
-            <span>{e.time}</span>
+          <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1">
+              <span className="h-1 w-1 rounded-full bg-emerald-500" />
+              <span>{thread.length} messages</span>
+            </span>
+            <span className="text-foreground/25">·</span>
+            <span>2 participants</span>
+            <span className="text-foreground/25">·</span>
+            <span className="truncate">{e.time}</span>
           </div>
         </div>
 
-        {/* Single Syra smart summary + next action — pinned above the thread */}
+        {/* Syra Smart Summary — Linear.app-grade card */}
         {(() => {
           const latest = [...thread].reverse().find((m) => m.from === "them" && m.summary);
           if (!latest) return null;
           return (
-            <div className="px-4 pb-3">
-              <div className="overflow-hidden rounded-2xl border border-border/60 bg-foreground/[0.03] backdrop-blur">
-                <div className="flex items-center gap-1.5 px-3.5 pt-2.5">
-                  <Sparkles className="h-3 w-3 text-foreground/55" strokeWidth={1.75} />
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                    Syra · smart summary
+            <div className="px-4 pb-4">
+              <div
+                className="relative overflow-hidden rounded-xl"
+                style={{
+                  background:
+                    "linear-gradient(180deg, color-mix(in oklab, var(--foreground) 5%, transparent) 0%, color-mix(in oklab, var(--foreground) 2.5%, transparent) 100%)",
+                  border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+                  boxShadow:
+                    "0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent) inset, 0 8px 24px -12px color-mix(in oklab, var(--foreground) 30%, transparent)",
+                }}
+              >
+                {/* Top rail */}
+                <div
+                  className="flex items-center justify-between px-3.5 py-2"
+                  style={{
+                    borderBottom: "1px solid color-mix(in oklab, var(--foreground) 7%, transparent)",
+                  }}
+                >
+                  <div className="flex items-center gap-1.5">
+                    <span
+                      className="grid h-4 w-4 place-items-center rounded-[4px]"
+                      style={{
+                        background: "color-mix(in oklab, var(--foreground) 10%, transparent)",
+                      }}
+                    >
+                      <Sparkles className="h-2.5 w-2.5 text-foreground/80" strokeWidth={2} />
+                    </span>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-foreground/75">
+                      Syra
+                    </span>
+                    <span className="text-foreground/25">·</span>
+                    <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+                      Smart summary
+                    </span>
+                  </div>
+                  <span className="inline-flex items-center gap-1 text-[9.5px] tracking-[0.12em] text-muted-foreground">
+                    <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                    LIVE
                   </span>
                 </div>
-                <p className="px-3.5 pb-3 pt-1 text-[13px] leading-snug text-foreground/90">
-                  {latest.summary}
-                </p>
+
+                {/* Summary body */}
+                <div className="px-3.5 py-3">
+                  <p className="text-[13.5px] leading-[1.45] text-foreground/95">
+                    {latest.summary}
+                  </p>
+                </div>
+
+                {/* Next action — CTA row */}
                 {latest.action && (
                   <button
                     type="button"
-                    className="flex w-full items-center justify-between gap-3 border-t border-border/50 bg-foreground/[0.02] px-3.5 py-2.5 text-left transition-colors active:bg-foreground/[0.06]"
+                    className="group flex w-full items-center justify-between gap-3 px-3.5 py-2.5 text-left transition-colors active:bg-foreground/[0.05]"
+                    style={{
+                      borderTop:
+                        "1px solid color-mix(in oklab, var(--foreground) 7%, transparent)",
+                      background: "color-mix(in oklab, var(--foreground) 2%, transparent)",
+                    }}
                   >
-                    <span className="min-w-0">
-                      <span className="block text-[9.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                        Next action
+                    <span className="flex min-w-0 items-center gap-2.5">
+                      <span
+                        className="grid h-5 w-5 shrink-0 place-items-center rounded-[5px]"
+                        style={{
+                          background: "color-mix(in oklab, var(--foreground) 88%, transparent)",
+                          color: "var(--background)",
+                        }}
+                      >
+                        <ArrowRight className="h-3 w-3" strokeWidth={2.5} />
                       </span>
-                      <span className="mt-0.5 block truncate text-[13px] font-medium text-foreground">
-                        {latest.action}
+                      <span className="min-w-0">
+                        <span className="block text-[9.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                          Next action
+                        </span>
+                        <span className="mt-0.5 block truncate text-[13px] font-medium text-foreground">
+                          {latest.action}
+                        </span>
                       </span>
                     </span>
-                    <ArrowRight className="h-3.5 w-3.5 shrink-0 text-foreground/55" strokeWidth={2} />
+                    <span className="shrink-0 text-[10.5px] font-medium tracking-[0.06em] text-muted-foreground">
+                      ⌘ ⏎
+                    </span>
                   </button>
                 )}
               </div>
@@ -628,21 +709,29 @@ function MobileThreadPortal(props: {
           );
         })()}
 
-        {/* Messages */}
-        <div className="flex flex-col divide-y divide-border/40 border-t border-border/40">
+        {/* Messages — stacked cards with depth */}
+        <div className="flex flex-col gap-2.5 px-3 pb-4">
           {thread.map((m, i) => (
             <MobileThreadMessage
               key={i}
               email={e}
               message={m}
               senderEmail={senderEmail}
+              index={i}
+              total={thread.length}
             />
           ))}
 
           {isSent && (
-            <div className="flex items-center gap-2 px-4 py-4">
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-500/15 text-emerald-500">
-                <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
+            <div
+              className="mx-1 flex items-center gap-2 rounded-lg px-3 py-2.5"
+              style={{
+                background: "color-mix(in oklab, var(--foreground) 3%, transparent)",
+                border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+              }}
+            >
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500/15 text-emerald-500">
+                <Check className="h-3 w-3" strokeWidth={2.75} />
               </span>
               <span className="text-[12.5px] text-foreground/85">
                 Reply sent to <span className="font-medium text-foreground">{e.sender.split(" ")[0]}</span>
@@ -655,26 +744,44 @@ function MobileThreadPortal(props: {
         <div className="h-24" />
       </div>
 
-      {/* Bottom composer bar — iOS Mail feel */}
+      {/* Bottom composer bar — Linear-style dense input */}
       {!isSent && (
         <div
-          className="shrink-0 border-t border-border/50 bg-background/95 px-3 pb-3 pt-2 backdrop-blur"
-          style={{ paddingBottom: "max(env(safe-area-inset-bottom), 12px)" }}
+          className="shrink-0 px-3 pb-3 pt-2"
+          style={{
+            borderTop: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+            background: "color-mix(in oklab, var(--background) 90%, transparent)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
+            paddingBottom: "max(env(safe-area-inset-bottom), 12px)",
+          }}
         >
-          <div className="flex items-end gap-2">
+          <div
+            className="flex items-end gap-2 rounded-xl px-2 py-1.5"
+            style={{
+              background: "color-mix(in oklab, var(--foreground) 3%, transparent)",
+              border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+              boxShadow:
+                "0 1px 0 color-mix(in oklab, var(--foreground) 5%, transparent) inset",
+            }}
+          >
             <textarea
               value={draft}
               onChange={(ev) => props.onDraftChange(ev.target.value)}
               rows={1}
               placeholder={`Reply to ${e.sender.split(" ")[0]}…`}
-              className="max-h-32 min-h-[40px] w-full resize-none rounded-2xl border border-border/70 bg-foreground/[0.03] px-3.5 py-2.5 text-[13.5px] leading-snug text-foreground placeholder:text-muted-foreground focus:border-foreground/30 focus:outline-none"
+              className="max-h-32 min-h-[36px] w-full resize-none bg-transparent px-2 py-2 text-[13.5px] leading-snug text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
             <button
               type="button"
               onClick={props.onSend}
               disabled={sending || draft.trim().length === 0}
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-foreground text-background transition-opacity disabled:opacity-40"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-foreground text-background transition-opacity disabled:opacity-40"
               aria-label="Send reply"
+              style={{
+                boxShadow:
+                  "0 4px 12px -4px color-mix(in oklab, var(--foreground) 40%, transparent)",
+              }}
             >
               <ArrowRight className="h-4 w-4" strokeWidth={2.25} />
             </button>
@@ -690,41 +797,64 @@ function MobileThreadMessage({
   email: e,
   message: m,
   senderEmail,
+  index,
+  total,
 }: {
   email: EmailShape;
   message: ReturnType<typeof buildThread>[number];
   senderEmail: string;
+  index: number;
+  total: number;
 }) {
   const isMe = m.from === "me";
+  const isLatest = index === total - 1;
   return (
-    <div className="px-4 py-4">
+    <div
+      className="overflow-hidden rounded-xl"
+      style={{
+        background: isMe
+          ? "color-mix(in oklab, var(--foreground) 2%, transparent)"
+          : "color-mix(in oklab, var(--background) 100%, transparent)",
+        border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
+        boxShadow: isLatest
+          ? "0 1px 0 color-mix(in oklab, var(--foreground) 5%, transparent) inset, 0 6px 20px -10px color-mix(in oklab, var(--foreground) 25%, transparent)"
+          : "0 1px 0 color-mix(in oklab, var(--foreground) 4%, transparent) inset",
+      }}
+    >
       {/* Sender row */}
-      <div className="flex items-start gap-2.5">
+      <div
+        className="flex items-start gap-2.5 px-3.5 py-3"
+        style={{
+          borderBottom: "1px solid color-mix(in oklab, var(--foreground) 6%, transparent)",
+        }}
+      >
         <img
           src={avatarUrl(isMe ? "John Harwick" : e.sender, 96)}
           alt={isMe ? "You" : e.sender}
           loading="lazy"
-          className="h-9 w-9 shrink-0 rounded-full border border-border object-cover"
+          className="h-8 w-8 shrink-0 rounded-full border border-border object-cover"
         />
         <div className="min-w-0 flex-1 leading-tight">
           <div className="flex items-baseline justify-between gap-2">
-            <div className="min-w-0 truncate text-[13.5px] font-semibold text-foreground">
+            <div className="min-w-0 truncate text-[13px] font-semibold text-foreground">
               {isMe ? "You" : e.sender}
             </div>
             <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
               {m.time}
             </div>
           </div>
-          <div className="mt-0.5 truncate text-[10.5px] text-muted-foreground">
-            {isMe ? `to ${e.sender.split(" ")[0]}` : (
-              <>to me <span className="text-foreground/30">·</span> {senderEmail}</>
-            )}
+          <div className="mt-0.5 flex items-center gap-1 truncate text-[10.5px] text-muted-foreground">
+            <span className="truncate">
+              {isMe ? `to ${e.sender.split(" ")[0]}` : (
+                <>to me <span className="text-foreground/25">·</span> {senderEmail}</>
+              )}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Body */}
-      <p className="mt-3 whitespace-pre-line text-[13.5px] leading-relaxed text-foreground/90">
+      <p className="whitespace-pre-line px-3.5 py-3.5 text-[13.5px] leading-[1.55] text-foreground/90">
         {m.body}
       </p>
     </div>
