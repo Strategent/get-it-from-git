@@ -141,6 +141,7 @@ export function InboxCard() {
       .join("");
 
   return (
+    <>
     <Panel
       label="Inbox"
       to="/inbox"
