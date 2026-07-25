@@ -82,10 +82,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
-      { name: "theme-color", content: "#111111", media: "(prefers-color-scheme: dark)" },
-      { name: "theme-color", content: "#efeeed", media: "(prefers-color-scheme: light)" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover, minimum-scale=1, maximum-scale=5" },
+      // Single unscoped theme-color as the authoritative default; ThemeProvider
+      // rewrites this at runtime to match the current app surface. Media-scoped
+      // variants are intentionally omitted — iOS Safari falls back to white
+      // when the system scheme doesn't match the app's chosen theme.
+      { name: "theme-color", content: "#111111" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { title: "strategent | demo build" },
       {

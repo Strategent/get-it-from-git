@@ -27,25 +27,40 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       root.classList.remove("dark");
     }
     localStorage.setItem("nexus-theme", theme);
-    // Sync the iOS/Android status-bar color to the app surface so the
-    // notch/status-bar area doesn't render as a white strip in dark mode.
+
+    // Sync the iOS/Android status-bar color to the app surface. On iOS Safari,
+    // theme-color tints the notch/status-bar area and URL bar chrome. Media-
+    // scoped tags only apply when the *system* scheme matches — so we strip
+    // the media attribute and enforce a single unscoped tag that always wins.
     const color = theme === "dark" ? "#111111" : "#efeeed";
-    // Update both the generic and media-scoped theme-color tags so iOS/Safari
-    // uses the current app surface for the status bar area regardless of the
-    // system-level color scheme.
-    const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
+    let metas = Array.from(
+      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
+    );
+    // Remove any media-scoped variants that could override our value.
+    metas.forEach((m) => {
+      if (m.hasAttribute("media")) m.parentNode?.removeChild(m);
+    });
+    metas = Array.from(
+      document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]'),
+    );
     if (metas.length === 0) {
       const m = document.createElement("meta");
       m.name = "theme-color";
       m.content = color;
       document.head.appendChild(m);
     } else {
-      metas.forEach((m) => { m.content = color; });
+      metas.forEach((m) => {
+        m.setAttribute("content", color);
+        m.removeAttribute("media");
+      });
     }
+
     // Paint html/body so the safe-area (notch/status bar) inherits the surface
-    // even before React hydrates on iOS PWA / standalone.
-    document.documentElement.style.backgroundColor = color;
+    // even before React hydrates on iOS Safari and standalone PWA.
+    root.style.backgroundColor = color;
     document.body.style.backgroundColor = color;
+    // Persist a CSS custom prop the stylesheet uses for the safe-area paint.
+    root.style.setProperty("--app-surface", color);
   }, [theme]);
 
   const setTheme = (t: Theme) => setThemeState(t);

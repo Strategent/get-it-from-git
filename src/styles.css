@@ -154,8 +154,18 @@
     border-color: var(--color-border);
   }
 
+  /* Paint the root element so the iOS Safari safe-area (notch, dynamic island,
+     status bar) and the space above the collapsed URL bar inherits the app
+     surface instead of the default white. `--app-surface` is set by the theme
+     provider, with a fallback to the resolved token. */
+  html {
+    background-color: var(--app-surface, var(--color-background));
+    /* Extend the paint into the notch/home-indicator area on iOS. */
+    min-height: 100%;
+  }
+
   body {
-    background-color: var(--color-background);
+    background-color: var(--app-surface, var(--color-background));
     color: var(--color-foreground);
     font-family:
       -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue",
@@ -164,6 +174,21 @@
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "ss01", "cv11";
     letter-spacing: -0.011em;
+    /* Ensure body fills the visual viewport including the safe-area strip on
+       iPhone (notch, dynamic island). Without this, rubber-band scroll on iOS
+       Safari can expose a white strip at the top of the page. */
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* iOS Safari rubber-band / overscroll paint. When the user pulls down past
+     the top, Safari fills the exposed area with the html element's background.
+     Force that to our surface so no white strip appears above the dashboard. */
+  @supports (-webkit-touch-callout: none) {
+    html,
+    body {
+      background-color: var(--app-surface, var(--color-background)) !important;
+    }
   }
 }
 
