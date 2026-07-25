@@ -38,30 +38,52 @@ export function MobileWorkloadCard() {
   );
 }
 
-/** MobileTeamCard — compact bento tile matching the mobile HTML mockup. */
+/** MobileTeamCard — compact bento tile with live team snapshot. */
 export function MobileTeamCard() {
   const online = team.filter((t) => t.status === "online").length;
+  const lead = team[0];
   return (
-    <section className="origin-card relative flex aspect-square flex-col overflow-hidden p-4">
+    <section className="origin-card relative flex aspect-square flex-col justify-between overflow-hidden p-4">
       <div className="flex items-start justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Team
         </span>
-        <span className="text-[10.5px] text-muted-foreground">{online} online</span>
+        <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-500/12 text-[9px] font-semibold text-emerald-500">
+          {online}
+        </span>
       </div>
-      <div className="mt-auto flex -space-x-2">
-        {team.slice(0, 4).map((m) => (
-          <div
-            key={m.name}
-            className="relative grid h-8 w-8 place-items-center rounded-full border-2 border-card bg-foreground/[0.08] text-[10px] font-semibold text-foreground/60"
-          >
-            {m.initials}
-            <span
-              className="absolute -bottom-0 -right-0 h-2 w-2 rounded-full ring-2 ring-card"
-              style={{ background: m.status === "online" ? "#3a9a3a" : "#c4930a" }}
-            />
-          </div>
-        ))}
+
+      <div className="flex flex-col gap-1">
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[22px] font-semibold leading-none tracking-tight">
+            {team.length}
+          </span>
+          <span className="text-[10.5px] text-muted-foreground">members · {online} online</span>
+        </div>
+        <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
+          <span className="text-foreground/80">{lead.name.split(" ")[0]}</span> — {lead.task}
+        </p>
+      </div>
+
+      <div className="flex items-center justify-between">
+        <div className="flex -space-x-2">
+          {team.slice(0, 4).map((m) => (
+            <div
+              key={m.name}
+              className="relative grid h-7 w-7 place-items-center rounded-full border-2 border-card bg-foreground/[0.08] text-[9px] font-semibold text-foreground/70"
+              title={m.name}
+            >
+              {m.initials}
+              <span
+                className="absolute -bottom-0 -right-0 h-1.5 w-1.5 rounded-full ring-2 ring-card"
+                style={{ background: m.status === "online" ? "#3a9a3a" : "#c4930a" }}
+              />
+            </div>
+          ))}
+        </div>
+        {team.length > 4 && (
+          <span className="text-[10px] text-muted-foreground">+{team.length - 4}</span>
+        )}
       </div>
     </section>
   );
