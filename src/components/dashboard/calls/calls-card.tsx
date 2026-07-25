@@ -303,117 +303,70 @@ function CallAction({
 }
 
 /**
- * VoiceBars — mirrors the Lovable voice-input bars: a dense row of thin
- * bars anchored to a center line, mirrored above and below, with an
- * asymmetric attack / release smoother per bar (fast rise, slow fall) so
- * bursts of speech snap up and silence eases down naturally. A procedural
- * speech schedule inserts realistic pauses every couple of seconds.
+ * PitchWave — static, in-place audio level meter (Apple/iOS voice-input
+ * style). Bars are anchored to fixed X positions; only their height animates
+ * up and down via a CSS transition, so movement reads as smooth breathing
+ * rather than a scrolling waveform. A center-weighted amplitude envelope
+ * makes the middle taller than the edges; per-bar phase offsets stagger the
+ * timing so bars don't move in lockstep; the outer few bars fade via mask.
  */
 function PitchWave({ active }: { active: boolean }) {
-  const H = 44;
-  const BAR_COUNT = 64;
-  const half = H / 2 - 2;
-
+  const H = 40;
+  const BAR_COUNT = 56;
   const barsRef = useRef<HTMLSpanElement[]>([]);
-  const levelsRef = useRef<Float32Array>(new Float32Array(BAR_COUNT));
-  const rafRef = useRef<number | null>(null);
-  const lastRef = useRef<number>(0);
-  // Speech schedule: alternating speak/silence windows, each with its own gain.
-  const scheduleRef = useRef<{ until: number; speaking: boolean; gain: number }>(
-    { until: 0, speaking: true, gain: 1 },
+  const timerRef = useRef<number | null>(null);
+
+  // Fixed per-bar phase offsets so each bar has its own rhythm.
+  const phases = useMemo(
+    () => Array.from({ length: BAR_COUNT }, () => Math.random() * Math.PI * 2),
+    [],
+  );
+  // Fixed per-bar speed multipliers for gentle stagger.
+  const speeds = useMemo(
+    () => Array.from({ length: BAR_COUNT }, () => 0.85 + Math.random() * 0.5),
+    [],
   );
 
   useEffect(() => {
     if (!active) {
-      // Ease everything to zero, then stop.
-      const stopAt = performance.now() + 500;
-      const drain = (now: number) => {
-        const bars = barsRef.current;
-        const levels = levelsRef.current;
-        let anyAlive = false;
-        for (let i = 0; i < BAR_COUNT; i++) {
-          levels[i] *= 0.9;
-          if (levels[i] > 0.01) anyAlive = true;
-          const el = bars[i];
-          if (el) el.style.height = `${Math.max(2, levels[i] * half * 2)}px`;
-        }
-        if (anyAlive && now < stopAt) {
-          rafRef.current = requestAnimationFrame(drain);
-        }
-      };
-      rafRef.current = requestAnimationFrame(drain);
-      return () => {
-        if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      };
+      // Ease all bars down to the resting height.
+      for (const el of barsRef.current) {
+        if (el) el.style.transform = "scaleY(0.06)";
+      }
+      return;
     }
 
-    lastRef.current = performance.now();
-    scheduleRef.current = { until: 0, speaking: true, gain: 1 };
-
-    const tick = (now: number) => {
-      const dt = Math.min(0.05, (now - lastRef.current) / 1000);
-      lastRef.current = now;
-      const t = now / 1000;
-
-      // Advance the speech / silence schedule.
-      let sched = scheduleRef.current;
-      if (t >= sched.until) {
-        const speaking = !sched.speaking;
-        // Speech bursts: 1.6–3.4s. Pauses: 0.5–1.4s.
-        const dur = speaking ? 1.6 + Math.random() * 1.8 : 0.5 + Math.random() * 0.9;
-        // Vary loudness per burst so speech feels dynamic, not uniform.
-        const gain = speaking ? 0.55 + Math.random() * 0.45 : 0;
-        sched = { until: t + dur, speaking, gain };
-        scheduleRef.current = sched;
-      }
-
-      // Envelope with soft edges around each phase change.
-      const edgeIn = Math.min(1, (t - (sched.until - (sched.speaking ? 1.6 : 0.5))) / 0.18);
-      const edgeOut = Math.min(1, (sched.until - t) / 0.22);
-      const env = sched.speaking
-        ? sched.gain * Math.max(0, Math.min(edgeIn, edgeOut))
-        : 0;
-
-      const bars = barsRef.current;
-      const levels = levelsRef.current;
-
-      // Asymmetric smoothing: fast attack (~40ms), slow release (~260ms)
-      // gives the Lovable "punch up, ease down" behaviour.
-      const attack = 1 - Math.exp(-dt / 0.04);
-      const release = 1 - Math.exp(-dt / 0.26);
-
+    const start = performance.now();
+    // Retarget bar heights on a slow cadence; the CSS transition does the
+    // smoothing between targets, giving an eased rise/fall rather than snaps.
+    const step = () => {
+      const t = (performance.now() - start) / 1000;
       for (let i = 0; i < BAR_COUNT; i++) {
-        // Layered noise per bar for organic movement — uniform across the row
-        // so bars react to speech energy, not a fixed center-weighted shape.
-        const n =
-          Math.sin(t * 7.3 + i * 0.61) * 0.5 +
-          Math.sin(t * 13.1 + i * 0.29 + 1.7) * 0.3 +
-          Math.sin(t * 3.7 + i * 1.05) * 0.2;
-        // Occasional micro-flickers during silence to feel alive.
-        const idle = sched.speaking ? 0 : 0.02 * (Math.sin(t * 4 + i) + 1);
-        const target = Math.max(0, Math.min(1, (0.55 + 0.45 * n) * env + idle));
-
-        const prev = levels[i];
-        const k = target > prev ? attack : release;
-        const next = prev + (target - prev) * k;
-        levels[i] = next;
-
-        const el = bars[i];
-        if (el) {
-          const h = Math.max(2, next * half * 2);
-          el.style.height = `${h}px`;
-          el.style.opacity = `${0.5 + next * 0.5}`;
-        }
+        const el = barsRef.current[i];
+        if (!el) continue;
+        // Center-weighted envelope: taller in the middle, shorter at edges.
+        // Cosine profile is smooth end-to-end (no flat plateau).
+        const x = i / (BAR_COUNT - 1); // 0..1
+        const centerBias = 0.35 + 0.65 * Math.cos((x - 0.5) * Math.PI); // 0.35..1
+        // Layered slow oscillators drive the "voice" motion — same shape
+        // for every bar, but each has its own phase & speed.
+        const s = speeds[i];
+        const p = phases[i];
+        const osc =
+          0.55 +
+          0.28 * Math.sin(t * 2.1 * s + p) +
+          0.14 * Math.sin(t * 4.7 * s + p * 1.9) +
+          0.08 * Math.sin(t * 0.9 * s + p * 0.5);
+        const level = Math.max(0.08, Math.min(1, osc * centerBias));
+        el.style.transform = `scaleY(${level.toFixed(3)})`;
       }
-
-      rafRef.current = requestAnimationFrame(tick);
+      timerRef.current = window.setTimeout(step, 140);
     };
-
-    rafRef.current = requestAnimationFrame(tick);
+    step();
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      if (timerRef.current) window.clearTimeout(timerRef.current);
     };
-  }, [active, half]);
+  }, [active, phases, speeds]);
 
   return (
     <div
@@ -421,26 +374,36 @@ function PitchWave({ active }: { active: boolean }) {
       style={{
         height: H,
         maskImage:
-          "linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
       }}
       aria-hidden="true"
     >
-      <div className="flex h-full w-full items-center justify-between gap-[3px] px-1">
+      <div
+        className="flex h-full w-full items-center justify-between px-1"
+        style={{ gap: 2 }}
+      >
         {Array.from({ length: BAR_COUNT }).map((_, i) => (
           <span
             key={i}
             ref={(el) => {
               if (el) barsRef.current[i] = el;
             }}
-            className="block w-[2px] rounded-full bg-foreground/90"
-            style={{ height: "2px", opacity: 0.5 }}
+            className="block flex-1 rounded-full bg-foreground/90"
+            style={{
+              height: H - 4,
+              transform: "scaleY(0.06)",
+              transformOrigin: "center",
+              transition: "transform 320ms cubic-bezier(0.4, 0, 0.2, 1)",
+              willChange: "transform",
+            }}
           />
         ))}
       </div>
     </div>
   );
 }
+
 
 
