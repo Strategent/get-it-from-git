@@ -724,9 +724,17 @@ function InboxPage() {
         </section>
 
 
-        <main className="flex-1 flex flex-col min-w-0 bg-muted/20">
+        <main className={`${mobileReading ? "flex" : "hidden md:flex"} flex-1 flex-col min-w-0 bg-muted/20`}>
           <div className="h-12 px-4 flex items-center justify-between border-b border-border/60 bg-background">
             <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileReading(false)}
+                aria-label="Back to inbox"
+                className="md:hidden grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+              >
+                <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
+              </button>
               <ToolbarBtn
                 icon={Archive}
                 label="Archive"
