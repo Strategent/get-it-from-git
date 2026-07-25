@@ -138,8 +138,8 @@ function CrmPage() {
         </div>
       </div>
 
-      {/* Stat strip — divided columns, no cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 border-b border-border/60 divide-x divide-border/60">
+      {/* Stat strip — divided columns, no cards (desktop only) */}
+      <div className="hidden md:grid md:grid-cols-4 border-b border-border/60 divide-x divide-border/60">
         {[
           { label: "Total clients", value: clients.length.toString() },
           { label: "Showing", value: totals.count.toString() },
