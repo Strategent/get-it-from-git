@@ -310,30 +310,29 @@ function PitchWave({ active }: { active: boolean }) {
   // Two identical wave paths laid end-to-end so the horizontal scroll loops
   // seamlessly. Amplitude modulation gives it a lemni-style "breathing" feel.
   const W = 400; // logical width of one repeat
-  const H = 24;
+  const H = 40;
   const mid = H / 2;
   const points: string[] = [];
-  const steps = 80;
+  const steps = 120;
   for (let i = 0; i <= steps; i++) {
     const x = (i / steps) * W;
     const t = (i / steps) * Math.PI * 6;
-    // Mixed sines create an organic, non-repetitive pitch trace.
     const amp =
       (Math.sin(t) * 0.55 +
         Math.sin(t * 1.9 + 0.7) * 0.28 +
         Math.sin(t * 0.6 + 1.3) * 0.17) *
-      (mid - 2);
+      (mid - 3);
     points.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)},${(mid + amp).toFixed(2)}`);
   }
   const d = points.join(" ");
   return (
     <div
-      className="pointer-events-none relative flex-1 h-6 min-w-0 overflow-hidden"
+      className="pointer-events-none relative h-10 w-full overflow-hidden"
       style={{
         maskImage:
-          "linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 14%, black 86%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
       }}
       aria-hidden="true"
     >
