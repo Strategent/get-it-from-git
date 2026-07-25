@@ -95,35 +95,33 @@ export function MobileDailyBriefCard() {
     <section
       className="relative col-span-2 overflow-hidden p-5"
       style={{
-        backgroundImage: `url(${mobileHeroMountains})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: "var(--radius)",
-        boxShadow:
-          "0 1px 0 0 rgba(255,255,255,0.08) inset, 0 30px 60px -40px rgba(0,0,0,0.9)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        boxShadow: "0 30px 60px -40px rgba(0,0,0,0.9)",
         minHeight: 200,
+        isolation: "isolate",
       }}
     >
-      {/* Legibility scrim — deeper on the left where text sits */}
+      {/* Background image — inset by 1px via inset-0 inside border to prevent edge bleed */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0"
+        className="pointer-events-none absolute inset-0 -z-10"
+        style={{
+          backgroundImage: `url(${mobileHeroScenery.url})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      {/* Dark overlay */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-10"
         style={{
           background:
-            "linear-gradient(105deg, rgba(6,8,14,0.78) 0%, rgba(6,8,14,0.55) 40%, rgba(6,8,14,0.18) 75%, rgba(6,8,14,0.05) 100%)",
+            "linear-gradient(105deg, rgba(6,8,14,0.85) 0%, rgba(6,8,14,0.7) 45%, rgba(6,8,14,0.5) 80%, rgba(6,8,14,0.4) 100%)",
         }}
       />
-      {/* Subtle grain */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)",
-          backgroundSize: "3px 3px",
-        }}
-      />
+
       <div className="relative">
         <span className="font-serif-display text-[10px] uppercase tracking-[0.18em] text-white/60">
           Syra <span className="mx-1">→</span> Daily brief
