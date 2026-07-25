@@ -220,7 +220,8 @@ export function InboxCard() {
         </div>
       )}
 
-      <div className={`min-h-0 flex-1 grid-cols-12 md:grid ${mobileOpen ? "grid" : "hidden md:grid"}`}>
+      <div className="hidden min-h-0 flex-1 grid-cols-12 md:grid">
+        {/* MobileOpen renders a full-screen thread overlay via portal (below) */}
         {/* Thread list — Linear-style: hairline dividers, neutral active state */}
         <div className="hidden min-h-0 flex-col overflow-y-auto py-0 md:col-span-4 md:flex md:border-r md:border-border/50">
           {visibleEmails.map((m, i) => {
