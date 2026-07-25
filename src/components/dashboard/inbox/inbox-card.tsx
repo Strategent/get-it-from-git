@@ -698,37 +698,6 @@ function MobileThreadMessage({
   const isMe = m.from === "me";
   return (
     <div className="px-4 py-4">
-      {/* Syra smart summary + next action — only above incoming messages */}
-      {!isMe && m.summary && (
-        <div className="mb-3 overflow-hidden rounded-xl border border-border/60 bg-foreground/[0.025]">
-          <div className="flex items-center gap-1.5 border-b border-border/50 px-3 py-1.5">
-            <Sparkles className="h-3 w-3 text-foreground/60" strokeWidth={1.75} />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Syra · smart summary
-            </span>
-          </div>
-          <p className="px-3 pb-2 pt-1.5 text-[12.5px] leading-snug text-foreground/85">
-            {m.summary}
-          </p>
-          {m.action && (
-            <button
-              type="button"
-              className="flex w-full items-center justify-between gap-3 border-t border-border/50 bg-foreground/[0.02] px-3 py-2 text-left transition-colors active:bg-foreground/[0.05]"
-            >
-              <span className="min-w-0">
-                <span className="block text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                  Next action
-                </span>
-                <span className="mt-0.5 block truncate text-[12.5px] font-medium text-foreground">
-                  {m.action}
-                </span>
-              </span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-foreground/60" strokeWidth={2} />
-            </button>
-          )}
-        </div>
-      )}
-
       {/* Sender row */}
       <div className="flex items-start gap-2.5">
         <img
