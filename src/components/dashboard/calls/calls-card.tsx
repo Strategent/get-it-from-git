@@ -376,7 +376,6 @@ function PitchWave({ active }: { active: boolean }) {
 
       const bars = barsRef.current;
       const levels = levelsRef.current;
-      const mid = (BAR_COUNT - 1) / 2;
 
       // Asymmetric smoothing: fast attack (~40ms), slow release (~260ms)
       // gives the Lovable "punch up, ease down" behaviour.
