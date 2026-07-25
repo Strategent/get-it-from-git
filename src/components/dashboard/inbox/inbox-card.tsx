@@ -208,7 +208,7 @@ export function InboxCard() {
 
       <div className={`min-h-0 flex-1 grid-cols-12 md:grid ${mobileOpen ? "grid" : "hidden md:grid"}`}>
         {/* Thread list — Linear-style: hairline dividers, neutral active state */}
-        <div className="hidden min-h-0 flex-col overflow-hidden py-0 md:col-span-4 md:flex md:border-r md:border-border/50">
+        <div className="hidden min-h-0 flex-col overflow-hidden py-0 md:col-span-4 md:flex md:border-r md:border-border/50" style={{ maxHeight: 'calc(4 * 58px)' }}>
           {visibleEmails.map((m, i) => {
             const unread = m.chips.includes("Draft ready");
             const active = i === selectedIdx;
