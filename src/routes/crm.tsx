@@ -33,12 +33,15 @@ export const Route = createFileRoute("/crm")({
 
 type Stage = "Lead" | "Qualified" | "Proposal" | "Negotiation" | "Closed";
 
+// Subtle earthy tints inspired by the Tuscan scenery (sage, sand, clay,
+// terracotta, olive). All chips share the same neutral border/text so
+// they read as tags first, color second.
 const stageStyle: Record<Stage, { dot: string; chip: string }> = {
-  Lead:        { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
-  Qualified:   { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
-  Proposal:    { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
-  Negotiation: { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
-  Closed:      { dot: "bg-foreground/50", chip: "bg-muted text-foreground/85 border-border" },
+  Lead:        { dot: "bg-[#c9b99a]", chip: "bg-[#c9b99a]/15 text-foreground/85 border-border" }, // sand
+  Qualified:   { dot: "bg-[#87a878]", chip: "bg-[#87a878]/15 text-foreground/85 border-border" }, // sage
+  Proposal:    { dot: "bg-[#a68a6d]", chip: "bg-[#a68a6d]/15 text-foreground/85 border-border" }, // clay
+  Negotiation: { dot: "bg-[#c4654a]", chip: "bg-[#c4654a]/15 text-foreground/85 border-border" }, // terracotta
+  Closed:      { dot: "bg-[#6b7a5a]", chip: "bg-[#6b7a5a]/15 text-foreground/85 border-border" }, // olive
 };
 
 type Client = {
