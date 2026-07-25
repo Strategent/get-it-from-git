@@ -6,68 +6,75 @@ import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import mobileHeroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
 
-// 5 coloured segments + 1 dim segment = 6 total, matching the HTML mockup
-const SPEC_COLORS = ["#7a2a2a", "#7a4a1a", "#6a5a10", "#2a6a2a", "#2a3a7a", "rgba(255,255,255,0.06)"];
-
-/** MobileWorkloadCard — compact bento tile matching the mobile HTML mockup. */
+/** MobileWorkloadCard — focus-time signal, iOS Fitness-style ring feel. */
 export function MobileWorkloadCard() {
-  const value = 56;
-  const active = Math.round((value / 100) * (SPEC_COLORS.length - 1));
+  const booked = 5.5; // hrs already committed
+  const total = 9;    // working hours today
+  const focusLeft = 2; // uninterrupted blocks remaining
+  const pct = Math.min(1, booked / total);
   return (
-    <section className="origin-card flex flex-col p-4">
-      <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.22]">
-        Workload
-      </span>
-      <div className="mt-1 flex items-baseline gap-1.5">
-        <span className="text-[28px] font-semibold leading-none tracking-[-0.04em]">{value}</span>
-        <span className="text-[13px] text-foreground/40">of 93h</span>
+    <section className="origin-card relative flex aspect-square flex-col justify-between overflow-hidden p-4">
+      <div className="flex items-start justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
+          Focus
+        </span>
+        <span className="text-[10px] font-medium text-foreground/50 tabular-nums">
+          {booked}/{total}h
+        </span>
       </div>
-      <div className="mt-2.5 grid grid-cols-6 gap-[3px]">
-        {SPEC_COLORS.map((color, i) => (
-          <span
-            key={i}
-            className="h-[3px] rounded-full"
-            style={{ background: i < active ? color : "rgba(255,255,255,0.06)" }}
+
+      <div>
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[34px] font-semibold leading-none tracking-[-0.04em] tabular-nums">
+            {focusLeft}
+          </span>
+          <span className="text-[12px] text-foreground/50">deep blocks left</span>
+        </div>
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-foreground/[0.08]">
+          <div
+            className="h-full rounded-full bg-foreground/70"
+            style={{ width: `${pct * 100}%` }}
           />
-        ))}
+        </div>
+        <div className="mt-2 flex items-center justify-between text-[10.5px] text-foreground/50">
+          <span>Booked</span>
+          <span className="tabular-nums">{Math.round(pct * 100)}%</span>
+        </div>
       </div>
-      <span className="mt-2.5 inline-flex h-6 w-fit items-center rounded-full border border-border bg-foreground/[0.05] px-2.5 text-[11px] font-semibold text-foreground/70">
-        Healthy
-      </span>
     </section>
   );
 }
 
-/** MobileTeamCard — iOS-native people tile: avatars + presence, nothing else. */
+/** MobileTeamCard — iOS-native people list: one per row, presence dot + name. */
 export function MobileTeamCard() {
   const roster = team.slice(0, 4);
   return (
-    <section className="origin-card relative flex aspect-square flex-col justify-between overflow-hidden p-4">
+    <section className="origin-card relative flex aspect-square flex-col overflow-hidden p-4">
       <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
         Team
       </span>
-
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2.5">
+      <ul className="mt-2 flex flex-1 flex-col divide-y divide-border/50">
         {roster.map((m) => (
-          <div key={m.name} className="flex items-center gap-2 min-w-0">
+          <li key={m.name} className="flex flex-1 items-center gap-2 min-w-0">
             <div className="relative shrink-0">
-              <div className="grid h-8 w-8 place-items-center rounded-full bg-foreground/[0.08] text-[10px] font-semibold text-foreground/70">
+              <div className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.08] text-[9px] font-semibold text-foreground/70">
                 {m.initials}
               </div>
               <span
-                className="absolute -bottom-0 -right-0 h-2 w-2 rounded-full ring-2 ring-card"
+                className="absolute -bottom-[1px] -right-[1px] h-1.5 w-1.5 rounded-full ring-2 ring-card"
                 style={{ background: m.status === "online" ? "#34c759" : "#8e8e93" }}
               />
             </div>
-            <span className="truncate text-[11px] font-medium text-foreground/85">
+            <span className="truncate text-[11.5px] font-medium text-foreground/85">
               {m.name.split(" ")[0]}
             </span>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }
+
 
 
 /** MobileDailyBriefCard — mobile hero with a sleek monochrome-graphite finish. */
