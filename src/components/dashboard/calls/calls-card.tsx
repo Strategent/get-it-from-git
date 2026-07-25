@@ -303,35 +303,47 @@ function CallAction({
 }
 
 /**
- * PitchWave — clean voice-memo wavelength: a hairline baseline crossed by a
- * fluid, organic wave with soft lobes. Two identical repeats scroll seamlessly.
+ * VoiceBars — Lovable-style live voice-activity bars. A dense row of thin
+ * bars pulses to a procedural voice envelope with natural silence gaps
+ * every few seconds so it feels like real speech, not a canned loop.
  */
 function PitchWave({ active }: { active: boolean }) {
-  const W = 480;
-  const H = 56;
-  const mid = H / 2;
+  const H = 40;
+  const BAR_COUNT = 56;
+  const [t, setT] = useState(0);
 
-  // Fluid wave built from layered sines with a soft envelope so lobes swell
-  // and fade like real speech, then wraps cleanly at W for seamless looping.
-  const steps = 200;
-  const pts: string[] = [];
-  for (let i = 0; i <= steps; i++) {
-    const u = i / steps;             // 0..1
-    const x = u * W;
-    const phase = u * Math.PI * 2;   // exactly 1 full loop across W
-    // Envelope: 3 gaussian-ish lobes across the span
-    const env =
-      Math.exp(-Math.pow((u - 0.22) / 0.14, 2)) * 0.7 +
-      Math.exp(-Math.pow((u - 0.52) / 0.18, 2)) * 1.0 +
-      Math.exp(-Math.pow((u - 0.82) / 0.16, 2)) * 0.6;
-    const wave =
-      Math.sin(phase * 6) * 0.55 +
-      Math.sin(phase * 11 + 1.3) * 0.28 +
-      Math.sin(phase * 3 + 0.7) * 0.22;
-    const y = mid + wave * env * (mid - 6);
-    pts.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`);
-  }
-  const d = pts.join(" ");
+  useEffect(() => {
+    if (!active) return;
+    let raf = 0;
+    const start = performance.now();
+    const tick = (now: number) => {
+      setT((now - start) / 1000);
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [active]);
+
+  // Procedural speech envelope: mostly speaking with periodic silence.
+  // Cycle ~5.5s: speak ~4s, quiet ~1.5s, with a soft fade at edges.
+  const envelope = (time: number) => {
+    if (!active) return 0.05;
+    const cycle = 5.5;
+    const phase = time % cycle;
+    const speakEnd = 4;
+    if (phase > speakEnd) {
+      // silence tail with a tiny residual flicker
+      const q = (phase - speakEnd) / (cycle - speakEnd);
+      return 0.04 + Math.max(0, 1 - q * 4) * 0.06;
+    }
+    // Fade in/out at speech boundaries
+    const fadeIn = Math.min(1, phase / 0.35);
+    const fadeOut = Math.min(1, (speakEnd - phase) / 0.4);
+    return Math.max(0.05, Math.min(fadeIn, fadeOut));
+  };
+
+  const env = envelope(t);
+  const mid = (BAR_COUNT - 1) / 2;
 
   return (
     <div
@@ -339,52 +351,36 @@ function PitchWave({ active }: { active: boolean }) {
       style={{
         height: H,
         maskImage:
-          "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 6%, black 94%, transparent 100%)",
       }}
       aria-hidden="true"
     >
-      <svg
-        viewBox={`0 0 ${W * 2} ${H}`}
-        preserveAspectRatio="none"
-        className={`h-full w-[200%] ${active ? "pitch-scroll" : ""}`}
-        style={{ opacity: active ? 0.95 : 0.35 }}
-      >
-        {/* hairline baseline */}
-        <line
-          x1="0"
-          y1={mid}
-          x2={W * 2}
-          y2={mid}
-          stroke="currentColor"
-          strokeWidth="1"
-          className="text-foreground/25"
-        />
-        {/* wave — two seamless repeats */}
-        <path
-          d={d}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="text-foreground"
-          vectorEffect="non-scaling-stroke"
-        />
-        <g transform={`translate(${W},0)`}>
-          <path
-            d={d}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1.6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="text-foreground"
-            vectorEffect="non-scaling-stroke"
-          />
-        </g>
-      </svg>
+      <div className="flex h-full w-full items-center justify-between gap-[3px] px-1">
+        {Array.from({ length: BAR_COUNT }).map((_, i) => {
+          // Layered sines per bar + slight bell around center for a mouth-like shape
+          const bell = 0.55 + 0.45 * Math.cos(((i - mid) / mid) * (Math.PI / 2));
+          const n =
+            Math.sin(t * 6.2 + i * 0.55) * 0.5 +
+            Math.sin(t * 11 + i * 0.31 + 1.3) * 0.3 +
+            Math.sin(t * 3.1 + i * 0.9) * 0.2;
+          const amp = (0.5 + 0.5 * n) * bell * env;
+          const minH = 2;
+          const h = Math.max(minH, amp * (H - 4));
+          return (
+            <span
+              key={i}
+              className="block w-[2px] rounded-full bg-foreground/85"
+              style={{
+                height: `${h}px`,
+                opacity: active ? 0.55 + amp * 0.45 : 0.25,
+                transition: "height 90ms linear, opacity 120ms linear",
+              }}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
