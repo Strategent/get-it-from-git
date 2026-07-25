@@ -190,6 +190,41 @@ function RootShell({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
+        {/*
+          iOS 26 Safari ignores the `theme-color` meta tag. It samples the
+          toolbar/status-bar tint from (1) the background-color of a
+          fixed/sticky element touching the viewport edge, then (2) <body>.
+          This zero-height strip anchored to top:0 guarantees Safari picks
+          up `var(--background)` — matching light/dark instantly — for the
+          notch/Dynamic Island area on iPhone. The bottom twin does the
+          same for the home-indicator area.
+        */}
+        <div
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: "env(safe-area-inset-top, 0px)",
+            background: "var(--background)",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "env(safe-area-inset-bottom, 0px)",
+            background: "var(--background)",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
         {children}
         <Scripts />
       </body>
