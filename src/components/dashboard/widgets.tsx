@@ -4,7 +4,7 @@ import { Plus, Paperclip, ArrowUpRight, TrendingUp } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
-import mobileHeroMountains from "@/assets/mobile-hero-mountains.jpg";
+import mobileHeroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
 
 // 5 coloured segments + 1 dim segment = 6 total, matching the HTML mockup
 const SPEC_COLORS = ["#7a2a2a", "#7a4a1a", "#6a5a10", "#2a6a2a", "#2a3a7a", "rgba(255,255,255,0.06)"];
