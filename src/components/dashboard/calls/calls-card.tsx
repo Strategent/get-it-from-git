@@ -303,36 +303,45 @@ function CallAction({
 }
 
 /**
- * PitchWave — Apple Voice Memo–style single continuous waveform line that
- * scrolls left while a call is active. One monotone line, edges faded.
+ * PitchWave — clean voice-memo wavelength: a hairline baseline crossed by a
+ * fluid, organic wave with soft lobes. Two identical repeats scroll seamlessly.
  */
 function PitchWave({ active }: { active: boolean }) {
-  // Two identical wave paths laid end-to-end so the horizontal scroll loops
-  // seamlessly. Amplitude modulation gives it a lemni-style "breathing" feel.
-  const W = 400; // logical width of one repeat
-  const H = 40;
+  const W = 480;
+  const H = 56;
   const mid = H / 2;
-  const points: string[] = [];
-  const steps = 120;
+
+  // Fluid wave built from layered sines with a soft envelope so lobes swell
+  // and fade like real speech, then wraps cleanly at W for seamless looping.
+  const steps = 200;
+  const pts: string[] = [];
   for (let i = 0; i <= steps; i++) {
-    const x = (i / steps) * W;
-    const t = (i / steps) * Math.PI * 6;
-    const amp =
-      (Math.sin(t) * 0.55 +
-        Math.sin(t * 1.9 + 0.7) * 0.28 +
-        Math.sin(t * 0.6 + 1.3) * 0.17) *
-      (mid - 3);
-    points.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)},${(mid + amp).toFixed(2)}`);
+    const u = i / steps;             // 0..1
+    const x = u * W;
+    const phase = u * Math.PI * 2;   // exactly 1 full loop across W
+    // Envelope: 3 gaussian-ish lobes across the span
+    const env =
+      Math.exp(-Math.pow((u - 0.22) / 0.14, 2)) * 0.7 +
+      Math.exp(-Math.pow((u - 0.52) / 0.18, 2)) * 1.0 +
+      Math.exp(-Math.pow((u - 0.82) / 0.16, 2)) * 0.6;
+    const wave =
+      Math.sin(phase * 6) * 0.55 +
+      Math.sin(phase * 11 + 1.3) * 0.28 +
+      Math.sin(phase * 3 + 0.7) * 0.22;
+    const y = mid + wave * env * (mid - 6);
+    pts.push(`${i === 0 ? "M" : "L"}${x.toFixed(2)},${y.toFixed(2)}`);
   }
-  const d = points.join(" ");
+  const d = pts.join(" ");
+
   return (
     <div
-      className="pointer-events-none relative h-10 w-full overflow-hidden"
+      className="pointer-events-none relative w-full overflow-hidden"
       style={{
+        height: H,
         maskImage:
-          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
         WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
+          "linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%)",
       }}
       aria-hidden="true"
     >
@@ -340,30 +349,43 @@ function PitchWave({ active }: { active: boolean }) {
         viewBox={`0 0 ${W * 2} ${H}`}
         preserveAspectRatio="none"
         className={`h-full w-[200%] ${active ? "pitch-scroll" : ""}`}
-        style={{ opacity: active ? 0.9 : 0.35 }}
+        style={{ opacity: active ? 0.95 : 0.35 }}
       >
+        {/* hairline baseline */}
+        <line
+          x1="0"
+          y1={mid}
+          x2={W * 2}
+          y2={mid}
+          stroke="currentColor"
+          strokeWidth="1"
+          className="text-foreground/25"
+        />
+        {/* wave — two seamless repeats */}
         <path
-          d={`${d} ${d.replace(/M/g, "L").replace(/L0\.00/, `L${W}`)}`}
+          d={d}
           fill="none"
           stroke="currentColor"
-          strokeWidth="1.5"
+          strokeWidth="1.6"
           strokeLinecap="round"
           strokeLinejoin="round"
           className="text-foreground"
+          vectorEffect="non-scaling-stroke"
         />
-        {/* second repeat, translated */}
         <g transform={`translate(${W},0)`}>
           <path
             d={d}
             fill="none"
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1.6"
             strokeLinecap="round"
             strokeLinejoin="round"
             className="text-foreground"
+            vectorEffect="non-scaling-stroke"
           />
         </g>
       </svg>
     </div>
   );
 }
+
