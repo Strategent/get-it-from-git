@@ -580,7 +580,7 @@ function MobileThreadPortal(props: {
       {/* Scrollable thread */}
       <div className="min-h-0 flex-1 overflow-y-auto">
         {/* Subject header */}
-        <div className="border-b border-border/40 px-4 pb-3 pt-4">
+        <div className="px-4 pb-3 pt-4">
           <h1 className="text-[19px] font-semibold leading-snug tracking-tight text-foreground">
             {e.subject}
           </h1>
@@ -591,8 +591,45 @@ function MobileThreadPortal(props: {
           </div>
         </div>
 
+        {/* Single Syra smart summary + next action — pinned above the thread */}
+        {(() => {
+          const latest = [...thread].reverse().find((m) => m.from === "them" && m.summary);
+          if (!latest) return null;
+          return (
+            <div className="px-4 pb-3">
+              <div className="overflow-hidden rounded-2xl border border-border/60 bg-foreground/[0.03] backdrop-blur">
+                <div className="flex items-center gap-1.5 px-3.5 pt-2.5">
+                  <Sparkles className="h-3 w-3 text-foreground/55" strokeWidth={1.75} />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                    Syra · smart summary
+                  </span>
+                </div>
+                <p className="px-3.5 pb-3 pt-1 text-[13px] leading-snug text-foreground/90">
+                  {latest.summary}
+                </p>
+                {latest.action && (
+                  <button
+                    type="button"
+                    className="flex w-full items-center justify-between gap-3 border-t border-border/50 bg-foreground/[0.02] px-3.5 py-2.5 text-left transition-colors active:bg-foreground/[0.06]"
+                  >
+                    <span className="min-w-0">
+                      <span className="block text-[9.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                        Next action
+                      </span>
+                      <span className="mt-0.5 block truncate text-[13px] font-medium text-foreground">
+                        {latest.action}
+                      </span>
+                    </span>
+                    <ArrowRight className="h-3.5 w-3.5 shrink-0 text-foreground/55" strokeWidth={2} />
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Messages */}
-        <div className="flex flex-col divide-y divide-border/40">
+        <div className="flex flex-col divide-y divide-border/40 border-t border-border/40">
           {thread.map((m, i) => (
             <MobileThreadMessage
               key={i}
@@ -661,37 +698,6 @@ function MobileThreadMessage({
   const isMe = m.from === "me";
   return (
     <div className="px-4 py-4">
-      {/* Syra smart summary + next action — only above incoming messages */}
-      {!isMe && m.summary && (
-        <div className="mb-3 overflow-hidden rounded-xl border border-border/60 bg-foreground/[0.025]">
-          <div className="flex items-center gap-1.5 border-b border-border/50 px-3 py-1.5">
-            <Sparkles className="h-3 w-3 text-foreground/60" strokeWidth={1.75} />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Syra · smart summary
-            </span>
-          </div>
-          <p className="px-3 pb-2 pt-1.5 text-[12.5px] leading-snug text-foreground/85">
-            {m.summary}
-          </p>
-          {m.action && (
-            <button
-              type="button"
-              className="flex w-full items-center justify-between gap-3 border-t border-border/50 bg-foreground/[0.02] px-3 py-2 text-left transition-colors active:bg-foreground/[0.05]"
-            >
-              <span className="min-w-0">
-                <span className="block text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                  Next action
-                </span>
-                <span className="mt-0.5 block truncate text-[12.5px] font-medium text-foreground">
-                  {m.action}
-                </span>
-              </span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 text-foreground/60" strokeWidth={2} />
-            </button>
-          )}
-        </div>
-      )}
-
       {/* Sender row */}
       <div className="flex items-start gap-2.5">
         <img
