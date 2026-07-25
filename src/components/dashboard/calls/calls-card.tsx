@@ -303,47 +303,119 @@ function CallAction({
 }
 
 /**
- * VoiceBars — Lovable-style live voice-activity bars. A dense row of thin
- * bars pulses to a procedural voice envelope with natural silence gaps
- * every few seconds so it feels like real speech, not a canned loop.
+ * VoiceBars — mirrors the Lovable voice-input bars: a dense row of thin
+ * bars anchored to a center line, mirrored above and below, with an
+ * asymmetric attack / release smoother per bar (fast rise, slow fall) so
+ * bursts of speech snap up and silence eases down naturally. A procedural
+ * speech schedule inserts realistic pauses every couple of seconds.
  */
 function PitchWave({ active }: { active: boolean }) {
-  const H = 40;
-  const BAR_COUNT = 56;
-  const [t, setT] = useState(0);
+  const H = 44;
+  const BAR_COUNT = 64;
+  const half = H / 2 - 2;
+
+  const barsRef = useRef<HTMLSpanElement[]>([]);
+  const levelsRef = useRef<Float32Array>(new Float32Array(BAR_COUNT));
+  const rafRef = useRef<number | null>(null);
+  const lastRef = useRef<number>(0);
+  // Speech schedule: alternating speak/silence windows, each with its own gain.
+  const scheduleRef = useRef<{ until: number; speaking: boolean; gain: number }>(
+    { until: 0, speaking: true, gain: 1 },
+  );
 
   useEffect(() => {
-    if (!active) return;
-    let raf = 0;
-    const start = performance.now();
-    const tick = (now: number) => {
-      setT((now - start) / 1000);
-      raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [active]);
-
-  // Procedural speech envelope: mostly speaking with periodic silence.
-  // Cycle ~5.5s: speak ~4s, quiet ~1.5s, with a soft fade at edges.
-  const envelope = (time: number) => {
-    if (!active) return 0.05;
-    const cycle = 5.5;
-    const phase = time % cycle;
-    const speakEnd = 4;
-    if (phase > speakEnd) {
-      // silence tail with a tiny residual flicker
-      const q = (phase - speakEnd) / (cycle - speakEnd);
-      return 0.04 + Math.max(0, 1 - q * 4) * 0.06;
+    if (!active) {
+      // Ease everything to zero, then stop.
+      const stopAt = performance.now() + 500;
+      const drain = (now: number) => {
+        const bars = barsRef.current;
+        const levels = levelsRef.current;
+        let anyAlive = false;
+        for (let i = 0; i < BAR_COUNT; i++) {
+          levels[i] *= 0.9;
+          if (levels[i] > 0.01) anyAlive = true;
+          const el = bars[i];
+          if (el) el.style.height = `${Math.max(2, levels[i] * half * 2)}px`;
+        }
+        if (anyAlive && now < stopAt) {
+          rafRef.current = requestAnimationFrame(drain);
+        }
+      };
+      rafRef.current = requestAnimationFrame(drain);
+      return () => {
+        if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      };
     }
-    // Fade in/out at speech boundaries
-    const fadeIn = Math.min(1, phase / 0.35);
-    const fadeOut = Math.min(1, (speakEnd - phase) / 0.4);
-    return Math.max(0.05, Math.min(fadeIn, fadeOut));
-  };
 
-  const env = envelope(t);
-  const mid = (BAR_COUNT - 1) / 2;
+    lastRef.current = performance.now();
+    scheduleRef.current = { until: 0, speaking: true, gain: 1 };
+
+    const tick = (now: number) => {
+      const dt = Math.min(0.05, (now - lastRef.current) / 1000);
+      lastRef.current = now;
+      const t = now / 1000;
+
+      // Advance the speech / silence schedule.
+      let sched = scheduleRef.current;
+      if (t >= sched.until) {
+        const speaking = !sched.speaking;
+        // Speech bursts: 1.6–3.4s. Pauses: 0.5–1.4s.
+        const dur = speaking ? 1.6 + Math.random() * 1.8 : 0.5 + Math.random() * 0.9;
+        // Vary loudness per burst so speech feels dynamic, not uniform.
+        const gain = speaking ? 0.55 + Math.random() * 0.45 : 0;
+        sched = { until: t + dur, speaking, gain };
+        scheduleRef.current = sched;
+      }
+
+      // Envelope with soft edges around each phase change.
+      const edgeIn = Math.min(1, (t - (sched.until - (sched.speaking ? 1.6 : 0.5))) / 0.18);
+      const edgeOut = Math.min(1, (sched.until - t) / 0.22);
+      const env = sched.speaking
+        ? sched.gain * Math.max(0, Math.min(edgeIn, edgeOut))
+        : 0;
+
+      const bars = barsRef.current;
+      const levels = levelsRef.current;
+      const mid = (BAR_COUNT - 1) / 2;
+
+      // Asymmetric smoothing: fast attack (~40ms), slow release (~260ms)
+      // gives the Lovable "punch up, ease down" behaviour.
+      const attack = 1 - Math.exp(-dt / 0.04);
+      const release = 1 - Math.exp(-dt / 0.26);
+
+      for (let i = 0; i < BAR_COUNT; i++) {
+        // Center-weighted spectrum shape (louder near the middle).
+        const bell = 0.45 + 0.55 * Math.cos(((i - mid) / mid) * (Math.PI / 2));
+        // Layered noise per bar for organic movement.
+        const n =
+          Math.sin(t * 7.3 + i * 0.61) * 0.5 +
+          Math.sin(t * 13.1 + i * 0.29 + 1.7) * 0.3 +
+          Math.sin(t * 3.7 + i * 1.05) * 0.2;
+        // Occasional micro-flickers during silence to feel alive.
+        const idle = sched.speaking ? 0 : 0.015 * (Math.sin(t * 4 + i) + 1);
+        const target = Math.max(0, Math.min(1, (0.5 + 0.5 * n) * bell * env + idle));
+
+        const prev = levels[i];
+        const k = target > prev ? attack : release;
+        const next = prev + (target - prev) * k;
+        levels[i] = next;
+
+        const el = bars[i];
+        if (el) {
+          const h = Math.max(2, next * half * 2);
+          el.style.height = `${h}px`;
+          el.style.opacity = `${0.5 + next * 0.5}`;
+        }
+      }
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [active, half]);
 
   return (
     <div
@@ -358,30 +430,19 @@ function PitchWave({ active }: { active: boolean }) {
       aria-hidden="true"
     >
       <div className="flex h-full w-full items-center justify-between gap-[3px] px-1">
-        {Array.from({ length: BAR_COUNT }).map((_, i) => {
-          // Layered sines per bar + slight bell around center for a mouth-like shape
-          const bell = 0.55 + 0.45 * Math.cos(((i - mid) / mid) * (Math.PI / 2));
-          const n =
-            Math.sin(t * 6.2 + i * 0.55) * 0.5 +
-            Math.sin(t * 11 + i * 0.31 + 1.3) * 0.3 +
-            Math.sin(t * 3.1 + i * 0.9) * 0.2;
-          const amp = (0.5 + 0.5 * n) * bell * env;
-          const minH = 2;
-          const h = Math.max(minH, amp * (H - 4));
-          return (
-            <span
-              key={i}
-              className="block w-[2px] rounded-full bg-foreground/85"
-              style={{
-                height: `${h}px`,
-                opacity: active ? 0.55 + amp * 0.45 : 0.25,
-                transition: "height 90ms linear, opacity 120ms linear",
-              }}
-            />
-          );
-        })}
+        {Array.from({ length: BAR_COUNT }).map((_, i) => (
+          <span
+            key={i}
+            ref={(el) => {
+              if (el) barsRef.current[i] = el;
+            }}
+            className="block w-[2px] rounded-full bg-foreground/90"
+            style={{ height: "2px", opacity: 0.5 }}
+          />
+        ))}
       </div>
     </div>
   );
 }
+
 
