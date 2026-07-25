@@ -71,18 +71,31 @@ export function MobileTeamCard() {
 export function MobileDailyBriefCard() {
   return (
     <section
-      className="mobile-hero-fluid relative col-span-2 overflow-hidden p-5"
+      className="relative col-span-2 overflow-hidden p-5"
       style={{
-        border: "1px solid rgba(255,255,255,0.07)",
+        backgroundImage: `url(${mobileHeroMountains})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        border: "1px solid rgba(255,255,255,0.08)",
         borderRadius: "var(--radius)",
         boxShadow:
-          "0 1px 0 0 rgba(255,255,255,0.06) inset, 0 30px 60px -40px rgba(0,0,0,0.9)",
+          "0 1px 0 0 rgba(255,255,255,0.08) inset, 0 30px 60px -40px rgba(0,0,0,0.9)",
+        minHeight: 200,
       }}
     >
+      {/* Legibility scrim — deeper on the left where text sits */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(105deg, rgba(6,8,14,0.78) 0%, rgba(6,8,14,0.55) 40%, rgba(6,8,14,0.18) 75%, rgba(6,8,14,0.05) 100%)",
+        }}
+      />
       {/* Subtle grain */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.05] mix-blend-overlay"
+        className="pointer-events-none absolute inset-0 opacity-[0.06] mix-blend-overlay"
         style={{
           backgroundImage:
             "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)",
@@ -90,13 +103,13 @@ export function MobileDailyBriefCard() {
         }}
       />
       <div className="relative">
-        <span className="font-serif-display text-[10px] uppercase tracking-[0.18em] text-white/50">
+        <span className="font-serif-display text-[10px] uppercase tracking-[0.18em] text-white/60">
           Syra <span className="mx-1">→</span> Daily brief
         </span>
-        <h3 className="font-serif-display mt-2 text-[22px] leading-tight text-white">
+        <h3 className="font-serif-display mt-2 text-[22px] leading-tight text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
           Welcome back, John.
         </h3>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-white/70">
+        <p className="mt-1.5 text-[12.5px] leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
           4 meetings today. Hartley Trust is your first priority — IPS ready for sign-off.
         </p>
         <div className="mt-4">
