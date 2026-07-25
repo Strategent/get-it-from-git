@@ -54,8 +54,9 @@ function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetu
           <MobileTeamCard />
         </div>
 
-        {/* 4. Inbox — fixed height so tapping a thread doesn't morph the card */}
-        <div className="h-[520px]">
+        {/* 4. Inbox — fixed height sized to exactly 4 threads + header, so
+             tapping a thread doesn't morph the card and there's no blank space. */}
+        <div className="h-[420px]">
           <InboxCard />
         </div>
 
