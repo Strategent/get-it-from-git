@@ -29,16 +29,23 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("nexus-theme", theme);
     // Sync the iOS/Android status-bar color to the app surface so the
     // notch/status-bar area doesn't render as a white strip in dark mode.
-    const color = theme === "dark" ? "#2d2d2d" : "#f0eee9";
-    let meta = document.querySelector<HTMLMetaElement>(
-      'meta[name="theme-color"]:not([media])',
-    );
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "theme-color";
-      document.head.appendChild(meta);
+    const color = theme === "dark" ? "#111111" : "#efeeed";
+    // Update both the generic and media-scoped theme-color tags so iOS/Safari
+    // uses the current app surface for the status bar area regardless of the
+    // system-level color scheme.
+    const metas = document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]');
+    if (metas.length === 0) {
+      const m = document.createElement("meta");
+      m.name = "theme-color";
+      m.content = color;
+      document.head.appendChild(m);
+    } else {
+      metas.forEach((m) => { m.content = color; });
     }
-    meta.content = color;
+    // Paint html/body so the safe-area (notch/status bar) inherits the surface
+    // even before React hydrates on iOS PWA / standalone.
+    document.documentElement.style.backgroundColor = color;
+    document.body.style.backgroundColor = color;
   }, [theme]);
 
   const setTheme = (t: Theme) => setThemeState(t);
