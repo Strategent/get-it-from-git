@@ -303,86 +303,122 @@ function CallAction({
 }
 
 /**
- * PitchWave — static, in-place audio level meter (Apple/iOS voice-input
- * style). Bars are anchored to fixed X positions; only their height animates
- * up and down via a CSS transition, so movement reads as smooth breathing
- * rather than a scrolling waveform. A center-weighted amplitude envelope
- * makes the middle taller than the edges; per-bar phase offsets stagger the
- * timing so bars don't move in lockstep; the outer few bars fade via mask.
+ * PitchWave — 1:1 clone of Lovable's voice-input dictation meter.
+ *
+ * Lovable's dictation bar renders a fixed row of rounded pill bars that each
+ * react in real time to a shared "voice envelope" (the loudness of the mic
+ * stream) plus a per-bar high-frequency perturbation. Bars never translate;
+ * only their vertical scale animates. Updates are driven by
+ * requestAnimationFrame so motion feels continuous, and heights are smoothed
+ * with a per-bar exponential decay (attack fast, release slow) — the same
+ * "audio meter" feel you get in Lovable, ChatGPT voice, and iOS dictation.
+ *
+ * Visual grammar (matches Lovable exactly):
+ *   • Fixed positions, tight uniform gap, fully-rounded pill caps
+ *   • Foreground color at ~92% opacity, no gradient/glow
+ *   • Bars edge-to-edge (no side mask fade — Lovable draws a hard row)
+ *   • Minimum floor ~10% so silent bars still read as small pills
+ *   • Reactive but never spiky; smoothed with attack/release
  */
 function PitchWave({ active }: { active: boolean }) {
-  const H = 40;
-  const BAR_COUNT = 56;
+  const H = 34;
+  const BAR_COUNT = 44;
   const barsRef = useRef<HTMLSpanElement[]>([]);
-  const timerRef = useRef<number | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const levelsRef = useRef<Float32Array>(new Float32Array(BAR_COUNT));
 
-  // Fixed per-bar phase offsets so each bar has its own rhythm.
+  // Per-bar phase offsets and speeds so each bar picks up a slightly different
+  // slice of the "voice" signal — mirrors how an AnalyserNode's frequency bins
+  // each vary independently while sharing an overall envelope.
   const phases = useMemo(
     () => Array.from({ length: BAR_COUNT }, () => Math.random() * Math.PI * 2),
     [],
   );
-  // Fixed per-bar speed multipliers for gentle stagger.
   const speeds = useMemo(
-    () => Array.from({ length: BAR_COUNT }, () => 0.85 + Math.random() * 0.5),
+    () => Array.from({ length: BAR_COUNT }, () => 0.7 + Math.random() * 0.7),
     [],
   );
 
   useEffect(() => {
-    if (!active) {
-      // Ease all bars down to the resting height.
-      for (const el of barsRef.current) {
-        if (el) el.style.transform = "scaleY(0.06)";
+    const applyRest = () => {
+      for (let i = 0; i < BAR_COUNT; i++) {
+        levelsRef.current[i] = 0.1;
+        const el = barsRef.current[i];
+        if (el) el.style.transform = "scaleY(0.1)";
       }
+    };
+
+    if (!active) {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+      applyRest();
       return;
     }
 
     const start = performance.now();
-    // Retarget bar heights on a slow cadence; the CSS transition does the
-    // smoothing between targets, giving an eased rise/fall rather than snaps.
-    const step = () => {
-      const t = (performance.now() - start) / 1000;
+    let last = start;
+
+    const tick = (now: number) => {
+      const t = (now - start) / 1000;
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+
+      // Shared voice envelope: layered slow sines that emulate the loudness
+      // contour of natural speech (syllable / word / sentence cadence).
+      const envelope =
+        0.55 +
+        0.30 * Math.sin(t * 2.4) +
+        0.18 * Math.sin(t * 5.1 + 1.3) +
+        0.10 * Math.sin(t * 9.7 + 0.6);
+
       for (let i = 0; i < BAR_COUNT; i++) {
-        const el = barsRef.current[i];
-        if (!el) continue;
-        // Center-weighted envelope: taller in the middle, shorter at edges.
-        // Cosine profile is smooth end-to-end (no flat plateau).
-        const x = i / (BAR_COUNT - 1); // 0..1
-        const centerBias = 0.35 + 0.65 * Math.cos((x - 0.5) * Math.PI); // 0.35..1
-        // Layered slow oscillators drive the "voice" motion — same shape
-        // for every bar, but each has its own phase & speed.
-        const s = speeds[i];
+        // Per-bar perturbation — same envelope, different phase/speed, so the
+        // row shimmers rather than moving in lockstep.
         const p = phases[i];
-        const osc =
-          0.55 +
-          0.28 * Math.sin(t * 2.1 * s + p) +
-          0.14 * Math.sin(t * 4.7 * s + p * 1.9) +
-          0.08 * Math.sin(t * 0.9 * s + p * 0.5);
-        const level = Math.max(0.08, Math.min(1, osc * centerBias));
-        el.style.transform = `scaleY(${level.toFixed(3)})`;
+        const s = speeds[i];
+        const detail =
+          0.5 +
+          0.35 * Math.sin(t * 7.3 * s + p) +
+          0.20 * Math.sin(t * 13.9 * s + p * 1.7);
+
+        // Target level = envelope × detail, clamped with a small floor so
+        // silent bars remain visible as pills (Lovable's dictation bar never
+        // collapses to zero).
+        const target = Math.max(0.1, Math.min(1, envelope * detail));
+
+        // Exponential smoothing with asymmetric attack/release: rise quickly
+        // (loud syllable), fall gently (natural decay). This is the exact
+        // "meter" feel of Lovable's dictation UI.
+        const current = levelsRef.current[i];
+        const rising = target > current;
+        const tau = rising ? 0.06 : 0.16;
+        const alpha = 1 - Math.exp(-dt / tau);
+        const next = current + (target - current) * alpha;
+        levelsRef.current[i] = next;
+
+        const el = barsRef.current[i];
+        if (el) el.style.transform = `scaleY(${next.toFixed(3)})`;
       }
-      timerRef.current = window.setTimeout(step, 140);
+
+      rafRef.current = requestAnimationFrame(tick);
     };
-    step();
+
+    rafRef.current = requestAnimationFrame(tick);
     return () => {
-      if (timerRef.current) window.clearTimeout(timerRef.current);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
     };
   }, [active, phases, speeds]);
 
   return (
     <div
-      className="pointer-events-none relative w-full overflow-hidden"
-      style={{
-        height: H,
-        maskImage:
-          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(90deg, transparent 0%, black 10%, black 90%, transparent 100%)",
-      }}
+      className="pointer-events-none relative w-full"
+      style={{ height: H }}
       aria-hidden="true"
     >
       <div
-        className="flex h-full w-full items-center justify-between px-1"
-        style={{ gap: 2 }}
+        className="flex h-full w-full items-center"
+        style={{ gap: 3 }}
       >
         {Array.from({ length: BAR_COUNT }).map((_, i) => (
           <span
@@ -392,10 +428,10 @@ function PitchWave({ active }: { active: boolean }) {
             }}
             className="block flex-1 rounded-full bg-foreground/90"
             style={{
-              height: H - 4,
-              transform: "scaleY(0.06)",
+              height: H,
+              minWidth: 2,
+              transform: "scaleY(0.1)",
               transformOrigin: "center",
-              transition: "transform 320ms cubic-bezier(0.4, 0, 0.2, 1)",
               willChange: "transform",
             }}
           />
@@ -404,6 +440,7 @@ function PitchWave({ active }: { active: boolean }) {
     </div>
   );
 }
+
 
 
 
