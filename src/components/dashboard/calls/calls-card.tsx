@@ -384,16 +384,15 @@ function PitchWave({ active }: { active: boolean }) {
       const release = 1 - Math.exp(-dt / 0.26);
 
       for (let i = 0; i < BAR_COUNT; i++) {
-        // Center-weighted spectrum shape (louder near the middle).
-        const bell = 0.45 + 0.55 * Math.cos(((i - mid) / mid) * (Math.PI / 2));
-        // Layered noise per bar for organic movement.
+        // Layered noise per bar for organic movement — uniform across the row
+        // so bars react to speech energy, not a fixed center-weighted shape.
         const n =
           Math.sin(t * 7.3 + i * 0.61) * 0.5 +
           Math.sin(t * 13.1 + i * 0.29 + 1.7) * 0.3 +
           Math.sin(t * 3.7 + i * 1.05) * 0.2;
         // Occasional micro-flickers during silence to feel alive.
-        const idle = sched.speaking ? 0 : 0.015 * (Math.sin(t * 4 + i) + 1);
-        const target = Math.max(0, Math.min(1, (0.5 + 0.5 * n) * bell * env + idle));
+        const idle = sched.speaking ? 0 : 0.02 * (Math.sin(t * 4 + i) + 1);
+        const target = Math.max(0, Math.min(1, (0.55 + 0.45 * n) * env + idle));
 
         const prev = levels[i];
         const k = target > prev ? attack : release;
