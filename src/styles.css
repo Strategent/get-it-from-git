@@ -652,7 +652,7 @@
   to   { transform: translateX(-50%); }
 }
 .pitch-scroll {
-  animation: pitch-scroll 4.5s linear infinite;
+  animation: pitch-scroll 14s linear infinite;
   will-change: transform;
 }
 
