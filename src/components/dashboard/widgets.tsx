@@ -5,6 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import mobileHeroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
+import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
+
 
 /** MobileWorkloadCard — focus-time signal, iOS Fitness-style ring feel. */
 export function MobileWorkloadCard() {
