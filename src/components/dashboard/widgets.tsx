@@ -390,11 +390,29 @@ export function WorkloadCard() {
   );
 }
 
-/** RecapCard — live market chart streamed from Binance's public WebSocket. */
+/** RecapCard — daily market recap glance. */
 export function RecapCard() {
   return (
     <Panel label="Markets">
-      <LiveMarketChart />
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[26px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+              +0.42%
+            </span>
+            <span className="text-[11px] text-muted-foreground">S&amp;P · open</span>
+          </div>
+          <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+            Daily market
+          </div>
+        </div>
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
+        </span>
+      </div>
+      <p className="mt-2 text-[12px] leading-snug text-muted-foreground">
+        Treasuries firmed and breadth improved. 3 items flagged for your book.
+      </p>
     </Panel>
   );
 }
