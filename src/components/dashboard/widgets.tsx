@@ -6,6 +6,7 @@ import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import mobileHeroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
 import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
+import { LiveMarketChart } from "@/components/dashboard/market/live-market-chart";
 
 
 /** MobileWorkloadCard — focus-time signal, iOS Fitness-style ring feel. */
@@ -140,30 +141,11 @@ export function MobileDailyBriefCard() {
 }
 
 
-/** MobileRecapCard — square market-brief tile for mobile. */
+/** MobileRecapCard — square live-markets tile for mobile. */
 export function MobileRecapCard() {
   return (
-    <section className="origin-card relative flex flex-col justify-between gap-3 overflow-hidden p-4">
-      <div className="flex items-start justify-between">
-        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
-          Markets
-        </span>
-        <span className="grid h-6 w-6 place-items-center rounded-full bg-emerald-600/15 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-400">
-          <TrendingUp className="h-3 w-3" strokeWidth={2.25} />
-        </span>
-      </div>
-      <div className="flex flex-col gap-1">
-        <div className="flex items-baseline gap-1.5">
-          <span className="text-[22px] font-semibold leading-none tracking-tight">+0.42%</span>
-          <span className="text-[10.5px] text-muted-foreground">S&amp;P · open</span>
-        </div>
-        <h3 className="font-serif-display text-[15px] leading-tight text-foreground">
-          Daily market
-        </h3>
-        <p className="line-clamp-2 text-[11px] leading-snug text-muted-foreground">
-          Treasuries firmed and breadth improved. 3 items flagged for your book.
-        </p>
-      </div>
+    <section className="origin-card relative flex flex-col overflow-hidden p-4">
+      <LiveMarketChart compact />
     </section>
   );
 }
@@ -387,17 +369,11 @@ export function WorkloadCard() {
   );
 }
 
-/** RecapCard — Origin "Daily market brief" recap widget. */
+/** RecapCard — live market chart streamed from Binance's public WebSocket. */
 export function RecapCard() {
   return (
-    <Panel label="Recap">
-      <h3 className="font-serif-display text-[20px] leading-tight text-foreground">
-        Daily market brief
-      </h3>
-      <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
-        Treasuries firmed and breadth improved. Syra flagged 3 items across your book that may move
-        client conversations today.
-      </p>
+    <Panel label="Markets">
+      <LiveMarketChart />
     </Panel>
   );
 }
