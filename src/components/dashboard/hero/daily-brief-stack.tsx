@@ -230,7 +230,7 @@ function SwipeCard({
       onDrag={isTop ? (_, info) => onDragMotion(info.offset.x) : undefined}
       onDragEnd={isTop ? handleDragEnd : undefined}
     >
-      <div className="h-full w-full bg-white rounded-[24px] border border-[#ececec] shadow-[0_24px_70px_rgba(0,0,0,0.28)] px-7 pt-7 pb-6 overflow-hidden cursor-grab active:cursor-grabbing">
+      <div className="db-card h-full w-full rounded-[24px] px-6 pt-7 pb-6 sm:px-7 overflow-hidden cursor-grab active:cursor-grabbing will-change-transform">
         {section.render()}
       </div>
     </motion.div>
