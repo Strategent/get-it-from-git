@@ -195,69 +195,8 @@ export function CallsCard() {
         />
       </button>
 
-      <div className="scroll-slim flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-        {showTranscript
-          ? transcript.map((line, i) => (
-              <div
-                key={i}
-                className={`flex ${line.who === "agent" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-1.5 text-[12px] leading-snug ${
-                    line.who === "agent"
-                      ? "bg-foreground/[0.10] text-foreground/95"
-                      : "bg-foreground/[0.04] text-foreground/85"
-                  }`}
-                >
-                  {line.text}
-                </div>
-              </div>
-            ))
-          : capturedFields.map((f, i) => (
-              <div
-                key={f.label}
-                className={`flex items-center gap-3 py-1.5 ${
-                  i === 0 ? "" : "border-t border-border/40"
-                }`}
-              >
-                <span
-                  className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
-                    f.done
-                      ? "bg-foreground/[0.08] text-foreground/80"
-                      : "bg-emerald-500/10 text-emerald-400"
-                  }`}
-                >
-                  {f.done ? (
-                    <svg
-                      viewBox="0 0 12 12"
-                      className="h-3 w-3"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        d="M2.5 6.5l2.5 2.5 4.5-5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ) : (
-                    <UserPlus className="h-3 w-3" />
-                  )}
-                </span>
-                <div className="w-[64px] shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
-                  {f.label}
-                </div>
-                <div
-                  className={`min-w-0 flex-1 truncate text-[12px] ${
-                    f.done ? "text-foreground/90" : "text-emerald-400"
-                  }`}
-                >
-                  {f.value}
-                </div>
-              </div>
-            ))}
-      </div>
+      <TranscriptOrCapture showTranscript={showTranscript} />
+
     </Panel>
   );
 }
