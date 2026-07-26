@@ -6,6 +6,7 @@ import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import mobileHeroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
 import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
+import { LiveMarketChart } from "@/components/dashboard/market/live-market-chart";
 
 
 /** MobileWorkloadCard — focus-time signal, iOS Fitness-style ring feel. */
