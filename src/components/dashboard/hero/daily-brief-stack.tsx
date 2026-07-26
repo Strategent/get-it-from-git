@@ -351,9 +351,12 @@ const _styles = `
 .dark .db-card .border-\\[\\#ddd\\] { border-color: rgba(255,255,255,0.16); }
 `;
 
-if (typeof document !== "undefined" && !document.getElementById("db-stack-styles")) {
+if (typeof document !== "undefined") {
+  const existing = document.getElementById("db-stack-styles");
+  if (existing) existing.remove();
   const el = document.createElement("style");
   el.id = "db-stack-styles";
   el.textContent = _styles;
   document.head.appendChild(el);
 }
+
