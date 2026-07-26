@@ -36,7 +36,11 @@ export function Topbar() {
 
   if (isMobile) {
     return (
-      <header className="sticky top-0 z-20 relative flex items-center bg-background px-4 pb-4 pt-[22px]">
+      <header
+        className="sticky top-0 z-20 relative flex items-center bg-background px-4 pb-4"
+        style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 22px)" }}
+      >
+
         <div className="absolute bottom-0 left-4 right-4 h-px bg-white/[0.14]" />
         <div>
           <div className="text-[10.5px] font-medium uppercase tracking-[0.13em] text-foreground/[0.22]">
