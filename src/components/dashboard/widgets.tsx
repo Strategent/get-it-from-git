@@ -81,18 +81,22 @@ export function MobileTeamCard() {
 
 /** MobileDailyBriefCard — mobile hero with a sleek monochrome-graphite finish. */
 export function MobileDailyBriefCard() {
+  const [open, setOpen] = useState(false);
   return (
-    <section
-      className="relative col-span-2 overflow-hidden p-5"
+    <>
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      className="relative col-span-2 flex w-full flex-col overflow-hidden p-6 text-left transition-transform active:scale-[0.995]"
       style={{
         borderRadius: "var(--radius)",
         border: "1px solid rgba(255,255,255,0.08)",
         boxShadow: "0 30px 60px -40px rgba(0,0,0,0.9)",
-        minHeight: 200,
+        minHeight: 260,
         isolation: "isolate",
       }}
     >
-      {/* Background image — inset by 1px via inset-0 inside border to prevent edge bleed */}
+      {/* Background image */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
@@ -112,29 +116,29 @@ export function MobileDailyBriefCard() {
         }}
       />
 
-      <div className="relative">
-        <span className="font-serif-display text-[10px] uppercase tracking-[0.18em] text-white/60">
+      <div className="relative flex h-full flex-col">
+        <span className="font-serif-display text-[10.5px] uppercase tracking-[0.2em] text-white/65">
           Syra <span className="mx-1">→</span> Daily brief
         </span>
-        <h3 className="font-serif-display mt-2 text-[22px] leading-tight text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
+        <h3 className="font-serif-display mt-5 text-[26px] font-normal leading-[1.1] tracking-[-0.01em] text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
           Welcome back, John.
         </h3>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-white/80 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
+        <p className="mt-3 max-w-[22rem] text-[13px] leading-[1.55] text-white/85 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
           4 meetings today. Hartley Trust is your first priority — IPS ready for sign-off.
         </p>
-        <div className="mt-4">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-1.5 rounded-md bg-white/95 px-3.5 py-1.5 text-[12px] font-medium text-neutral-900 transition-colors hover:bg-white"
-          >
+        <div className="mt-auto pt-6">
+          <span className="inline-flex items-center gap-1.5 rounded-md bg-white/95 px-3.5 py-1.5 text-[12px] font-medium text-neutral-900">
             Read daily brief
             <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
-          </Link>
+          </span>
         </div>
       </div>
-    </section>
+    </button>
+    <DailyBriefStack open={open} onOpenChange={setOpen} />
+    </>
   );
 }
+
 
 /** MobileRecapCard — square market-brief tile for mobile. */
 export function MobileRecapCard() {
