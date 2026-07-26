@@ -195,9 +195,69 @@ export function CallsCard() {
         />
       </button>
 
-      <div className="scroll-slim flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-        {showTranscript
-          ? transcript.map((line, i) => (
+      <TranscriptOrCapture showTranscript={showTranscript} />
+
+    </Panel>
+  );
+}
+
+/**
+ * Fixed-height transcript / capture list. The panel below the controls
+ * never changes size when toggling between the CRM capture list and the
+ * live transcript — both render inside the same 176px scroll region. The
+ * transcript reveals character-by-character to feel like real-time speech,
+ * and auto-scrolls to keep the newest line in view. Scrollbar is hidden.
+ */
+function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [lineIdx, setLineIdx] = useState(0);
+  const [charIdx, setCharIdx] = useState(0);
+
+  // Reset + play the typewriter each time the transcript opens.
+  useEffect(() => {
+    if (!showTranscript) return;
+    setLineIdx(0);
+    setCharIdx(0);
+  }, [showTranscript]);
+
+  useEffect(() => {
+    if (!showTranscript) return;
+    if (lineIdx >= transcript.length) return;
+    const line = transcript[lineIdx];
+    if (charIdx < line.text.length) {
+      // Randomize slightly to feel like live captioning.
+      const delay = 14 + Math.random() * 26;
+      const id = window.setTimeout(() => setCharIdx((c) => c + 1), delay);
+      return () => window.clearTimeout(id);
+    }
+    // Pause between lines.
+    const id = window.setTimeout(() => {
+      setLineIdx((i) => i + 1);
+      setCharIdx(0);
+    }, 480);
+    return () => window.clearTimeout(id);
+  }, [showTranscript, lineIdx, charIdx]);
+
+  // Auto-scroll to bottom as content grows.
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, [lineIdx, charIdx, showTranscript]);
+
+  return (
+    <div
+      ref={scrollRef}
+      className="flex flex-col gap-2 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      style={{ height: 176 }}
+    >
+      {showTranscript
+        ? transcript.slice(0, lineIdx + 1).map((line, i) => {
+            const isCurrent = i === lineIdx;
+            const text = isCurrent ? line.text.slice(0, charIdx) : line.text;
+            const done = !isCurrent || charIdx >= line.text.length;
+            if (isCurrent && text.length === 0) return null;
+            return (
               <div
                 key={i}
                 className={`flex ${line.who === "agent" ? "justify-end" : "justify-start"}`}
@@ -209,58 +269,52 @@ export function CallsCard() {
                       : "bg-foreground/[0.04] text-foreground/85"
                   }`}
                 >
-                  {line.text}
+                  {text}
+                  {!done && (
+                    <span className="ml-0.5 inline-block h-3 w-[2px] translate-y-[2px] animate-pulse bg-foreground/70 align-middle" />
+                  )}
                 </div>
               </div>
-            ))
-          : capturedFields.map((f, i) => (
-              <div
-                key={f.label}
-                className={`flex items-center gap-3 py-1.5 ${
-                  i === 0 ? "" : "border-t border-border/40"
+            );
+          })
+        : capturedFields.map((f, i) => (
+            <div
+              key={f.label}
+              className={`flex items-center gap-3 py-1.5 ${
+                i === 0 ? "" : "border-t border-border/40"
+              }`}
+            >
+              <span
+                className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
+                  f.done
+                    ? "bg-foreground/[0.08] text-foreground/80"
+                    : "bg-emerald-500/10 text-emerald-400"
                 }`}
               >
-                <span
-                  className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
-                    f.done
-                      ? "bg-foreground/[0.08] text-foreground/80"
-                      : "bg-emerald-500/10 text-emerald-400"
-                  }`}
-                >
-                  {f.done ? (
-                    <svg
-                      viewBox="0 0 12 12"
-                      className="h-3 w-3"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <path
-                        d="M2.5 6.5l2.5 2.5 4.5-5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  ) : (
-                    <UserPlus className="h-3 w-3" />
-                  )}
-                </span>
-                <div className="w-[64px] shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
-                  {f.label}
-                </div>
-                <div
-                  className={`min-w-0 flex-1 truncate text-[12px] ${
-                    f.done ? "text-foreground/90" : "text-emerald-400"
-                  }`}
-                >
-                  {f.value}
-                </div>
+                {f.done ? (
+                  <svg viewBox="0 0 12 12" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M2.5 6.5l2.5 2.5 4.5-5" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  <UserPlus className="h-3 w-3" />
+                )}
+              </span>
+              <div className="w-[64px] shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+                {f.label}
               </div>
-            ))}
-      </div>
-    </Panel>
+              <div
+                className={`min-w-0 flex-1 truncate text-[12px] ${
+                  f.done ? "text-foreground/90" : "text-emerald-400"
+                }`}
+              >
+                {f.value}
+              </div>
+            </div>
+          ))}
+    </div>
   );
 }
+
 
 function CallAction({
   icon: Icon,
