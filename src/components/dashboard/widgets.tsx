@@ -6,7 +6,7 @@ import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import mobileHeroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
 import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
-import { LiveMarketChart } from "@/components/dashboard/market/live-market-chart";
+
 
 
 /** MobileWorkloadCard — focus-time signal, iOS Fitness-style ring feel. */
@@ -141,11 +141,32 @@ export function MobileDailyBriefCard() {
 }
 
 
-/** MobileRecapCard — square live-markets tile for mobile. */
+/** MobileRecapCard — market recap tile for mobile. */
 export function MobileRecapCard() {
   return (
     <section className="origin-card relative flex flex-col overflow-hidden p-4">
-      <LiveMarketChart compact />
+      <div className="flex items-start justify-between">
+        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
+          Markets
+        </span>
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <TrendingUp className="h-3.5 w-3.5" strokeWidth={2.25} />
+        </span>
+      </div>
+      <div className="mt-6">
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[28px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+            +0.42%
+          </span>
+          <span className="text-[11px] text-foreground/50">S&amp;P · open</span>
+        </div>
+        <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+          Daily market
+        </div>
+        <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
+          Treasuries firmed and breadth improved. 3 items flagged for your book.
+        </p>
+      </div>
     </section>
   );
 }
@@ -369,11 +390,29 @@ export function WorkloadCard() {
   );
 }
 
-/** RecapCard — live market chart streamed from Binance's public WebSocket. */
+/** RecapCard — daily market recap glance. */
 export function RecapCard() {
   return (
     <Panel label="Markets">
-      <LiveMarketChart />
+      <div className="flex items-start justify-between">
+        <div>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-[26px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+              +0.42%
+            </span>
+            <span className="text-[11px] text-muted-foreground">S&amp;P · open</span>
+          </div>
+          <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+            Daily market
+          </div>
+        </div>
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+          <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
+        </span>
+      </div>
+      <p className="mt-2 text-[12px] leading-snug text-muted-foreground">
+        Treasuries firmed and breadth improved. 3 items flagged for your book.
+      </p>
     </Panel>
   );
 }
