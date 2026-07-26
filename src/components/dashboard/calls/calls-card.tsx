@@ -210,69 +210,55 @@ export function CallsCard() {
  */
 function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
   const scrollRef = useRef<HTMLDivElement>(null);
-  const [lineIdx, setLineIdx] = useState(0);
-  const [charIdx, setCharIdx] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(0);
 
-  // Reset + play the typewriter each time the transcript opens.
+  // Reset + reveal lines one at a time whenever the transcript opens.
   useEffect(() => {
-    if (!showTranscript) return;
-    setLineIdx(0);
-    setCharIdx(0);
+    if (!showTranscript) {
+      setVisibleCount(0);
+      return;
+    }
+    setVisibleCount(0);
+    const timers: number[] = [];
+    // Stagger each line in with a calm cadence — slow enough to read.
+    transcript.forEach((_, i) => {
+      const id = window.setTimeout(() => {
+        setVisibleCount(i + 1);
+      }, 500 + i * 1600);
+      timers.push(id);
+    });
+    return () => {
+      timers.forEach((id) => window.clearTimeout(id));
+    };
   }, [showTranscript]);
 
-  useEffect(() => {
-    if (!showTranscript) return;
-    if (lineIdx >= transcript.length) return;
-    const line = transcript[lineIdx];
-    if (charIdx < line.text.length) {
-      // Randomize slightly to feel like live captioning.
-      const delay = 14 + Math.random() * 26;
-      const id = window.setTimeout(() => setCharIdx((c) => c + 1), delay);
-      return () => window.clearTimeout(id);
-    }
-    // Pause between lines.
-    const id = window.setTimeout(() => {
-      setLineIdx((i) => i + 1);
-      setCharIdx(0);
-    }, 480);
-    return () => window.clearTimeout(id);
-  }, [showTranscript, lineIdx, charIdx]);
-
-  // Auto-scroll to bottom as content grows.
+  // Auto-scroll to bottom as new lines appear.
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
-  }, [lineIdx, charIdx, showTranscript]);
+  }, [visibleCount, showTranscript]);
 
   return (
     <div
       ref={scrollRef}
-      className="flex flex-col gap-2 overflow-y-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      className="flex flex-col gap-2.5 overflow-y-auto pr-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       style={{ height: 176 }}
     >
       {showTranscript
-        ? transcript.slice(0, lineIdx + 1).map((line, i) => {
-            const isCurrent = i === lineIdx;
-            const text = isCurrent ? line.text.slice(0, charIdx) : line.text;
-            const done = !isCurrent || charIdx >= line.text.length;
-            if (isCurrent && text.length === 0) return null;
+        ? transcript.slice(0, visibleCount).map((line, i) => {
+            const speaker = line.who === "agent" ? "Agent" : CALLER_NAME;
             return (
               <div
                 key={i}
-                className={`flex ${line.who === "agent" ? "justify-end" : "justify-start"}`}
+                className="animate-fade-in leading-snug"
+                style={{ animationDuration: "700ms" }}
               >
-                <div
-                  className={`max-w-[80%] rounded-2xl px-3 py-1.5 text-[12px] leading-snug ${
-                    line.who === "agent"
-                      ? "bg-foreground/[0.10] text-foreground/95"
-                      : "bg-foreground/[0.04] text-foreground/85"
-                  }`}
-                >
-                  {text}
-                  {!done && (
-                    <span className="ml-0.5 inline-block h-3 w-[2px] translate-y-[2px] animate-pulse bg-foreground/70 align-middle" />
-                  )}
+                <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
+                  {speaker}
+                </div>
+                <div className="text-[12px] text-foreground/90">
+                  {line.text}
                 </div>
               </div>
             );
