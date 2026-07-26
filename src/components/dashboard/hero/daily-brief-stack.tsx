@@ -230,7 +230,7 @@ function SwipeCard({
       onDrag={isTop ? (_, info) => onDragMotion(info.offset.x) : undefined}
       onDragEnd={isTop ? handleDragEnd : undefined}
     >
-      <div className="h-full w-full bg-white rounded-[24px] border border-[#ececec] shadow-[0_24px_70px_rgba(0,0,0,0.28)] px-7 pt-7 pb-6 overflow-hidden cursor-grab active:cursor-grabbing">
+      <div className="db-card h-full w-full rounded-[24px] px-6 pt-7 pb-6 sm:px-7 overflow-hidden cursor-grab active:cursor-grabbing will-change-transform">
         {section.render()}
       </div>
     </motion.div>
@@ -280,9 +280,10 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-[440px] p-0 bg-transparent border-0 shadow-none [&>button]:hidden">
+      <DialogContent className="w-[calc(100vw-32px)] max-w-[420px] sm:max-w-[440px] p-0 bg-transparent border-0 shadow-none [&>button]:hidden">
         <DialogTitle className="sr-only">Daily brief</DialogTitle>
-        <div className="relative w-full select-none" style={{ height: "min(620px, calc(90svh - 80px))" }}>
+        <div className="relative w-full select-none touch-pan-y" style={{ height: "min(620px, calc(88svh - 80px))" }}>
+
           {SECTIONS.map((section, i) => {
             if (i > index + 2) return null;
             return (
@@ -328,15 +329,34 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
 }
 
 const _styles = `
+.db-card { background: #ffffff; border: 1px solid #ececec; box-shadow: 0 24px 70px rgba(0,0,0,0.28); }
+.dark .db-card { background: #17171a; border-color: rgba(255,255,255,0.08); box-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04) inset; }
 .db-eyebrow { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: #aaa; margin-bottom: 14px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .db-eyebrow span { color: #ddd; }
+.dark .db-eyebrow { color: #6b6b74; }
+.dark .db-eyebrow span { color: #3a3a42; }
 .db-greeting { font-family: var(--font-serif-display, 'Playfair Display', serif); font-size: 30px; font-weight: 400; line-height: 1.1; color: #111; margin-bottom: 10px; letter-spacing: -0.01em; }
+.dark .db-greeting { color: #f5f5f7; }
 .db-greeting--sm { font-size: 24px; }
 .db-lede { font-size: 14px; font-weight: 300; color: #666; line-height: 1.6; margin-bottom: 22px; }
+.dark .db-lede { color: #a8a8b0; }
+.dark .db-card .text-neutral-900 { color: #ececee; }
+.dark .db-card .text-neutral-700 { color: #cfcfd4; }
+.dark .db-card .text-neutral-500 { color: #8a8a92; }
+.dark .db-card .text-neutral-400 { color: #6a6a72; }
+.dark .db-card .text-neutral-300 { color: #4a4a52; }
+.dark .db-card .border-\\[\\#f4f4f4\\] { border-color: rgba(255,255,255,0.06); }
+.dark .db-card .border-\\[\\#f0f0f0\\] { border-color: rgba(255,255,255,0.06); }
+.dark .db-card .bg-\\[\\#ececec\\] { background-color: rgba(255,255,255,0.08); }
+.dark .db-card .border-\\[\\#ddd\\] { border-color: rgba(255,255,255,0.16); }
 `;
-if (typeof document !== "undefined" && !document.getElementById("db-stack-styles")) {
+
+if (typeof document !== "undefined") {
+  const existing = document.getElementById("db-stack-styles");
+  if (existing) existing.remove();
   const el = document.createElement("style");
   el.id = "db-stack-styles";
   el.textContent = _styles;
   document.head.appendChild(el);
 }
+
