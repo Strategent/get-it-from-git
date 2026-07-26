@@ -322,14 +322,11 @@ function CallAction({
  */
 function PitchWave({ active }: { active: boolean }) {
   const H = 34;
-  const BAR_COUNT = 44;
+  const BAR_COUNT = 96;
   const barsRef = useRef<HTMLSpanElement[]>([]);
   const rafRef = useRef<number | null>(null);
   const levelsRef = useRef<Float32Array>(new Float32Array(BAR_COUNT));
 
-  // Per-bar phase offsets and speeds so each bar picks up a slightly different
-  // slice of the "voice" signal — mirrors how an AnalyserNode's frequency bins
-  // each vary independently while sharing an overall envelope.
   const phases = useMemo(
     () => Array.from({ length: BAR_COUNT }, () => Math.random() * Math.PI * 2),
     [],
@@ -339,12 +336,25 @@ function PitchWave({ active }: { active: boolean }) {
     [],
   );
 
+  // Cosine envelope across the row — taller bars in the center, tapering to
+  // the edges. Matches Lovable's dictation meter shape.
+  const shape = useMemo(
+    () =>
+      Array.from({ length: BAR_COUNT }, (_, i) => {
+        const x = (i / (BAR_COUNT - 1)) * 2 - 1; // -1..1
+        // raised-cosine-ish: strong center, gentle taper, tiny edge floor
+        return Math.pow(Math.cos((x * Math.PI) / 2), 1.6) * 0.9 + 0.1;
+      }),
+    [],
+  );
+
   useEffect(() => {
     const applyRest = () => {
       for (let i = 0; i < BAR_COUNT; i++) {
-        levelsRef.current[i] = 0.1;
+        const rest = 0.08 * shape[i] + 0.04;
+        levelsRef.current[i] = rest;
         const el = barsRef.current[i];
-        if (el) el.style.transform = "scaleY(0.1)";
+        if (el) el.style.transform = `scaleY(${rest.toFixed(3)})`;
       }
     };
 
@@ -363,8 +373,6 @@ function PitchWave({ active }: { active: boolean }) {
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
 
-      // Shared voice envelope: layered slow sines that emulate the loudness
-      // contour of natural speech (syllable / word / sentence cadence).
       const envelope =
         0.55 +
         0.30 * Math.sin(t * 2.4) +
@@ -372,8 +380,6 @@ function PitchWave({ active }: { active: boolean }) {
         0.10 * Math.sin(t * 9.7 + 0.6);
 
       for (let i = 0; i < BAR_COUNT; i++) {
-        // Per-bar perturbation — same envelope, different phase/speed, so the
-        // row shimmers rather than moving in lockstep.
         const p = phases[i];
         const s = speeds[i];
         const detail =
@@ -381,14 +387,9 @@ function PitchWave({ active }: { active: boolean }) {
           0.35 * Math.sin(t * 7.3 * s + p) +
           0.20 * Math.sin(t * 13.9 * s + p * 1.7);
 
-        // Target level = envelope × detail, clamped with a small floor so
-        // silent bars remain visible as pills (Lovable's dictation bar never
-        // collapses to zero).
-        const target = Math.max(0.1, Math.min(1, envelope * detail));
+        const raw = envelope * detail * shape[i];
+        const target = Math.max(0.05 + shape[i] * 0.05, Math.min(1, raw));
 
-        // Exponential smoothing with asymmetric attack/release: rise quickly
-        // (loud syllable), fall gently (natural decay). This is the exact
-        // "meter" feel of Lovable's dictation UI.
         const current = levelsRef.current[i];
         const rising = target > current;
         const tau = rising ? 0.06 : 0.16;
@@ -408,7 +409,7 @@ function PitchWave({ active }: { active: boolean }) {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       rafRef.current = null;
     };
-  }, [active, phases, speeds]);
+  }, [active, phases, speeds, shape]);
 
   return (
     <div
@@ -417,8 +418,8 @@ function PitchWave({ active }: { active: boolean }) {
       aria-hidden="true"
     >
       <div
-        className="flex h-full w-full items-center"
-        style={{ gap: 3 }}
+        className="flex h-full w-full items-center justify-between"
+        style={{ gap: 2 }}
       >
         {Array.from({ length: BAR_COUNT }).map((_, i) => (
           <span
@@ -426,10 +427,11 @@ function PitchWave({ active }: { active: boolean }) {
             ref={(el) => {
               if (el) barsRef.current[i] = el;
             }}
-            className="block flex-1 rounded-full bg-foreground/90"
+            className="block rounded-full bg-foreground/80 dark:bg-foreground/70"
             style={{
               height: H,
-              minWidth: 2,
+              width: 2,
+              flex: "0 0 2px",
               transform: "scaleY(0.1)",
               transformOrigin: "center",
               willChange: "transform",
