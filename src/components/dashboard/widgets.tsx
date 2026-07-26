@@ -369,17 +369,11 @@ export function WorkloadCard() {
   );
 }
 
-/** RecapCard — Origin "Daily market brief" recap widget. */
+/** RecapCard — live market chart streamed from Binance's public WebSocket. */
 export function RecapCard() {
   return (
-    <Panel label="Recap">
-      <h3 className="font-serif-display text-[20px] leading-tight text-foreground">
-        Daily market brief
-      </h3>
-      <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
-        Treasuries firmed and breadth improved. Syra flagged 3 items across your book that may move
-        client conversations today.
-      </p>
+    <Panel label="Markets">
+      <LiveMarketChart />
     </Panel>
   );
 }
