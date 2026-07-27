@@ -367,7 +367,7 @@ function CalendarPage() {
                 return (
                   <li
                     key={i}
-                    className="group relative flex items-stretch gap-4 pl-0 pr-3 py-3.5 hover:bg-foreground/[0.025] transition-colors"
+                    className="group relative flex items-stretch gap-2 sm:gap-4 pl-0 pr-2 sm:pr-3 py-3 sm:py-3.5 hover:bg-foreground/[0.025] transition-colors"
                   >
                     {/* Left color bar — iOS style */}
                     <span
@@ -375,7 +375,7 @@ function CalendarPage() {
                       className="w-[3px] shrink-0 self-stretch my-1 rounded-r-sm"
                       style={{ background: c.solid, boxShadow: `0 0 12px ${c.solid}55` }}
                     />
-                    <div className="relative w-[60px] shrink-0 py-0.5 pl-3">
+                    <div className="relative w-[52px] sm:w-[60px] shrink-0 py-0.5 pl-2 sm:pl-3">
                       <div className="text-[13px] font-semibold tabular-nums tracking-tight leading-none">
                         {m.time}
                       </div>
@@ -384,10 +384,10 @@ function CalendarPage() {
                       </div>
                     </div>
                     <div className="min-w-0 flex-1 py-0.5">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-[13.5px] font-semibold truncate">{m.client}</span>
+                      <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                        <span className="text-[13px] sm:text-[13.5px] font-semibold truncate max-w-full">{m.client}</span>
                         <span
-                          className="inline-flex items-center gap-1 h-[18px] rounded-full px-2 text-[10px] font-semibold"
+                          className="inline-flex items-center gap-1 h-[18px] rounded-full px-2 text-[10px] font-semibold whitespace-nowrap shrink-0"
                           style={{ background: c.tint, color: c.text }}
                         >
                           <span
@@ -397,43 +397,46 @@ function CalendarPage() {
                           {m.kind}
                         </span>
                         {m.status === "Confirmed" ? (
-                          <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-foreground/70">
+                          <span className="inline-flex items-center gap-1 text-[10.5px] font-medium text-foreground/70 whitespace-nowrap shrink-0">
                             <Check className="h-2.5 w-2.5" strokeWidth={2.5} />
                             Confirmed
                           </span>
                         ) : (
-                          <span className="text-[10.5px] italic text-muted-foreground">Pending</span>
+                          <span className="text-[10.5px] italic text-muted-foreground whitespace-nowrap shrink-0">Pending</span>
                         )}
                       </div>
-                      <div className="mt-1 flex items-center gap-3 text-[11.5px] text-muted-foreground">
-                        <span className="inline-flex items-center gap-1">
+                      <div className="mt-1.5 flex items-center gap-2.5 sm:gap-3 text-[11.5px] text-muted-foreground overflow-hidden">
+                        <span className="inline-flex items-center gap-1 min-w-0 shrink">
                           <img
                             src={avatarUrl(m.host)}
                             alt=""
-                            className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60"
+                            className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60 shrink-0"
                           />
-                          {m.host}
+                          <span className="truncate whitespace-nowrap">{m.host}</span>
                         </span>
-                        <span className="inline-flex items-center gap-1">
-                          <MapPin className="h-3 w-3" strokeWidth={1.75} /> {m.location}
+                        <span className="inline-flex items-center gap-1 min-w-0 shrink-0 whitespace-nowrap">
+                          <MapPin className="h-3 w-3 shrink-0" strokeWidth={1.75} />
+                          <span className="truncate">{m.location}</span>
                         </span>
-                        <span className="inline-flex items-center gap-1">
+                        <span className="inline-flex items-center gap-1 shrink-0 whitespace-nowrap">
                           <Users className="h-3 w-3" strokeWidth={1.75} /> {m.attendees ?? 2}
                         </span>
                       </div>
                     </div>
-                    <div className="flex items-center gap-1.5 shrink-0 self-center">
+                    <div className="flex items-center gap-1 sm:gap-1.5 shrink-0 self-center">
                       <a
                         href={m.zoom}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex h-8 items-center gap-1.5 rounded-sm bg-foreground text-background px-3 text-[11.5px] font-semibold hover:bg-foreground/90 transition-colors"
+                        aria-label="Join meeting"
+                        className="inline-flex h-8 items-center gap-1 sm:gap-1.5 rounded-sm bg-foreground text-background px-2.5 sm:px-3 text-[11.5px] font-semibold hover:bg-foreground/90 transition-colors whitespace-nowrap"
                       >
-                        <Video className="h-3.5 w-3.5" strokeWidth={2} /> Join
+                        <Video className="h-3.5 w-3.5" strokeWidth={2} />
+                        <span className="hidden sm:inline">Join</span>
                       </a>
                       <button
                         aria-label="More"
-                        className="grid h-8 w-8 place-items-center rounded-sm border border-border/70 bg-card text-foreground/70 hover:bg-foreground/[0.05]"
+                        className="hidden sm:grid h-8 w-8 place-items-center rounded-sm border border-border/70 bg-card text-foreground/70 hover:bg-foreground/[0.05]"
                       >
                         <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
                       </button>
