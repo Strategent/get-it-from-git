@@ -508,24 +508,6 @@ export function InboxCard() {
         </div>
       </div>
     </Panel>
-    {mobileOpen && (
-      <MobileThreadPortal
-        email={e}
-        isFlagged={isFlagged}
-        isSent={isSent}
-        justSent={justSent}
-        sending={sending}
-        draft={draft}
-        onDraftChange={setDraft}
-        onSend={handleSend}
-        onClose={() => setMobileOpen(false)}
-        onToggleFlag={toggleFlag}
-        onArchive={() => {
-          handleArchive();
-          setMobileOpen(false);
-        }}
-      />
-    )}
     </>
   );
 }
