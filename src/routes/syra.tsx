@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Paperclip,
   FileText,
@@ -7,6 +7,8 @@ import {
   Calendar,
   ChevronDown,
   Check,
+  Mic,
+  X,
 } from "lucide-react";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { useTheme } from "@/components/theme-provider";
