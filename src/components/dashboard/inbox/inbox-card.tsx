@@ -36,6 +36,7 @@ export function InboxCard() {
   const [sending, setSending] = useState(false);
   const [justSent, setJustSent] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSentBanner, setMobileSentBanner] = useState<string | null>(null);
   const composerRef = useRef<HTMLTextAreaElement>(null);
 
   const visibleEmails = useMemo(
