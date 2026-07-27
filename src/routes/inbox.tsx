@@ -55,6 +55,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { SyraMark } from "@/components/syra-mark";
 import { avatarUrl } from "@/lib/avatar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 
 export const Route = createFileRoute("/inbox")({
