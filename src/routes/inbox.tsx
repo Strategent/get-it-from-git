@@ -55,6 +55,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { SyraMark } from "@/components/syra-mark";
 import { avatarUrl } from "@/lib/avatar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 
 export const Route = createFileRoute("/inbox")({
@@ -329,6 +331,7 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
+  const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
   const [foldersOpen, setFoldersOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -522,8 +525,538 @@ function InboxPage() {
     }, 650);
   };
 
+  if (isMobile) {
+    const unreadCount = visibleThreads.filter((t) => t.unread).length;
+    const needsReplyCount = threads.filter((t) => t.needsReply && t.folder === "Inbox").length;
+
+    // Thread reading view
+    if (mobileReading) {
+      const s = selected;
+      const summary =
+        s.tag === "Hot lead"
+          ? "Sarah greenlit the proposal with two edits: lock tier 2 at the proposed annual rate and target kickoff the week of June 10."
+          : s.tag === "Sales"
+            ? "Marcus needs SOC2 status, data residency, and the implementation owner before legal can countersign."
+            : s.tag === "Renewal"
+              ? "Helios renewal lands in 14 days. Procurement wants a seat-count review before the invoice cuts."
+              : s.tag === "Billing"
+                ? "Stripe payout of $12,840 arrives May 30. Reconciliation report attached."
+                : s.tag === "Legal"
+                  ? "Northwind MSA fully executed. Countersigned PDF attached."
+                  : s.tag === "Intro"
+                    ? "Warm intro to Priya, revenue ops at Bridgewater. Priya is on this thread."
+                    : "Linear queued OPS-128, 129, 131 to Syra at high priority — blocking onboarding.";
+      const nextAction =
+        s.tag === "Hot lead"
+          ? "Send updated SOW with June 10 kickoff"
+          : s.tag === "Sales"
+            ? "Reply with SOC2 pack + owner"
+            : s.tag === "Renewal"
+              ? "Propose seat-count review call"
+              : s.tag === "Intro"
+                ? "Reply-all to loop Priya in"
+                : s.tag === "Billing"
+                  ? "File reconciliation, no reply"
+                  : "No action needed";
+      const canAction = s.needsReply;
+
+      return (
+        <>
+          <div
+            className="fixed inset-x-0 bottom-0 z-40 flex flex-col bg-background"
+            style={{
+              top: 0,
+              paddingTop: "calc(env(safe-area-inset-top, 0px))",
+            }}
+          >
+            {/* Top bar */}
+            <div className="flex h-11 items-center gap-1 px-2 border-b border-border/50 bg-background/95 backdrop-blur-xl">
+              <button
+                onClick={() => setMobileReading(false)}
+                className="inline-flex items-center gap-0.5 h-8 pl-1 pr-2 rounded-md text-foreground/85 hover:bg-foreground/[0.06] active:bg-foreground/[0.09] transition-colors"
+              >
+                <ChevronLeft className="h-[18px] w-[18px]" strokeWidth={2} />
+                <span className="text-[13.5px] font-medium">{activeFolder}</span>
+              </button>
+              <div className="flex-1" />
+              <button
+                onClick={() => updateThread(s.id, { flagged: !s.flagged })}
+                aria-label="Flag"
+                className={`grid h-8 w-8 place-items-center rounded-md hover:bg-foreground/[0.06] transition-colors ${
+                  s.flagged ? "text-foreground" : "text-muted-foreground"
+                }`}
+              >
+                <Flag className="h-4 w-4" strokeWidth={1.75} fill={s.flagged ? "currentColor" : "none"} />
+              </button>
+              <button
+                onClick={() => {
+                  moveSelected("Archive", "Archived message");
+                  setMobileReading(false);
+                }}
+                aria-label="Archive"
+                className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
+              >
+                <Archive className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label="More"
+                    className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
+                  >
+                    <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem
+                    onClick={() => updateThread(s.id, { unread: !s.unread })}
+                    className="text-xs"
+                  >
+                    Mark as {s.unread ? "read" : "unread"}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      moveSelected("Trash", "Moved to trash");
+                      setMobileReading(false);
+                    }}
+                    className="text-xs"
+                  >
+                    Delete
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => updateThread(s.id, { starred: !s.starred })}
+                    className="text-xs"
+                  >
+                    {s.starred ? "Unstar" : "Star"}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+
+            {/* Scroll body */}
+            <div
+              className="flex-1 overflow-y-auto no-scrollbar"
+              style={{
+                paddingBottom: selectedDraft.status === "open"
+                  ? "calc(env(safe-area-inset-bottom, 0px) + 12px)"
+                  : "calc(env(safe-area-inset-bottom, 0px) + 84px)",
+              }}
+            >
+              {/* Editorial subject */}
+              <div className="px-5 pt-5 pb-4">
+                <div className="flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/80">
+                  <span className="rounded-sm border border-border/60 bg-muted/50 px-1.5 py-[2px] text-[9.5px] tracking-[0.14em]">
+                    {s.tag}
+                  </span>
+                  <span className="tabular-nums">{s.sentAt ?? s.time}</span>
+                </div>
+                <h1 className="font-serif-display mt-2.5 text-[26px] leading-[1.15] tracking-[-0.015em] text-foreground">
+                  {s.subject}
+                </h1>
+                <div className="mt-3 flex items-center gap-2.5">
+                  <img
+                    src={avatarUrl(s.from)}
+                    alt=""
+                    className="h-7 w-7 rounded-full object-cover grayscale-[0.15]"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[12.5px] font-medium text-foreground/95 truncate">
+                      {s.from} <span className="text-muted-foreground font-normal">· {s.company}</span>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground truncate">
+                      {s.email} → me
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Syra Smart Summary — linear.app style card */}
+              <div className="px-4">
+                <div
+                  className="relative overflow-hidden rounded-xl border border-border/70 bg-card"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px -12px rgba(0,0,0,0.35), 0 2px 6px -3px rgba(0,0,0,0.18)",
+                  }}
+                >
+                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/25 to-transparent" />
+                  <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
+                    <div className="flex items-center gap-2">
+                      <SyraMark className="h-3.5 w-3.5" />
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-foreground/75">
+                        Syra · Smart summary
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-muted-foreground/80 tabular-nums">just now</span>
+                  </div>
+                  <div className="px-4 pb-3.5 text-[13.5px] leading-[1.55] text-foreground/90">
+                    {summary}
+                  </div>
+                  <button
+                    onClick={() => canAction && openComposer("reply")}
+                    disabled={!canAction}
+                    className={`w-full flex items-center gap-2.5 px-4 py-3 border-t border-border/60 text-left transition-colors ${
+                      canAction
+                        ? "hover:bg-foreground/[0.04] active:bg-foreground/[0.06]"
+                        : "opacity-70"
+                    }`}
+                  >
+                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-foreground text-background">
+                      <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                        Next action
+                      </div>
+                      <div className="text-[13px] font-medium text-foreground truncate">
+                        {nextAction}
+                      </div>
+                    </div>
+                    {canAction && (
+                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Message card */}
+              <div className="px-4 pt-4">
+                <div
+                  className="rounded-xl border border-border/60 bg-card px-4 py-4"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
+                  }}
+                >
+                  <div className="text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
+                    {s.body}
+                  </div>
+                  {s.hasAttachment && (
+                    <button className="mt-4 inline-flex items-center gap-2 rounded-md border border-border/60 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85">
+                      <Paperclip className="h-3.5 w-3.5" />
+                      {s.tag === "Legal"
+                        ? "Completed_MSA.pdf"
+                        : s.tag === "Billing"
+                          ? "Stripe_reconciliation.csv"
+                          : "Security_questionnaire.pdf"}
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Inline mobile compose */}
+              {selectedDraft.status === "open" && (
+                <div className="px-4 pt-4">
+                  <div
+                    className="rounded-xl border border-border/70 bg-card overflow-hidden"
+                    style={{
+                      boxShadow:
+                        "0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 28px -14px rgba(0,0,0,0.45)",
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-2 px-4 h-10 border-b border-border/60 bg-muted/30">
+                      <div className="flex items-center gap-2">
+                        <SyraMark className="h-3.5 w-3.5" />
+                        <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
+                          Drafted by Syra
+                        </span>
+                      </div>
+                      <button
+                        onClick={regenerateDraft}
+                        disabled={regeneratingId === s.id}
+                        className="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[11px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
+                      >
+                        {regeneratingId === s.id ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <RefreshCw className="h-3 w-3" />
+                        )}
+                        Regenerate
+                      </button>
+                    </div>
+                    <div className="px-4 py-3 border-b border-border/50 text-[12px] text-muted-foreground">
+                      <span className="text-foreground/60">To:</span>{" "}
+                      <span className="text-foreground/90">{selectedDraft.to.join(", ")}</span>
+                    </div>
+                    <textarea
+                      value={htmlToText(selectedDraft.body)}
+                      onChange={(e) => updateDraft({ body: textToHtml(e.target.value) })}
+                      rows={8}
+                      className="w-full px-4 py-3 text-[14px] leading-[1.55] bg-transparent text-foreground/95 placeholder:text-muted-foreground focus:outline-none resize-none"
+                    />
+                    <div className="flex items-center justify-between gap-2 px-3 h-12 border-t border-border/60 bg-muted/20">
+                      <button
+                        onClick={() => {
+                          setDrafts((current) => ({
+                            ...current,
+                            [s.id]: { ...selectedDraft, status: "closed" },
+                          }));
+                        }}
+                        className="inline-flex items-center h-8 px-3 rounded-md text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
+                      >
+                        Discard
+                      </button>
+                      <button
+                        onClick={sendDraft}
+                        disabled={sendingId === s.id}
+                        className="inline-flex items-center gap-1.5 h-9 px-4 rounded-md bg-foreground text-background text-[13px] font-medium active:opacity-90 disabled:opacity-70 transition-opacity"
+                      >
+                        {sendingId === s.id ? (
+                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        ) : (
+                          <Send className="h-3.5 w-3.5" />
+                        )}
+                        Send
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Floating reply bar */}
+            {selectedDraft.status !== "open" && (
+              <div
+                className="absolute inset-x-0 bottom-0 px-4 pt-3 border-t border-border/50 bg-background/95 backdrop-blur-xl"
+                style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)" }}
+              >
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openComposer("reply")}
+                    className="flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-foreground text-background text-[13.5px] font-medium active:opacity-90 transition-opacity"
+                  >
+                    <Reply className="h-4 w-4" strokeWidth={2} />
+                    Reply with Syra
+                  </button>
+                  <button
+                    onClick={() => openComposer("forward")}
+                    aria-label="Forward"
+                    className="grid h-11 w-11 place-items-center rounded-full border border-border/70 bg-card text-foreground/80 active:bg-foreground/[0.06]"
+                  >
+                    <Forward className="h-4 w-4" strokeWidth={1.85} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          <SyraChatWidget
+            inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${needsReplyCount} need reply`}
+          />
+        </>
+      );
+    }
+
+    // List view
+    return (
+      <>
+        <div className="flex min-h-[calc(100dvh-80px)] w-full flex-col bg-background pb-32">
+          {/* Editorial header */}
+          <div className="px-5 pt-1 pb-3">
+            <div className="flex items-baseline justify-between gap-2">
+              <h1 className="font-serif-display text-[30px] leading-none tracking-[-0.02em] text-foreground">
+                {activeFolder}
+              </h1>
+              <span className="text-[11.5px] font-medium tabular-nums text-muted-foreground">
+                {visibleThreads.length} · {unreadCount} unread
+              </span>
+            </div>
+            <div className="mt-1.5 text-[11.5px] text-muted-foreground">
+              {needsReplyCount} threads need a reply · Syra drafted {Object.values(drafts).filter((d) => d.status === "open").length}
+            </div>
+          </div>
+
+          {/* Search + folder pill */}
+          <div className="px-4 pb-2.5 flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-1 h-10 px-3 rounded-full bg-muted/60 border border-border/50">
+              <Search className="h-3.5 w-3.5 text-muted-foreground" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search mail"
+                className="flex-1 min-w-0 bg-transparent text-[13.5px] placeholder:text-muted-foreground focus:outline-none"
+              />
+            </div>
+            <div className="relative" ref={popoverRef}>
+              <button
+                onClick={() => setFoldersOpen((v) => !v)}
+                className="inline-flex items-center gap-1 h-10 px-3 rounded-full border border-border/50 bg-card text-foreground/85 text-[12.5px] font-medium"
+              >
+                <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <ChevronDown className="h-3 w-3 opacity-70" />
+              </button>
+              {foldersOpen && (
+                <div
+                  className="absolute right-0 top-12 z-30 w-56 p-1.5 rounded-xl border border-border/70 bg-popover"
+                  style={{ boxShadow: "0 20px 40px -18px rgba(0,0,0,0.5)" }}
+                >
+                  {folderMeta.map((f) => {
+                    const Icon = f.icon;
+                    const active = f.name === activeFolder;
+                    return (
+                      <button
+                        key={f.name}
+                        onClick={() => {
+                          setActiveFolder(f.name);
+                          setFoldersOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] transition-colors ${
+                          active
+                            ? "bg-foreground/[0.08] text-foreground font-medium"
+                            : "text-foreground/85 active:bg-foreground/[0.06]"
+                        }`}
+                      >
+                        <Icon className="h-4 w-4" strokeWidth={1.75} />
+                        <span className="flex-1 text-left">{f.name}</span>
+                        <span className="text-[11px] text-muted-foreground tabular-nums">
+                          {folderCounts[f.name]}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Segmented filter */}
+          <div className="px-4 pb-3">
+            <div className="flex items-center gap-1 rounded-full border border-border/50 bg-muted/40 p-1">
+              {(["All", "Unread", "Flagged"] as const).map((t) => {
+                const active =
+                  (t === "All" && !filters.includes("Unread") && !filters.includes("Flagged")) ||
+                  (t === "Unread" && filters.includes("Unread")) ||
+                  (t === "Flagged" && filters.includes("Flagged"));
+                return (
+                  <button
+                    key={t}
+                    onClick={() => {
+                      if (t === "All") setFilters([]);
+                      else setFilters([t as FilterName]);
+                    }}
+                    className={`flex-1 h-8 rounded-full text-[12.5px] font-medium transition-all ${
+                      active
+                        ? "bg-background text-foreground shadow-[0_1px_2px_rgba(0,0,0,0.08)]"
+                        : "text-muted-foreground active:text-foreground"
+                    }`}
+                  >
+                    {t}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Thread list */}
+          <div className="px-3">
+            {visibleThreads.length === 0 ? (
+              <div className="px-4 py-16 text-center text-[13px] text-muted-foreground">
+                No messages match this view.
+              </div>
+            ) : (
+              <ul
+                className="rounded-2xl border border-border/50 bg-card overflow-hidden"
+                style={{
+                  boxShadow:
+                    "0 1px 0 rgba(255,255,255,0.03) inset, 0 6px 20px -14px rgba(0,0,0,0.35)",
+                }}
+              >
+                {visibleThreads.map((thread, idx) => {
+                  const draft = drafts[thread.id];
+                  return (
+                    <li key={thread.id}>
+                      <button
+                        onClick={() => selectThread(thread)}
+                        className={`w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05] transition-colors ${
+                          idx > 0 ? "border-t border-border/40" : ""
+                        }`}
+                      >
+                        <div className="relative shrink-0">
+                          <img
+                            src={avatarUrl(thread.from)}
+                            alt=""
+                            className="h-10 w-10 rounded-full object-cover grayscale-[0.2]"
+                            onError={(e) => {
+                              const el = e.currentTarget as HTMLImageElement;
+                              el.style.display = "none";
+                              (el.nextSibling as HTMLElement).style.display = "grid";
+                            }}
+                          />
+                          <div
+                            className="h-10 w-10 rounded-full bg-muted text-muted-foreground place-items-center text-[12px] font-semibold"
+                            style={{ display: "none" }}
+                          >
+                            {initials(thread.from)}
+                          </div>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            {thread.unread && (
+                              <span className="h-1.5 w-1.5 rounded-full bg-foreground shrink-0" />
+                            )}
+                            <div
+                              className={`text-[14px] truncate ${
+                                thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"
+                              }`}
+                            >
+                              {thread.from}
+                            </div>
+                            <div className="ml-auto text-[11px] text-muted-foreground shrink-0 tabular-nums">
+                              {thread.sentAt ?? thread.time}
+                            </div>
+                          </div>
+                          <div
+                            className={`text-[13px] truncate mt-0.5 ${
+                              thread.unread ? "text-foreground" : "text-foreground/80"
+                            }`}
+                          >
+                            {draft && draft.status !== "closed" && (
+                              <span className="text-muted-foreground">Draft · </span>
+                            )}
+                            {thread.subject}
+                          </div>
+                          <div className="text-[12px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
+                            {thread.preview}
+                          </div>
+                          <div className="mt-1.5 flex items-center gap-1.5">
+                            <span className="inline-flex items-center h-[18px] px-1.5 rounded-sm border border-border/60 bg-muted/40 text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
+                              {thread.tag}
+                            </span>
+                            {thread.needsReply && (
+                              <span className="inline-flex items-center gap-1 h-[18px] px-1.5 rounded-sm text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
+                                <SyraMark className="h-2.5 w-2.5" />
+                                Draft ready
+                              </span>
+                            )}
+                            {thread.hasAttachment && (
+                              <Paperclip className="h-3 w-3 text-muted-foreground" />
+                            )}
+                            {thread.flagged && (
+                              <Flag className="h-3 w-3 text-foreground/70" fill="currentColor" />
+                            )}
+                          </div>
+                        </div>
+                        <ChevronRight className="h-4 w-4 text-muted-foreground/60 shrink-0 mt-1" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+        </div>
+        <SyraChatWidget
+          inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${needsReplyCount} need reply`}
+        />
+      </>
+    );
+  }
+
   return (
     <>
+
       <div
         className="flex w-full bg-muted/20 overflow-hidden"
         style={{ height: "calc(100dvh - 53px)" }}
