@@ -331,6 +331,7 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
+  const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
   const [foldersOpen, setFoldersOpen] = useState(false);
   const [query, setQuery] = useState("");
