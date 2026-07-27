@@ -147,21 +147,6 @@ function CalendarPage() {
         }
       />
 
-      {/* Hairline stat strip */}
-      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-border/50 divide-x divide-border/50 -mx-4 sm:-mx-6 md:-mx-8">
-        {[
-          { label: "Meetings this month", value: String(totalThisMonth) },
-          { label: "Confirmed", value: String(confirmed) },
-          { label: "Pending", value: String(pending) },
-          { label: "Avg per day", value: "1.4" },
-        ].map((s) => (
-          <div key={s.label} className="px-4 py-3.5 sm:px-6 sm:py-5">
-            <div className="text-[9.5px] sm:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-muted-foreground truncate">{s.label}</div>
-            <div className="mt-1 sm:mt-1.5 text-[18px] sm:text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
-          </div>
-        ))}
-      </div>
-
       {/* Main calendar surface — raised card with subtle depth */}
       <div className="-mx-4 sm:-mx-6 md:-mx-8 border-b border-border/50">
         <div className="bg-card/60 dark:bg-white/[0.02] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
