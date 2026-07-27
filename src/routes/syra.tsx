@@ -37,6 +37,7 @@ function SyraPage() {
   const [input, setInput] = useState("");
   const [modelId, setModelId] = useState(models[0].id);
   const [open, setOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const activeModel = models.find((m) => m.id === modelId) ?? models[0];
 
   const bgStart = isDark ? "rgb(10, 10, 14)" : "rgb(250, 249, 252)";
