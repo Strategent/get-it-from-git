@@ -73,6 +73,7 @@ export function InboxCard() {
   const handleSend = () => {
     if (sending || isSent || draft.trim().length === 0) return;
     setSending(true);
+    const recipient = e.sender.split(" ")[0];
     window.setTimeout(() => {
       setSentIds((prev) => {
         const next = new Set(prev);
@@ -81,6 +82,12 @@ export function InboxCard() {
       });
       setSending(false);
       setJustSent(true);
+      // Mobile: show temp banner then return to the list.
+      setMobileSentBanner(`Sent to ${recipient}`);
+      window.setTimeout(() => {
+        setMobileSentBanner(null);
+        setMobileOpen(false);
+      }, 1800);
     }, 650);
   };
 
