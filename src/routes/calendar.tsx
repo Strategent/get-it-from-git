@@ -230,7 +230,7 @@ function CalendarPage() {
                   key={i}
                   onClick={() => d && setSelectedDay(d)}
                   disabled={!d}
-                  className={`group relative text-left min-h-[116px] px-2 py-2 border-r border-border/40 last:border-r-0 ${
+                  className={`group relative text-left min-h-[62px] sm:min-h-[92px] md:min-h-[116px] px-1 py-1.5 sm:px-2 sm:py-2 border-r border-border/40 last:border-r-0 ${
                     rowEnd ? "" : "border-b"
                   } transition-colors ${
                     !d
@@ -244,9 +244,9 @@ function CalendarPage() {
                 >
                   {d && (
                     <>
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-1">
                         <span
-                          className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[12px] tabular-nums ${
+                          className={`inline-flex h-5 min-w-5 sm:h-6 sm:min-w-6 items-center justify-center rounded-full px-1 text-[11px] sm:text-[12px] tabular-nums ${
                             isToday
                               ? "bg-[#FF453A] text-white font-semibold shadow-[0_1px_2px_rgba(0,0,0,0.35)]"
                               : isSelected
@@ -261,14 +261,38 @@ function CalendarPage() {
                             {meetings.slice(0, 3).map((m, idx) => (
                               <span
                                 key={idx}
-                                className="h-1.5 w-1.5 rounded-full"
+                                className="h-1 w-1 sm:h-1.5 sm:w-1.5 rounded-full"
                                 style={{ background: colorFor(m.kind).solid }}
                               />
                             ))}
                           </span>
                         )}
                       </div>
-                      <div className="mt-1.5 space-y-1">
+                      {/* Mobile: single compact chip showing first meeting time; hide the full pill list */}
+                      {meetings.length > 0 && (
+                        <div className="mt-1 sm:hidden">
+                          <div
+                            className="inline-flex items-center gap-1 rounded-[4px] px-1 py-[1px] text-[9px] font-semibold tabular-nums leading-none"
+                            style={{
+                              background: colorFor(meetings[0].kind).tint,
+                              color: colorFor(meetings[0].kind).text,
+                            }}
+                          >
+                            <span
+                              className="h-1.5 w-[2px] rounded-[1px]"
+                              style={{ background: colorFor(meetings[0].kind).solid }}
+                            />
+                            {meetings[0].time}
+                          </div>
+                          {meetings.length > 1 && (
+                            <div className="text-[8.5px] text-muted-foreground/70 mt-0.5 leading-none">
+                              +{meetings.length - 1}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      {/* Desktop / tablet: full inline pill list */}
+                      <div className="hidden sm:block mt-1.5 space-y-1">
                         {meetings.slice(0, 3).map((m, mi) => {
                           const c = colorFor(m.kind);
                           const isPending = m.status === "Pending";
