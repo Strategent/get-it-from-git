@@ -144,12 +144,21 @@ function SyraPage() {
                 )}
               </div>
             </div>
-            <button
-              aria-label="Send"
-              className="absolute right-3 bottom-3 h-9 px-4 rounded-lg bg-primary text-primary-foreground text-[12.5px] font-medium hover:bg-primary/90 transition-colors"
-            >
-              Send
-            </button>
+            <div className="absolute right-3 bottom-3 flex items-center gap-1.5">
+              <button
+                aria-label="Talk to Syra"
+                onClick={() => setVoiceOpen(true)}
+                className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <Mic className="h-4 w-4" />
+              </button>
+              <button
+                aria-label="Send"
+                className="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-[12.5px] font-medium hover:bg-primary/90 transition-colors"
+              >
+                Send
+              </button>
+            </div>
           </div>
 
           {/* Quick actions */}
