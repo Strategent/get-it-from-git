@@ -155,9 +155,9 @@ function CalendarPage() {
           { label: "Pending", value: String(pending) },
           { label: "Avg per day", value: "1.4" },
         ].map((s) => (
-          <div key={s.label} className="px-6 py-5">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
-            <div className="mt-1.5 text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
+          <div key={s.label} className="px-4 py-3.5 sm:px-6 sm:py-5">
+            <div className="text-[9.5px] sm:text-[10px] uppercase tracking-[0.16em] sm:tracking-[0.18em] text-muted-foreground truncate">{s.label}</div>
+            <div className="mt-1 sm:mt-1.5 text-[18px] sm:text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
           </div>
         ))}
       </div>
