@@ -36,6 +36,7 @@ export function InboxCard() {
   const [sending, setSending] = useState(false);
   const [justSent, setJustSent] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSentBanner, setMobileSentBanner] = useState<string | null>(null);
   const composerRef = useRef<HTMLTextAreaElement>(null);
 
   const visibleEmails = useMemo(
@@ -72,6 +73,7 @@ export function InboxCard() {
   const handleSend = () => {
     if (sending || isSent || draft.trim().length === 0) return;
     setSending(true);
+    const recipient = e.sender.split(" ")[0];
     window.setTimeout(() => {
       setSentIds((prev) => {
         const next = new Set(prev);
@@ -80,6 +82,12 @@ export function InboxCard() {
       });
       setSending(false);
       setJustSent(true);
+      // Mobile: show temp banner then return to the list.
+      setMobileSentBanner(`Sent to ${recipient}`);
+      window.setTimeout(() => {
+        setMobileSentBanner(null);
+        setMobileOpen(false);
+      }, 1800);
     }, 650);
   };
 
@@ -175,53 +183,153 @@ export function InboxCard() {
         ))}
       </div>
 
-      {/* Mobile: full-width thread list (shown when no email is opened) */}
-      {!mobileOpen && (
-        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto py-1 md:hidden">
-          {visibleEmails.slice(0, 4).map((m, i) => {
-            const unread = m.chips.includes("Draft ready");
-            return (
+      {/* Mobile: inline list OR inline email+draft view, all inside the bento */}
+      <div className="relative flex min-h-0 flex-1 flex-col md:hidden">
+        {!mobileOpen ? (
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto py-1">
+            {visibleEmails.slice(0, 4).map((m, i) => {
+              const unread = m.chips.includes("Draft ready");
+              return (
+                <button
+                  key={m.originalIndex}
+                  onClick={() => {
+                    setSelected(i);
+                    setMobileOpen(true);
+                  }}
+                  className="flex items-start gap-3 border-b border-border/40 px-4 py-3 text-left transition-colors active:bg-foreground/[0.05]"
+                >
+                  <img
+                    src={avatarUrl(m.sender, 72)}
+                    alt={m.sender}
+                    loading="lazy"
+                    className="h-9 w-9 shrink-0 rounded-full border border-border object-cover"
+                  />
+                  <div className="min-w-0 flex-1 leading-tight">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className={`truncate text-[13.5px] ${unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"}`}>
+                        {m.sender}
+                      </div>
+                      <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+                        {m.time}
+                      </div>
+                    </div>
+                    <div className={`mt-0.5 truncate text-[12px] ${unread ? "font-medium text-foreground/85" : "font-medium text-foreground/70"}`}>
+                      {m.subject}
+                    </div>
+                    <div className="mt-0.5 line-clamp-2 text-[11.5px] font-normal text-muted-foreground/85">
+                      {m.preview}
+                    </div>
+                  </div>
+                  {unread && (
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            {/* Back / sender row */}
+            <div className="flex shrink-0 items-center gap-2 border-b border-border/40 px-3 py-2">
               <button
-                key={m.originalIndex}
-                onClick={() => {
-                  setSelected(i);
-                  setMobileOpen(true);
-                }}
-                className="flex items-start gap-3 border-b border-border/40 px-4 py-3 text-left transition-colors active:bg-foreground/[0.05]"
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Back to inbox"
+                className="grid h-7 w-7 shrink-0 place-items-center rounded-md text-muted-foreground transition-colors active:bg-foreground/[0.08]"
               >
-                <img
-                  src={avatarUrl(m.sender, 72)}
-                  alt={m.sender}
-                  loading="lazy"
-                  className="h-9 w-9 shrink-0 rounded-full border border-border object-cover"
-                />
-                <div className="min-w-0 flex-1 leading-tight">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className={`truncate text-[13.5px] ${unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"}`}>
-                      {m.sender}
-                    </div>
-                    <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
-                      {m.time}
-                    </div>
-                  </div>
-                  <div className={`mt-0.5 truncate text-[12px] ${unread ? "font-medium text-foreground/85" : "font-medium text-foreground/70"}`}>
-                    {m.subject}
-                  </div>
-                  <div className="mt-0.5 line-clamp-2 text-[11.5px] font-normal text-muted-foreground/85">
-                    {m.preview}
-                  </div>
-                </div>
-                {unread && (
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                )}
+                <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
               </button>
-            );
-          })}
-        </div>
-      )}
+              <img
+                src={avatarUrl(e.sender, 64)}
+                alt={e.sender}
+                loading="lazy"
+                className="h-6 w-6 shrink-0 rounded-full border border-border object-cover"
+              />
+              <div className="min-w-0 flex-1 leading-tight">
+                <div className="truncate text-[12.5px] font-semibold text-foreground">
+                  {e.sender}
+                </div>
+                <div className="truncate text-[10.5px] text-muted-foreground">
+                  {e.subject}
+                </div>
+              </div>
+              <div className="shrink-0 text-[10px] tabular-nums text-muted-foreground">
+                {e.time}
+              </div>
+            </div>
+
+            {/* Body preview */}
+            <div className="shrink-0 px-4 pt-2.5">
+              <p className="line-clamp-2 text-[12px] leading-relaxed text-foreground/80">
+                {e.preview}
+              </p>
+            </div>
+
+            {/* Inline Syra draft */}
+            <div className="min-h-0 flex-1 overflow-y-auto px-3 pt-2.5">
+              <div className="mb-1.5 flex items-center gap-1.5 px-0.5">
+                <span className="grid h-3.5 w-3.5 place-items-center rounded-[3px] bg-foreground/10">
+                  <Sparkles className="h-2 w-2 text-foreground/80" strokeWidth={2} />
+                </span>
+                <span className="text-[9.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  Syra draft
+                </span>
+              </div>
+              <div
+                className="rounded-lg"
+                style={{
+                  background: "color-mix(in oklab, var(--foreground) 3%, transparent)",
+                  border: "1px solid color-mix(in oklab, var(--foreground) 10%, transparent)",
+                }}
+              >
+                <textarea
+                  value={draft}
+                  onChange={(ev) => setDraft(ev.target.value)}
+                  rows={4}
+                  disabled={isSent}
+                  placeholder={`Reply to ${e.sender.split(" ")[0]}…`}
+                  className="block w-full resize-none bg-transparent px-3 py-2.5 text-[12.5px] leading-snug text-foreground/95 placeholder:text-muted-foreground/60 outline-none disabled:opacity-60"
+                />
+              </div>
+            </div>
+
+            {/* Send bar */}
+            <div className="flex shrink-0 items-center justify-between gap-2 border-t border-border/40 px-3 py-2.5">
+              <span className="truncate text-[10.5px] text-muted-foreground">
+                to <span className="text-foreground/80">{e.sender.split(" ")[0]}</span>
+              </span>
+              <button
+                type="button"
+                onClick={handleSend}
+                disabled={sending || isSent || draft.trim().length === 0}
+                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-foreground px-3.5 text-[12px] font-semibold text-background transition-opacity disabled:opacity-40"
+              >
+                {sending ? "Sending…" : isSent ? "Sent" : "Send"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Temp "sent" banner overlay */}
+        {mobileSentBanner && (
+          <div className="pointer-events-none absolute inset-x-3 bottom-3 z-10 flex justify-center">
+            <div
+              className="pointer-events-auto flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-medium text-background shadow-lg"
+              style={{
+                background: "color-mix(in oklab, var(--foreground) 92%, transparent)",
+                animation: "inbox-banner-in 220ms ease-out",
+              }}
+            >
+              <span className="grid h-4 w-4 place-items-center rounded-full bg-emerald-500/90 text-white">
+                <Check className="h-2.5 w-2.5" strokeWidth={3} />
+              </span>
+              {mobileSentBanner}
+            </div>
+          </div>
+        )}
+      </div>
 
       <div className="hidden min-h-0 flex-1 grid-cols-12 md:grid">
-        {/* MobileOpen renders a full-screen thread overlay via portal (below) */}
         {/* Thread list — Linear-style: hairline dividers, neutral active state */}
         <div className="hidden min-h-0 flex-col overflow-y-auto py-0 md:col-span-4 md:flex md:border-r md:border-border/50">
           {visibleEmails.map((m, i) => {
@@ -400,24 +508,6 @@ export function InboxCard() {
         </div>
       </div>
     </Panel>
-    {mobileOpen && (
-      <MobileThreadPortal
-        email={e}
-        isFlagged={isFlagged}
-        isSent={isSent}
-        justSent={justSent}
-        sending={sending}
-        draft={draft}
-        onDraftChange={setDraft}
-        onSend={handleSend}
-        onClose={() => setMobileOpen(false)}
-        onToggleFlag={toggleFlag}
-        onArchive={() => {
-          handleArchive();
-          setMobileOpen(false);
-        }}
-      />
-    )}
     </>
   );
 }
