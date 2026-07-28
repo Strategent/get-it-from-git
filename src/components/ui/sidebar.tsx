@@ -313,6 +313,62 @@ const Sidebar = React.forwardRef<
 );
 Sidebar.displayName = "Sidebar";
 
+const SidebarResizer = ({ side = "left" }: { side?: "left" | "right" }) => {
+  const { width, setWidth, resetWidth, setIsResizing } = useSidebar();
+  const startXRef = React.useRef(0);
+  const startWRef = React.useRef(width);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+    startXRef.current = e.clientX;
+    startWRef.current = width;
+    setIsResizing(true);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!(e.currentTarget as HTMLDivElement).hasPointerCapture(e.pointerId)) return;
+    const dx = e.clientX - startXRef.current;
+    const delta = side === "left" ? dx : -dx;
+    setWidth(startWRef.current + delta);
+  };
+
+  const endResize = (e: React.PointerEvent<HTMLDivElement>) => {
+    try { (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId); } catch {}
+    setIsResizing(false);
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+  };
+
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize sidebar"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endResize}
+      onPointerCancel={endResize}
+      onDoubleClick={resetWidth}
+      className={cn(
+        "absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none select-none",
+        "flex items-center justify-center",
+        "before:pointer-events-none before:absolute before:inset-y-0 before:w-px before:bg-sidebar-border/60 before:transition-colors",
+        "hover:before:bg-foreground/30 active:before:bg-foreground/40",
+        side === "left" ? "-right-1 before:right-0" : "-left-1 before:left-0",
+      )}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none h-8 w-[3px] rounded-full bg-foreground/0 transition-colors group-hover/sidebar-wrapper:bg-foreground/10"
+      />
+    </div>
+  );
+};
+SidebarResizer.displayName = "SidebarResizer";
+
 const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
   React.ComponentProps<typeof Button>
