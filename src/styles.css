@@ -65,9 +65,9 @@
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.95 0.002 80);
+  --background: oklch(0.938 0.002 80);
   --foreground: oklch(0.14 0 0);
-  --card: oklch(0.982 0.002 270);
+  --card: oklch(0.995 0.001 270);
   --card-foreground: oklch(0.14 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.14 0 0);
@@ -81,7 +81,7 @@
   --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.14 0 0 / 10%);
+  --border: oklch(0.14 0 0 / 9%);
   --input: oklch(0.14 0 0 / 12%);
   --ring: oklch(0.55 0.16 265);
   --chart-1: oklch(0.55 0.16 265);
@@ -94,7 +94,7 @@
   --gradient-subtle: linear-gradient(180deg, oklch(0.96 0.01 270), oklch(0.94 0 0));
   --shadow-glow: 0 10px 40px -10px color-mix(in oklab, oklch(0.55 0.16 265) 30%, transparent);
   --shadow-accent: 0 10px 40px -10px color-mix(in oklab, oklch(0.55 0.18 265) 30%, transparent);
-  --sidebar: oklch(0.95 0.002 80);
+  --sidebar: oklch(0.938 0.002 80);
   --sidebar-foreground: oklch(0.14 0 0);
   --sidebar-primary: oklch(0.55 0.2 260);
   --sidebar-primary-foreground: oklch(1 0 0);
@@ -197,15 +197,18 @@
   .bento {
     position: relative;
     border-radius: 1.75rem;
-    background: linear-gradient(180deg, oklch(0.988 0.002 270) 0%, oklch(0.97 0.003 270) 100%);
-    border: 1px solid color-mix(in oklab, black 6%, transparent);
+    background: linear-gradient(180deg, oklch(1 0 0) 0%, oklch(0.988 0.002 270) 100%);
+    border: 1px solid color-mix(in oklab, black 8%, transparent);
     overflow: hidden;
   }
   /* Apple-style raised sub-surface inside a bento (suggestion / draft cards) */
   .bento-raised {
-    background: linear-gradient(180deg, oklch(0.982 0.003 270), oklch(0.96 0.004 270));
-    border: 1px solid color-mix(in oklab, black 6%, transparent);
+    background: linear-gradient(180deg, oklch(0.995 0.002 270), oklch(0.972 0.003 270));
+    border: 1px solid color-mix(in oklab, black 7%, transparent);
     border-radius: 18px;
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 70%, transparent),
+      0 1px 2px -1px color-mix(in oklab, black 8%, transparent);
   }
   .bento::before {
     content: none;
@@ -213,11 +216,31 @@
   .bento::after {
     content: none;
   }
+  /* Linear-style light depth: crisp hairline + inner top highlight +
+     a soft ambient shadow stacked over a tight contact shadow. */
   .bento {
     box-shadow:
-      0 1px 0 0 color-mix(in oklab, black 3%, transparent),
-      0 1px 3px -1px color-mix(in oklab, black 6%, transparent);
+      inset 0 1px 0 0 color-mix(in oklab, white 85%, transparent),
+      0 1px 1px -0.5px color-mix(in oklab, black 5%, transparent),
+      0 3px 6px -2px color-mix(in oklab, black 6%, transparent),
+      0 12px 24px -12px color-mix(in oklab, black 12%, transparent);
+    transition:
+      box-shadow 0.28s cubic-bezier(0.32, 0.72, 0, 1),
+      transform 0.28s cubic-bezier(0.32, 0.72, 0, 1);
   }
+  .bento-wrap:hover > .bento,
+  .grid-stack-item:hover .bento {
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 90%, transparent),
+      0 1px 1px -0.5px color-mix(in oklab, black 5%, transparent),
+      0 6px 12px -4px color-mix(in oklab, black 7%, transparent),
+      0 20px 36px -16px color-mix(in oklab, black 16%, transparent);
+  }
+  .dark .bento-wrap:hover > .bento,
+  .dark .grid-stack-item:hover .bento {
+    box-shadow: none;
+  }
+
   .dark .bento {
     /* Midday: matte lift, hairline border, top sheen + soft depth. */
     background: var(--card);
@@ -278,10 +301,12 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    /* Subtle lift in light mode so cards separate from the warm-gray bg. */
+    /* Linear-style lift in light mode so cards separate from the warm-gray bg. */
     box-shadow:
-      0 1px 0 0 color-mix(in oklab, black 3%, transparent),
-      0 1px 3px -1px color-mix(in oklab, black 6%, transparent);
+      inset 0 1px 0 0 color-mix(in oklab, white 85%, transparent),
+      0 1px 1px -0.5px color-mix(in oklab, black 5%, transparent),
+      0 3px 6px -2px color-mix(in oklab, black 6%, transparent),
+      0 12px 24px -12px color-mix(in oklab, black 11%, transparent);
     /* Clip content at the rounded border — sections that can outgrow a card
        must scroll themselves (see .scroll-slim). */
     overflow: hidden;
@@ -294,7 +319,14 @@
     background: var(--surface-raised);
     border: 1px solid var(--border);
     border-radius: calc(var(--radius) - 2px);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 70%, transparent),
+      0 1px 2px -1px color-mix(in oklab, black 7%, transparent);
   }
+  .dark .origin-raised {
+    box-shadow: none;
+  }
+
 
   /* Signature ALL-CAPS › section label. */
   .section-label {
