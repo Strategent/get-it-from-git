@@ -83,13 +83,17 @@ function BentoGridStackImpl({
       // In edit mode the entire card is draggable; otherwise only the
       // header grip (`.bento-drag-handle`) starts a drag.
       handle: ".bento-drag-handle",
-      draggable: { cancel: ".cancel-drag" },
+      // Allow cards to be dragged out of this grid and dropped into any
+      // other BentoGridStack on the page (rail <-> main), Apple-style.
+      acceptWidgets: true,
+      draggable: { cancel: ".cancel-drag", appendTo: "body", scroll: true },
       resizable: { handles: resizeHandles },
       animate: true,
       // Collapse a multi-column region to one column on small screens.
       columnOpts:
         column > 1 ? { breakpointForWindow: true, breakpoints: [{ w: 1024, c: 1 }] } : undefined,
     };
+
 
     // Seed each rendered item's gridstack attributes from its layout before
     // init (set imperatively to keep the JSX free of untyped gs-* props).
@@ -124,12 +128,25 @@ function BentoGridStackImpl({
       const defaultLayout = grid.save(false);
 
       // Restore a previously saved layout (positions only; match by id).
+      // Ids that no longer live in this grid (e.g. a card the user dragged
+      // over to the other region) are filtered out so gridstack never
+      // materialises an empty ghost widget for them.
       try {
         const raw = localStorage.getItem(storageKey);
-        if (raw) grid.load(JSON.parse(raw), false);
+        if (raw) {
+          const own = new Set(items.map((it) => it.id));
+          const saved = JSON.parse(raw) as { id?: string }[];
+          grid.load(
+            (Array.isArray(saved) ? saved.filter((n) => own.has(String(n.id))) : saved) as Parameters<
+              typeof grid.load
+            >[0],
+            false,
+          );
+        }
       } catch {
         /* ignore malformed/absent layout */
       }
+
 
       // Apple-like default: always start cleanly stacked — no incongruent
       // gaps inherited from a previous layout or an out-of-date seed.
@@ -164,7 +181,25 @@ function BentoGridStackImpl({
         }
         persist();
       };
+      // A card dropped in from the other region keeps its old geometry —
+      // clamp it to this grid's column count (and relax min/max width that
+      // came from a wider grid) so it lands cleanly instead of overflowing.
+      grid.on("added", (_ev, nodes) => {
+        (nodes ?? []).forEach((n) => {
+          const el = n.el as HTMLElement | undefined;
+          if (!el) return;
+          const w = Math.min(n.w ?? 1, column);
+          const minW = Math.min(n.minW ?? 1, column);
+          const maxW = Math.min(n.maxW ?? column, column);
+          el.setAttribute("gs-min-w", String(minW));
+          el.setAttribute("gs-max-w", String(maxW));
+          if (w !== n.w || minW !== n.minW || maxW !== n.maxW) {
+            grid.update(el, { w, minW, maxW });
+          }
+        });
+      });
       grid.on("change added removed", compactAndPersist);
+
       grid.on("dragstart resizestart", () => {
         interacting = true;
       });
