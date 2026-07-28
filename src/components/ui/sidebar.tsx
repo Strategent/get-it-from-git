@@ -353,14 +353,15 @@ const SidebarResizer = ({ side = "left" }: { side?: "left" | "right" }) => {
       onPointerCancel={endResize}
       onDoubleClick={resetWidth}
       className={cn(
-        "absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none select-none",
+        "absolute inset-y-0 z-20 w-3 cursor-col-resize touch-none select-none",
         "flex items-center justify-center",
-        side === "left" ? "-right-1" : "-left-1",
+        "hover:[&>div]:opacity-100 hover:[&>div]:bg-foreground/10",
+        side === "left" ? "-right-1.5" : "-left-1.5",
       )}
     >
       <div
         aria-hidden
-        className="pointer-events-none h-7 w-[3px] rounded-full bg-foreground/0 opacity-0 transition-all duration-200 group-hover/sidebar-wrapper:opacity-100 group-hover/sidebar-wrapper:bg-foreground/10 hover:bg-foreground/20 active:bg-foreground/30"
+        className="pointer-events-none h-7 w-[3px] rounded-full bg-foreground/0 opacity-0 transition-all duration-200 active:bg-foreground/20"
       />
     </div>
   );
