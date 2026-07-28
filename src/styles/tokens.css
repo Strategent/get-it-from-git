@@ -40,7 +40,10 @@
   --trend-up-soft: color-mix(in oklab, #93a889 16%, transparent);
   --trend-down: #c09484;
   --trend-down-soft: color-mix(in oklab, #c09484 16%, transparent);
+  --surface-raised: rgba(255, 255, 255, 0.045);
+  --surface-raised-hover: rgba(255, 255, 255, 0.075);
 }
+
 
 :root {
 
