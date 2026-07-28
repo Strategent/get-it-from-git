@@ -78,7 +78,7 @@ export function DailyBriefHero({
         style={{
           borderRadius: "var(--radius)",
           backgroundColor: "#1a1a1d",
-          backgroundImage: `linear-gradient(105deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.78) 32%, rgba(0,0,0,0.52) 62%, rgba(0,0,0,0.22) 100%), url("${heroScenery.url}")`,
+          backgroundImage: `linear-gradient(105deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.62) 32%, rgba(0,0,0,0.36) 62%, rgba(0,0,0,0.14) 100%), url("${heroScenery.url}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
