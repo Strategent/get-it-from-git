@@ -78,7 +78,7 @@ export function DailyBriefHero({
         style={{
           borderRadius: "var(--radius)",
           backgroundColor: "#1a1a1d",
-          backgroundImage: `linear-gradient(105deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.62) 32%, rgba(0,0,0,0.36) 62%, rgba(0,0,0,0.14) 100%), url("${heroScenery.url}")`,
+          backgroundImage: `linear-gradient(105deg, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.36) 34%, rgba(0,0,0,0.18) 64%, rgba(0,0,0,0.06) 100%), url("${heroScenery.url}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -87,21 +87,24 @@ export function DailyBriefHero({
         <div className="relative z-10 flex h-full flex-col justify-center pl-8 pr-7 py-8 lg:pl-14 lg:pr-12 lg:py-12">
           <span
             className="font-serif-display text-[12px] uppercase tracking-[0.18em] text-white/90 lg:text-[13px]"
-            style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
+            style={{ textShadow: "0 1px 3px rgba(0,0,0,0.55), 0 2px 14px rgba(0,0,0,0.45)" }}
           >
             Syra <span className="mx-1.5">→</span> Daily Brief
           </span>
 
           <h1
             className="font-serif-display mt-10 font-normal leading-[1.05] text-white lg:mt-12"
-            style={{ fontSize: "clamp(34px, 4vw, 56px)", textShadow: "0 2px 20px rgba(0,0,0,0.55)" }}
+            style={{
+              fontSize: "clamp(34px, 4vw, 56px)",
+              textShadow: "0 1px 2px rgba(0,0,0,0.5), 0 3px 26px rgba(0,0,0,0.55)",
+            }}
           >
             Welcome back, John.
           </h1>
 
           <p
-            className="mt-5 max-w-[32rem] text-[14px] leading-relaxed text-white/90 lg:text-[15px]"
-            style={{ textShadow: "0 1px 10px rgba(0,0,0,0.5)" }}
+            className="mt-5 max-w-[32rem] text-[14px] leading-relaxed text-white/95 lg:text-[15px]"
+            style={{ textShadow: "0 1px 3px rgba(0,0,0,0.6), 0 2px 16px rgba(0,0,0,0.45)" }}
           >
             {summary}
           </p>
@@ -109,10 +112,11 @@ export function DailyBriefHero({
           <button
             type="button"
             onClick={handleClick}
-            className="mt-10 w-fit rounded-sm bg-black/50 px-7 py-3 text-[14px] text-white ring-1 ring-white/15 backdrop-blur-sm transition-colors hover:bg-black/70"
+            className="mt-10 w-fit rounded-full bg-white/75 px-7 py-3 text-[14px] font-medium text-black shadow-[0_1px_0_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-8px_rgba(0,0,0,0.55)] ring-1 ring-white/50 backdrop-blur-md backdrop-saturate-150 transition-colors hover:bg-white/90"
           >
             Read daily brief
           </button>
+
         </div>
       </section>
       <DailyBriefStack open={open} onOpenChange={setOpen} />
