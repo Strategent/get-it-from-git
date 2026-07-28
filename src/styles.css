@@ -714,3 +714,9 @@
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+
+/* Disable width transitions while the user drags the sidebar resizer */
+[data-sidebar-resizing="true"] .peer > div,
+[data-sidebar-resizing="true"] .peer > div > div {
+  transition: none !important;
+}
