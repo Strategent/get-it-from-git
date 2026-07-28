@@ -100,7 +100,7 @@ export function CallsCard() {
         ? { label: "Ending…", dot: "bg-red-500", ping: true, text: "text-red-400" }
         : onHold
           ? { label: "On hold", dot: "bg-amber-500", ping: false, text: "text-amber-400" }
-          : { label: "On call", dot: "bg-emerald-500", ping: true, text: "text-muted-foreground" };
+          : { label: "On call", dot: "bg-[color:var(--trend-up)]", ping: true, text: "text-muted-foreground" };
 
   return (
     <Panel
@@ -274,7 +274,7 @@ function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
                 className={`grid h-5 w-5 shrink-0 place-items-center rounded-full ${
                   f.done
                     ? "bg-foreground/[0.08] text-foreground/80"
-                    : "bg-emerald-500/10 text-emerald-400"
+                    : "bg-[color:var(--trend-up-soft)] text-[color:var(--trend-up)]"
                 }`}
               >
                 {f.done ? (
@@ -290,7 +290,7 @@ function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
               </div>
               <div
                 className={`min-w-0 flex-1 truncate text-[12px] ${
-                  f.done ? "text-foreground/90" : "text-emerald-400"
+                  f.done ? "text-foreground/90" : "text-[color:var(--trend-up)]"
                 }`}
               >
                 {f.value}

@@ -221,7 +221,7 @@ export function InboxCard() {
                     </div>
                   </div>
                   {unread && (
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
+                    <span className="mt-[15px] h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                   )}
                 </button>
               );
@@ -320,7 +320,7 @@ export function InboxCard() {
                 animation: "inbox-banner-in 220ms ease-out",
               }}
             >
-              <span className="grid h-4 w-4 place-items-center rounded-full bg-emerald-500/90 text-white">
+              <span className="grid h-4 w-4 place-items-center rounded-full bg-[color:var(--trend-up)] text-background">
                 <Check className="h-2.5 w-2.5" strokeWidth={3} />
               </span>
               {mobileSentBanner}
@@ -349,7 +349,7 @@ export function InboxCard() {
                   <span className="absolute inset-y-0 left-0 w-[1.5px] bg-foreground/70" />
                 )}
                 {unread && !active && (
-                  <span className="absolute left-1 top-1/2 h-1 w-1 -translate-y-1/2 rounded-full bg-foreground/70" />
+                  <span className="absolute left-1 top-[calc(0.5rem+0.875rem)] h-1 w-1 -translate-y-1/2 rounded-full bg-foreground/70" />
                 )}
                 <img
                   src={avatarUrl(m.sender, 64)}
@@ -455,7 +455,7 @@ export function InboxCard() {
           {/* Reply composer */}
           {isSent ? (
             <div className="m-3 mt-2 flex shrink-0 items-center gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/[0.06] px-3 py-2.5">
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500/20 text-emerald-400">
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-[color:var(--trend-up-soft)] text-[color:var(--trend-up)]">
                 <Check className="h-3 w-3" strokeWidth={2.5} />
               </span>
               <span className="text-[11.5px] text-foreground/85">
@@ -696,7 +696,7 @@ function MobileThreadPortal(props: {
           </h1>
           <div className="mt-2 flex items-center gap-2 text-[11px] text-muted-foreground">
             <span className="inline-flex items-center gap-1">
-              <span className="h-1 w-1 rounded-full bg-emerald-500" />
+              <span className="h-1 w-1 rounded-full bg-[color:var(--trend-up)]" />
               <span>{thread.length} messages</span>
             </span>
             <span className="text-foreground/25">·</span>
@@ -747,7 +747,7 @@ function MobileThreadPortal(props: {
                     </span>
                   </div>
                   <span className="inline-flex items-center gap-1 text-[9.5px] tracking-[0.12em] text-muted-foreground">
-                    <span className="h-1 w-1 rounded-full bg-emerald-500" />
+                    <span className="h-1 w-1 rounded-full bg-[color:var(--trend-up)]" />
                     LIVE
                   </span>
                 </div>
@@ -820,7 +820,7 @@ function MobileThreadPortal(props: {
                 border: "1px solid color-mix(in oklab, var(--foreground) 8%, transparent)",
               }}
             >
-              <span className="grid h-5 w-5 place-items-center rounded-full bg-emerald-500/15 text-emerald-500">
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-[color:var(--trend-up-soft)] text-[color:var(--trend-up)]">
                 <Check className="h-3 w-3" strokeWidth={2.75} />
               </span>
               <span className="text-[12.5px] text-foreground/85">
