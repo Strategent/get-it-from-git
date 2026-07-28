@@ -83,13 +83,17 @@ function BentoGridStackImpl({
       // In edit mode the entire card is draggable; otherwise only the
       // header grip (`.bento-drag-handle`) starts a drag.
       handle: ".bento-drag-handle",
-      draggable: { cancel: ".cancel-drag" },
+      // Allow cards to be dragged out of this grid and dropped into any
+      // other BentoGridStack on the page (rail <-> main), Apple-style.
+      acceptWidgets: true,
+      draggable: { cancel: ".cancel-drag", appendTo: "body", scroll: true },
       resizable: { handles: resizeHandles },
       animate: true,
       // Collapse a multi-column region to one column on small screens.
       columnOpts:
         column > 1 ? { breakpointForWindow: true, breakpoints: [{ w: 1024, c: 1 }] } : undefined,
     };
+
 
     // Seed each rendered item's gridstack attributes from its layout before
     // init (set imperatively to keep the JSX free of untyped gs-* props).
