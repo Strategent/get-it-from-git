@@ -40,7 +40,9 @@ export function Topbar() {
     : "—";
 
   if (isMobile) {
+    if (!isHome) return null;
     return (
+
       <header
         className="sticky top-0 z-20 relative flex items-center bg-background px-4 pb-4"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 22px)" }}
