@@ -112,7 +112,7 @@ export function DailyBriefHero({
           <button
             type="button"
             onClick={handleClick}
-            className="mt-10 w-fit rounded-full bg-white/75 px-7 py-3 text-[14px] font-medium text-black shadow-[0_1px_0_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-8px_rgba(0,0,0,0.55)] ring-1 ring-white/50 backdrop-blur-md backdrop-saturate-150 transition-colors hover:bg-white/90"
+            className="mt-10 w-fit rounded-lg bg-white/60 px-6 py-2.5 text-[14px] font-medium text-black shadow-[0_1px_0_0_rgba(255,255,255,0.5)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/40 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/80 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)]"
           >
             Read daily brief
           </button>
