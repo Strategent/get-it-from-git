@@ -29,6 +29,14 @@ export type BentoItem = {
 };
 
 /**
+ * Native geometry of every card, keyed by id and recorded together with the
+ * column count of the region it was declared in. When a card is dragged into
+ * a different region we use this to restore a sensible shape instead of
+ * carrying over a 1-column sliver from the rail.
+ */
+const NATIVE_GEOMETRY = new Map<string, BentoItem & { column: number }>();
+
+/**
  * BentoGridStack — a gridstack.js-powered region that mirrors Apple's macOS
  * widget behavior:
  *
