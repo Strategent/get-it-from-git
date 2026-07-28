@@ -151,10 +151,10 @@ export function BulletinCard() {
             </div>
           </div>
           <div
-            className={`text-right text-[11px] font-medium leading-tight tabular-nums ${
-              spxUp ? "text-emerald-300/90" : "text-rose-300/90"
-            }`}
+            className="text-right text-[11px] font-medium leading-tight tabular-nums"
+            style={{ color: spxUp ? "var(--trend-up)" : "var(--trend-down)" }}
           >
+
             <div>
               {spxUp ? "+" : ""}
               {fmt(spxChange)}
