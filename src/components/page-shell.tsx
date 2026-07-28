@@ -20,7 +20,10 @@ import {
 export function Topbar() {
   const isMobile = useIsMobile();
   const { theme, toggleTheme } = useTheme();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
   const [now, setNow] = useState<Date | null>(null);
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
