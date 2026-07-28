@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -19,15 +19,21 @@ import { PageShell, PageHeader } from "@/components/page-shell";
 import { seedClients } from "@/routes/crm";
 import { team } from "@/components/dashboard/data";
 import { senderEmailAddress } from "@/lib/avatar";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { cn } from "@/lib/utils";
 import {
   Phone,
   PhoneIncoming,
   PhoneOutgoing,
   Play,
+  Pause,
   Bot,
   MessageSquare,
   MessageCircle,
   Mail,
+  Info,
+  Voicemail,
+  ChevronRight,
 } from "lucide-react";
 
 export const Route = createFileRoute("/calls")({
@@ -35,13 +41,26 @@ export const Route = createFileRoute("/calls")({
   head: () => ({ meta: [{ title: "Calls — Harwick & Sterne" }] }),
 });
 
-const calls = [
-  { dir: "in", contact: "Sarah Lin", company: "Acme Corp", duration: "4m 12s", time: "10:42", outcome: "Booked demo", ai: true },
-  { dir: "out", contact: "Marcus Reed", company: "Northwind", duration: "8m 03s", time: "10:18", outcome: "Follow-up sent", ai: false },
-  { dir: "in", contact: "Jenna Park", company: "Helios", duration: "2m 41s", time: "09:55", outcome: "AI handled · Resolved", ai: true },
-  { dir: "in", contact: "Diego Alvarez", company: "Vertex", duration: "12m 09s", time: "09:21", outcome: "Escalated to Avery", ai: false },
-  { dir: "out", contact: "Priya Shah", company: "Lumen", duration: "5m 47s", time: "08:50", outcome: "Quote requested", ai: false },
+type CallItem = {
+  dir: "in" | "out";
+  contact: string;
+  company: string;
+  duration: string;
+  time: string;
+  outcome: string;
+  ai: boolean;
+  summary: string;
+  missed?: boolean;
+};
+
+const calls: CallItem[] = [
+  { dir: "in", contact: "Sarah Lin", company: "Acme Corp", duration: "4m 12s", time: "10:42", outcome: "Booked demo", ai: true, summary: "Sarah confirmed the pilot scope for Q4 and asked Syra to schedule a working session with her ops lead. Follow-up email queued." },
+  { dir: "out", contact: "Marcus Reed", company: "Northwind", duration: "8m 03s", time: "10:18", outcome: "Follow-up sent", ai: false, summary: "Reviewed the redlined MSA. Marcus wants a shorter termination clause and a call with legal before Thursday." },
+  { dir: "in", contact: "Jenna Park", company: "Helios", duration: "2m 41s", time: "09:55", outcome: "AI handled · Resolved", ai: true, summary: "Billing clarification on the September invoice. Syra pulled the line item and emailed the receipt." },
+  { dir: "in", contact: "Diego Alvarez", company: "Vertex", duration: "12m 09s", time: "09:21", outcome: "Escalated to Avery", ai: false, summary: "Security review escalation — Diego flagged SOC2 gap on data residency. Handed to Avery with notes." },
+  { dir: "out", contact: "Priya Shah", company: "Lumen", duration: "5m 47s", time: "08:50", outcome: "Quote requested", ai: false, summary: "Discussed enterprise tier pricing. Priya requested a formal quote with 3-year projections by Friday." },
 ];
+
 
 function CallsPage() {
   return (
