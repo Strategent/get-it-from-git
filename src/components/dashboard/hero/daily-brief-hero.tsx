@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DailyBriefStack } from "./daily-brief-stack";
-import heroScenery from "@/assets/mobile-hero-scenery.png.asset.json";
+import heroScenery from "@/assets/daily-brief-hero.jpg.asset.json";
 
 export interface BriefPriority {
   status: "urgent" | "this-week" | "closed";
