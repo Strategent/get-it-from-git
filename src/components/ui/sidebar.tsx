@@ -24,6 +24,11 @@ const SIDEBAR_WIDTH = "16rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
 const SIDEBAR_WIDTH_ICON = "3rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
+const SIDEBAR_WIDTH_STORAGE = "sidebar_width_px";
+const SIDEBAR_WIDTH_DEFAULT_PX = 256; // 16rem
+const SIDEBAR_WIDTH_MIN_PX = 208;
+const SIDEBAR_WIDTH_MAX_PX = 420;
+const SIDEBAR_WIDTH_SNAP_PX = 8; // Apple-style magnet near default
 
 type SidebarContextProps = {
   state: "expanded" | "collapsed";
@@ -33,6 +38,11 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void;
   isMobile: boolean;
   toggleSidebar: () => void;
+  width: number;
+  setWidth: (w: number) => void;
+  resetWidth: () => void;
+  isResizing: boolean;
+  setIsResizing: (v: boolean) => void;
 };
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null);
@@ -110,6 +120,43 @@ const SidebarProvider = React.forwardRef<
     // This makes it easier to style the sidebar with Tailwind classes.
     const state = open ? "expanded" : "collapsed";
 
+    // Resizable width state
+    const [width, setWidthState] = React.useState<number>(SIDEBAR_WIDTH_DEFAULT_PX);
+    const [isResizing, setIsResizing] = React.useState(false);
+
+    React.useEffect(() => {
+      try {
+        const raw = localStorage.getItem(SIDEBAR_WIDTH_STORAGE);
+        if (raw) {
+          const n = parseInt(raw, 10);
+          if (!Number.isNaN(n)) {
+            setWidthState(Math.min(SIDEBAR_WIDTH_MAX_PX, Math.max(SIDEBAR_WIDTH_MIN_PX, n)));
+          }
+        }
+      } catch {}
+    }, []);
+
+    const setWidth = React.useCallback((w: number) => {
+      let clamped = Math.min(SIDEBAR_WIDTH_MAX_PX, Math.max(SIDEBAR_WIDTH_MIN_PX, w));
+      // Apple-style magnet snap to default
+      if (Math.abs(clamped - SIDEBAR_WIDTH_DEFAULT_PX) <= SIDEBAR_WIDTH_SNAP_PX) {
+        clamped = SIDEBAR_WIDTH_DEFAULT_PX;
+      }
+      setWidthState(clamped);
+    }, []);
+
+    const resetWidth = React.useCallback(() => {
+      setWidthState(SIDEBAR_WIDTH_DEFAULT_PX);
+      try { localStorage.setItem(SIDEBAR_WIDTH_STORAGE, String(SIDEBAR_WIDTH_DEFAULT_PX)); } catch {}
+    }, []);
+
+    // Persist when resize ends
+    React.useEffect(() => {
+      if (!isResizing) {
+        try { localStorage.setItem(SIDEBAR_WIDTH_STORAGE, String(width)); } catch {}
+      }
+    }, [isResizing, width]);
+
     const contextValue = React.useMemo<SidebarContextProps>(
       () => ({
         state,
@@ -119,8 +166,13 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        width,
+        setWidth,
+        resetWidth,
+        isResizing,
+        setIsResizing,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, width, setWidth, resetWidth, isResizing],
     );
 
     return (
@@ -129,11 +181,12 @@ const SidebarProvider = React.forwardRef<
           <div
             style={
               {
-                "--sidebar-width": SIDEBAR_WIDTH,
+                "--sidebar-width": `${width}px`,
                 "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
                 ...style,
               } as React.CSSProperties
             }
+            data-sidebar-resizing={isResizing ? "true" : undefined}
             className={cn(
               "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
               className,
@@ -246,9 +299,12 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
+            className="relative flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
           >
             {children}
+            {collapsible !== "icon" && state === "expanded" ? (
+              <SidebarResizer side={side} />
+            ) : null}
           </div>
         </div>
       </div>
@@ -256,6 +312,62 @@ const Sidebar = React.forwardRef<
   },
 );
 Sidebar.displayName = "Sidebar";
+
+const SidebarResizer = ({ side = "left" }: { side?: "left" | "right" }) => {
+  const { width, setWidth, resetWidth, setIsResizing } = useSidebar();
+  const startXRef = React.useRef(0);
+  const startWRef = React.useRef(width);
+
+  const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    (e.currentTarget as HTMLDivElement).setPointerCapture(e.pointerId);
+    startXRef.current = e.clientX;
+    startWRef.current = width;
+    setIsResizing(true);
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+  };
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!(e.currentTarget as HTMLDivElement).hasPointerCapture(e.pointerId)) return;
+    const dx = e.clientX - startXRef.current;
+    const delta = side === "left" ? dx : -dx;
+    setWidth(startWRef.current + delta);
+  };
+
+  const endResize = (e: React.PointerEvent<HTMLDivElement>) => {
+    try { (e.currentTarget as HTMLDivElement).releasePointerCapture(e.pointerId); } catch {}
+    setIsResizing(false);
+    document.body.style.cursor = "";
+    document.body.style.userSelect = "";
+  };
+
+  return (
+    <div
+      role="separator"
+      aria-orientation="vertical"
+      aria-label="Resize sidebar"
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endResize}
+      onPointerCancel={endResize}
+      onDoubleClick={resetWidth}
+      className={cn(
+        "absolute inset-y-0 z-20 w-2 cursor-col-resize touch-none select-none",
+        "flex items-center justify-center",
+        "before:pointer-events-none before:absolute before:inset-y-0 before:w-px before:bg-sidebar-border/60 before:transition-colors",
+        "hover:before:bg-foreground/30 active:before:bg-foreground/40",
+        side === "left" ? "-right-1 before:right-0" : "-left-1 before:left-0",
+      )}
+    >
+      <div
+        aria-hidden
+        className="pointer-events-none h-8 w-[3px] rounded-full bg-foreground/0 transition-colors group-hover/sidebar-wrapper:bg-foreground/10"
+      />
+    </div>
+  );
+};
+SidebarResizer.displayName = "SidebarResizer";
 
 const SidebarTrigger = React.forwardRef<
   React.ElementRef<typeof Button>,
