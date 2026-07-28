@@ -190,21 +190,52 @@ function BentoGridStackImpl({
         }
         persist();
       };
-      // A card dropped in from the other region keeps its old geometry —
-      // clamp it to this grid's column count (and relax min/max width that
-      // came from a wider grid) so it lands cleanly instead of overflowing.
+      // A card dropped in from the other region keeps the geometry it had in
+      // its old grid — a 1-column rail card would land in the 12-column main
+      // grid as an unreadable sliver. Rebuild its shape from its native
+      // definition (scaled when the two regions differ) so content never
+      // gets clipped.
       grid.on("added", (_ev, nodes) => {
         (nodes ?? []).forEach((n) => {
           const el = n.el as HTMLElement | undefined;
           if (!el) return;
-          const w = Math.min(n.w ?? 1, column);
-          const minW = Math.min(n.minW ?? 1, column);
-          const maxW = Math.min(n.maxW ?? column, column);
+          const def = NATIVE_GEOMETRY.get(String(n.id ?? el.getAttribute("gs-id") ?? ""));
+          const clampW = (v: number) => Math.max(1, Math.min(Math.round(v), column));
+
+          let w: number;
+          let minW: number;
+          let maxW: number;
+          let h = n.h ?? def?.h ?? 3;
+          let minH = def?.minH ?? n.minH;
+          let maxH = def?.maxH ?? n.maxH;
+
+          if (def && def.column === column) {
+            // Coming home to its native region: restore the original shape.
+            w = clampW(def.w);
+            minW = clampW(def.minW ?? 1);
+            maxW = clampW(def.maxW ?? column);
+            h = def.h;
+          } else if (def) {
+            // Foreign region: scale proportionally, but never let a card take
+            // more than a third of a wide grid just because it was full-width
+            // in a narrow rail.
+            const scale = column / def.column;
+            const cap = def.column < column ? Math.max(1, Math.ceil(column / 3)) : column;
+            w = Math.min(clampW(def.w * scale), cap);
+            minW = Math.min(clampW((def.minW ?? 1) * scale), w);
+            maxW = Math.max(w, Math.min(clampW((def.maxW ?? def.column) * scale), column));
+            h = Math.max(def.h, minH ?? 1);
+          } else {
+            w = clampW(n.w ?? 1);
+            minW = clampW(n.minW ?? 1);
+            maxW = clampW(n.maxW ?? column);
+          }
+
           el.setAttribute("gs-min-w", String(minW));
           el.setAttribute("gs-max-w", String(maxW));
-          if (w !== n.w || minW !== n.minW || maxW !== n.maxW) {
-            grid.update(el, { w, minW, maxW });
-          }
+          if (minH != null) el.setAttribute("gs-min-h", String(minH));
+          if (maxH != null) el.setAttribute("gs-max-h", String(maxH));
+          grid.update(el, { w, h, minW, maxW, minH, maxH });
         });
       });
       grid.on("change added removed", compactAndPersist);
