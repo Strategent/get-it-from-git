@@ -301,10 +301,12 @@
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    /* Subtle lift in light mode so cards separate from the warm-gray bg. */
+    /* Linear-style lift in light mode so cards separate from the warm-gray bg. */
     box-shadow:
-      0 1px 0 0 color-mix(in oklab, black 3%, transparent),
-      0 1px 3px -1px color-mix(in oklab, black 6%, transparent);
+      inset 0 1px 0 0 color-mix(in oklab, white 85%, transparent),
+      0 1px 1px -0.5px color-mix(in oklab, black 5%, transparent),
+      0 3px 6px -2px color-mix(in oklab, black 6%, transparent),
+      0 12px 24px -12px color-mix(in oklab, black 11%, transparent);
     /* Clip content at the rounded border — sections that can outgrow a card
        must scroll themselves (see .scroll-slim). */
     overflow: hidden;
@@ -317,7 +319,14 @@
     background: var(--surface-raised);
     border: 1px solid var(--border);
     border-radius: calc(var(--radius) - 2px);
+    box-shadow:
+      inset 0 1px 0 0 color-mix(in oklab, white 70%, transparent),
+      0 1px 2px -1px color-mix(in oklab, black 7%, transparent);
   }
+  .dark .origin-raised {
+    box-shadow: none;
+  }
+
 
   /* Signature ALL-CAPS › section label. */
   .section-label {
