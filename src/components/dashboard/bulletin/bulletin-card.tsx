@@ -198,10 +198,10 @@ export function BulletinCard() {
                   {fmt(t.price, t.decimals ?? 2)}
                 </div>
                 <div
-                  className={`text-[10.5px] font-medium tabular-nums ${
-                    up ? "text-emerald-300/85" : "text-rose-300/85"
-                  }`}
+                  className="text-[10.5px] font-medium tabular-nums"
+                  style={{ color: up ? "var(--trend-up)" : "var(--trend-down)" }}
                 >
+
                   {up ? "+" : ""}
                   {fmt(pct, 2)}%
                 </div>
