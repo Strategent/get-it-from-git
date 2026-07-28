@@ -64,8 +64,9 @@ function Sparkline({ data, up }: { data: number[]; up: boolean }) {
     const area = `${path} L${w},${h} L0,${h} Z`;
     return { path, area, w, h };
   }, [data]);
-  const stroke = up ? "rgba(134,239,172,0.95)" : "rgba(252,165,165,0.95)";
-  const fillTop = up ? "rgba(134,239,172,0.18)" : "rgba(252,165,165,0.18)";
+  const stroke = up ? "var(--trend-up)" : "var(--trend-down)";
+  const fillTop = up ? "var(--trend-up-soft)" : "var(--trend-down-soft)";
+
   return (
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="h-full w-full">
       <defs>
