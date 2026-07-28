@@ -33,6 +33,12 @@
   --trend-up-soft: color-mix(in oklab, #5d6f52 16%, transparent);
   --trend-down: #8d5f52;
   --trend-down-soft: color-mix(in oklab, #8d5f52 16%, transparent);
+
+  /* ---- Raised sub-surface overlay (draft cards, stat tiles, queue rows) ----
+     Light mode reads as a faintly tinted panel over the near-white card;
+     dark mode keeps the white-overlay lift (see .dark below). */
+  --surface-raised: oklch(0.975 0.002 270);
+  --surface-raised-hover: oklch(0.958 0.003 270);
 }
 
 .dark {
@@ -48,11 +54,6 @@
 :root {
 
 
-  /* ---- Raised sub-surface overlay (draft cards, stat tiles, queue rows) ----
-     Light mode reads as a faintly tinted panel over the near-white card;
-     dark mode keeps the white-overlay lift. */
-  --surface-raised: oklch(0.975 0.002 270);
-  --surface-raised-hover: oklch(0.958 0.003 270);
 
 
   /* ---- Strategent brand spotlight gradient (recolored from Origin's green) ---- */
