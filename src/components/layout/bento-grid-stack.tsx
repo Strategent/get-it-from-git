@@ -128,12 +128,25 @@ function BentoGridStackImpl({
       const defaultLayout = grid.save(false);
 
       // Restore a previously saved layout (positions only; match by id).
+      // Ids that no longer live in this grid (e.g. a card the user dragged
+      // over to the other region) are filtered out so gridstack never
+      // materialises an empty ghost widget for them.
       try {
         const raw = localStorage.getItem(storageKey);
-        if (raw) grid.load(JSON.parse(raw), false);
+        if (raw) {
+          const own = new Set(items.map((it) => it.id));
+          const saved = JSON.parse(raw) as { id?: string }[];
+          grid.load(
+            (Array.isArray(saved) ? saved.filter((n) => own.has(String(n.id))) : saved) as Parameters<
+              typeof grid.load
+            >[0],
+            false,
+          );
+        }
       } catch {
         /* ignore malformed/absent layout */
       }
+
 
       // Apple-like default: always start cleanly stacked — no incongruent
       // gaps inherited from a previous layout or an out-of-date seed.
