@@ -241,10 +241,10 @@ function RootComponent() {
         <SidebarProvider>
           <div className="min-h-screen flex w-full bg-background text-foreground">
             <div
-              className="pointer-events-none fixed inset-0 opacity-0 dark:opacity-40"
+              className="pointer-events-none fixed inset-0 opacity-0 dark:opacity-100"
               style={{
                 background:
-                  "radial-gradient(60% 50% at 20% 0%, oklch(0.3 0.15 270 / 0.35), transparent), radial-gradient(40% 40% at 100% 30%, oklch(0.3 0.18 295 / 0.25), transparent)",
+                  "radial-gradient(60% 50% at 20% 0%, oklch(0.22 0 0 / 0.35), transparent), radial-gradient(40% 40% at 100% 30%, oklch(0.2 0 0 / 0.25), transparent)",
               }}
             />
             <AppSidebar />
