@@ -84,14 +84,14 @@ export function DailyBriefHero({
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="relative z-10 flex h-full flex-col justify-center pl-8 pr-7 py-8 lg:pl-14 lg:pr-12 lg:py-12">
-          <span
-            className="font-serif-display text-[12px] uppercase tracking-[0.18em] text-white/90 lg:text-[13px]"
-            style={{ textShadow: "0 1px 3px rgba(0,0,0,0.55), 0 2px 14px rgba(0,0,0,0.45)" }}
-          >
-            Syra <span className="mx-1.5">→</span> Daily Brief
-          </span>
+        <span
+          className="absolute left-8 top-4 z-20 flex items-center gap-[5px] text-[12.5px] font-normal leading-none tracking-[-0.005em] text-white/55 lg:left-14 lg:top-5"
+          style={{ fontFamily: "var(--font-serif)", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
+        >
+          Syra <span className="text-[12.5px] opacity-40">›</span> Daily Brief
+        </span>
 
+        <div className="relative z-10 flex h-full flex-col justify-center pl-8 pr-7 py-8 lg:pl-14 lg:pr-12 lg:py-12">
           <h1
             className="font-serif-display mt-10 font-normal leading-[1.05] text-white lg:mt-12"
             style={{
@@ -112,7 +112,7 @@ export function DailyBriefHero({
           <button
             type="button"
             onClick={handleClick}
-            className="mt-10 w-fit rounded-lg bg-white/60 px-6 py-2.5 text-[14px] font-medium text-black shadow-[0_1px_0_0_rgba(255,255,255,0.5)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/40 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/80 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.6)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)]"
+            className="mt-12 w-fit rounded-lg bg-white/30 px-6 py-2.5 text-[14px] font-medium text-black shadow-[0_1px_0_0_rgba(255,255,255,0.45)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/30 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/55 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.55)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)]"
           >
             Read daily brief
           </button>

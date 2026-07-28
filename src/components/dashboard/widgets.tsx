@@ -118,8 +118,11 @@ export function MobileDailyBriefCard() {
       />
 
       <div className="relative flex h-full flex-col">
-        <span className="font-serif-display text-[10.5px] uppercase tracking-[0.2em] text-white/65">
-          Syra <span className="mx-1">→</span> Daily brief
+        <span
+          className="flex items-center gap-[5px] text-[12.5px] font-normal leading-none tracking-[-0.005em] text-white/55"
+          style={{ fontFamily: "var(--font-serif)" }}
+        >
+          Syra <span className="text-[12.5px] opacity-40">›</span> Daily brief
         </span>
         <h3 className="font-serif-display mt-5 text-[26px] font-normal leading-[1.1] tracking-[-0.01em] text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
           Welcome back, John.
