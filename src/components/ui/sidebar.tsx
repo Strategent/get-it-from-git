@@ -120,6 +120,43 @@ const SidebarProvider = React.forwardRef<
     // This makes it easier to style the sidebar with Tailwind classes.
     const state = open ? "expanded" : "collapsed";
 
+    // Resizable width state
+    const [width, setWidthState] = React.useState<number>(SIDEBAR_WIDTH_DEFAULT_PX);
+    const [isResizing, setIsResizing] = React.useState(false);
+
+    React.useEffect(() => {
+      try {
+        const raw = localStorage.getItem(SIDEBAR_WIDTH_STORAGE);
+        if (raw) {
+          const n = parseInt(raw, 10);
+          if (!Number.isNaN(n)) {
+            setWidthState(Math.min(SIDEBAR_WIDTH_MAX_PX, Math.max(SIDEBAR_WIDTH_MIN_PX, n)));
+          }
+        }
+      } catch {}
+    }, []);
+
+    const setWidth = React.useCallback((w: number) => {
+      let clamped = Math.min(SIDEBAR_WIDTH_MAX_PX, Math.max(SIDEBAR_WIDTH_MIN_PX, w));
+      // Apple-style magnet snap to default
+      if (Math.abs(clamped - SIDEBAR_WIDTH_DEFAULT_PX) <= SIDEBAR_WIDTH_SNAP_PX) {
+        clamped = SIDEBAR_WIDTH_DEFAULT_PX;
+      }
+      setWidthState(clamped);
+    }, []);
+
+    const resetWidth = React.useCallback(() => {
+      setWidthState(SIDEBAR_WIDTH_DEFAULT_PX);
+      try { localStorage.setItem(SIDEBAR_WIDTH_STORAGE, String(SIDEBAR_WIDTH_DEFAULT_PX)); } catch {}
+    }, []);
+
+    // Persist when resize ends
+    React.useEffect(() => {
+      if (!isResizing) {
+        try { localStorage.setItem(SIDEBAR_WIDTH_STORAGE, String(width)); } catch {}
+      }
+    }, [isResizing, width]);
+
     const contextValue = React.useMemo<SidebarContextProps>(
       () => ({
         state,
@@ -129,8 +166,13 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        width,
+        setWidth,
+        resetWidth,
+        isResizing,
+        setIsResizing,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, width, setWidth, resetWidth, isResizing],
     );
 
     return (
@@ -139,11 +181,12 @@ const SidebarProvider = React.forwardRef<
           <div
             style={
               {
-                "--sidebar-width": SIDEBAR_WIDTH,
+                "--sidebar-width": `${width}px`,
                 "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
                 ...style,
               } as React.CSSProperties
             }
+            data-sidebar-resizing={isResizing ? "true" : undefined}
             className={cn(
               "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
               className,
