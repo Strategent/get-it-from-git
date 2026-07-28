@@ -103,7 +103,7 @@ export function Topbar() {
   }
 
   return (
-    <div className="sticky top-0 z-20 border-b border-border/60 bg-background/70 backdrop-blur-xl">
+    <div className="sticky top-0 z-20 border-b border-border/60 bg-background/70 backdrop-blur-xl dark:bg-background/95">
       <div className="px-6 py-3 flex items-center gap-3">
         <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
         <div className="flex-1" />
