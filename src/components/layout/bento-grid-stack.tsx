@@ -181,7 +181,25 @@ function BentoGridStackImpl({
         }
         persist();
       };
+      // A card dropped in from the other region keeps its old geometry —
+      // clamp it to this grid's column count (and relax min/max width that
+      // came from a wider grid) so it lands cleanly instead of overflowing.
+      grid.on("added", (_ev, nodes) => {
+        (nodes ?? []).forEach((n) => {
+          const el = n.el as HTMLElement | undefined;
+          if (!el) return;
+          const w = Math.min(n.w ?? 1, column);
+          const minW = Math.min(n.minW ?? 1, column);
+          const maxW = Math.min(n.maxW ?? column, column);
+          el.setAttribute("gs-min-w", String(minW));
+          el.setAttribute("gs-max-w", String(maxW));
+          if (w !== n.w || minW !== n.minW || maxW !== n.maxW) {
+            grid.update(el, { w, minW, maxW });
+          }
+        });
+      });
       grid.on("change added removed", compactAndPersist);
+
       grid.on("dragstart resizestart", () => {
         interacting = true;
       });
