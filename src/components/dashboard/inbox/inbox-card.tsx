@@ -454,7 +454,7 @@ export function InboxCard() {
 
           {/* Reply composer */}
           {isSent ? (
-            <div className="m-3 mt-2 flex shrink-0 items-center gap-2 rounded-lg border border-emerald-500/25 bg-emerald-500/[0.06] px-3 py-2.5">
+            <div className="m-3 mt-2 flex shrink-0 items-center gap-2 rounded-lg border border-[color:var(--trend-up-soft)] bg-[color:var(--trend-up-soft)] px-3 py-2.5">
               <span className="grid h-5 w-5 place-items-center rounded-full bg-[color:var(--trend-up-soft)] text-[color:var(--trend-up)]">
                 <Check className="h-3 w-3" strokeWidth={2.5} />
               </span>
