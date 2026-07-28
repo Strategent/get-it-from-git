@@ -84,7 +84,7 @@ export function DailyBriefHero({
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="relative z-10 flex h-full flex-col justify-center px-7 py-8 lg:px-12 lg:py-12">
+        <div className="relative z-10 flex h-full flex-col justify-center pl-8 pr-7 py-8 lg:pl-14 lg:pr-12 lg:py-12">
           <span
             className="font-serif-display text-[12px] uppercase tracking-[0.18em] text-white/90 lg:text-[13px]"
             style={{ textShadow: "0 1px 8px rgba(0,0,0,0.5)" }}
