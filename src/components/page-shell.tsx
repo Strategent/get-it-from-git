@@ -6,6 +6,7 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { useTheme } from "@/components/theme-provider";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useRouterState } from "@tanstack/react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,10 +16,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+
 export function Topbar() {
   const isMobile = useIsMobile();
   const { theme, toggleTheme } = useTheme();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isHome = pathname === "/";
   const [now, setNow] = useState<Date | null>(null);
+
   const [searchOpen, setSearchOpen] = useState(false);
   const [globalSearch, setGlobalSearch] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -35,7 +40,9 @@ export function Topbar() {
     : "—";
 
   if (isMobile) {
+    if (!isHome) return null;
     return (
+
       <header
         className="sticky top-0 z-20 relative flex items-center bg-background px-4 pb-4"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 22px)" }}
