@@ -110,6 +110,7 @@ function BentoGridStackImpl({
       const it = layout.get(el.dataset.gsId ?? "");
       if (!it) return;
       el.setAttribute("gs-id", it.id);
+      if (!NATIVE_GEOMETRY.has(it.id)) NATIVE_GEOMETRY.set(it.id, { ...it, column });
       const set = (k: string, v: number | undefined) => {
         if (v != null) el.setAttribute(k, String(v));
       };
