@@ -149,7 +149,7 @@ export function MobileRecapCard() {
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Markets
         </span>
-        <span className="grid h-7 w-7 place-items-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-[color:var(--trend-up-soft)] text-[color:var(--trend-up)]">
           <TrendingUp className="h-3.5 w-3.5" strokeWidth={2.25} />
         </span>
       </div>
@@ -406,7 +406,7 @@ export function RecapCard() {
             Daily market
           </div>
         </div>
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--trend-up-soft)] text-[color:var(--trend-up)]">
           <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
         </span>
       </div>
@@ -432,7 +432,7 @@ export function TeamCard() {
               {m.initials}
               <span
                 className={`ring-card absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ${
-                  m.status === "online" ? "bg-emerald-400" : "bg-amber-400"
+                  m.status === "online" ? "bg-[color:var(--trend-up)]" : "bg-[color:var(--trend-down)]"
                 }`}
               />
             </div>

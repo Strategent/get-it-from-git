@@ -64,8 +64,9 @@ function Sparkline({ data, up }: { data: number[]; up: boolean }) {
     const area = `${path} L${w},${h} L0,${h} Z`;
     return { path, area, w, h };
   }, [data]);
-  const stroke = up ? "rgba(134,239,172,0.95)" : "rgba(252,165,165,0.95)";
-  const fillTop = up ? "rgba(134,239,172,0.18)" : "rgba(252,165,165,0.18)";
+  const stroke = up ? "var(--trend-up)" : "var(--trend-down)";
+  const fillTop = up ? "var(--trend-up-soft)" : "var(--trend-down-soft)";
+
   return (
     <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" className="h-full w-full">
       <defs>
@@ -150,10 +151,10 @@ export function BulletinCard() {
             </div>
           </div>
           <div
-            className={`text-right text-[11px] font-medium leading-tight tabular-nums ${
-              spxUp ? "text-emerald-300/90" : "text-rose-300/90"
-            }`}
+            className="text-right text-[11px] font-medium leading-tight tabular-nums"
+            style={{ color: spxUp ? "var(--trend-up)" : "var(--trend-down)" }}
           >
+
             <div>
               {spxUp ? "+" : ""}
               {fmt(spxChange)}
@@ -197,10 +198,10 @@ export function BulletinCard() {
                   {fmt(t.price, t.decimals ?? 2)}
                 </div>
                 <div
-                  className={`text-[10.5px] font-medium tabular-nums ${
-                    up ? "text-emerald-300/85" : "text-rose-300/85"
-                  }`}
+                  className="text-[10.5px] font-medium tabular-nums"
+                  style={{ color: up ? "var(--trend-up)" : "var(--trend-down)" }}
                 >
+
                   {up ? "+" : ""}
                   {fmt(pct, 2)}%
                 </div>
