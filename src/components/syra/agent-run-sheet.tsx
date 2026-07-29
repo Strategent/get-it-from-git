@@ -243,21 +243,40 @@ export function SyraAgentRunSheet({
             )}
 
             {done && (
-              <div className="mt-4 space-y-2 animate-in fade-in duration-300">
-                <div className="text-[14px]">
-                  <span className="font-medium text-foreground">Drafted</span>{" "}
-                  <span className="text-muted-foreground">{done} — held for your review</span>
-                </div>
-                <div className="text-[14px]">
-                  <span className="font-medium text-foreground">Attached</span>{" "}
-                  <span className="text-muted-foreground">Client record + prior terms</span>
-                </div>
-                <div className="text-[14px]">
-                  <span className="font-medium text-foreground">Queued</span>{" "}
-                  <span className="text-muted-foreground">Signature routing via DocuSign</span>
-                </div>
+              <div className="mt-4 space-y-2">
+                {resultSteps.slice(0, resultRevealed).map((s) => (
+                  <div
+                    key={s.object}
+                    className="animate-in fade-in slide-in-from-bottom-1 text-[14px] duration-300"
+                  >
+                    <span className="font-medium text-foreground">{s.verb}</span>{" "}
+                    <span className="text-muted-foreground">{s.object}</span>
+                  </div>
+                ))}
+                {resultRevealed < resultSteps.length && (
+                  <div className="text-[14px] text-muted-foreground/70">Working…</div>
+                )}
+
+                {resultRevealed >= resultSteps.length && script.reviewer && (
+                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3 animate-in fade-in duration-300">
+                    <img
+                      src={avatarUrl(script.reviewer, 96)}
+                      alt={script.reviewer}
+                      className="h-9 w-9 rounded-full object-cover"
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate text-[13.5px] font-medium text-foreground">
+                        Sent to {script.reviewer} for review
+                      </div>
+                      <div className="truncate text-[12px] text-muted-foreground">
+                        {senderEmailAddress(script.reviewer)} · awaiting sign-off
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
+
           </div>
 
           {/* follow-up */}
