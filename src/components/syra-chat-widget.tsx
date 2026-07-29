@@ -98,7 +98,7 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
           </div>
 
           <div className="px-3 pb-2 flex gap-1.5 flex-wrap">
-            {["Summarize inbox", "Today's brief", "Draft Hartley reply"].map((s) => (
+            {["Draft Hartley Trust agreement", "Summarize inbox", "Today's brief"].map((s) => (
               <button
                 key={s}
                 onClick={() => setInput(s)}
