@@ -104,17 +104,20 @@ export function SyraAgentRunSheet({
   onClose: () => void;
 }) {
   const script = useMemo(() => pickScript(prompt), [prompt]);
+  const client = useMemo(() => detectClient(prompt), [prompt]);
   const [runKey, setRunKey] = useState(0);
   const [revealed, setRevealed] = useState(0);
   const [showQuestion, setShowQuestion] = useState(false);
   const [selected, setSelected] = useState(script.defaultOption);
   const [done, setDone] = useState<string | null>(null);
+  const [resultRevealed, setResultRevealed] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     setRevealed(0);
     setShowQuestion(false);
     setDone(null);
+    setResultRevealed(0);
     setSelected(script.defaultOption);
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -127,7 +130,18 @@ export function SyraAgentRunSheet({
     return () => timers.current.forEach(clearTimeout);
   }, [script, runKey]);
 
-  const confirm = () => setDone(script.options[selected]);
+  const resultSteps = done ? script.result(done, client) : [];
+
+  const confirm = () => {
+    const choice = script.options[selected];
+    setDone(choice);
+    setResultRevealed(0);
+    const steps = script.result(choice, client);
+    steps.forEach((_, i) => {
+      timers.current.push(setTimeout(() => setResultRevealed(i + 1), 400 + i * 620));
+    });
+  };
+
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center px-4">
