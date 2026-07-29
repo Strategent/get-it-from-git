@@ -12,7 +12,6 @@ import {
 } from "lucide-react";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { useTheme } from "@/components/theme-provider";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 
 export const Route = createFileRoute("/syra")({
@@ -41,7 +40,6 @@ function SyraPage() {
   const [open, setOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
-  const isMobile = useIsMobile();
 
   const runAgent = (text: string) => {
     const t = text.trim();
@@ -191,9 +189,10 @@ function SyraPage() {
         </div>
       </div>
 
-      {agentPrompt && isMobile && (
+      {agentPrompt && (
         <SyraAgentRunSheet prompt={agentPrompt} isDark={isDark} onClose={() => setAgentPrompt(null)} />
       )}
+
 
       {voiceOpen && <LiveVoiceOverlay isDark={isDark} onClose={() => setVoiceOpen(false)} />}
     </div>

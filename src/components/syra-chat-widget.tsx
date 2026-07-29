@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Send, X, Bot } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
+import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
+import { useTheme } from "@/components/theme-provider";
 
 type Msg = { role: "syra" | "user"; text: string };
 
@@ -11,14 +13,26 @@ const seed: Msg[] = [
   },
 ];
 
+/** Requests that should run the multi-step agent execution sheet. */
+const AGENT_RE = /(agreement|contract|engagement letter|\bips\b|\bnda\b)/i;
+
 export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<Msg[]>(seed);
+  const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
 
   const send = () => {
     const t = input.trim();
     if (!t) return;
+    if (AGENT_RE.test(t)) {
+      setAgentPrompt(t);
+      setInput("");
+      return;
+    }
     const lower = t.toLowerCase();
     const reply = lower.includes("summarize")
       ? `Inbox summary: ${inboxSummary ?? "3 priority drafts, 2 unread notes, and 1 renewal follow-up waiting."}`
@@ -30,6 +44,7 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
     setMsgs((m) => [...m, { role: "user", text: t }, { role: "syra", text: reply }]);
     setInput("");
   };
+
 
   return (
     <div className="fixed bottom-5 right-5 z-40 flex flex-col items-end gap-3">
@@ -83,7 +98,7 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
           </div>
 
           <div className="px-3 pb-2 flex gap-1.5 flex-wrap">
-            {["Summarize inbox", "Today's brief", "Draft Hartley reply"].map((s) => (
+            {["Draft Hartley Trust agreement", "Summarize inbox", "Today's brief"].map((s) => (
               <button
                 key={s}
                 onClick={() => setInput(s)}
@@ -116,6 +131,18 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
           </div>
         </div>
       )}
+
+      {agentPrompt && (
+        <div className="fixed inset-0 z-50">
+          <SyraAgentRunSheet
+            prompt={agentPrompt}
+            isDark={isDark}
+            onClose={() => setAgentPrompt(null)}
+          />
+        </div>
+      )}
+
+
 
       <button
         onClick={() => setOpen((o) => !o)}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUp, Maximize2, RotateCcw, X } from "lucide-react";
+import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
 type Script = {
@@ -8,19 +9,47 @@ type Script = {
   question: string;
   options: string[];
   defaultOption: number;
+  /** Steps streamed after the user confirms, e.g. drafting + routing for review. */
+  result: (choice: string, client: string) => Step[];
+  /** Teammate who receives the review email (must map to a PNG avatar asset). */
+  reviewer?: string;
 };
+
+const KNOWN_CLIENTS = [
+  "Hartley Family Trust",
+  "Sterling Holdings",
+  "Caldwell Estate",
+  "Marlow Capital",
+  "Beaumont Group",
+  "Castellanos Holdings",
+];
+
+function detectClient(prompt: string): string {
+  const p = prompt.toLowerCase();
+  const hit = KNOWN_CLIENTS.find((c) => p.includes(c.toLowerCase().split(" ")[0]));
+  return hit ?? "Hartley Family Trust";
+}
 
 const SCRIPTS: Script[] = [
   {
     title: "Agreement agent",
+    reviewer: "Elena Smith",
     steps: [
       { verb: "Read", object: "Engagement letter template.docx" },
-      { verb: "Read", object: "Vault / Hartley Family Trust" },
+      { verb: "Read", object: "Vault / client record" },
       { verb: "Reviewed", object: "Prior countersigned agreements" },
+      { verb: "Checked", object: "Compliance clause library — 2026 revisions" },
     ],
     question: "Which agreement should Syra draft?",
     options: ["Advisory engagement letter", "IPS amendment", "NDA for prospect"],
     defaultOption: 0,
+    result: (choice, client) => [
+      { verb: "Drafted", object: `${choice} — ${client}` },
+      { verb: "Inserted", object: "Fee schedule + custodian language" },
+      { verb: "Attached", object: "Client record and prior terms" },
+      { verb: "Emailed", object: `Elena Smith — ${senderEmailAddress("Elena Smith")} for review` },
+      { verb: "Queued", object: "Signature routing via DocuSign after sign-off" },
+    ],
   },
   {
     title: "Inbox agent",
@@ -32,6 +61,11 @@ const SCRIPTS: Script[] = [
     question: "How should Syra handle replies?",
     options: ["Draft and hold for review", "Send routine replies", "Summarize only"],
     defaultOption: 0,
+    result: (choice) => [
+      { verb: "Applied", object: choice.toLowerCase() },
+      { verb: "Drafted", object: "6 replies — held for your review" },
+      { verb: "Archived", object: "11 newsletters and receipts" },
+    ],
   },
   {
     title: "Scheduling agent",
@@ -43,15 +77,22 @@ const SCRIPTS: Script[] = [
     question: "Which windows should Syra offer?",
     options: ["Mornings only", "Afternoons only", "Any open slot"],
     defaultOption: 2,
+    result: (choice) => [
+      { verb: "Offered", object: `${choice} across the next 5 business days` },
+      { verb: "Sent", object: "Booking links to 3 clients" },
+      { verb: "Held", object: "Buffer blocks around each slot" },
+    ],
   },
 ];
 
 function pickScript(prompt: string): Script {
   const p = prompt.toLowerCase();
+  if (/(agreement|contract|engagement letter|ips|nda)/.test(p)) return SCRIPTS[0];
   if (/(inbox|email|triage|reply)/.test(p)) return SCRIPTS[1];
   if (/(schedule|meeting|calendar|book)/.test(p)) return SCRIPTS[2];
   return SCRIPTS[0];
 }
+
 
 export function SyraAgentRunSheet({
   prompt,
@@ -63,17 +104,20 @@ export function SyraAgentRunSheet({
   onClose: () => void;
 }) {
   const script = useMemo(() => pickScript(prompt), [prompt]);
+  const client = useMemo(() => detectClient(prompt), [prompt]);
   const [runKey, setRunKey] = useState(0);
   const [revealed, setRevealed] = useState(0);
   const [showQuestion, setShowQuestion] = useState(false);
   const [selected, setSelected] = useState(script.defaultOption);
   const [done, setDone] = useState<string | null>(null);
+  const [resultRevealed, setResultRevealed] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
   useEffect(() => {
     setRevealed(0);
     setShowQuestion(false);
     setDone(null);
+    setResultRevealed(0);
     setSelected(script.defaultOption);
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -86,7 +130,18 @@ export function SyraAgentRunSheet({
     return () => timers.current.forEach(clearTimeout);
   }, [script, runKey]);
 
-  const confirm = () => setDone(script.options[selected]);
+  const resultSteps = done ? script.result(done, client) : [];
+
+  const confirm = () => {
+    const choice = script.options[selected];
+    setDone(choice);
+    setResultRevealed(0);
+    const steps = script.result(choice, client);
+    steps.forEach((_, i) => {
+      timers.current.push(setTimeout(() => setResultRevealed(i + 1), 400 + i * 620));
+    });
+  };
+
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center px-4">
@@ -188,21 +243,40 @@ export function SyraAgentRunSheet({
             )}
 
             {done && (
-              <div className="mt-4 space-y-2 animate-in fade-in duration-300">
-                <div className="text-[14px]">
-                  <span className="font-medium text-foreground">Drafted</span>{" "}
-                  <span className="text-muted-foreground">{done} — held for your review</span>
-                </div>
-                <div className="text-[14px]">
-                  <span className="font-medium text-foreground">Attached</span>{" "}
-                  <span className="text-muted-foreground">Client record + prior terms</span>
-                </div>
-                <div className="text-[14px]">
-                  <span className="font-medium text-foreground">Queued</span>{" "}
-                  <span className="text-muted-foreground">Signature routing via DocuSign</span>
-                </div>
+              <div className="mt-4 space-y-2">
+                {resultSteps.slice(0, resultRevealed).map((s) => (
+                  <div
+                    key={s.object}
+                    className="animate-in fade-in slide-in-from-bottom-1 text-[14px] duration-300"
+                  >
+                    <span className="font-medium text-foreground">{s.verb}</span>{" "}
+                    <span className="text-muted-foreground">{s.object}</span>
+                  </div>
+                ))}
+                {resultRevealed < resultSteps.length && (
+                  <div className="text-[14px] text-muted-foreground/70">Working…</div>
+                )}
+
+                {resultRevealed >= resultSteps.length && script.reviewer && (
+                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3 animate-in fade-in duration-300">
+                    <img
+                      src={avatarUrl(script.reviewer, 96)}
+                      alt={script.reviewer}
+                      className="h-9 w-9 rounded-full object-cover"
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate text-[13.5px] font-medium text-foreground">
+                        Sent to {script.reviewer} for review
+                      </div>
+                      <div className="truncate text-[12px] text-muted-foreground">
+                        {senderEmailAddress(script.reviewer)} · awaiting sign-off
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
+
           </div>
 
           {/* follow-up */}
