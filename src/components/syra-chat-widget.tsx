@@ -132,6 +132,18 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
         </div>
       )}
 
+      {agentPrompt && (
+        <div className="fixed inset-0 z-50">
+          <SyraAgentRunSheet
+            prompt={agentPrompt}
+            isDark={isDark}
+            onClose={() => setAgentPrompt(null)}
+          />
+        </div>
+      )}
+
+
+
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Open Syra"
