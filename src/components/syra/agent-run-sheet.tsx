@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUp, Maximize2, RotateCcw, X } from "lucide-react";
+import { ArrowUp, Maximize2, X } from "lucide-react";
 import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
@@ -105,7 +105,7 @@ export function SyraAgentRunSheet({
 }) {
   const script = useMemo(() => pickScript(prompt), [prompt]);
   const client = useMemo(() => detectClient(prompt), [prompt]);
-  const [runKey, setRunKey] = useState(0);
+  const runKey = 0;
   const [revealed, setRevealed] = useState(0);
   const [showQuestion, setShowQuestion] = useState(false);
   const [selected, setSelected] = useState(script.defaultOption);
