@@ -55,9 +55,11 @@ function pickScript(prompt: string): Script {
 
 export function SyraAgentRunSheet({
   prompt,
+  isDark,
   onClose,
 }: {
   prompt: string;
+  isDark: boolean;
   onClose: () => void;
 }) {
   const script = useMemo(() => pickScript(prompt), [prompt]);
@@ -93,7 +95,9 @@ export function SyraAgentRunSheet({
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 70% at 50% 100%, rgba(158,142,196,0.38) 0%, rgba(120,108,160,0.16) 38%, rgba(0,0,0,0) 70%), var(--agent-scrim)",
+            isDark
+              ? "radial-gradient(120% 70% at 50% 100%, rgba(158,142,196,0.34) 0%, rgba(110,98,150,0.14) 40%, rgba(0,0,0,0) 72%), rgba(8,8,11,0.82)"
+              : "radial-gradient(120% 70% at 50% 100%, rgba(176,164,206,0.42) 0%, rgba(200,194,220,0.2) 40%, rgba(255,255,255,0) 72%), rgba(246,245,249,0.86)",
           backdropFilter: "blur(18px)",
           WebkitBackdropFilter: "blur(18px)",
         }}
