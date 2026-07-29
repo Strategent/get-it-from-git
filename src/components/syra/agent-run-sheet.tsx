@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUp, Maximize2, RotateCcw, X } from "lucide-react";
+import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
 type Script = {
@@ -8,19 +9,47 @@ type Script = {
   question: string;
   options: string[];
   defaultOption: number;
+  /** Steps streamed after the user confirms, e.g. drafting + routing for review. */
+  result: (choice: string, client: string) => Step[];
+  /** Teammate who receives the review email (must map to a PNG avatar asset). */
+  reviewer?: string;
 };
+
+const KNOWN_CLIENTS = [
+  "Hartley Family Trust",
+  "Sterling Holdings",
+  "Caldwell Estate",
+  "Marlow Capital",
+  "Beaumont Group",
+  "Castellanos Holdings",
+];
+
+function detectClient(prompt: string): string {
+  const p = prompt.toLowerCase();
+  const hit = KNOWN_CLIENTS.find((c) => p.includes(c.toLowerCase().split(" ")[0]));
+  return hit ?? "Hartley Family Trust";
+}
 
 const SCRIPTS: Script[] = [
   {
     title: "Agreement agent",
+    reviewer: "Elena Smith",
     steps: [
       { verb: "Read", object: "Engagement letter template.docx" },
-      { verb: "Read", object: "Vault / Hartley Family Trust" },
+      { verb: "Read", object: "Vault / client record" },
       { verb: "Reviewed", object: "Prior countersigned agreements" },
+      { verb: "Checked", object: "Compliance clause library — 2026 revisions" },
     ],
     question: "Which agreement should Syra draft?",
     options: ["Advisory engagement letter", "IPS amendment", "NDA for prospect"],
     defaultOption: 0,
+    result: (choice, client) => [
+      { verb: "Drafted", object: `${choice} — ${client}` },
+      { verb: "Inserted", object: "Fee schedule + custodian language" },
+      { verb: "Attached", object: "Client record and prior terms" },
+      { verb: "Emailed", object: `Elena Smith — ${senderEmailAddress("Elena Smith")} for review` },
+      { verb: "Queued", object: "Signature routing via DocuSign after sign-off" },
+    ],
   },
   {
     title: "Inbox agent",
@@ -32,6 +61,11 @@ const SCRIPTS: Script[] = [
     question: "How should Syra handle replies?",
     options: ["Draft and hold for review", "Send routine replies", "Summarize only"],
     defaultOption: 0,
+    result: (choice) => [
+      { verb: "Applied", object: choice.toLowerCase() },
+      { verb: "Drafted", object: "6 replies — held for your review" },
+      { verb: "Archived", object: "11 newsletters and receipts" },
+    ],
   },
   {
     title: "Scheduling agent",
@@ -43,15 +77,22 @@ const SCRIPTS: Script[] = [
     question: "Which windows should Syra offer?",
     options: ["Mornings only", "Afternoons only", "Any open slot"],
     defaultOption: 2,
+    result: (choice) => [
+      { verb: "Offered", object: `${choice} across the next 5 business days` },
+      { verb: "Sent", object: "Booking links to 3 clients" },
+      { verb: "Held", object: "Buffer blocks around each slot" },
+    ],
   },
 ];
 
 function pickScript(prompt: string): Script {
   const p = prompt.toLowerCase();
+  if (/(agreement|contract|engagement letter|ips|nda)/.test(p)) return SCRIPTS[0];
   if (/(inbox|email|triage|reply)/.test(p)) return SCRIPTS[1];
   if (/(schedule|meeting|calendar|book)/.test(p)) return SCRIPTS[2];
   return SCRIPTS[0];
 }
+
 
 export function SyraAgentRunSheet({
   prompt,
