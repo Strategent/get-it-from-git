@@ -191,9 +191,10 @@ function SyraPage() {
         </div>
       </div>
 
-      {agentPrompt && isMobile && (
+      {agentPrompt && (
         <SyraAgentRunSheet prompt={agentPrompt} isDark={isDark} onClose={() => setAgentPrompt(null)} />
       )}
+
 
       {voiceOpen && <LiveVoiceOverlay isDark={isDark} onClose={() => setVoiceOpen(false)} />}
     </div>
