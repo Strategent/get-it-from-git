@@ -274,6 +274,13 @@ export function SyraAgentRunSheet({
                     </div>
                   </div>
                 )}
+
+                {resultRevealed >= resultSteps.length && (
+                  <div className="mt-3 flex items-center gap-2 text-[13px] text-muted-foreground animate-in fade-in duration-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    Task complete · {resultSteps.length} actions executed
+                  </div>
+                )}
               </div>
             )}
 
