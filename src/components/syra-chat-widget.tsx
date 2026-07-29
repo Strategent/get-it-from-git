@@ -22,11 +22,8 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
   const [msgs, setMsgs] = useState<Msg[]>(seed);
   const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
   const { theme } = useTheme();
-  const isDark =
-    theme === "dark" ||
-    (theme === "system" &&
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const isDark = theme === "dark";
+
 
   const send = () => {
     const t = input.trim();
