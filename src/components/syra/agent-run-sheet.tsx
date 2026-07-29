@@ -144,7 +144,7 @@ export function SyraAgentRunSheet({
 
 
   return (
-    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center px-4">
+    <div className="absolute inset-0 z-50 flex flex-col items-center justify-center px-6 sm:px-8">
       {/* muted lavender ambient glow */}
       <div
         className="absolute inset-0"
@@ -159,7 +159,7 @@ export function SyraAgentRunSheet({
         onClick={onClose}
       />
 
-      <div className="relative w-full max-w-md">
+      <div className="relative w-full max-w-[22rem] sm:max-w-md">
         <div
           className="mb-2 pl-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground"
           style={{ fontFamily: "var(--font-serif)" }}
@@ -296,14 +296,6 @@ export function SyraAgentRunSheet({
           </div>
         </div>
 
-        <div className="mt-3 flex justify-end">
-          <button
-            onClick={() => setRunKey((k) => k + 1)}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/70 px-4 py-2 text-[13px] text-muted-foreground backdrop-blur-md hover:text-foreground"
-          >
-            <RotateCcw className="h-3.5 w-3.5" /> Replay
-          </button>
-        </div>
       </div>
     </div>
   );
