@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { useTheme } from "@/components/theme-provider";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 
 export const Route = createFileRoute("/syra")({
   component: SyraPage,
@@ -38,6 +40,15 @@ function SyraPage() {
   const [modelId, setModelId] = useState(models[0].id);
   const [open, setOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
+  const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
+  const isMobile = useIsMobile();
+
+  const runAgent = (text: string) => {
+    const t = text.trim();
+    if (!t) return;
+    setAgentPrompt(t);
+    setInput("");
+  };
   const activeModel = models.find((m) => m.id === modelId) ?? models[0];
 
   const bgStart = isDark ? "rgb(10, 10, 14)" : "rgb(250, 249, 252)";
@@ -102,6 +113,9 @@ function SyraPage() {
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") runAgent(input || "Draft up an agreement");
+              }}
               placeholder="Ask Syra anything…"
               className="w-full bg-transparent px-5 pt-5 pb-16 text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
@@ -154,6 +168,7 @@ function SyraPage() {
               </button>
               <button
                 aria-label="Send"
+                onClick={() => runAgent(input || "Draft up an agreement")}
                 className="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-[12.5px] font-medium hover:bg-primary/90 transition-colors"
               >
                 Send
@@ -166,6 +181,7 @@ function SyraPage() {
             {quickActions.map((a) => (
               <button
                 key={a.label}
+                onClick={() => runAgent(a.label === "Draft Email" ? "Draft up an agreement" : a.label)}
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3.5 py-1.5 text-[12.5px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
               >
                 <a.icon className="h-3.5 w-3.5" /> {a.label}
@@ -174,6 +190,10 @@ function SyraPage() {
           </div>
         </div>
       </div>
+
+      {agentPrompt && isMobile && (
+        <SyraAgentRunSheet prompt={agentPrompt} isDark={isDark} onClose={() => setAgentPrompt(null)} />
+      )}
 
       {voiceOpen && <LiveVoiceOverlay isDark={isDark} onClose={() => setVoiceOpen(false)} />}
     </div>
