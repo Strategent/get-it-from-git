@@ -107,11 +107,11 @@
 }
 
 .dark {
-  /* Linear-inspired elevation: no pure blacks. Base workspace sits above a
-     slightly recessed sidebar; each surface adds a subtle white overlay
-     (~4–10%) for calm depth. Borders stay hairline (white 7–9%). */
+  /* Discord-style contrast: main workspace is the lightest surface,
+     sidebar is recessed one step darker. Cards/popovers lift above the
+     workspace with subtle white-overlay elevation. Borders stay hairline. */
   --radius: 0.875rem;
-  --background: oklch(0.178 0 0);
+  --background: oklch(0.185 0 0);
   --foreground: oklch(0.965 0 0);
   --card: oklch(0.215 0 0);
   --card-foreground: oklch(0.965 0 0);
@@ -137,14 +137,14 @@
   --chart-5: oklch(0.75 0 0);
   --primary-glow: oklch(0.7 0 0);
   --gradient-primary: oklch(0.66 0 0);
-  --gradient-subtle: linear-gradient(180deg, oklch(0.195 0 0), oklch(0.16 0 0));
+  --gradient-subtle: linear-gradient(180deg, oklch(0.195 0 0), oklch(0.165 0 0));
   --shadow-glow: 0 10px 40px -10px color-mix(in oklab, oklch(0.6 0 0) 40%, transparent);
   --shadow-accent: 0 10px 40px -10px color-mix(in oklab, oklch(0.6 0 0) 35%, transparent);
-  --sidebar: oklch(0.178 0 0);
+  --sidebar: oklch(0.165 0 0);
   --sidebar-foreground: oklch(0.955 0 0);
   --sidebar-primary: oklch(0.62 0 0);
   --sidebar-primary-foreground: oklch(0.145 0 0);
-  --sidebar-accent: oklch(0.215 0 0);
+  --sidebar-accent: oklch(0.205 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.62 0 0);
