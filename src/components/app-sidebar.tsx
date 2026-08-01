@@ -124,7 +124,7 @@ export function AppSidebar() {
   return (
     <Sidebar
       collapsible="offcanvas"
-      className="border-r border-border/60 bg-sidebar/80 backdrop-blur-xl"
+      className="border-r border-border/60 bg-sidebar"
     >
       <SidebarHeader className="p-4">
         {!collapsed && (
