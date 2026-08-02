@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Send, X, Bot } from "lucide-react";
+import { Send, X } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 import { useTheme } from "@/components/theme-provider";
