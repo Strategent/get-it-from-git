@@ -16,6 +16,7 @@ import { Topbar } from "@/components/page-shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { MobileSwipeNav } from "@/components/mobile-swipe-nav";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -257,6 +258,7 @@ function RootComponent() {
             </div>
           </div>
           <MobileBottomNav />
+          <MobileSwipeNav />
           <Toaster />
         </SidebarProvider>
       </ThemeProvider>
