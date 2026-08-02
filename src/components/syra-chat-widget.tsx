@@ -3,6 +3,7 @@ import { Send, X, Bot } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 import { useTheme } from "@/components/theme-provider";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Msg = { role: "syra" | "user"; text: string };
 
