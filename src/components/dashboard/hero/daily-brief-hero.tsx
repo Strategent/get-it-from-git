@@ -78,7 +78,7 @@ export function DailyBriefHero({
         style={{
           borderRadius: "var(--radius)",
           backgroundColor: "#1a1a1d",
-          backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.48) 0%, rgba(0,0,0,0.30) 35%, rgba(0,0,0,0.14) 65%, rgba(0,0,0,0.03) 100%), url("${heroScenery.url}")`,
+          backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.32) 35%, rgba(0,0,0,0.14) 65%, rgba(0,0,0,0.03) 100%), url("${heroScenery.url}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -87,9 +87,10 @@ export function DailyBriefHero({
 
         <div className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-8 lg:pl-20 lg:pr-16 lg:py-12">
           <h1
-            className="font-serif-display mt-8 font-normal leading-[1.04] tracking-[-0.01em] text-white lg:mt-10"
+            className="font-serif-display mt-2 font-normal tracking-[-0.01em] text-white lg:mt-3"
             style={{
-              fontSize: "clamp(32px, 3.4vw, 48px)",
+              fontSize: "clamp(26px, 2.4vw, 34px)",
+              lineHeight: 1.1,
               textShadow: "0 1px 4px rgba(0,0,0,0.25)",
             }}
           >
@@ -97,7 +98,7 @@ export function DailyBriefHero({
           </h1>
 
           <p
-            className="mt-4 max-w-[30rem] text-[14px] leading-[1.55] text-white/[0.92] lg:mt-5 lg:text-[15px]"
+            className="mt-4 max-w-[34rem] text-[14px] leading-[1.5] text-white/[0.85] lg:mt-5 lg:text-[15px]"
             style={{ textShadow: "0 1px 4px rgba(0,0,0,0.35)" }}
           >
             {summary}
@@ -106,11 +107,10 @@ export function DailyBriefHero({
           <button
             type="button"
             onClick={handleClick}
-            className="mt-10 w-fit rounded-lg bg-white/35 px-6 py-2.5 text-[13.5px] font-medium text-neutral-900 shadow-[0_1px_0_0_rgba(255,255,255,0.45)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/35 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/60 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.55)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)] lg:mt-12"
+            className="mt-8 w-fit rounded-lg bg-white/40 px-6 py-2.5 text-[13.5px] font-medium text-neutral-900 shadow-[0_1px_0_0_rgba(255,255,255,0.45)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/40 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/65 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.55)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)] lg:mt-10"
           >
             Read daily brief
           </button>
-
         </div>
       </section>
 
