@@ -11,7 +11,6 @@ import { BulletinCard } from "@/components/dashboard/bulletin/bulletin-card";
 import { GradientFeatureCard } from "@/components/ui/gradient-feature-card";
 import { PillButton } from "@/components/ui/pill-button";
 import {
-  RecapCard,
   WorkloadCard,
   MobileWorkloadCard,
   PlannerCard,
