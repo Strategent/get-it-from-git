@@ -521,22 +521,22 @@
 [data-density="compact"] > section > div {
   box-sizing: border-box;
   height: 100%;
-  padding: clamp(22px, 7cqh, 34px) clamp(32px, 5cqw, 60px);
+  padding: clamp(22px, 7cqh, 34px) clamp(36px, 5.5cqw, 68px);
 }
 [data-density="compact"] > section > span:first-child {
   font-size: clamp(10px, 3.4cqh, 12px);
 }
 [data-density="compact"] > section > div > h1 {
-  margin-top: 0;
-  font-size: clamp(24px, min(8.5cqh, 2.4cqw), 32px) !important;
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  margin-top: clamp(2px, 0.8cqh, 6px);
+  font-size: clamp(26px, min(9cqh, 2.5cqw), 34px) !important;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 [data-density="compact"] > section > div > p {
   margin-top: clamp(10px, 2.4cqh, 14px);
-  max-width: min(32rem, 44cqw);
+  max-width: min(34rem, 48cqw);
   font-size: clamp(13px, min(3.2cqh, 0.95cqw), 15px);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 [data-density="compact"] > section > div > button {
   margin-top: clamp(14px, 3.6cqh, 22px);
