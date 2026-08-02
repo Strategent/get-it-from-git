@@ -41,8 +41,8 @@ export function Panel({
     padding === "none"
       ? ""
       : padding === "sm"
-        ? "p-4 sm:p-5"
-        : "p-4 sm:p-5 md:p-6";
+        ? "p-4"
+        : "p-4 sm:p-5";
   const showHeader = Boolean(label || action);
   return (
     <section className={cn("origin-card flex h-full flex-col", pad, className)}>
