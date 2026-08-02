@@ -3,6 +3,7 @@ import { Send, X, Bot } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 import { useTheme } from "@/components/theme-provider";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 type Msg = { role: "syra" | "user"; text: string };
 
@@ -17,6 +18,7 @@ const seed: Msg[] = [
 const AGENT_RE = /(agreement|contract|engagement letter|\bips\b|\bnda\b)/i;
 
 export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<Msg[]>(seed);
@@ -24,6 +26,7 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  if (isMobile) return null;
 
   const send = () => {
     const t = input.trim();
