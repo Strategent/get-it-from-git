@@ -480,29 +480,29 @@ export function DocumentsCard() {
   const totalUses = docTemplates.reduce((a, d) => a + d.uses, 0);
   return (
     <Panel label="Documents">
-      <div className="mb-3 shrink-0 text-[15px] font-semibold leading-none tracking-tight">
+      <div className="mb-4 shrink-0 text-[24px] font-semibold leading-none tracking-[-0.02em]">
         {docTemplates.length}{" "}
-        <span className="text-[11px] font-normal text-muted-foreground">
+        <span className="text-[12px] font-normal tracking-normal text-muted-foreground">
           templates · {totalUses} uses
         </span>
       </div>
-      <div className="grid min-h-0 flex-1 grid-cols-2 gap-2">
+      <div className="grid min-h-0 flex-1 grid-cols-2 gap-2.5">
         {docTemplates.map((d) => (
           <div
             key={d.name}
-            className="origin-raised flex flex-col justify-between overflow-hidden p-2.5"
+            className="origin-raised flex flex-col justify-between overflow-hidden p-3"
           >
             <div className="min-w-0">
-              <div className="mb-1.5 grid h-6 w-6 place-items-center rounded-md bg-primary/15 text-primary">
+              <div className="mb-2 grid h-6 w-6 place-items-center rounded-md bg-primary/15 text-primary">
                 <Paperclip className="h-3 w-3" strokeWidth={2} />
               </div>
-              <div className="line-clamp-2 text-[11.5px] font-semibold leading-tight tracking-tight">
+              <div className="line-clamp-2 text-[13px] font-semibold leading-tight tracking-tight">
                 {d.name}
               </div>
-              <div className="mt-0.5 text-[9.5px] text-muted-foreground">{d.uses} uses</div>
+              <div className="mt-1 text-[11px] text-muted-foreground">{d.uses} uses</div>
             </div>
             <button
-              className="mt-2 h-6 self-stretch rounded-md text-[10px] font-semibold text-white"
+              className="mt-3 h-7 self-stretch rounded-md text-[11px] font-semibold text-white"
               style={{ background: "var(--gradient-primary)" }}
             >
               Autofill
