@@ -583,13 +583,13 @@
     padding: 18px 22px;
   }
   [data-density="compact"] > section > div > h1 {
-    font-size: clamp(20px, 5.8cqw, 30px) !important;
+    font-size: clamp(20px, 5.4cqw, 28px) !important;
     max-width: 52cqw !important;
     margin-top: 0;
   }
   [data-density="compact"] > section > div > p {
     max-width: 46cqw !important;
-    font-size: clamp(12px, 2.8cqw, 14px);
+    font-size: clamp(12px, 2.6cqw, 14px);
   }
   [data-density="compact"] > section > div > button {
     margin-top: 14px;
