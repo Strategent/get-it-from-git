@@ -38,7 +38,7 @@ import {
 
 export const Route = createFileRoute("/calls")({
   component: CallsPage,
-  head: () => ({ meta: [{ title: "Calls — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Calls — strategent" }] }),
 });
 
 type CallItem = {

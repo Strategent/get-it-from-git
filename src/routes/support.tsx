@@ -8,7 +8,7 @@ import { LifeBuoy, Send, MessageSquare, AlertCircle, CheckCircle2, Clock } from 
 
 export const Route = createFileRoute("/support")({
   component: SupportPage,
-  head: () => ({ meta: [{ title: "Strategent Support — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Support — strategent" }] }),
 });
 
 const threads = [

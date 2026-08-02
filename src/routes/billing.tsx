@@ -20,7 +20,7 @@ import { Download, CreditCard, Plus, Trash2, Send } from "lucide-react";
 
 export const Route = createFileRoute("/billing")({
   component: BillingPage,
-  head: () => ({ meta: [{ title: "Billing — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Billing — strategent" }] }),
 });
 
 type Invoice = { id: string; client: string; amount: string; status: string; date: string };
