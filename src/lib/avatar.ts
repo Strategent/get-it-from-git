@@ -1,4 +1,5 @@
 const senderImages: Record<string, string> = {
+  "John Harwick": "/john-harwick.png",
   "Elena Smith": "/email-elena-smith.png",
   "Emma Reeves": "/email-emma-reeves.png",
   "Adrian Engman": "/email-adrian-engman.png",
@@ -9,6 +10,21 @@ const senderImages: Record<string, string> = {
   "Nina Mercer": "/email-nina-mercer.png",
   Stripe: "/email-stripe-logo.png",
 };
+
+// Only the provided PNG assets are ever used. Unknown names map
+// deterministically into this same pool so a given name always keeps the
+// same face across every page (inbox, team, channels, calendar, tasks).
+const photoPool = [
+  "/email-elena-smith.png",
+  "/email-emma-reeves.png",
+  "/email-adrian-engman.png",
+  "/email-claire-bennett.png",
+  "/email-daniel-brooks.png",
+  "/email-lena-foster.png",
+  "/email-maya-lopez.png",
+  "/email-nina-mercer.png",
+];
+
 
 const senderEmails: Record<string, string> = {
   "Elena Smith": "elena.smith@harwicksterne.com",
@@ -23,15 +39,18 @@ const senderEmails: Record<string, string> = {
 };
 
 /**
- * Uses uploaded photos for known senders and falls back to a deterministic avatar.
+ * Always resolves to one of the provided PNG assets — never an external avatar.
  */
-export function avatarUrl(name: string, size = 96): string {
+export function avatarUrl(name: string, _size = 96): string {
   const mappedImage = senderImages[name];
   if (mappedImage) return mappedImage;
 
   const seed = name.trim().toLowerCase().replace(/\s+/g, "-");
-  return `https://i.pravatar.cc/${size}?u=${encodeURIComponent(seed)}`;
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  return photoPool[hash % photoPool.length];
 }
+
 
 export function senderEmailAddress(name: string): string {
   return senderEmails[name] ?? `${name.toLowerCase().split(" ").join(".")}@harwicksterne.com`;
