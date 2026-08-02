@@ -580,16 +580,16 @@
 @container daily-brief-card (max-width: 900px) {
   [data-density="compact"] > section > div {
     max-width: 100%;
-    padding: 18px 20px;
+    padding: 18px 22px;
   }
   [data-density="compact"] > section > div > h1 {
-    font-size: clamp(22px, 6.4cqw, 32px) !important;
+    font-size: clamp(20px, 5.8cqw, 30px) !important;
     max-width: 52cqw !important;
-    margin-top: clamp(10px, 4cqh, 18px);
+    margin-top: 0;
   }
   [data-density="compact"] > section > div > p {
-    max-width: 42cqw !important;
-    font-size: 12px;
+    max-width: 46cqw !important;
+    font-size: clamp(12px, 2.8cqw, 14px);
   }
   [data-density="compact"] > section > div > button {
     margin-top: 14px;
