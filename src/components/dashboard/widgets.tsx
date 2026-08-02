@@ -419,13 +419,13 @@ export function TeamCard() {
   const online = team.filter((t) => t.status === "online").length;
   return (
     <Panel label="Team" to="/team">
-      <div className="mb-3 shrink-0 text-[15px] font-semibold leading-none tracking-tight">
-        {online} <span className="text-[11px] font-normal text-muted-foreground">online</span>
+      <div className="mb-4 shrink-0 text-[24px] font-semibold leading-none tracking-[-0.02em]">
+        {online} <span className="text-[12px] font-normal tracking-normal text-muted-foreground">online</span>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-2">
         {team.slice(0, 4).map((m) => (
-          <div key={m.name} className="flex items-center gap-2.5 py-1">
-            <div className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.07] text-[10.5px] font-semibold text-foreground/90">
+          <div key={m.name} className="flex items-center gap-3 py-1">
+            <div className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.07] text-[11px] font-semibold text-foreground/90">
               {m.initials}
               <span
                 className={`ring-card absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ${
@@ -434,8 +434,8 @@ export function TeamCard() {
               />
             </div>
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="truncate text-[12px] font-semibold text-foreground/95">{m.name}</div>
-              <div className="truncate text-[10.5px] text-muted-foreground">{m.task}</div>
+              <div className="truncate text-[13px] font-semibold text-foreground/95">{m.name}</div>
+              <div className="truncate text-[11px] text-muted-foreground">{m.task}</div>
             </div>
           </div>
         ))}
@@ -449,21 +449,21 @@ export function ChannelsCard() {
   const unread = channels.reduce((a, c) => a + c.unread, 0);
   return (
     <Panel label="Channels" to="/channels">
-      <div className="mb-3 shrink-0 text-[15px] font-semibold leading-none tracking-tight">
-        {unread} <span className="text-[11px] font-normal text-muted-foreground">unread</span>
+      <div className="mb-4 shrink-0 text-[24px] font-semibold leading-none tracking-[-0.02em]">
+        {unread} <span className="text-[12px] font-normal tracking-normal text-muted-foreground">unread</span>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-2">
         {channels.slice(0, 4).map((c) => (
-          <div key={c.name} className="flex items-center gap-2.5 py-1">
+          <div key={c.name} className="flex items-center gap-3 py-1">
             <div className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border bg-foreground/[0.06] text-[12px] font-semibold text-foreground/70">
               #
             </div>
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="truncate text-[12px] font-semibold text-foreground/95">{c.name}</div>
-              <div className="truncate text-[10.5px] text-muted-foreground">{c.preview}</div>
+              <div className="truncate text-[13px] font-semibold text-foreground/95">{c.name}</div>
+              <div className="truncate text-[11px] text-muted-foreground">{c.preview}</div>
             </div>
             {c.unread > 0 && (
-              <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[10px] font-semibold tabular-nums text-background">
+              <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[11px] font-semibold tabular-nums text-background">
                 {c.unread}
               </span>
             )}
