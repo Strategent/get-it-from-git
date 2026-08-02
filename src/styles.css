@@ -518,26 +518,26 @@
   min-height: 0;
 }
 /* Left zone */
-[data-density="compact"] > section > div:nth-child(1) {
+[data-density="compact"] > section > div {
   box-sizing: border-box;
   height: 100%;
   padding: clamp(18px, 7cqh, 28px) clamp(30px, 5cqw, 56px);
 }
-[data-density="compact"] > section > div:nth-child(1) > span:first-child {
+[data-density="compact"] > section > span:first-child {
   font-size: clamp(10px, 3.4cqh, 12px);
 }
-[data-density="compact"] > section > div:nth-child(1) > h1 {
+[data-density="compact"] > section > div > h1 {
   margin-top: clamp(14px, 5cqh, 24px);
   font-size: clamp(30px, min(13cqh, 4.2cqw), 48px) !important;
   line-height: 1.04;
 }
-[data-density="compact"] > section > div:nth-child(1) > p {
+[data-density="compact"] > section > div > p {
   margin-top: clamp(10px, 3.5cqh, 16px);
   max-width: min(26rem, 44cqw);
   font-size: clamp(12px, min(4.2cqh, 1.25cqw), 14px);
   line-height: 1.55;
 }
-[data-density="compact"] > section > div:nth-child(1) > button {
+[data-density="compact"] > section > div > button {
   margin-top: clamp(14px, 4.5cqh, 22px);
   padding: clamp(8px, 2.8cqh, 11px) clamp(20px, 3cqw, 28px);
   font-size: clamp(12px, 3.8cqh, 14px);
