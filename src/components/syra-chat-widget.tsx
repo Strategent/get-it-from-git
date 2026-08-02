@@ -114,7 +114,6 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
 
           <div className="px-3 pb-3 pt-1">
             <div className="flex items-center gap-2 h-11 px-3 rounded-full bg-foreground/[0.04] border border-border">
-              <Bot className="h-3.5 w-3.5 text-muted-foreground" />
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
