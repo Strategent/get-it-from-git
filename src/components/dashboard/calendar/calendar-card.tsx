@@ -79,7 +79,7 @@ export function CalendarCard() {
       }
     >
       <div className="shrink-0">
-        <div className="mb-3 text-[14px] font-semibold leading-none tracking-tight">
+        <div className="mb-4 text-[16px] font-semibold leading-none tracking-tight">
           {weekRangeLabel}
         </div>
         {/* Apple-native week strip — bare cells, single circle on today */}
@@ -89,7 +89,7 @@ export function CalendarCard() {
             return (
               <div key={i} className="flex flex-col items-center gap-1.5 py-1">
                 <span
-                  className={`text-[10px] font-semibold uppercase tracking-[0.18em] ${
+                  className={`text-[11px] font-semibold uppercase tracking-[0.16em] ${
                     weekend ? "text-muted-foreground/50" : "text-muted-foreground/80"
                   }`}
                 >
@@ -107,7 +107,7 @@ export function CalendarCard() {
                 aria-label={d.toDateString()}
               >
                 <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-full text-[14px] leading-none tabular-nums transition-colors ${
+                  className={`flex h-8 w-8 items-center justify-center rounded-full text-[15px] leading-none tabular-nums transition-colors ${
                     isToday
                       ? "bg-white text-black font-semibold"
                       : "text-foreground/85 font-normal hover:bg-foreground/[0.06]"
@@ -122,12 +122,12 @@ export function CalendarCard() {
       </div>
 
       {/* Today's meetings beneath calendar */}
-      <div className="relative flex min-h-0 flex-1 flex-col gap-2">
+      <div className="relative flex min-h-0 flex-1 flex-col gap-3">
         <div className="flex shrink-0 items-center justify-between">
-          <div className="font-label text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+          <div className="font-label text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/80">
             Today's meetings
           </div>
-          <span className="text-[10.5px] tabular-nums text-muted-foreground">
+          <span className="text-[11px] tabular-nums text-muted-foreground">
             {todaysMeetings.length} scheduled
           </span>
         </div>
@@ -136,18 +136,18 @@ export function CalendarCard() {
           {todaysMeetings.slice(0, 3).map((m, i) => (
             <div
               key={i}
-              className={`flex items-center gap-3 py-2.5 ${
+              className={`flex items-center gap-3 py-3 ${
                 i === 0 ? "" : "border-t border-border/50"
               }`}
             >
-              <div className="w-12 shrink-0 text-right text-[11px] font-medium tabular-nums text-muted-foreground/70">
+              <div className="w-12 shrink-0 text-right text-[12px] font-medium tabular-nums text-muted-foreground/70">
                 {m.time.split(" ")[0]}
               </div>
               <div className="min-w-0 flex-1">
-                <div className="truncate text-[13px] font-semibold leading-tight text-foreground/95">
+                <div className="truncate text-[13.5px] font-semibold leading-tight text-foreground/95">
                   {m.client}
                 </div>
-                <div className="mt-0.5 text-[10.5px] leading-tight text-muted-foreground">
+                <div className="mt-0.5 text-[11px] leading-tight text-muted-foreground">
                   {m.status}
                 </div>
               </div>
@@ -155,7 +155,7 @@ export function CalendarCard() {
                 href={m.zoom}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-border bg-foreground/[0.06] px-3 text-[11px] font-semibold text-foreground/90 transition-colors hover:bg-foreground/[0.12]"
+                className="inline-flex h-7 shrink-0 items-center gap-1 rounded-md border border-border bg-foreground/[0.06] px-3 text-[12px] font-semibold text-foreground/90 transition-colors hover:bg-foreground/[0.12]"
               >
                 <Video className="h-3 w-3" /> Join
               </a>

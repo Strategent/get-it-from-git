@@ -21,14 +21,14 @@ export function MobileWorkloadCard() {
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Focus
         </span>
-        <span className="text-[10px] font-medium text-foreground/50 tabular-nums">
+        <span className="text-[11px] font-medium text-foreground/50 tabular-nums">
           {booked}/{total}h
         </span>
       </div>
 
       <div>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-[34px] font-semibold leading-none tracking-[-0.04em] tabular-nums">
+          <span className="text-[32px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
             {focusLeft}
           </span>
           <span className="text-[12px] text-foreground/50">deep blocks left</span>
@@ -39,7 +39,7 @@ export function MobileWorkloadCard() {
             style={{ width: `${pct * 100}%` }}
           />
         </div>
-        <div className="mt-2 flex items-center justify-between text-[10.5px] text-foreground/50">
+        <div className="mt-2 flex items-center justify-between text-[11px] text-foreground/50">
           <span>Booked</span>
           <span className="tabular-nums">{Math.round(pct * 100)}%</span>
         </div>
@@ -56,11 +56,11 @@ export function MobileTeamCard() {
       <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
         Team
       </span>
-      <ul className="mt-2 flex flex-1 flex-col divide-y divide-border/50">
+      <ul className="mt-3 flex flex-1 flex-col divide-y divide-border/50">
         {roster.map((m) => (
-          <li key={m.name} className="flex flex-1 items-center gap-2 min-w-0">
+          <li key={m.name} className="flex flex-1 items-center gap-2.5 min-w-0">
             <div className="relative shrink-0">
-              <div className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.08] text-[9px] font-semibold text-foreground/70">
+              <div className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.08] text-[10px] font-semibold text-foreground/70">
                 {m.initials}
               </div>
               <span
@@ -68,7 +68,7 @@ export function MobileTeamCard() {
                 style={{ background: m.status === "online" ? "#34c759" : "#8e8e93" }}
               />
             </div>
-            <span className="truncate text-[11.5px] font-medium text-foreground/85">
+            <span className="truncate text-[12px] font-medium text-foreground/85">
               {m.name.split(" ")[0]}
             </span>
           </li>
@@ -152,15 +152,15 @@ export function MobileRecapCard() {
       </div>
       <div className="mt-6">
         <div className="flex items-baseline gap-1.5">
-          <span className="text-[28px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+          <span className="text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums">
             +0.42%
           </span>
-          <span className="text-[11px] text-foreground/50">S&amp;P · open</span>
+          <span className="text-[12px] text-foreground/50">S&amp;P · open</span>
         </div>
-        <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+        <div className="mt-2.5 font-serif-display text-[16px] leading-tight tracking-[-0.01em]">
           Daily market
         </div>
-        <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
+        <p className="mt-2 text-[12px] leading-snug text-muted-foreground">
           Treasuries firmed and breadth improved. 3 items flagged for your book.
         </p>
       </div>
@@ -175,22 +175,22 @@ export function MobilePlannerCard() {
   return (
     <Link
       to="/tasks"
-      className="origin-card flex flex-col gap-2.5 p-4"
+      className="origin-card flex flex-col gap-3 p-4"
     >
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Planner
         </span>
-        <span className="text-[10.5px] tabular-nums text-muted-foreground">{open} open</span>
+        <span className="text-[11px] tabular-nums text-muted-foreground">{open} open</span>
       </div>
       <div className="flex flex-col divide-y divide-border/50">
         {first.map((t) => (
-          <div key={t.label} className="flex items-center gap-2 py-1.5">
+          <div key={t.label} className="flex items-center gap-2 py-2">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
-            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-foreground/90">
+            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground/90">
               {t.label}
             </span>
-            <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">{t.date}</span>
+            <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{t.date}</span>
           </div>
         ))}
       </div>
@@ -205,27 +205,27 @@ export function MobileChannelsCard() {
   return (
     <Link
       to="/channels"
-      className="origin-card flex flex-col gap-2.5 p-4"
+      className="origin-card flex flex-col gap-3 p-4"
     >
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Channels
         </span>
-        <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[10px] font-semibold tabular-nums text-background">
+        <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[11px] font-semibold tabular-nums text-background">
           {unread}
         </span>
       </div>
       <div className="flex flex-col divide-y divide-border/50">
         {top.map((c) => (
-          <div key={c.name} className="flex items-center gap-2 py-1.5">
+          <div key={c.name} className="flex items-center gap-2 py-2">
             <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md border border-border bg-foreground/[0.05] text-[10px] font-semibold text-foreground/60">
               #
             </span>
-            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-foreground/90">
+            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground/90">
               {c.name}
             </span>
             {c.unread > 0 && (
-              <span className="shrink-0 text-[10px] font-semibold tabular-nums text-foreground/70">
+              <span className="shrink-0 text-[11px] font-semibold tabular-nums text-foreground/70">
                 {c.unread}
               </span>
             )}
@@ -284,8 +284,8 @@ export function PlannerCard() {
         </button>
       }
     >
-      <div className="mb-3 shrink-0 text-[20px] font-semibold leading-none tracking-tight">
-        {open} <span className="text-[13px] font-normal text-muted-foreground">open today</span>
+      <div className="mb-4 shrink-0 text-[28px] font-semibold leading-none tracking-[-0.02em]">
+        {open} <span className="text-[13px] font-normal tracking-normal text-muted-foreground">open today</span>
       </div>
 
       {adding && (
@@ -299,7 +299,7 @@ export function PlannerCard() {
             }}
             placeholder="New task…"
             autoFocus
-            className="h-7 min-w-0 flex-1 rounded-md border border-border bg-foreground/[0.03] px-2 text-[12px] outline-none placeholder:text-muted-foreground/60 focus:border-foreground/30"
+            className="h-8 min-w-0 flex-1 rounded-md border border-border bg-foreground/[0.03] px-2.5 text-[13px] outline-none placeholder:text-muted-foreground/60 focus:border-foreground/30"
           />
           <input
             type="date"
@@ -307,12 +307,12 @@ export function PlannerCard() {
             onChange={(e) => setDate(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && add()}
             aria-label="Due date"
-            className="h-7 shrink-0 rounded-md border border-border bg-foreground/[0.03] px-1.5 text-[11px] text-muted-foreground outline-none focus:border-foreground/30"
+            className="h-8 shrink-0 rounded-md border border-border bg-foreground/[0.03] px-1.5 text-[12px] text-muted-foreground outline-none focus:border-foreground/30"
           />
           <button
             onClick={add}
             disabled={!label.trim()}
-            className="h-7 shrink-0 rounded-md px-2.5 text-[11px] font-semibold text-white transition-opacity disabled:opacity-40"
+            className="h-8 shrink-0 rounded-md px-3 text-[12px] font-semibold text-white transition-opacity disabled:opacity-40"
             style={{ background: "var(--gradient-primary)" }}
           >
             Add
@@ -333,13 +333,13 @@ export function PlannerCard() {
               className="h-4 w-4 rounded-full border-border data-[state=checked]:border-foreground/60 data-[state=checked]:bg-foreground/80 data-[state=checked]:text-background"
             />
             <div
-              className={`min-w-0 flex-1 truncate text-[13px] leading-snug ${
+              className={`min-w-0 flex-1 truncate text-[13.5px] leading-snug ${
                 t.done ? "text-muted-foreground line-through" : "font-medium text-foreground/95"
               }`}
             >
               {t.label}
             </div>
-            <div className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{t.date}</div>
+            <div className="shrink-0 text-[11.5px] tabular-nums text-muted-foreground">{t.date}</div>
           </div>
         ))}
       </div>
@@ -354,32 +354,32 @@ export function WorkloadCard() {
   return (
     <Panel label="Workload">
       <div className="flex items-end gap-3">
-        <div className="text-[34px] font-semibold leading-none tracking-tight tabular-nums">
-          {value}<span className="ml-0.5 text-base font-normal text-muted-foreground">%</span>
+        <div className="text-[32px] font-semibold leading-none tracking-[-0.02em] tabular-nums">
+          {value}<span className="ml-0.5 text-[15px] font-normal text-muted-foreground">%</span>
         </div>
-        <span className="mb-1 inline-flex h-5 items-center rounded-full border border-border bg-foreground/[0.05] px-2 text-[10px] font-medium text-foreground/80">
+        <span className="mb-1 inline-flex h-5 items-center rounded-full border border-border bg-foreground/[0.05] px-2.5 text-[11px] font-medium text-foreground/80">
           Healthy
         </span>
       </div>
-      <div className="mt-4">
+      <div className="mt-5">
         <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.08]">
           <div
             className="h-full rounded-full bg-foreground/70"
             style={{ width: `${value}%` }}
           />
         </div>
-        <div className="mt-1.5 flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between">
           {labels.map((l) => (
             <span
               key={l}
-              className="text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground/60"
+              className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/60"
             >
               {l}
             </span>
           ))}
         </div>
       </div>
-      <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+      <div className="mt-3 flex items-center justify-between text-[12px] text-muted-foreground">
         <span>Capacity used</span>
         <span className="tabular-nums">52 / 93 hrs</span>
       </div>
@@ -394,12 +394,12 @@ export function RecapCard() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[26px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+            <span className="text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums">
               +0.42%
             </span>
-            <span className="text-[11px] text-muted-foreground">S&amp;P · open</span>
+            <span className="text-[12px] text-muted-foreground">S&amp;P · open</span>
           </div>
-          <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+          <div className="mt-2.5 font-serif-display text-[16px] leading-tight tracking-[-0.01em]">
             Daily market
           </div>
         </div>
@@ -407,7 +407,7 @@ export function RecapCard() {
           <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
         </span>
       </div>
-      <p className="mt-2 text-[12px] leading-snug text-muted-foreground">
+      <p className="mt-3 text-[13px] leading-snug text-muted-foreground">
         Treasuries firmed and breadth improved. 3 items flagged for your book.
       </p>
     </Panel>
@@ -419,13 +419,13 @@ export function TeamCard() {
   const online = team.filter((t) => t.status === "online").length;
   return (
     <Panel label="Team" to="/team">
-      <div className="mb-3 shrink-0 text-[15px] font-semibold leading-none tracking-tight">
-        {online} <span className="text-[11px] font-normal text-muted-foreground">online</span>
+      <div className="mb-4 shrink-0 text-[24px] font-semibold leading-none tracking-[-0.02em]">
+        {online} <span className="text-[12px] font-normal tracking-normal text-muted-foreground">online</span>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-2">
         {team.slice(0, 4).map((m) => (
-          <div key={m.name} className="flex items-center gap-2.5 py-1">
-            <div className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.07] text-[10.5px] font-semibold text-foreground/90">
+          <div key={m.name} className="flex items-center gap-3 py-1">
+            <div className="relative grid h-8 w-8 shrink-0 place-items-center rounded-full border border-border bg-foreground/[0.07] text-[11px] font-semibold text-foreground/90">
               {m.initials}
               <span
                 className={`ring-card absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full ring-2 ${
@@ -434,8 +434,8 @@ export function TeamCard() {
               />
             </div>
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="truncate text-[12px] font-semibold text-foreground/95">{m.name}</div>
-              <div className="truncate text-[10.5px] text-muted-foreground">{m.task}</div>
+              <div className="truncate text-[13px] font-semibold text-foreground/95">{m.name}</div>
+              <div className="truncate text-[11px] text-muted-foreground">{m.task}</div>
             </div>
           </div>
         ))}
@@ -449,21 +449,21 @@ export function ChannelsCard() {
   const unread = channels.reduce((a, c) => a + c.unread, 0);
   return (
     <Panel label="Channels" to="/channels">
-      <div className="mb-3 shrink-0 text-[15px] font-semibold leading-none tracking-tight">
-        {unread} <span className="text-[11px] font-normal text-muted-foreground">unread</span>
+      <div className="mb-4 shrink-0 text-[24px] font-semibold leading-none tracking-[-0.02em]">
+        {unread} <span className="text-[12px] font-normal tracking-normal text-muted-foreground">unread</span>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-1.5">
+      <div className="flex min-h-0 flex-1 flex-col gap-2">
         {channels.slice(0, 4).map((c) => (
-          <div key={c.name} className="flex items-center gap-2.5 py-1">
+          <div key={c.name} className="flex items-center gap-3 py-1">
             <div className="grid h-8 w-8 shrink-0 place-items-center rounded-md border border-border bg-foreground/[0.06] text-[12px] font-semibold text-foreground/70">
               #
             </div>
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="truncate text-[12px] font-semibold text-foreground/95">{c.name}</div>
-              <div className="truncate text-[10.5px] text-muted-foreground">{c.preview}</div>
+              <div className="truncate text-[13px] font-semibold text-foreground/95">{c.name}</div>
+              <div className="truncate text-[11px] text-muted-foreground">{c.preview}</div>
             </div>
             {c.unread > 0 && (
-              <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[10px] font-semibold tabular-nums text-background">
+              <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[11px] font-semibold tabular-nums text-background">
                 {c.unread}
               </span>
             )}
@@ -480,29 +480,29 @@ export function DocumentsCard() {
   const totalUses = docTemplates.reduce((a, d) => a + d.uses, 0);
   return (
     <Panel label="Documents">
-      <div className="mb-3 shrink-0 text-[15px] font-semibold leading-none tracking-tight">
+      <div className="mb-4 shrink-0 text-[24px] font-semibold leading-none tracking-[-0.02em]">
         {docTemplates.length}{" "}
-        <span className="text-[11px] font-normal text-muted-foreground">
+        <span className="text-[12px] font-normal tracking-normal text-muted-foreground">
           templates · {totalUses} uses
         </span>
       </div>
-      <div className="grid min-h-0 flex-1 grid-cols-2 gap-2">
+      <div className="grid min-h-0 flex-1 grid-cols-2 gap-2.5">
         {docTemplates.map((d) => (
           <div
             key={d.name}
-            className="origin-raised flex flex-col justify-between overflow-hidden p-2.5"
+            className="origin-raised flex flex-col justify-between overflow-hidden p-3"
           >
             <div className="min-w-0">
-              <div className="mb-1.5 grid h-6 w-6 place-items-center rounded-md bg-primary/15 text-primary">
+              <div className="mb-2 grid h-6 w-6 place-items-center rounded-md bg-primary/15 text-primary">
                 <Paperclip className="h-3 w-3" strokeWidth={2} />
               </div>
-              <div className="line-clamp-2 text-[11.5px] font-semibold leading-tight tracking-tight">
+              <div className="line-clamp-2 text-[13px] font-semibold leading-tight tracking-tight">
                 {d.name}
               </div>
-              <div className="mt-0.5 text-[9.5px] text-muted-foreground">{d.uses} uses</div>
+              <div className="mt-1 text-[11px] text-muted-foreground">{d.uses} uses</div>
             </div>
             <button
-              className="mt-2 h-6 self-stretch rounded-md text-[10px] font-semibold text-white"
+              className="mt-3 h-7 self-stretch rounded-md text-[11px] font-semibold text-white"
               style={{ background: "var(--gradient-primary)" }}
             >
               Autofill

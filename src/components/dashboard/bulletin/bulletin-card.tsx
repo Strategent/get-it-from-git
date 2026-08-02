@@ -128,9 +128,9 @@ export function BulletinCard() {
   return (
     <Panel
       label="Markets"
-      bodyClassName="gap-4"
+      bodyClassName="gap-5"
       action={
-        <span className="inline-flex items-center gap-1.5 text-[10.5px] tabular-nums text-muted-foreground/80">
+        <span className="inline-flex items-center gap-1.5 text-[11px] tabular-nums text-muted-foreground/80">
           <span className="relative grid h-1.5 w-1.5 place-items-center">
             <span className="absolute inset-0 animate-ping rounded-full bg-foreground/30" />
             <span className="relative h-1.5 w-1.5 rounded-full bg-foreground/70" />
@@ -143,15 +143,15 @@ export function BulletinCard() {
       <div className="shrink-0">
         <div className="flex items-baseline justify-between gap-3">
           <div className="min-w-0">
-            <div className="truncate text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
+            <div className="truncate text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
               S&amp;P 500
             </div>
-            <div className="mt-1 text-[22px] font-semibold leading-none tracking-tight tabular-nums text-foreground">
+            <div className="mt-1.5 text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums text-foreground">
               {fmt(spxBase)}
             </div>
           </div>
           <div
-            className="text-right text-[11px] font-medium leading-tight tabular-nums"
+            className="text-right text-[12px] font-medium leading-tight tabular-nums"
             style={{ color: spxUp ? "var(--trend-up)" : "var(--trend-down)" }}
           >
 
@@ -165,7 +165,7 @@ export function BulletinCard() {
             </div>
           </div>
         </div>
-        <div className="mt-2 h-14 w-full">
+        <div className="mt-3 h-14 w-full">
           <Sparkline data={series} up={spxUp} />
         </div>
       </div>
@@ -180,25 +180,25 @@ export function BulletinCard() {
           return (
             <div
               key={t.symbol}
-              className={`flex items-center gap-3 py-2.5 ${
+              className={`flex items-center gap-3 py-3 ${
                 i === 0 ? "" : "border-t border-border/40"
               }`}
             >
               <div className="min-w-0 flex-1 leading-tight">
-                <div className="truncate text-[12.5px] font-semibold tracking-tight text-foreground/95">
+                <div className="truncate text-[13.5px] font-semibold tracking-tight text-foreground/95">
                   {t.name}
                 </div>
-                <div className="truncate text-[10px] text-muted-foreground/70">
+                <div className="truncate text-[11px] text-muted-foreground/70">
                   {t.symbol}
                   {t.unit ? ` · USD${t.unit}` : ""}
                 </div>
               </div>
               <div className="text-right leading-tight">
-                <div className="text-[12.5px] font-semibold tabular-nums text-foreground/95">
+                <div className="text-[13.5px] font-semibold tabular-nums text-foreground/95">
                   {fmt(t.price, t.decimals ?? 2)}
                 </div>
                 <div
-                  className="text-[10.5px] font-medium tabular-nums"
+                  className="text-[11px] font-medium tabular-nums"
                   style={{ color: up ? "var(--trend-up)" : "var(--trend-down)" }}
                 >
 

@@ -122,21 +122,21 @@ export function CallsCard() {
       }
     >
       {/* Live call header — lemni-inspired: quiet avatar, name + phone, duration */}
-      <div className="flex shrink-0 flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-foreground/[0.06] text-[15px] font-semibold tracking-tight text-foreground/90">
+      <div className="flex shrink-0 flex-col gap-5">
+        <div className="flex items-center gap-3.5">
+          <div className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-foreground/[0.06] text-[16px] font-semibold tracking-tight text-foreground/90">
             {CALLER_INITIALS}
           </div>
           <div className="min-w-0 flex-1">
-            <div className="truncate text-[15px] font-semibold tracking-tight text-foreground">
+            <div className="truncate text-[16px] font-semibold tracking-tight text-foreground">
               {CALLER_NAME}
             </div>
-            <div className="truncate text-[12px] tabular-nums text-muted-foreground">
+            <div className="truncate text-[13px] tabular-nums text-muted-foreground">
               {CALLER_PHONE}
             </div>
           </div>
           <div
-            className="shrink-0 text-[15px] font-semibold tabular-nums text-foreground"
+            className="shrink-0 text-[16px] font-semibold tabular-nums text-foreground"
             suppressHydrationWarning
           >
             {duration}
@@ -185,9 +185,9 @@ export function CallsCard() {
       {/* Section toggle */}
       <button
         onClick={() => setShowTranscript((v) => !v)}
-        className="flex shrink-0 items-center justify-between border-t border-border/50 pt-3 text-left"
+        className="flex shrink-0 items-center justify-between border-t border-border/50 pt-3.5 text-left"
       >
-        <span className="font-label text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/80">
+        <span className="font-label text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/80">
           {showTranscript ? "Live transcript" : "Captured for CRM"}
         </span>
         <ChevronDown
@@ -254,10 +254,10 @@ function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
                 className="animate-fade-in leading-snug"
                 style={{ animationDuration: "700ms" }}
               >
-                <div className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/70">
                   {speaker}
                 </div>
-                <div className="text-[12px] text-foreground/90">
+                <div className="text-[13px] text-foreground/90">
                   {line.text}
                 </div>
               </div>
@@ -266,7 +266,7 @@ function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
         : capturedFields.map((f, i) => (
             <div
               key={f.label}
-              className={`flex items-center gap-3 py-1.5 ${
+              className={`flex items-center gap-3 py-2 ${
                 i === 0 ? "" : "border-t border-border/40"
               }`}
             >
@@ -285,11 +285,11 @@ function TranscriptOrCapture({ showTranscript }: { showTranscript: boolean }) {
                   <UserPlus className="h-3 w-3" />
                 )}
               </span>
-              <div className="w-[64px] shrink-0 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+              <div className="w-[64px] shrink-0 text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
                 {f.label}
               </div>
               <div
-                className={`min-w-0 flex-1 truncate text-[12px] ${
+                className={`min-w-0 flex-1 truncate text-[13px] ${
                   f.done ? "text-foreground/90" : "text-[color:var(--trend-up)]"
                 }`}
               >
