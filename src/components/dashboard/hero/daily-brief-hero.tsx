@@ -84,12 +84,6 @@ export function DailyBriefHero({
           backgroundRepeat: "no-repeat",
         }}
       >
-        <span
-          className="absolute left-8 top-4 z-20 flex items-center gap-[5px] text-[12.5px] font-normal leading-none tracking-[-0.005em] text-white/55 lg:left-14 lg:top-5"
-          style={{ fontFamily: "var(--font-serif)", textShadow: "0 1px 2px rgba(0,0,0,0.3)" }}
-        >
-          Syra <span className="text-[12.5px] opacity-40">›</span> Daily Brief
-        </span>
 
         <div className="relative z-10 flex h-full flex-col justify-center pl-8 pr-7 py-8 lg:pl-14 lg:pr-12 lg:py-12">
           <h1
