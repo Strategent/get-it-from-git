@@ -78,7 +78,7 @@ export function DailyBriefHero({
         style={{
           borderRadius: "var(--radius)",
           backgroundColor: "#1a1a1d",
-          backgroundImage: `linear-gradient(105deg, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.36) 34%, rgba(0,0,0,0.18) 64%, rgba(0,0,0,0.06) 100%), url("${heroScenery.url}")`,
+          backgroundImage: `linear-gradient(105deg, rgba(0,0,0,0.38) 0%, rgba(0,0,0,0.22) 40%, rgba(0,0,0,0.12) 70%, rgba(0,0,0,0.04) 100%), url("${heroScenery.url}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -89,12 +89,13 @@ export function DailyBriefHero({
           <h1
             className="font-serif-display mt-10 font-normal leading-[1.05] text-white lg:mt-12"
             style={{
-              fontSize: "clamp(34px, 4vw, 56px)",
-              textShadow: "0 1px 2px rgba(0,0,0,0.5), 0 3px 26px rgba(0,0,0,0.55)",
+              fontSize: "clamp(34px, 3.6vw, 50px)",
+              textShadow: "0 1px 3px rgba(0,0,0,0.35)",
             }}
           >
             Welcome back, John.
           </h1>
+
 
           <p
             className="mt-5 max-w-[32rem] text-[14px] leading-relaxed text-white/95 lg:text-[15px]"
