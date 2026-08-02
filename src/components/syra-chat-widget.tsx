@@ -18,6 +18,7 @@ const seed: Msg[] = [
 const AGENT_RE = /(agreement|contract|engagement letter|\bips\b|\bnda\b)/i;
 
 export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<Msg[]>(seed);
@@ -25,6 +26,7 @@ export function SyraChatWidget({ inboxSummary }: { inboxSummary?: string }) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
 
+  if (isMobile) return null;
 
   const send = () => {
     const t = input.trim();
