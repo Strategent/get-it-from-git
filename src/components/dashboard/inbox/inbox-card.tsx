@@ -339,7 +339,7 @@ export function InboxCard() {
               <button
                 key={m.originalIndex}
                 onClick={() => setSelected(i)}
-                className={`group relative flex items-start gap-2.5 border-b border-border/30 px-3 py-2 text-left transition-colors ${
+                className={`group relative flex items-start gap-3 border-b border-border/30 px-4 py-2.5 text-left transition-colors ${
                   active
                     ? "bg-foreground/[0.045]"
                     : "hover:bg-foreground/[0.025]"
@@ -355,29 +355,29 @@ export function InboxCard() {
                   src={avatarUrl(m.sender, 64)}
                   alt={m.sender}
                   loading="lazy"
-                  className="h-7 w-7 shrink-0 rounded-full border border-border object-cover"
+                  className="h-8 w-8 shrink-0 rounded-full border border-border object-cover"
                 />
                 <div className="min-w-0 flex-1 leading-tight">
                   <div className="flex items-center justify-between gap-2">
                     <div
-                      className={`truncate text-[12.5px] tracking-tight ${
+                      className={`truncate text-[13px] tracking-tight ${
                         unread ? "font-semibold text-foreground" : "font-medium text-foreground/85"
                       }`}
                     >
                       {m.sender}
                     </div>
-                    <div className="shrink-0 text-[10px] tabular-nums text-muted-foreground/80">
+                    <div className="shrink-0 text-[11px] tabular-nums text-muted-foreground/80">
                       {m.time}
                     </div>
                   </div>
                   <div
-                    className={`mt-0.5 truncate text-[11.5px] tracking-tight ${
+                    className={`mt-0.5 truncate text-[12.5px] tracking-tight ${
                       unread ? "text-foreground/80" : "text-foreground/60"
                     }`}
                   >
                     {m.subject}
                   </div>
-                  <div className="truncate text-[10.5px] font-normal text-muted-foreground/70">
+                  <div className="truncate text-[11px] font-normal text-muted-foreground/70">
                     {m.preview}
                   </div>
                 </div>
