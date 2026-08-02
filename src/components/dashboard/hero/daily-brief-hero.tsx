@@ -86,33 +86,31 @@ export function DailyBriefHero({
       >
 
         <div className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-8 lg:pl-20 lg:pr-16 lg:py-12">
-          <div className="flex flex-col gap-4 lg:gap-5">
-            <h1
-              className="font-serif-display font-normal tracking-[-0.02em] text-white"
-              style={{
-                fontSize: "clamp(28px, 2.6vw, 38px)",
-                lineHeight: 1.08,
-                textShadow: "0 1px 4px rgba(0,0,0,0.25)",
-              }}
-            >
-              Welcome back, John.
-            </h1>
+          <h1
+            className="font-serif-display mt-2 font-normal tracking-[-0.02em] text-white lg:mt-3"
+            style={{
+              fontSize: "clamp(28px, 2.6vw, 38px)",
+              lineHeight: 1.08,
+              textShadow: "0 1px 4px rgba(0,0,0,0.25)",
+            }}
+          >
+            Welcome back, John.
+          </h1>
 
-            <p
-              className="max-w-[34rem] text-[14px] leading-[1.55] text-white/[0.85] lg:text-[16px]"
-              style={{ textShadow: "0 1px 4px rgba(0,0,0,0.35)" }}
-            >
-              {summary}
-            </p>
+          <p
+            className="mt-4 max-w-[34rem] text-[14px] leading-[1.55] text-white/[0.85] lg:mt-5 lg:text-[16px]"
+            style={{ textShadow: "0 1px 4px rgba(0,0,0,0.35)" }}
+          >
+            {summary}
+          </p>
 
-            <button
-              type="button"
-              onClick={handleClick}
-              className="w-fit rounded-lg bg-white/40 px-6 py-2.5 text-[13.5px] font-medium text-neutral-900 shadow-[0_1px_0_0_rgba(255,255,255,0.45)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/40 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/65 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.55)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)]"
-            >
-              Read daily brief
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={handleClick}
+            className="mt-8 w-fit rounded-lg bg-white/40 px-6 py-2.5 text-[13.5px] font-medium text-neutral-900 shadow-[0_1px_0_0_rgba(255,255,255,0.45)_inset,0_6px_20px_-6px_rgba(0,0,0,0.45)] ring-1 ring-white/40 backdrop-blur-md backdrop-saturate-150 transition-all hover:bg-white/65 hover:shadow-[0_1px_0_0_rgba(255,255,255,0.55)_inset,0_8px_24px_-8px_rgba(0,0,0,0.5)] lg:mt-10"
+          >
+            Read daily brief
+          </button>
         </div>
       </section>
 
