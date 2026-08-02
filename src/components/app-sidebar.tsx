@@ -92,12 +92,12 @@ export function AppSidebar() {
                   asChild
                   isActive={active}
                   tooltip={item.title}
-                  className={`h-9 rounded-lg transition-all ${
+                  className={`h-9 rounded-[7px] border-0 transition-[background-color,color] duration-150 ${
                     collapsed ? "justify-center px-0 [&>a]:justify-center" : ""
                   } ${
                     active
-                      ? "bg-foreground/[0.07] text-foreground border border-border"
-                      : "text-muted-foreground/80 hover:text-foreground hover:bg-foreground/[0.04] border border-transparent"
+                      ? "bg-foreground/[0.10] text-foreground shadow-[inset_0_1px_0_0_hsl(var(--foreground)/0.06)] hover:bg-foreground/[0.12]"
+                      : "text-muted-foreground/80 hover:text-foreground hover:bg-foreground/[0.045] active:bg-foreground/[0.07]"
                   }`}
                 >
                   <Link
@@ -105,11 +105,15 @@ export function AppSidebar() {
                     className={`flex items-center ${collapsed ? "justify-center w-full" : "gap-2.5"}`}
                   >
                     <item.icon
-                      strokeWidth={1.5}
-                      className={`shrink-0 ${item.title === "Syra" ? "h-[20px] w-[20px]" : "h-[18px] w-[18px]"}`}
+                      strokeWidth={active ? 1.9 : 1.5}
+                      className={`shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"} ${item.title === "Syra" ? "h-[20px] w-[20px]" : "h-[18px] w-[18px]"}`}
                     />
                     {!collapsed && (
-                      <span className="text-[13px] font-medium tracking-tight">{item.title}</span>
+                      <span
+                        className={`text-[13px] tracking-tight ${active ? "font-semibold" : "font-medium"}`}
+                      >
+                        {item.title}
+                      </span>
                     )}
                   </Link>
                 </SidebarMenuButton>
