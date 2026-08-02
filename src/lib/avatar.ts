@@ -39,15 +39,18 @@ const senderEmails: Record<string, string> = {
 };
 
 /**
- * Uses uploaded photos for known senders and falls back to a deterministic avatar.
+ * Always resolves to one of the provided PNG assets — never an external avatar.
  */
-export function avatarUrl(name: string, size = 96): string {
+export function avatarUrl(name: string, _size = 96): string {
   const mappedImage = senderImages[name];
   if (mappedImage) return mappedImage;
 
   const seed = name.trim().toLowerCase().replace(/\s+/g, "-");
-  return `https://i.pravatar.cc/${size}?u=${encodeURIComponent(seed)}`;
+  let hash = 0;
+  for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
+  return photoPool[hash % photoPool.length];
 }
+
 
 export function senderEmailAddress(name: string): string {
   return senderEmails[name] ?? `${name.toLowerCase().split(" ").join(".")}@harwicksterne.com`;
