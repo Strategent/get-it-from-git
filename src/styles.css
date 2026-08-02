@@ -521,27 +521,29 @@
 [data-density="compact"] > section > div {
   box-sizing: border-box;
   height: 100%;
-  padding: clamp(18px, 7cqh, 28px) clamp(30px, 5cqw, 56px);
+  padding: clamp(18px, 7cqh, 28px) clamp(36px, 6cqw, 72px);
 }
 [data-density="compact"] > section > span:first-child {
   font-size: clamp(10px, 3.4cqh, 12px);
 }
 [data-density="compact"] > section > div > h1 {
-  margin-top: clamp(14px, 5cqh, 24px);
-  font-size: clamp(30px, min(13cqh, 4.2cqw), 48px) !important;
+  margin-top: clamp(16px, 5.5cqh, 26px);
+  font-size: clamp(28px, min(12cqh, 3.8cqw), 46px) !important;
   line-height: 1.04;
+  letter-spacing: -0.01em;
 }
 [data-density="compact"] > section > div > p {
-  margin-top: clamp(10px, 3.5cqh, 16px);
-  max-width: min(26rem, 44cqw);
-  font-size: clamp(12px, min(4.2cqh, 1.25cqw), 14px);
+  margin-top: clamp(10px, 3cqh, 14px);
+  max-width: min(28rem, 46cqw);
+  font-size: clamp(12px, min(4cqh, 1.2cqw), 14.5px);
   line-height: 1.55;
 }
 [data-density="compact"] > section > div > button {
   margin-top: clamp(14px, 4.5cqh, 22px);
   padding: clamp(8px, 2.8cqh, 11px) clamp(20px, 3cqw, 28px);
-  font-size: clamp(12px, 3.8cqh, 14px);
+  font-size: clamp(12px, 3.8cqh, 13.5px);
 }
+
 
 /* White brief document — anchored to bottom edge, rises from below */
 .daily-brief-document {
