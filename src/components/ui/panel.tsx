@@ -37,7 +37,12 @@ export function Panel({
   bodyClassName?: string;
   children: ReactNode;
 }) {
-  const pad = padding === "none" ? "" : padding === "sm" ? "p-4" : "p-5";
+  const pad =
+    padding === "none"
+      ? ""
+      : padding === "sm"
+        ? "p-4 sm:p-5"
+        : "p-4 sm:p-5 md:p-6";
   const showHeader = Boolean(label || action);
   return (
     <section className={cn("origin-card flex h-full flex-col", pad, className)}>
@@ -45,7 +50,7 @@ export function Panel({
         <div
           className={cn(
             "flex shrink-0 items-center justify-between gap-2",
-            padding === "none" ? "px-5 pt-4 pb-3" : "mb-3.5",
+            padding === "none" ? "px-4 pt-4 pb-3 sm:px-5" : "mb-4",
             headerClassName,
           )}
         >
