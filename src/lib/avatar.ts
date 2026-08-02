@@ -1,4 +1,5 @@
 const senderImages: Record<string, string> = {
+  "John Harwick": "/john-harwick.png",
   "Elena Smith": "/email-elena-smith.png",
   "Emma Reeves": "/email-emma-reeves.png",
   "Adrian Engman": "/email-adrian-engman.png",
@@ -9,6 +10,21 @@ const senderImages: Record<string, string> = {
   "Nina Mercer": "/email-nina-mercer.png",
   Stripe: "/email-stripe-logo.png",
 };
+
+// Only the provided PNG assets are ever used. Unknown names map
+// deterministically into this same pool so a given name always keeps the
+// same face across every page (inbox, team, channels, calendar, tasks).
+const photoPool = [
+  "/email-elena-smith.png",
+  "/email-emma-reeves.png",
+  "/email-adrian-engman.png",
+  "/email-claire-bennett.png",
+  "/email-daniel-brooks.png",
+  "/email-lena-foster.png",
+  "/email-maya-lopez.png",
+  "/email-nina-mercer.png",
+];
+
 
 const senderEmails: Record<string, string> = {
   "Elena Smith": "elena.smith@harwicksterne.com",
