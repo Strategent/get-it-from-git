@@ -152,15 +152,15 @@ export function MobileRecapCard() {
       </div>
       <div className="mt-6">
         <div className="flex items-baseline gap-1.5">
-          <span className="text-[28px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+          <span className="text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums">
             +0.42%
           </span>
-          <span className="text-[11px] text-foreground/50">S&amp;P · open</span>
+          <span className="text-[12px] text-foreground/50">S&amp;P · open</span>
         </div>
-        <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+        <div className="mt-2.5 font-serif-display text-[16px] leading-tight tracking-[-0.01em]">
           Daily market
         </div>
-        <p className="mt-1 text-[11.5px] leading-snug text-muted-foreground">
+        <p className="mt-2 text-[12px] leading-snug text-muted-foreground">
           Treasuries firmed and breadth improved. 3 items flagged for your book.
         </p>
       </div>
@@ -175,22 +175,22 @@ export function MobilePlannerCard() {
   return (
     <Link
       to="/tasks"
-      className="origin-card flex flex-col gap-2.5 p-4"
+      className="origin-card flex flex-col gap-3 p-4"
     >
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Planner
         </span>
-        <span className="text-[10.5px] tabular-nums text-muted-foreground">{open} open</span>
+        <span className="text-[11px] tabular-nums text-muted-foreground">{open} open</span>
       </div>
       <div className="flex flex-col divide-y divide-border/50">
         {first.map((t) => (
-          <div key={t.label} className="flex items-center gap-2 py-1.5">
+          <div key={t.label} className="flex items-center gap-2 py-2">
             <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/40" />
-            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-foreground/90">
+            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground/90">
               {t.label}
             </span>
-            <span className="shrink-0 text-[10px] tabular-nums text-muted-foreground">{t.date}</span>
+            <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{t.date}</span>
           </div>
         ))}
       </div>
@@ -205,27 +205,27 @@ export function MobileChannelsCard() {
   return (
     <Link
       to="/channels"
-      className="origin-card flex flex-col gap-2.5 p-4"
+      className="origin-card flex flex-col gap-3 p-4"
     >
       <div className="flex items-center justify-between">
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Channels
         </span>
-        <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[10px] font-semibold tabular-nums text-background">
+        <span className="grid h-5 min-w-5 place-items-center rounded-md bg-foreground/85 px-1.5 text-[11px] font-semibold tabular-nums text-background">
           {unread}
         </span>
       </div>
       <div className="flex flex-col divide-y divide-border/50">
         {top.map((c) => (
-          <div key={c.name} className="flex items-center gap-2 py-1.5">
+          <div key={c.name} className="flex items-center gap-2 py-2">
             <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md border border-border bg-foreground/[0.05] text-[10px] font-semibold text-foreground/60">
               #
             </span>
-            <span className="min-w-0 flex-1 truncate text-[12px] font-medium text-foreground/90">
+            <span className="min-w-0 flex-1 truncate text-[13px] font-medium text-foreground/90">
               {c.name}
             </span>
             {c.unread > 0 && (
-              <span className="shrink-0 text-[10px] font-semibold tabular-nums text-foreground/70">
+              <span className="shrink-0 text-[11px] font-semibold tabular-nums text-foreground/70">
                 {c.unread}
               </span>
             )}
