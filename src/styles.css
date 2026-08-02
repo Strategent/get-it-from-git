@@ -521,28 +521,31 @@
 [data-density="compact"] > section > div {
   box-sizing: border-box;
   height: 100%;
-  padding: clamp(22px, 7cqh, 34px) clamp(36px, 5.5cqw, 68px);
+  /* Wireframe ratio: left inset ≈ 7.3% of card width */
+  padding: clamp(20px, 6cqh, 40px) clamp(28px, 7.3cqw, 100px);
 }
 [data-density="compact"] > section > span:first-child {
   font-size: clamp(10px, 3.4cqh, 12px);
 }
+/* 1:1 with the wireframe — type scales off card WIDTH so proportions hold
+   at any bento size. H1 ≈ 3.6% of card width, body ≈ 1.55%. */
 [data-density="compact"] > section > div > h1 {
   margin-top: 0;
-  font-size: clamp(28px, min(11cqh, 3.1cqw), 42px) !important;
-  line-height: 1.05;
-  letter-spacing: -0.015em;
+  font-size: clamp(22px, 3.6cqw, 54px) !important;
+  line-height: 1.04;
+  letter-spacing: -0.018em;
 }
 [data-density="compact"] > section > div > p {
-  margin-top: clamp(12px, 3cqh, 18px);
-  max-width: min(30rem, 44cqw);
-  font-size: clamp(12.5px, min(3cqh, 0.92cqw), 14px);
-  line-height: 1.6;
+  margin-top: clamp(10px, 2.4cqw, 34px);
+  max-width: min(42cqw, 34em);
+  font-size: clamp(11.5px, 1.55cqw, 22px);
+  line-height: 1.55;
   font-weight: 500;
 }
 [data-density="compact"] > section > div > button {
-  margin-top: clamp(16px, 4.2cqh, 26px);
-  padding: clamp(9px, 2.6cqh, 12px) clamp(24px, 3.2cqw, 32px);
-  font-size: clamp(12px, 3.2cqh, 13.5px);
+  margin-top: clamp(14px, 3.4cqw, 46px);
+  padding: clamp(8px, 0.95cqw, 14px) clamp(18px, 2.6cqw, 38px);
+  font-size: clamp(11.5px, 1.35cqw, 19px);
   border-radius: 999px;
 }
 
