@@ -21,14 +21,14 @@ export function MobileWorkloadCard() {
         <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
           Focus
         </span>
-        <span className="text-[10px] font-medium text-foreground/50 tabular-nums">
+        <span className="text-[11px] font-medium text-foreground/50 tabular-nums">
           {booked}/{total}h
         </span>
       </div>
 
       <div>
         <div className="flex items-baseline gap-1.5">
-          <span className="text-[34px] font-semibold leading-none tracking-[-0.04em] tabular-nums">
+          <span className="text-[32px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
             {focusLeft}
           </span>
           <span className="text-[12px] text-foreground/50">deep blocks left</span>
@@ -39,7 +39,7 @@ export function MobileWorkloadCard() {
             style={{ width: `${pct * 100}%` }}
           />
         </div>
-        <div className="mt-2 flex items-center justify-between text-[10.5px] text-foreground/50">
+        <div className="mt-2 flex items-center justify-between text-[11px] text-foreground/50">
           <span>Booked</span>
           <span className="tabular-nums">{Math.round(pct * 100)}%</span>
         </div>
@@ -56,11 +56,11 @@ export function MobileTeamCard() {
       <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/[0.4]">
         Team
       </span>
-      <ul className="mt-2 flex flex-1 flex-col divide-y divide-border/50">
+      <ul className="mt-3 flex flex-1 flex-col divide-y divide-border/50">
         {roster.map((m) => (
-          <li key={m.name} className="flex flex-1 items-center gap-2 min-w-0">
+          <li key={m.name} className="flex flex-1 items-center gap-2.5 min-w-0">
             <div className="relative shrink-0">
-              <div className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.08] text-[9px] font-semibold text-foreground/70">
+              <div className="grid h-6 w-6 place-items-center rounded-full bg-foreground/[0.08] text-[10px] font-semibold text-foreground/70">
                 {m.initials}
               </div>
               <span
@@ -68,7 +68,7 @@ export function MobileTeamCard() {
                 style={{ background: m.status === "online" ? "#34c759" : "#8e8e93" }}
               />
             </div>
-            <span className="truncate text-[11.5px] font-medium text-foreground/85">
+            <span className="truncate text-[12px] font-medium text-foreground/85">
               {m.name.split(" ")[0]}
             </span>
           </li>
