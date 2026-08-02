@@ -21,7 +21,7 @@ import { avatarUrl } from "@/lib/avatar";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
-  head: () => ({ meta: [{ title: "Team — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Team — strategent" }] }),
 });
 
 export type TeamId = "advisory" | "research" | "operations" | "client-services" | "invited";

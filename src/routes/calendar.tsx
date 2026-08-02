@@ -21,7 +21,7 @@ import { avatarUrl } from "@/lib/avatar";
 
 export const Route = createFileRoute("/calendar")({
   component: CalendarPage,
-  head: () => ({ meta: [{ title: "Calendar — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Calendar — strategent" }] }),
 });
 
 type Meeting = {

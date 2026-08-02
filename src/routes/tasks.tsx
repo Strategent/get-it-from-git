@@ -21,7 +21,7 @@ import { Plus, Check, Users, ChevronDown, ChevronRight, Circle, CircleDot, Check
 
 export const Route = createFileRoute("/tasks")({
   component: TasksPage,
-  head: () => ({ meta: [{ title: "Tasks — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Tasks — strategent" }] }),
 });
 
 type Priority = "High" | "Med" | "Low";

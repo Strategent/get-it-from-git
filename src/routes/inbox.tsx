@@ -61,7 +61,7 @@ import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 export const Route = createFileRoute("/inbox")({
   component: InboxPage,
-  head: () => ({ meta: [{ title: "Inbox - Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Inbox — strategent" }] }),
 });
 
 type FolderName = "Inbox" | "VIPs" | "Flagged" | "Drafts" | "Sent" | "Archive" | "Trash";

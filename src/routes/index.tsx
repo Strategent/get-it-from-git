@@ -29,9 +29,14 @@ export const Route = createFileRoute("/")({
   component: Home,
   head: () => ({
     meta: [
-      { title: "Dashboard — Harwick & Sterne" },
+      { title: "strategent — Dashboard" },
       {
         name: "description",
+        content: "Private wealth dashboard: workload, planner and upcoming client meetings.",
+      },
+      { property: "og:title", content: "strategent — Dashboard" },
+      {
+        property: "og:description",
         content: "Private wealth dashboard: workload, planner and upcoming client meetings.",
       },
     ],

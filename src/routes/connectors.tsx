@@ -11,7 +11,7 @@ import {
 
 export const Route = createFileRoute("/connectors")({
   component: ConnectorsPage,
-  head: () => ({ meta: [{ title: "Connectors — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Connectors — strategent" }] }),
 });
 
 const connectors = [

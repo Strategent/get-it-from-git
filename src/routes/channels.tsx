@@ -21,7 +21,7 @@ import { SyraMark } from "@/components/syra-mark";
 
 export const Route = createFileRoute("/channels")({
   component: ChannelsPage,
-  head: () => ({ meta: [{ title: "Channels — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Channels — strategent" }] }),
 });
 
 type Msg = {

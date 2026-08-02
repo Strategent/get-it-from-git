@@ -31,7 +31,7 @@ import {
 
 export const Route = createFileRoute("/documents")({
   component: DocumentsPage,
-  head: () => ({ meta: [{ title: "Documents — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Documents — strategent" }] }),
 });
 
 type Doc = {

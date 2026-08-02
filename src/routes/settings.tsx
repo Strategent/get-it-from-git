@@ -33,7 +33,7 @@ import {
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "Settings — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "Settings — strategent" }] }),
 });
 
 type UserRow = { name: string; role: string; pending?: boolean };

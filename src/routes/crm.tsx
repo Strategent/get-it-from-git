@@ -28,7 +28,7 @@ import { useMemo, useState } from "react";
 
 export const Route = createFileRoute("/crm")({
   component: CrmPage,
-  head: () => ({ meta: [{ title: "CRM — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "CRM — strategent" }] }),
 });
 
 type Stage = "Lead" | "Qualified" | "Proposal" | "Negotiation" | "Closed";
