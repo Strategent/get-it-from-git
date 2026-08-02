@@ -354,32 +354,32 @@ export function WorkloadCard() {
   return (
     <Panel label="Workload">
       <div className="flex items-end gap-3">
-        <div className="text-[34px] font-semibold leading-none tracking-tight tabular-nums">
-          {value}<span className="ml-0.5 text-base font-normal text-muted-foreground">%</span>
+        <div className="text-[32px] font-semibold leading-none tracking-[-0.02em] tabular-nums">
+          {value}<span className="ml-0.5 text-[15px] font-normal text-muted-foreground">%</span>
         </div>
-        <span className="mb-1 inline-flex h-5 items-center rounded-full border border-border bg-foreground/[0.05] px-2 text-[10px] font-medium text-foreground/80">
+        <span className="mb-1 inline-flex h-5 items-center rounded-full border border-border bg-foreground/[0.05] px-2.5 text-[11px] font-medium text-foreground/80">
           Healthy
         </span>
       </div>
-      <div className="mt-4">
+      <div className="mt-5">
         <div className="relative h-1.5 w-full overflow-hidden rounded-full bg-foreground/[0.08]">
           <div
             className="h-full rounded-full bg-foreground/70"
             style={{ width: `${value}%` }}
           />
         </div>
-        <div className="mt-1.5 flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between">
           {labels.map((l) => (
             <span
               key={l}
-              className="text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground/60"
+              className="text-[10px] font-medium uppercase tracking-[0.08em] text-muted-foreground/60"
             >
               {l}
             </span>
           ))}
         </div>
       </div>
-      <div className="mt-2 flex items-center justify-between text-[11px] text-muted-foreground">
+      <div className="mt-3 flex items-center justify-between text-[12px] text-muted-foreground">
         <span>Capacity used</span>
         <span className="tabular-nums">52 / 93 hrs</span>
       </div>
@@ -394,12 +394,12 @@ export function RecapCard() {
       <div className="flex items-start justify-between">
         <div>
           <div className="flex items-baseline gap-1.5">
-            <span className="text-[26px] font-semibold leading-none tracking-[-0.03em] tabular-nums">
+            <span className="text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums">
               +0.42%
             </span>
-            <span className="text-[11px] text-muted-foreground">S&amp;P · open</span>
+            <span className="text-[12px] text-muted-foreground">S&amp;P · open</span>
           </div>
-          <div className="mt-2 font-serif-display text-[17px] leading-tight tracking-[-0.01em]">
+          <div className="mt-2.5 font-serif-display text-[16px] leading-tight tracking-[-0.01em]">
             Daily market
           </div>
         </div>
@@ -407,7 +407,7 @@ export function RecapCard() {
           <TrendingUp className="h-4 w-4" strokeWidth={2.25} />
         </span>
       </div>
-      <p className="mt-2 text-[12px] leading-snug text-muted-foreground">
+      <p className="mt-3 text-[13px] leading-snug text-muted-foreground">
         Treasuries firmed and breadth improved. 3 items flagged for your book.
       </p>
     </Panel>
