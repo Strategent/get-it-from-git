@@ -390,7 +390,7 @@ export function InboxCard() {
         {/* Reading pane — Gmail-style */}
         <div className="col-span-12 flex min-w-0 flex-col overflow-hidden md:col-span-8">
           {/* Subject row */}
-          <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-2.5">
+          <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-3">
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <button
                 type="button"
@@ -400,7 +400,7 @@ export function InboxCard() {
               >
                 <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
               </button>
-              <h2 className="truncate text-[15px] font-semibold tracking-tight text-foreground">
+              <h2 className="truncate text-[16px] font-semibold tracking-tight text-foreground">
                 {e.subject}
               </h2>
             </div>
@@ -422,7 +422,7 @@ export function InboxCard() {
           </div>
 
           {/* From / To meta */}
-          <div className="flex items-start gap-2.5 px-4 pt-3">
+          <div className="flex items-start gap-3 px-4 pt-4">
             <img
               src={avatarUrl(e.sender, 96)}
               alt={e.sender}
@@ -431,23 +431,23 @@ export function InboxCard() {
             />
             <div className="min-w-0 flex-1 leading-tight">
               <div className="flex items-center justify-between gap-2">
-                <div className="min-w-0 truncate text-[12.5px] text-foreground/95">
+                <div className="min-w-0 truncate text-[13px] text-foreground/95">
                   <span className="font-semibold">{e.sender}</span>
                   <span className="font-normal text-muted-foreground"> &lt;{senderEmailAddress(e.sender)}&gt;</span>
                 </div>
-                <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+                <div className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
                   {e.time}
                 </div>
               </div>
-              <div className="mt-0.5 text-[10.5px] text-muted-foreground">
+              <div className="mt-0.5 text-[11px] text-muted-foreground">
                 to <span className="text-foreground/80">me</span>
               </div>
             </div>
           </div>
 
           {/* Body */}
-          <div className="min-h-0 flex-1 overflow-hidden px-4 pt-3">
-            <p className="line-clamp-3 text-[12.5px] leading-relaxed text-foreground/85">
+          <div className="min-h-0 flex-1 overflow-hidden px-4 pt-4">
+            <p className="line-clamp-3 text-[13px] leading-relaxed text-foreground/85">
               {e.preview}
             </p>
           </div>
@@ -466,8 +466,8 @@ export function InboxCard() {
               </span>
             </div>
           ) : (
-            <div className="m-3 mt-2 shrink-0 rounded-lg border border-border/60 bg-foreground/[0.02]">
-              <div className="flex items-center justify-between gap-2 border-b border-border/40 px-3 py-1.5 text-[10.5px] text-muted-foreground">
+            <div className="m-4 mt-3 shrink-0 rounded-lg border border-border/60 bg-foreground/[0.02]">
+              <div className="flex items-center justify-between gap-2 border-b border-border/40 px-3 py-2 text-[11px] text-muted-foreground">
                 <span>
                   {mode === "forward" ? (
                     "Forward message"
@@ -488,9 +488,9 @@ export function InboxCard() {
                 onChange={(ev) => setDraft(ev.target.value)}
                 rows={3}
                 placeholder="Write a reply…"
-                className="block w-full resize-none bg-transparent px-3 py-2 text-[11.5px] leading-snug text-foreground/90 placeholder:text-muted-foreground/60 outline-none focus:outline-none"
+                className="block w-full resize-none bg-transparent px-3 py-2.5 text-[12.5px] leading-snug text-foreground/90 placeholder:text-muted-foreground/60 outline-none focus:outline-none"
               />
-              <div className="flex items-center gap-1.5 px-3 pb-2.5">
+              <div className="flex items-center gap-1.5 px-3 pb-3">
                 <PillButton
                   variant="brand"
                   size="xs"
