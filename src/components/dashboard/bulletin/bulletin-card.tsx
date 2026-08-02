@@ -127,7 +127,7 @@ export function BulletinCard() {
 
   return (
     <Panel
-      label="Markets"
+      label="Insights"
       bodyClassName="gap-5"
       action={
         <span className="inline-flex items-center gap-1.5 text-[11px] tabular-nums text-muted-foreground/80">
