@@ -17,10 +17,8 @@ const SECTIONS: Section[] = [
     label: "Today",
     render: () => (
       <div className="flex h-full flex-col">
-        <div className="db-eyebrow">
-          Syra <span>→</span> Daily Brief <span>·</span> Just now
-        </div>
         <div className="db-greeting">Good morning, John.</div>
+
         <p className="db-lede">
           Markets opened steady. Hartley Trust review is your priority, followed by the
           Marlow rebalance at 11:30.
