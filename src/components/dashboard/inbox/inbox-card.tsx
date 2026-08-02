@@ -206,17 +206,17 @@ export function InboxCard() {
                   />
                   <div className="min-w-0 flex-1 leading-tight">
                     <div className="flex items-center justify-between gap-2">
-                      <div className={`truncate text-[13.5px] ${unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"}`}>
+                      <div className={`truncate text-[14px] ${unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"}`}>
                         {m.sender}
                       </div>
-                      <div className="shrink-0 text-[10.5px] tabular-nums text-muted-foreground">
+                      <div className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
                         {m.time}
                       </div>
                     </div>
-                    <div className={`mt-0.5 truncate text-[12px] ${unread ? "font-medium text-foreground/85" : "font-medium text-foreground/70"}`}>
+                    <div className={`mt-0.5 truncate text-[13px] ${unread ? "font-medium text-foreground/85" : "font-medium text-foreground/70"}`}>
                       {m.subject}
                     </div>
-                    <div className="mt-0.5 line-clamp-2 text-[11.5px] font-normal text-muted-foreground/85">
+                    <div className="mt-0.5 line-clamp-2 text-[12px] font-normal text-muted-foreground/85">
                       {m.preview}
                     </div>
                   </div>
