@@ -1,9 +1,10 @@
 import { cn } from "@/lib/utils";
-import syraLogo from "@/assets/stg-icon.png.asset.json";
+import syraLogo from "@/assets/syra-mark-3d.png.asset.json";
 
 /**
  * SyraMark — the canonical brand mark for Syra.
- * The blue glass "S" logo on a dark gray circular backdrop.
+ * Transparent 3D beveled "S" sphere; no backdrop needed since the
+ * artwork already carries its own dark sphere.
  */
 export function SyraMark({
   size = 16,
@@ -24,22 +25,14 @@ export function SyraMark({
       style={{
         height: size,
         width: size,
-        background:
-          "radial-gradient(circle at 30% 25%, #3a3a40 0%, #1f1f24 60%, #141418 100%)",
-        boxShadow: flat
-          ? undefined
-          : "0 1px 0 0 rgba(255,255,255,0.08) inset, 0 4px 12px -4px rgba(0,0,0,0.5)",
+        filter: flat ? undefined : "drop-shadow(0 4px 12px rgba(0,0,0,0.35))",
       }}
     >
       <img
         src={syraLogo.url}
         alt=""
-        className="grayscale"
-        style={{
-          width: Math.round(size * 0.62),
-          height: Math.round(size * 0.62),
-          objectFit: "contain",
-        }}
+        className="h-full w-full"
+        style={{ objectFit: "contain" }}
       />
     </span>
   );
