@@ -576,20 +576,20 @@
 /* Narrow container (tablet & mobile) — dock brief doc bottom-right, let
    the text zone flow to full width. */
 @container daily-brief-card (max-width: 900px) {
-  [data-density="compact"] > section > div:nth-child(1) {
+  [data-density="compact"] > section > div {
     max-width: 100%;
     padding: 18px 20px;
   }
-  [data-density="compact"] > section > div:nth-child(1) > h1 {
+  [data-density="compact"] > section > div > h1 {
     font-size: clamp(22px, 6.4cqw, 32px) !important;
     max-width: 52cqw !important;
     margin-top: clamp(10px, 4cqh, 18px);
   }
-  [data-density="compact"] > section > div:nth-child(1) > p {
+  [data-density="compact"] > section > div > p {
     max-width: 42cqw !important;
     font-size: 12px;
   }
-  [data-density="compact"] > section > div:nth-child(1) > button {
+  [data-density="compact"] > section > div > button {
     margin-top: 14px;
     padding: 8px 16px;
     font-size: 12px;
