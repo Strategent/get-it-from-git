@@ -78,6 +78,6 @@
   );
 
   /* ---- Layout metrics ---- */
-  --rail-w: 370px;
+  --rail-w: 340px;
   --shell-gap: 20px;
 }
