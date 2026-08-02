@@ -766,3 +766,16 @@
 [data-sidebar-resizing="true"] .peer > div > div {
   transition: none !important;
 }
+
+/* Subtle dancing glow behind the Syra sidebar icon — so faint it only
+   catches the eye on close inspection. */
+@keyframes syra-glow {
+  0%, 100% { opacity: 0; transform: scale(0.94) translate(-1%, 1%); }
+  22% { opacity: 0.28; transform: scale(1.02) translate(1%, -1%); }
+  45% { opacity: 0.12; transform: scale(0.97) translate(-1%, 1%); }
+  68% { opacity: 0.34; transform: scale(1.03) translate(1%, 0%); }
+  85% { opacity: 0.08; transform: scale(0.98) translate(0%, 1%); }
+}
+.animate-syra-glow {
+  animation: syra-glow 5.6s ease-in-out infinite;
+}
