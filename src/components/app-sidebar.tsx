@@ -34,10 +34,14 @@ const syraSIcon = { url: syraSidebarIcon.url };
 
 const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
   <span aria-hidden className={`relative inline-grid place-items-center ${className ?? ""}`}>
+    <span
+      aria-hidden
+      className="pointer-events-none absolute inset-[-35%] rounded-full bg-[radial-gradient(circle,hsl(var(--primary)/0.22)_0%,transparent_70%)] opacity-0 mix-blend-screen blur-md duration-700 ease-in-out animate-syra-glow"
+    />
     <img
       src={syraSIcon.url}
       alt=""
-      className="h-full w-full object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
+      className="relative h-full w-full object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
     />
   </span>
 );
