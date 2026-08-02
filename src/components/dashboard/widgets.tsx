@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Plus, Paperclip, ArrowUpRight, TrendingUp } from "lucide-react";
+import { Plus, Paperclip, TrendingUp } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
@@ -118,16 +118,15 @@ export function MobileDailyBriefCard() {
       />
 
       <div className="relative flex h-full flex-col">
-        <h3 className="font-serif-display mt-5 text-[26px] font-normal leading-[1.1] tracking-[-0.01em] text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
+        <h3 className="font-serif-display mt-5 text-[28px] font-normal leading-[1.05] tracking-[-0.015em] text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
           Welcome back, John.
         </h3>
-        <p className="mt-3 max-w-[22rem] text-[13px] leading-[1.55] text-white/85 drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
+        <p className="mt-4 max-w-[22rem] text-[13px] font-medium leading-[1.6] text-white/[0.88] drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
           4 meetings today. Hartley Trust is your first priority — IPS ready for sign-off.
         </p>
         <div className="mt-auto pt-6">
-          <span className="inline-flex items-center gap-1.5 rounded-md bg-white/95 px-3.5 py-1.5 text-[12px] font-medium text-neutral-900">
+          <span className="inline-flex items-center rounded-full border border-white/70 bg-white/[0.08] px-6 py-2 text-[12.5px] font-medium text-white backdrop-blur-md">
             Read daily brief
-            <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2} />
           </span>
         </div>
       </div>
