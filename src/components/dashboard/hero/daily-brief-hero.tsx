@@ -87,10 +87,10 @@ export function DailyBriefHero({
 
         <div className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-8 lg:pl-20 lg:pr-16 lg:py-12">
           <h1
-            className="font-serif-display mt-2 font-normal tracking-[-0.02em] text-white lg:mt-3"
+            className="font-serif-display mt-2 font-normal tracking-[-0.01em] text-white lg:mt-3"
             style={{
               fontSize: "clamp(26px, 2.4vw, 34px)",
-              lineHeight: 1.08,
+              lineHeight: 1.1,
               textShadow: "0 1px 4px rgba(0,0,0,0.25)",
             }}
           >
@@ -98,7 +98,7 @@ export function DailyBriefHero({
           </h1>
 
           <p
-            className="mt-4 max-w-[32rem] text-[14px] leading-[1.45] text-white/[0.85] lg:mt-5 lg:text-[15px]"
+            className="mt-4 max-w-[34rem] text-[14px] leading-[1.5] text-white/[0.85] lg:mt-5 lg:text-[15px]"
             style={{ textShadow: "0 1px 4px rgba(0,0,0,0.35)" }}
           >
             {summary}
