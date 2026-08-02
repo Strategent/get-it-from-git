@@ -16,7 +16,7 @@ import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 
 export const Route = createFileRoute("/syra")({
   component: SyraPage,
-  head: () => ({ meta: [{ title: "Syra — Harwick & Sterne" }] }),
+  head: () => ({ meta: [{ title: "strategent" }] }),
 });
 
 const quickActions = [
