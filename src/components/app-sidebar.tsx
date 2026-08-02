@@ -116,8 +116,6 @@ export function AppSidebar() {
                       </span>
                     )}
                   </Link>
-
-                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             );
