@@ -284,8 +284,8 @@ export function PlannerCard() {
         </button>
       }
     >
-      <div className="mb-3 shrink-0 text-[20px] font-semibold leading-none tracking-tight">
-        {open} <span className="text-[13px] font-normal text-muted-foreground">open today</span>
+      <div className="mb-4 shrink-0 text-[28px] font-semibold leading-none tracking-[-0.02em]">
+        {open} <span className="text-[13px] font-normal tracking-normal text-muted-foreground">open today</span>
       </div>
 
       {adding && (
@@ -299,7 +299,7 @@ export function PlannerCard() {
             }}
             placeholder="New task…"
             autoFocus
-            className="h-7 min-w-0 flex-1 rounded-md border border-border bg-foreground/[0.03] px-2 text-[12px] outline-none placeholder:text-muted-foreground/60 focus:border-foreground/30"
+            className="h-8 min-w-0 flex-1 rounded-md border border-border bg-foreground/[0.03] px-2.5 text-[13px] outline-none placeholder:text-muted-foreground/60 focus:border-foreground/30"
           />
           <input
             type="date"
@@ -307,12 +307,12 @@ export function PlannerCard() {
             onChange={(e) => setDate(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && add()}
             aria-label="Due date"
-            className="h-7 shrink-0 rounded-md border border-border bg-foreground/[0.03] px-1.5 text-[11px] text-muted-foreground outline-none focus:border-foreground/30"
+            className="h-8 shrink-0 rounded-md border border-border bg-foreground/[0.03] px-1.5 text-[12px] text-muted-foreground outline-none focus:border-foreground/30"
           />
           <button
             onClick={add}
             disabled={!label.trim()}
-            className="h-7 shrink-0 rounded-md px-2.5 text-[11px] font-semibold text-white transition-opacity disabled:opacity-40"
+            className="h-8 shrink-0 rounded-md px-3 text-[12px] font-semibold text-white transition-opacity disabled:opacity-40"
             style={{ background: "var(--gradient-primary)" }}
           >
             Add
@@ -333,13 +333,13 @@ export function PlannerCard() {
               className="h-4 w-4 rounded-full border-border data-[state=checked]:border-foreground/60 data-[state=checked]:bg-foreground/80 data-[state=checked]:text-background"
             />
             <div
-              className={`min-w-0 flex-1 truncate text-[13px] leading-snug ${
+              className={`min-w-0 flex-1 truncate text-[13.5px] leading-snug ${
                 t.done ? "text-muted-foreground line-through" : "font-medium text-foreground/95"
               }`}
             >
               {t.label}
             </div>
-            <div className="shrink-0 text-[11px] tabular-nums text-muted-foreground">{t.date}</div>
+            <div className="shrink-0 text-[11.5px] tabular-nums text-muted-foreground">{t.date}</div>
           </div>
         ))}
       </div>
