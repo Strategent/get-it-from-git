@@ -582,7 +582,7 @@
 
 /* Narrow container (tablet & mobile) — dock brief doc bottom-right, let
    the text zone flow to full width. */
-@container daily-brief-card (max-width: 900px) {
+@container daily-brief-card (max-width: 620px) {
   [data-density="compact"] > section > div {
     max-width: 100%;
     padding: clamp(16px, 5cqh, 30px) clamp(20px, 6cqw, 40px);
@@ -590,12 +590,12 @@
   /* Mobile wireframe ratio: H1 ≈ 6% of card width, body ≈ 2.6% */
   [data-density="compact"] > section > div > h1 {
     font-size: clamp(20px, 6cqw, 34px) !important;
-    max-width: 62cqw !important;
+    max-width: 72cqw !important;
     margin-top: 0;
   }
   [data-density="compact"] > section > div > p {
     margin-top: clamp(8px, 2.6cqw, 20px);
-    max-width: 58cqw !important;
+    max-width: 64cqw !important;
     font-size: clamp(11.5px, 2.6cqw, 15px);
   }
   [data-density="compact"] > section > div > button {
@@ -603,6 +603,9 @@
     padding: clamp(7px, 1.4cqw, 11px) clamp(16px, 4cqw, 26px);
     font-size: clamp(11px, 2.3cqw, 13.5px);
   }
+}
+
+@container daily-brief-card (max-width: 900px) {
   .daily-brief-document {
     right: 14px;
     bottom: 14px;
