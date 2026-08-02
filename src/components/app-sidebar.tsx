@@ -110,7 +110,7 @@ export function AppSidebar() {
                   >
                     <item.icon
                       strokeWidth={active ? 1.9 : 1.5}
-                      className={`shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"} ${item.title === "Syra" ? "h-[20px] w-[20px]" : "h-[18px] w-[18px]"}`}
+                      className={`shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"} ${item.title === "Syra" ? "h-[22px] w-[22px] lg:h-[24px] lg:w-[24px]" : "h-[18px] w-[18px]"}`}
                     />
                     {!collapsed && (
                       <span
