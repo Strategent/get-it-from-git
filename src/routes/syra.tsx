@@ -8,7 +8,6 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
@@ -49,51 +48,70 @@ function SyraPage() {
   };
   const activeModel = models.find((m) => m.id === modelId) ?? models[0];
 
-  // Colors pulled from the Daily Brief hero mountain photo for continuity:
-  // warm cream sky, muted sage-gray ridges, deep warm mountain shadow.
-  const bgStart = isDark ? "rgb(52, 48, 43)" : "rgb(240, 235, 228)";
-  const bgEnd = isDark ? "rgb(34, 32, 29)" : "rgb(228, 220, 210)";
-  const c1 = isDark ? "142, 144, 137" : "216, 208, 198"; // sage / warm cream
-  const c2 = isDark ? "90, 84, 76"    : "190, 182, 172"; // warm brown / taupe
-  const c3 = isDark ? "120, 116, 108" : "200, 194, 184"; // mid warm gray
-  const c4 = isDark ? "74, 66, 56"    : "176, 170, 160"; // deep ridge / soft stone
-  const c5 = isDark ? "108, 100, 92"  : "208, 200, 190"; // bridge tone
-  const blending = isDark ? "soft-light" : "normal";
-
-
-
   return (
     <div className="relative w-full overflow-hidden" style={{ height: "calc(100dvh - 53px)" }}>
       <style>{`
         .font-radley { font-family: 'Radley', Georgia, serif; }
+        @keyframes syraGradientFlow {
+          0% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+          100% { background-position: 0% 50%; }
+        }
+        @keyframes syraGradientFlowReverse {
+          0% { background-position: 100% 50%; }
+          50% { background-position: 0% 50%; }
+          100% { background-position: 100% 50%; }
+        }
       `}</style>
 
-      {/* Animated on-brand monotone + subtle purple fluid background */}
+      {/* Giga-mountain mood: horizontal, fluid, subtle color washes. */}
       <div className="absolute inset-0 pointer-events-none">
-        <BackgroundGradientAnimation
-          interactive={false}
-          gradientBackgroundStart={bgStart}
-          gradientBackgroundEnd={bgEnd}
-          firstColor={c1}
-          secondColor={c2}
-          thirdColor={c3}
-          fourthColor={c4}
-          fifthColor={c5}
-          blendingValue={blending}
-          size="70%"
-          containerClassName="h-full w-full"
-        />
+        {/* Base vertical gradient — dark valley floor to misty sky. */}
         <div
           className="absolute inset-0"
           style={{
             background: isDark
-              ? "radial-gradient(120% 80% at 50% 100%, rgba(34,32,29,0.55) 0%, rgba(34,32,29,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(52,48,43,0.4) 0%, rgba(52,48,43,0) 55%)"
-              : "radial-gradient(120% 80% at 50% 100%, rgba(240,235,228,0.7) 0%, rgba(240,235,228,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(228,220,210,0.6) 0%, rgba(228,220,210,0) 55%)",
+              ? "linear-gradient(180deg, rgb(11, 14, 19) 0%, rgb(16, 21, 28) 25%, rgb(24, 31, 40) 50%, rgb(34, 43, 54) 75%, rgb(45, 56, 70) 100%)"
+              : "linear-gradient(180deg, rgb(232, 236, 241) 0%, rgb(222, 228, 235) 30%, rgb(208, 216, 225) 60%, rgb(194, 204, 215) 100%)",
+          }}
+        />
+
+        {/* Horizontal moss band — very low opacity, slow drift. */}
+        <div
+          className="absolute inset-0 opacity-40"
+          style={{
+            background: isDark
+              ? "linear-gradient(90deg, rgba(58, 74, 64, 0) 0%, rgba(58, 74, 64, 0.35) 25%, rgba(58, 74, 64, 0.15) 50%, rgba(58, 74, 64, 0.30) 75%, rgba(58, 74, 64, 0) 100%)"
+              : "linear-gradient(90deg, rgba(80, 100, 86, 0) 0%, rgba(80, 100, 86, 0.22) 25%, rgba(80, 100, 86, 0.10) 50%, rgba(80, 100, 86, 0.20) 75%, rgba(80, 100, 86, 0) 100%)",
+            backgroundSize: "200% 100%",
+            animation: "syraGradientFlow 28s ease-in-out infinite",
+          }}
+        />
+
+        {/* Horizontal lavender band — shifted, counter-motion. */}
+        <div
+          className="absolute inset-0 opacity-35"
+          style={{
+            background: isDark
+              ? "linear-gradient(90deg, rgba(72, 62, 88, 0) 0%, rgba(72, 62, 88, 0.28) 35%, rgba(72, 62, 88, 0.10) 55%, rgba(72, 62, 88, 0.24) 80%, rgba(72, 62, 88, 0) 100%)"
+              : "linear-gradient(90deg, rgba(95, 85, 120, 0) 0%, rgba(95, 85, 120, 0.18) 35%, rgba(95, 85, 120, 0.08) 55%, rgba(95, 85, 120, 0.16) 80%, rgba(95, 85, 120, 0) 100%)",
+            backgroundSize: "220% 100%",
+            animation: "syraGradientFlowReverse 36s ease-in-out infinite",
+          }}
+        />
+
+        {/* Soft horizon glow — warm whisper at the vanishing line. */}
+        <div
+          className="absolute inset-0 opacity-25"
+          style={{
+            background: isDark
+              ? "radial-gradient(120% 40% at 50% 70%, rgba(80, 92, 108, 0.35) 0%, rgba(80, 92, 108, 0) 60%)"
+              : "radial-gradient(120% 40% at 50% 70%, rgba(180, 190, 200, 0.45) 0%, rgba(180, 190, 200, 0) 60%)",
           }}
         />
       </div>
 
-      {/* Content — composer only, no copy outside the chat box */}
+      {/* Content — composer only, no copy outside the chat box. */}
       <div className="relative h-full flex flex-col items-center justify-center px-6">
         {/* Input bar */}
         <div className="w-full max-w-3xl">
@@ -135,14 +153,13 @@ function SyraPage() {
             }
           />
 
-
-          {/* Quick actions */}
+          {/* Quick actions — tinted moss and lavender to match the wash. */}
           <div className="mt-5 flex flex-wrap justify-center gap-2">
             {quickActions.map((a) => (
               <button
                 key={a.label}
                 onClick={() => runAgent(a.label === "Draft Email" ? "Draft up an agreement" : a.label)}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/40 px-3.5 py-1.5 text-[12.5px] text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/30 px-3.5 py-1.5 text-[12.5px] text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
               >
                 <a.icon className="h-3.5 w-3.5" /> {a.label}
               </button>
@@ -155,11 +172,11 @@ function SyraPage() {
         <SyraAgentRunSheet prompt={agentPrompt} isDark={isDark} onClose={() => setAgentPrompt(null)} />
       )}
 
-
       {voiceOpen && <LiveVoiceOverlay isDark={isDark} onClose={() => setVoiceOpen(false)} />}
     </div>
   );
 }
+
 
 // Hardcoded live-voice experience. Uses the browser SpeechRecognition + speechSynthesis
 // APIs where available so it feels real; falls back to a scripted demo otherwise.
