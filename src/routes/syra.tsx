@@ -353,7 +353,7 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
           style={{
             width: 260 + level * 40,
             height: 260 + level * 40,
-            borderColor: isDark ? "rgba(200,190,230,0.15)" : "rgba(120,110,150,0.18)",
+            borderColor: isDark ? "rgba(180,172,160,0.15)" : "rgba(120,114,106,0.18)",
             transition: "width 200ms ease-out, height 200ms ease-out",
           }}
         />
@@ -362,7 +362,7 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
           style={{
             width: 300 + level * 20,
             height: 300 + level * 20,
-            borderColor: isDark ? "rgba(200,190,230,0.08)" : "rgba(120,110,150,0.1)",
+            borderColor: isDark ? "rgba(180,172,160,0.08)" : "rgba(120,114,106,0.1)",
             transition: "width 260ms ease-out, height 260ms ease-out",
           }}
         />
