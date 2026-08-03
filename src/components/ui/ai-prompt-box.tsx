@@ -458,8 +458,8 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
         onValueChange={setInput}
         isLoading={isLoading}
         onSubmit={handleSubmit}
-        className={cn("w-full shadow-xl", isRecording && "border-destructive/60", className)}
-        disabled={isLoading || isRecording}
+        className={cn("w-full shadow-xl", className)}
+        disabled={isLoading}
         ref={ref || promptBoxRef}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -634,6 +634,8 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
             </div>
           </div>
 
+          {isRecording && <VoiceWaveform />}
+
           <PromptInputAction
             tooltip={
               isLoading ? "Stop generation" : isRecording ? "Stop recording" : hasContent ? "Send message" : "Voice message"
@@ -645,7 +647,7 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               className={cn(
                 "h-8 w-8 rounded-full transition-all duration-200",
                 isRecording
-                  ? "bg-transparent hover:bg-muted text-destructive"
+                  ? "bg-foreground text-background hover:bg-foreground/90 shadow-md"
                   : hasContent
                     ? "bg-primary text-primary-foreground hover:bg-primary/90"
                     : "bg-transparent hover:bg-muted text-muted-foreground hover:text-foreground",
@@ -653,14 +655,17 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               onClick={() => {
                 if (isRecording) setIsRecording(false);
                 else if (hasContent) handleSubmit();
-                else setIsRecording(true);
+                else {
+                  setIsRecording(true);
+                  onVoiceStart?.();
+                }
               }}
               disabled={isLoading && !hasContent}
             >
               {isLoading ? (
                 <Square className="h-4 w-4 animate-pulse" />
               ) : isRecording ? (
-                <StopCircle className="h-5 w-5" />
+                <Square className="h-2.5 w-2.5 fill-current" />
               ) : hasContent ? (
                 <ArrowUp className="h-4 w-4" />
               ) : (
