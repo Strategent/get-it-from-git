@@ -1079,7 +1079,7 @@ function InboxPage() {
         />
 
         {/* ── Nav rail ───────────────────────────────────────────── */}
-        <aside className="relative z-10 hidden md:flex w-[232px] shrink-0 flex-col border-r border-border/60 bg-card/40">
+        <aside className="relative z-10 hidden md:flex w-[208px] shrink-0 flex-col border-r border-border/60 bg-card/40">
           <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-foreground/10 to-transparent" />
 
           {/* account */}
@@ -1177,7 +1177,7 @@ function InboxPage() {
 
         {/* ── Thread list ─────────────────────────────────────────── */}
         <section
-          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[352px] shrink-0 flex-col border-r border-border/60 bg-card/20 min-w-0`}
+          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[330px] shrink-0 flex-col border-r border-border/60 bg-card/20 min-w-0`}
         >
           <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-foreground/10 to-transparent" />
 
@@ -1309,7 +1309,7 @@ function InboxPage() {
           {/* header block */}
           <div className="relative border-b border-border/60 bg-card/50 px-6 py-5">
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/12 to-transparent" />
-            <div className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-4">
+            <div className="flex flex-col gap-4">
               <div className="flex min-w-0 items-start gap-3.5">
                 <button
                   type="button"
@@ -1329,22 +1329,18 @@ function InboxPage() {
                   <div className="truncate text-[19px] font-semibold tracking-tight text-foreground">
                     {selected.company}
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[12px] text-muted-foreground">
-                    <span>
-                      From: <span className="text-foreground/85">{selected.email}</span>
-                    </span>
-                    <span className="opacity-50">•</span>
-                    <span>
-                      To: <span className="text-foreground/85">john.harwick@harwicksterne.com</span>
-                    </span>
+                  <div className="mt-1 truncate text-[12px] text-muted-foreground">
+                    From: <span className="text-foreground/85">{selected.email}</span>
+                    <span className="px-1.5 opacity-50">•</span>
+                    To: <span className="text-foreground/85">john.harwick@harwicksterne.com</span>
                   </div>
+                </div>
+                <div className="ml-auto shrink-0 pt-1 text-[11.5px] tabular-nums text-muted-foreground">
+                  {selected.sentAt ?? `${selected.time} ago`}
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
-                <div className="text-[11.5px] tabular-nums text-muted-foreground">
-                  {selected.sentAt ?? `${selected.time} ago`}
-                </div>
+              <div className="flex items-center justify-end">
                 <div className="flex items-center gap-0.5">
                   <ToolbarBtn
                     icon={Sparkles}
