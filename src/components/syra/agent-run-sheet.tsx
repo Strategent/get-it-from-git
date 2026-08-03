@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUp, Maximize2, X } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowUpRight,
+  CalendarDays,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  FolderLock,
+  Mail,
+  Maximize2,
+  PenLine,
+  SquareCode,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
