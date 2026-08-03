@@ -383,28 +383,108 @@ export function SyraAgentRunSheet({
                 <div className="mt-1.5 text-[15px] font-medium leading-snug text-foreground">
                   {currentQuestion.prompt}
                 </div>
-                <div className="mt-2.5 space-y-1">
-                  {currentQuestion.options.map((o, i) => (
+                {kind === "choice" && (
+                  <div className="mt-2.5 space-y-1">
+                    {currentQuestion.options.map((o, i) => (
+                      <button
+                        key={o}
+                        onClick={() => setSelected(i)}
+                        className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors ${
+                          selected === i ? "bg-foreground/10" : "hover:bg-foreground/5"
+                        }`}
+                      >
+                        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md bg-foreground/5 text-[10.5px] text-muted-foreground">
+                          {i + 1}
+                        </span>
+                        <span className="text-[13.5px] text-foreground">{o}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {kind === "contact" && (
+                  <div className="mt-2.5 space-y-2">
+                    <input
+                      autoFocus
+                      value={contactQuery}
+                      onChange={(e) => setContactQuery(e.target.value)}
+                      placeholder={newContact ? "Full name" : "Start typing a name…"}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none"
+                    />
+
+                    {newContact ? (
+                      <input
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                        placeholder="Email address"
+                        type="email"
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none"
+                      />
+                    ) : (
+                      suggestions.length > 0 && (
+                        <div className="space-y-1">
+                          <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80">
+                            From CRM
+                          </div>
+                          {suggestions.map((c) => (
+                            <button
+                              key={c.email}
+                              onClick={() => {
+                                setContactQuery(c.name);
+                                setContactEmail(c.email);
+                              }}
+                              className={`flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left transition-colors ${
+                                contactEmail === c.email ? "bg-foreground/10" : "hover:bg-foreground/5"
+                              }`}
+                            >
+                              <span className="min-w-0">
+                                <span className="block truncate text-[13.5px] text-foreground">{c.name}</span>
+                                <span className="block truncate text-[11.5px] text-muted-foreground">
+                                  {c.org} · {c.email}
+                                </span>
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )
+                    )}
+
                     <button
-                      key={o}
-                      onClick={() => setSelected(i)}
-                      className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors ${
-                        selected === i ? "bg-foreground/10" : "hover:bg-foreground/5"
-                      }`}
+                      onClick={() => {
+                        setNewContact((v) => !v);
+                        setContactEmail("");
+                      }}
+                      className="text-[12.5px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
                     >
-                      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md bg-foreground/5 text-[10.5px] text-muted-foreground">
-                        {i + 1}
-                      </span>
-                      <span className="text-[13.5px] text-foreground">{o}</span>
+                      {newContact ? "Search CRM instead" : "+ New contact"}
                     </button>
-                  ))}
-                </div>
+                  </div>
+                )}
+
+                {kind === "when" && (
+                  <div className="mt-2.5 grid grid-cols-2 gap-2">
+                    <input
+                      type="date"
+                      value={meetDate}
+                      onChange={(e) => setMeetDate(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground focus:border-foreground/30 focus:outline-none"
+                    />
+                    <input
+                      type="time"
+                      value={meetTime}
+                      onChange={(e) => setMeetTime(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground focus:border-foreground/30 focus:outline-none"
+                    />
+                  </div>
+                )}
+
                 <div className="mt-3 flex items-center justify-end gap-2">
                   <button
                     onClick={confirm}
-                    className="rounded-lg bg-foreground px-3.5 py-1.5 text-[13.5px] font-medium text-background"
+                    disabled={!canConfirm}
+                    className="rounded-lg bg-foreground px-3.5 py-1.5 text-[13.5px] font-medium text-background transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    {qIndex + 1 < script.questions.length ? "Next" : "Confirm & run"}
+                    {qIndex + 1 < script.questions.length ? "Next" : "Confirm & send invite"}
                   </button>
                 </div>
               </div>
@@ -448,10 +528,10 @@ export function SyraAgentRunSheet({
 
           {/* follow-up */}
           <div className="px-4 pb-4">
-            <div className="relative rounded-xl bg-muted/60">
+            <div className="relative rounded-xl border border-border bg-background/80 shadow-inner">
               <input
                 placeholder="Ask a follow-up…"
-                className="w-full bg-transparent py-4 pl-4 pr-14 text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+                className="w-full bg-transparent py-3.5 pl-4 pr-14 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
               />
               <button
                 aria-label="Send"
