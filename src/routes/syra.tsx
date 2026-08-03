@@ -93,20 +93,10 @@ function SyraPage() {
         />
       </div>
 
-      {/* Content */}
+      {/* Content — composer only, no copy outside the chat box */}
       <div className="relative h-full flex flex-col items-center justify-center px-6">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] text-muted-foreground mb-6">
-          YOUR OPERATIONS AGENT
-        </div>
-        <h1 className="font-radley text-5xl md:text-6xl font-normal tracking-tight text-foreground text-center">
-          Syra
-        </h1>
-        <p className="mt-4 text-muted-foreground text-center max-w-xl text-[15px]">
-          Draft, analyze, automate. Syra moves work forward.
-        </p>
-
         {/* Input bar */}
-        <div className="mt-10 w-full max-w-3xl">
+        <div className="w-full max-w-3xl">
           <PromptInputBox
             placeholder="Ask Syra anything…"
             onSend={(message) => runAgent(message)}
