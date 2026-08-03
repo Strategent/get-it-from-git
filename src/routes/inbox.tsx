@@ -40,6 +40,7 @@ import {
   RefreshCw,
   FileText,
   User as UserIcon,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
