@@ -256,6 +256,7 @@ const folderMeta = [
 ];
 
 const regenerateOptions = [
+const_placeholder_removed
   "Thanks for the notes. I can confirm tier 2 pricing as proposed and hold kickoff for the week of June 10. I'll send the updated SOW and a 30-minute walkthrough invite shortly.",
   "Appreciate the quick review. We'll keep tier 2 at the annual rate discussed and target a June 10 kickoff. I'll follow up with the revised SOW and calendar hold today.",
   "That works on our side. I'll adjust tier 2 pricing, lock the June 10 kickoff window, and send the updated SOW with a short walkthrough invite.",
