@@ -25,10 +25,14 @@ const quickActions = [
 ];
 
 const models = [
-  { id: "claude-sonnet-4.5", name: "Claude Sonnet 4.5", provider: "Anthropic" },
-  { id: "claude-opus-4", name: "Claude Opus 4", provider: "Anthropic" },
-  { id: "gpt-5", name: "GPT-5", provider: "OpenAI" },
-  { id: "gpt-5-mini", name: "GPT-5 Mini", provider: "OpenAI" },
+  { id: "openai/gpt-5.6-sol", name: "GPT-5.6 Sol", provider: "OpenAI" },
+  { id: "openai/gpt-5.5", name: "GPT-5.5", provider: "OpenAI" },
+  { id: "google/gemini-3.6-flash", name: "Gemini 3.6 Flash", provider: "Google" },
+  { id: "google/gemini-3.1-pro-preview", name: "Gemini 3.1 Pro", provider: "Google" },
+  { id: "claude-opus-5", name: "Claude Opus 5", provider: "Anthropic" },
+  { id: "claude-sonnet-5", name: "Claude Sonnet 5", provider: "Anthropic" },
+  { id: "fable-5", name: "Fable 5", provider: "Fable" },
+  { id: "grok", name: "Grok", provider: "xAI" },
 ];
 
 function SyraPage() {
