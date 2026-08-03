@@ -150,10 +150,10 @@ export function SyraAgentRunSheet({
     timers.current.forEach(clearTimeout);
     timers.current = [];
     script.steps.forEach((_, i) => {
-      timers.current.push(setTimeout(() => setRevealed(i + 1), 650 + i * 700));
+      timers.current.push(setTimeout(() => setRevealed(i + 1), 600 + i * 760));
     });
     timers.current.push(
-      setTimeout(() => setShowQuestion(true), 650 + script.steps.length * 700),
+      setTimeout(() => setShowQuestion(true), 700 + script.steps.length * 760),
     );
     return () => timers.current.forEach(clearTimeout);
   }, [script, runKey]);
@@ -166,35 +166,17 @@ export function SyraAgentRunSheet({
     setResultRevealed(0);
     const steps = script.result(choice, client);
     steps.forEach((_, i) => {
-      timers.current.push(setTimeout(() => setResultRevealed(i + 1), 400 + i * 620));
+      timers.current.push(setTimeout(() => setResultRevealed(i + 1), 450 + i * 700));
     });
   };
 
 
   return (
     <div className="absolute inset-0 z-50 flex flex-col items-center justify-center px-6 sm:px-8">
-      {/* muted lavender ambient glow */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            isDark
-              ? "radial-gradient(120% 70% at 50% 100%, rgba(158,142,196,0.34) 0%, rgba(110,98,150,0.14) 40%, rgba(0,0,0,0) 72%), rgba(8,8,11,0.82)"
-              : "radial-gradient(120% 70% at 50% 100%, rgba(176,164,206,0.42) 0%, rgba(200,194,220,0.2) 40%, rgba(255,255,255,0) 72%), rgba(246,245,249,0.86)",
-          backdropFilter: "blur(18px)",
-          WebkitBackdropFilter: "blur(18px)",
-        }}
-        onClick={onClose}
-      />
+      {/* click-away layer — fully transparent, no dim/spotlight (avoids gradient banding) */}
+      <div className="absolute inset-0" onClick={onClose} />
 
       <div className="relative w-full max-w-[22rem] sm:max-w-md">
-        <div
-          className="mb-2 pl-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground"
-          style={{ fontFamily: "var(--font-serif)" }}
-        >
-          Syra
-        </div>
-
         <div className="overflow-hidden rounded-2xl border border-border bg-card/95 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.6)] backdrop-blur-xl">
           {/* header */}
           <div className="flex items-center justify-between border-b border-border px-4 py-3">
@@ -219,15 +201,10 @@ export function SyraAgentRunSheet({
 
             {/* steps */}
             <div className="mt-4 space-y-2">
-              {script.steps.slice(0, revealed).map((s) => (
-                <div key={s.object} className="animate-in fade-in slide-in-from-bottom-1 text-[14px] duration-300">
-                  <span className="font-medium text-foreground">{s.verb}</span>{" "}
-                  <span className="text-muted-foreground">{s.object}</span>
-                </div>
+              {script.steps.slice(0, revealed).map((s, i) => (
+                <StepLine key={s.object} step={s} index={i} />
               ))}
-              {revealed < script.steps.length && (
-                <div className="text-[14px] text-muted-foreground/70">Working…</div>
-              )}
+              {revealed < script.steps.length && <Working />}
             </div>
 
             {/* question card */}
@@ -272,21 +249,13 @@ export function SyraAgentRunSheet({
 
             {done && (
               <div className="mt-4 space-y-2">
-                {resultSteps.slice(0, resultRevealed).map((s) => (
-                  <div
-                    key={s.object}
-                    className="animate-in fade-in slide-in-from-bottom-1 text-[14px] duration-300"
-                  >
-                    <span className="font-medium text-foreground">{s.verb}</span>{" "}
-                    <span className="text-muted-foreground">{s.object}</span>
-                  </div>
+                {resultSteps.slice(0, resultRevealed).map((s, i) => (
+                  <StepLine key={s.object} step={s} index={i} />
                 ))}
-                {resultRevealed < resultSteps.length && (
-                  <div className="text-[14px] text-muted-foreground/70">Working…</div>
-                )}
+                {resultRevealed < resultSteps.length && <Working />}
 
                 {resultRevealed >= resultSteps.length && script.reviewer && (
-                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3 animate-in fade-in duration-300">
+                  <div className="mt-3 flex items-center gap-3 rounded-xl border border-border bg-muted/40 p-3 syra-step-line">
                     <img
                       src={avatarUrl(script.reviewer, 96)}
                       alt={script.reviewer}
@@ -304,8 +273,8 @@ export function SyraAgentRunSheet({
                 )}
 
                 {resultRevealed >= resultSteps.length && (
-                  <div className="mt-3 flex items-center gap-2 text-[13px] text-muted-foreground animate-in fade-in duration-300">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                  <div className="mt-3 flex items-center gap-2 text-[13px] text-muted-foreground syra-step-line" style={{ animationDelay: "120ms" }}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 syra-step-dot" />
                     Task complete · {resultSteps.length} actions executed
                   </div>
                 )}
