@@ -40,6 +40,7 @@ import {
   RefreshCw,
   FileText,
   User as UserIcon,
+  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -252,6 +253,13 @@ const folderMeta = [
   { name: "Sent" as const, icon: Send },
   { name: "Archive" as const, icon: Archive },
   { name: "Trash" as const, icon: Trash2 },
+];
+
+const mailLabels = [
+  { name: "Hot leads", dot: "border-emerald-400", query: "proposal" },
+  { name: "Needs review", dot: "border-violet-400", query: "review" },
+  { name: "Renewals", dot: "border-rose-400", query: "renewal" },
+  { name: "Billing", dot: "border-sky-400", query: "invoice" },
 ];
 
 const regenerateOptions = [
@@ -1058,79 +1066,149 @@ function InboxPage() {
     <>
 
       <div
-        className="flex w-full bg-muted/20 overflow-hidden"
+        className="relative flex w-full overflow-hidden bg-background"
         style={{ height: "calc(100dvh - 53px)" }}
       >
-        <section className={`${mobileReading ? "hidden md:flex" : "flex"} w-full md:w-[400px] shrink-0 flex-col border-r border-border/60 min-w-0 bg-muted/30`}>
-          {/* Compose + folder */}
-          <div className="px-4 pt-4 pb-3 flex items-center gap-2">
-            <button
-              onClick={() => openComposer("reply")}
-              aria-label="Compose"
-              title="Compose"
-              className="inline-flex items-center justify-center gap-2 h-9 px-3 rounded-sm border border-border bg-background text-foreground text-[12.5px] font-medium hover:bg-foreground/[0.05] transition-colors"
-            >
-              <FileEdit className="h-3.5 w-3.5" strokeWidth={1.85} />
-              Compose
-            </button>
-            <div className="relative ml-auto" ref={popoverRef}>
-              <button
-                onClick={() => setFoldersOpen((v) => !v)}
-                aria-label="Mailboxes"
-                aria-expanded={foldersOpen}
-                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-sm border border-border bg-background text-foreground/80 text-[12px] hover:bg-foreground/[0.05] transition-colors"
-              >
-                <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
-                <span>{activeFolder}</span>
-                <ChevronDown className="h-3 w-3 opacity-60" />
-              </button>
-              {foldersOpen && (
-                <div className="absolute right-0 top-11 z-30 w-56 p-1.5 rounded-sm border border-border bg-popover shadow-lg animate-in fade-in slide-in-from-top-2 duration-150">
-                  {folderMeta.map((f) => {
-                    const Icon = f.icon;
-                    const active = f.name === activeFolder;
-                    return (
-                      <button
-                        key={f.name}
-                        onClick={() => {
-                          setActiveFolder(f.name);
-                          setFoldersOpen(false);
-                        }}
-                        className={`w-full flex items-center gap-2.5 px-3 h-9 rounded-sm text-[13px] transition-colors ${
-                          active
-                            ? "bg-foreground/[0.08] text-foreground font-medium"
-                            : "text-foreground/80 hover:bg-foreground/[0.05]"
-                        }`}
-                      >
-                        <Icon className="h-4 w-4" strokeWidth={1.75} />
-                        <span className="flex-1 text-left">{f.name}</span>
-                        <span className="text-[11px] text-muted-foreground tabular-nums">
-                          {folderCounts[f.name]}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
+        {/* ambient depth — soft top glow + vignette so nothing reads flat */}
+        <div
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            background:
+              "radial-gradient(120% 70% at 50% -10%, color-mix(in oklab, var(--foreground) 7%, transparent), transparent 60%), radial-gradient(90% 60% at 100% 110%, color-mix(in oklab, var(--foreground) 4%, transparent), transparent 65%)",
+          }}
+        />
+
+        {/* ── Nav rail ───────────────────────────────────────────── */}
+        <aside className="relative z-10 hidden md:flex w-[208px] shrink-0 flex-col border-r border-border/60 bg-card/40">
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-foreground/10 to-transparent" />
+
+          {/* account */}
+          <div className="flex items-center gap-2.5 px-4 pt-4 pb-3">
+            <img
+              src={avatarUrl("John Harwick")}
+              alt=""
+              className="h-8 w-8 rounded-full object-cover ring-1 ring-foreground/10"
+            />
+            <div className="min-w-0">
+              <div className="truncate text-[12.5px] font-semibold text-foreground">John Harwick</div>
+              <div className="truncate text-[10.5px] text-muted-foreground">
+                john.harwick@harwicksterne.com
+              </div>
             </div>
           </div>
 
+          {/* new mail */}
+          <div className="px-3 pb-3">
+            <button
+              onClick={() => openComposer("reply")}
+              className="relative w-full inline-flex items-center justify-center gap-2 h-10 rounded-xl bg-foreground text-background text-[13px] font-semibold transition-transform active:scale-[0.99]"
+              style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.25) inset, 0 10px 24px -14px rgba(0,0,0,0.8)" }}
+            >
+              <Plus className="h-4 w-4" strokeWidth={2.4} />
+              New mail
+            </button>
+          </div>
 
-          {/* Search */}
+          {/* folders */}
+          <nav className="px-2 space-y-0.5">
+            {folderMeta.slice(0, 6).map((f) => {
+              const Icon = f.icon;
+              const active = f.name === activeFolder;
+              return (
+                <button
+                  key={f.name}
+                  onClick={() => setActiveFolder(f.name)}
+                  className={`relative w-full flex items-center gap-2.5 h-9 px-2.5 rounded-lg text-[13px] transition-colors ${
+                    active
+                      ? "bg-foreground/[0.07] text-foreground font-medium"
+                      : "text-foreground/70 hover:bg-foreground/[0.04] hover:text-foreground"
+                  }`}
+                  style={
+                    active
+                      ? {
+                          boxShadow:
+                            "0 1px 0 rgba(255,255,255,0.06) inset, 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent)",
+                        }
+                      : undefined
+                  }
+                >
+                  <Icon className="h-4 w-4 shrink-0" strokeWidth={1.8} />
+                  <span className="flex-1 text-left truncate">{f.name}</span>
+                  {folderCounts[f.name] > 0 && (
+                    <span className="text-[11px] tabular-nums text-muted-foreground">
+                      {folderCounts[f.name]}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </nav>
+
+          <div className="mx-4 my-3 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+
+          <button
+            onClick={() => setActiveFolder("Trash")}
+            className="mx-2 flex items-center justify-between h-9 px-2.5 rounded-lg text-[13px] text-foreground/70 hover:bg-foreground/[0.04] hover:text-foreground transition-colors"
+          >
+            <span>Folders</span>
+            <ChevronRight className="h-3.5 w-3.5 opacity-60" />
+          </button>
+
+          <div className="mx-2 mt-1 flex items-center justify-between h-9 px-2.5 rounded-lg text-[13px] text-foreground/70">
+            <span>Labels</span>
+            <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+          </div>
+
+          <div className="px-2 pb-4 space-y-0.5">
+            {mailLabels.map((l) => (
+              <button
+                key={l.name}
+                onClick={() => setQuery(l.query)}
+                className="w-full flex items-center gap-2.5 h-8 px-2.5 rounded-lg text-[12.5px] text-foreground/70 hover:bg-foreground/[0.04] hover:text-foreground transition-colors"
+              >
+                <span className={`h-2.5 w-2.5 rounded-full border-2 ${l.dot}`} />
+                <span className="truncate">{l.name}</span>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex-1" />
+        </aside>
+
+        {/* ── Thread list ─────────────────────────────────────────── */}
+        <section
+          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[330px] shrink-0 flex-col border-r border-border/60 bg-card/20 min-w-0`}
+        >
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-transparent via-foreground/10 to-transparent" />
+
+          <div className="px-5 pt-5 pb-3">
+            <h1 className="text-[24px] font-semibold tracking-tight text-foreground">
+              {activeFolder}
+            </h1>
+            <div className="mt-1 text-[11.5px] text-muted-foreground tabular-nums">
+              {visibleThreads.filter((t) => t.unread).length} Unread ·{" "}
+              {visibleThreads.length} Mails
+            </div>
+          </div>
+
+          {/* search */}
           <div className="px-4 pb-3">
-            <div className="flex items-center gap-2 h-9 px-3 rounded-sm bg-muted/60 border border-border/60">
-              <Search className="h-3.5 w-3.5 text-muted-foreground" />
+            <div
+              className="flex items-center gap-2 h-10 px-3 rounded-xl border border-border/60 bg-foreground/[0.03]"
+              style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.04) inset, 0 6px 16px -14px rgba(0,0,0,0.9)" }}
+            >
+              <Search className="h-4 w-4 text-muted-foreground" />
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search"
-                className="flex-1 bg-transparent text-[12.5px] placeholder:text-muted-foreground focus:outline-none"
+                placeholder="Search…"
+                className="flex-1 bg-transparent text-[13px] placeholder:text-muted-foreground focus:outline-none"
               />
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button
                     aria-label="Filter"
-                    className={`grid h-6 w-6 place-items-center rounded-md hover:text-foreground hover:bg-foreground/[0.06] ${
+                    className={`grid h-6 w-6 place-items-center rounded-md hover:bg-foreground/[0.06] ${
                       filters.length ? "text-foreground" : "text-muted-foreground"
                     }`}
                   >
@@ -1139,18 +1217,18 @@ function InboxPage() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44">
                   <DropdownMenuLabel className="text-xs">Filter mail</DropdownMenuLabel>
-                  {(
-                    ["Unread", "Flagged", "Attachments", "Hot leads", "Needs reply"] as FilterName[]
-                  ).map((filter) => (
-                    <DropdownMenuCheckboxItem
-                      key={filter}
-                      checked={filters.includes(filter)}
-                      onCheckedChange={() => toggleFilter(filter)}
-                      className="text-xs"
-                    >
-                      {filter}
-                    </DropdownMenuCheckboxItem>
-                  ))}
+                  {(["Unread", "Flagged", "Attachments", "Hot leads", "Needs reply"] as FilterName[]).map(
+                    (filter) => (
+                      <DropdownMenuCheckboxItem
+                        key={filter}
+                        checked={filters.includes(filter)}
+                        onCheckedChange={() => toggleFilter(filter)}
+                        className="text-xs"
+                      >
+                        {filter}
+                      </DropdownMenuCheckboxItem>
+                    ),
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => setFilters([])} className="text-xs">
                     Reset filters
@@ -1160,38 +1238,7 @@ function InboxPage() {
             </div>
           </div>
 
-          {/* Segmented tabs */}
-          <div className="px-4 pb-3">
-            <div className="flex items-center rounded-sm border border-border/60 bg-muted/40 overflow-hidden">
-              {(["All", "Unread", "Flagged"] as const).map((t, i) => {
-                const active =
-                  (t === "All" && !filters.includes("Unread") && !filters.includes("Flagged")) ||
-                  (t === "Unread" && filters.includes("Unread")) ||
-                  (t === "Flagged" && filters.includes("Flagged"));
-                return (
-                  <button
-                    key={t}
-                    onClick={() => {
-                      if (t === "All") setFilters([]);
-                      else setFilters([t as FilterName]);
-                    }}
-                    className={`flex-1 h-8 text-[12px] font-medium transition-colors ${
-                      i > 0 ? "border-l border-border/60" : ""
-                    } ${
-                      active
-                        ? "bg-background text-foreground"
-                        : "text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    {t}
-                  </button>
-                );
-              })}
-            </div>
-
-          </div>
-
-          <div className="flex-1 overflow-y-auto no-scrollbar border-t border-border/60">
+          <div className="flex-1 overflow-y-auto no-scrollbar px-3 pb-6 space-y-1">
             {visibleThreads.length === 0 ? (
               <div className="px-4 py-10 text-center text-[12px] text-muted-foreground">
                 No messages match this view.
@@ -1204,225 +1251,230 @@ function InboxPage() {
                   <button
                     key={thread.id}
                     onClick={() => selectThread(thread)}
-                    className={`w-full text-left px-4 py-3 border-b border-border/50 transition-colors relative ${
+                    className={`relative w-full text-left rounded-xl px-3.5 py-3 transition-colors ${
                       active
-                        ? "bg-foreground/[0.06]"
-                        : "hover:bg-foreground/[0.03]"
+                        ? "bg-card"
+                        : "hover:bg-foreground/[0.035]"
                     }`}
+                    style={
+                      active
+                        ? {
+                            boxShadow:
+                              "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent), 0 1px 0 rgba(255,255,255,0.06) inset, 0 18px 36px -24px rgba(0,0,0,0.9)",
+                          }
+                        : undefined
+                    }
                   >
-                    {active && (
-                      <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-foreground" />
-                    )}
-                    <div className="flex items-start gap-3">
-                      <div className="relative shrink-0">
-                        <div className="h-9 w-9 rounded-full bg-muted text-muted-foreground grid place-items-center text-[11px] font-semibold">
-                          {initials(thread.from)}
-                        </div>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-2">
                         {thread.unread && (
-                          <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 h-1.5 w-1.5 rounded-full bg-foreground" />
+                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
                         )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center justify-between gap-2">
-                          <div
-                            className={`text-[13px] truncate ${thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"}`}
-                          >
-                            {thread.from}
-                          </div>
-                          <div className="text-[11px] text-muted-foreground shrink-0 tabular-nums">
-                            {thread.sentAt ?? thread.time}
-                          </div>
-                        </div>
-                        <div
-                          className={`text-[12.5px] truncate mt-0.5 ${thread.unread ? "text-foreground" : "text-foreground/85"}`}
+                        <span
+                          className={`truncate text-[13px] ${
+                            thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/85"
+                          }`}
                         >
                           {draft && draft.status !== "closed" && (
-                            <span className="text-muted-foreground">Draft · </span>
+                            <span className="text-muted-foreground font-normal">Draft · </span>
                           )}
                           {thread.subject}
-                        </div>
-                        <div className="text-[11.5px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
-                          {draft && draft.status !== "closed"
-                            ? htmlToText(draft.body)
-                            : thread.preview}
-                        </div>
+                        </span>
                       </div>
+                      <span className="shrink-0 text-[11px] tabular-nums text-muted-foreground">
+                        {thread.sentAt ?? thread.time}
+                      </span>
                     </div>
+                    <div className="mt-1 flex items-center gap-1.5 text-[12px]">
+                      <span className="text-muted-foreground">From:</span>
+                      <span className="truncate font-medium text-foreground/90">{thread.from}</span>
+                      {thread.hasAttachment && (
+                        <Paperclip className="ml-auto h-3 w-3 shrink-0 text-muted-foreground" />
+                      )}
+                    </div>
+                    <p className="mt-2 line-clamp-3 text-[11.5px] leading-[1.5] text-muted-foreground">
+                      {draft && draft.status !== "closed" ? htmlToText(draft.body) : thread.preview}
+                    </p>
                   </button>
                 );
               })
             )}
           </div>
-
         </section>
 
-
-        <main className={`${mobileReading ? "flex" : "hidden md:flex"} flex-1 flex-col min-w-0 bg-muted/20`}>
-          <div className="h-12 px-4 flex items-center justify-between border-b border-border/60 bg-background">
-            <div className="flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => setMobileReading(false)}
-                aria-label="Back to inbox"
-                className="md:hidden grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
-              >
-                <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
-              </button>
-              <ToolbarBtn
-                icon={Archive}
-                label="Archive"
-                onClick={() => moveSelected("Archive", "Archived message")}
-              />
-              <ToolbarBtn
-                icon={Trash2}
-                label="Delete"
-                onClick={() => moveSelected("Trash", "Moved to trash")}
-              />
-              <ToolbarBtn
-                icon={Flag}
-                label="Flag"
-                active={selected.flagged}
-                onClick={() => {
-                  updateThread(selected.id, { flagged: !selected.flagged });
-                  toast.success(selected.flagged ? "Flag removed" : "Message flagged");
-                }}
-              />
-              <span className="mx-1 h-5 w-px bg-border/60" />
-              <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
-              <ToolbarBtn
-                icon={ReplyAll}
-                label="Reply All"
-                onClick={() => openComposer("replyAll")}
-              />
-              <ToolbarBtn icon={Forward} label="Forward" onClick={() => openComposer("forward")} />
-            </div>
-            <div className="flex items-center gap-1">
-              <ToolbarBtn
-                icon={Printer}
-                label="Print"
-                onClick={() => toast.success("Print preview opened")}
-              />
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    aria-label="More"
-                    title="More"
-                    className="grid h-8 w-8 place-items-center rounded-sm text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
-                  >
-                    <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem
-                    onClick={() => updateThread(selected.id, { unread: !selected.unread })}
-                    className="text-xs"
-                  >
-                    Mark as {selected.unread ? "read" : "unread"}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => moveSelected("Archive", "Muted thread")}
-                    className="text-xs"
-                  >
-                    Mute conversation
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => toast.success("Client card opened")}
-                    className="text-xs"
-                  >
-                    View client card
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-
-          <div className="flex-1 overflow-y-auto no-scrollbar px-8 py-6">
-            <div className="max-w-2xl mx-auto">
-              <div className="rounded-sm border border-border/70 bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_8px_24px_-16px_rgba(0,0,0,0.35),0_2px_6px_-3px_rgba(0,0,0,0.15)]">
-                <div className="px-6 pt-5 pb-4 border-b border-border/60">
-                  <div className="flex items-start gap-4">
-                    <div className="h-10 w-10 rounded-full bg-muted text-muted-foreground grid place-items-center text-[12px] font-semibold shrink-0">
-                      {initials(selected.from)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-3">
-                        <div className="min-w-0">
-                          <div className="text-[14px] font-semibold tracking-tight truncate">
-                            {selected.from}{" "}
-                            <span className="text-muted-foreground font-normal">
-                              &lt;{selected.email}&gt; - {selected.company}
-                            </span>
-                          </div>
-                          <div className="text-[12px] text-muted-foreground mt-0.5">
-                            To: me - {selected.sentAt ?? `${selected.time} ago`}
-                          </div>
-                        </div>
-                        <button
-                          aria-label={selected.starred ? "Unstar" : "Star"}
-                          onClick={() => updateThread(selected.id, { starred: !selected.starred })}
-                          className="text-muted-foreground hover:text-foreground"
-                        >
-                          <Star className="h-4 w-4" fill={selected.starred ? "currentColor" : "none"} />
-                        </button>
-                      </div>
-                      <h2 className="mt-3 text-[22px] font-semibold tracking-tight leading-tight">
-                        {selected.subject}
-                      </h2>
-                    </div>
+        {/* ── Reading pane ────────────────────────────────────────── */}
+        <main
+          className={`${mobileReading ? "flex" : "hidden md:flex"} relative z-10 flex-1 flex-col min-w-0 bg-background`}
+        >
+          {/* header block */}
+          <div className="relative border-b border-border/60 bg-card/50 px-6 py-5">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/12 to-transparent" />
+            <div className="flex flex-col gap-4">
+              <div className="flex min-w-0 items-start gap-3.5">
+                <button
+                  type="button"
+                  onClick={() => setMobileReading(false)}
+                  aria-label="Back to inbox"
+                  className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
+                >
+                  <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
+                </button>
+                <div
+                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-foreground/[0.06] text-[13px] font-semibold text-foreground/80"
+                  style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent)" }}
+                >
+                  {initials(selected.from)}
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-[19px] font-semibold tracking-tight text-foreground">
+                    {selected.company}
+                  </div>
+                  <div className="mt-1 truncate text-[12px] text-muted-foreground">
+                    From: <span className="text-foreground/85">{selected.email}</span>
+                    <span className="px-1.5 opacity-50">•</span>
+                    To: <span className="text-foreground/85">john.harwick@harwicksterne.com</span>
                   </div>
                 </div>
-                <div className="px-6 py-5">
-                  <div className="text-[14px] leading-relaxed text-foreground/90 whitespace-pre-line">
-                    {selected.body}
-                  </div>
-                  {selected.hasAttachment && (
-                    <button className="mt-5 inline-flex items-center gap-2 rounded-sm border border-border/70 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85 hover:bg-muted">
-                      <Paperclip className="h-3.5 w-3.5" />
-                      {selected.tag === "Legal"
-                        ? "Completed_MSA.pdf"
-                        : selected.tag === "Billing"
-                          ? "Stripe_reconciliation.csv"
-                          : "Security_questionnaire.pdf"}
-                    </button>
-                  )}
+                <div className="ml-auto shrink-0 pt-1 text-[11.5px] tabular-nums text-muted-foreground">
+                  {selected.sentAt ?? `${selected.time} ago`}
                 </div>
               </div>
+
+              <div className="flex items-center justify-end">
+                <div className="flex items-center gap-0.5">
+                  <ToolbarBtn
+                    icon={Sparkles}
+                    label="Summarize"
+                    active={selected.vip}
+                    onClick={() => toast.success("Syra summarized this thread")}
+                  />
+                  <span className="mx-1 h-5 w-px bg-border/70" />
+                  <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
+                  <ToolbarBtn
+                    icon={ReplyAll}
+                    label="Reply All"
+                    onClick={() => openComposer("replyAll")}
+                  />
+                  <ToolbarBtn icon={Forward} label="Forward" onClick={() => openComposer("forward")} />
+                  <span className="mx-1 h-5 w-px bg-border/70" />
+                  <ToolbarBtn
+                    icon={Archive}
+                    label="Archive"
+                    onClick={() => moveSelected("Archive", "Archived message")}
+                  />
+                  <ToolbarBtn
+                    icon={Trash2}
+                    label="Delete"
+                    onClick={() => moveSelected("Trash", "Moved to trash")}
+                  />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        aria-label="More"
+                        className="grid h-8 w-8 place-items-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
+                      >
+                        <MoreHorizontal className="h-4 w-4" strokeWidth={1.75} />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-48">
+                      <DropdownMenuItem
+                        onClick={() => updateThread(selected.id, { unread: !selected.unread })}
+                        className="text-xs"
+                      >
+                        Mark as {selected.unread ? "read" : "unread"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => updateThread(selected.id, { flagged: !selected.flagged })}
+                        className="text-xs"
+                      >
+                        {selected.flagged ? "Remove flag" : "Flag message"}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => toast.success("Print preview opened")}
+                        className="text-xs"
+                      >
+                        Print
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            </div>
+
+            <h2 className="mt-5 text-[21px] font-semibold tracking-tight text-foreground">
+              {selected.subject}
+            </h2>
+          </div>
+
+          {/* body — recessed dark stage with layered panels */}
+          <div
+            className="relative flex-1 overflow-y-auto no-scrollbar px-6 py-6"
+            style={{
+              background:
+                "linear-gradient(180deg, color-mix(in oklab, var(--foreground) 4%, transparent), transparent 240px)",
+            }}
+          >
+            <div className="mx-auto max-w-3xl space-y-4">
+              <article
+                className="relative overflow-hidden rounded-2xl border border-border/70 bg-card px-7 py-6"
+                style={{
+                  boxShadow:
+                    "0 1px 0 rgba(255,255,255,0.05) inset, 0 24px 60px -32px rgba(0,0,0,0.95), 0 2px 8px -4px rgba(0,0,0,0.4)",
+                }}
+              >
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
+                <div className="whitespace-pre-line text-[14px] leading-[1.65] text-foreground/90">
+                  {selected.body}
+                </div>
+
+                {selected.hasAttachment && (
+                  <button
+                    className="mt-6 inline-flex items-center gap-2 rounded-xl border border-border/70 bg-foreground/[0.04] px-3.5 py-2.5 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.07] transition-colors"
+                    style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset" }}
+                  >
+                    <Paperclip className="h-3.5 w-3.5" />
+                    {selected.tag === "Legal"
+                      ? "Completed_MSA.pdf"
+                      : selected.tag === "Billing"
+                        ? "Stripe_reconciliation.csv"
+                        : "Security_questionnaire.pdf"}
+                  </button>
+                )}
+              </article>
 
               {selectedDraft.status === "closed" ? (
                 <button
                   onClick={() => openComposer("reply")}
-                  className="mt-6 inline-flex items-center gap-2 rounded-sm border border-border/70 px-3 py-2 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04]"
+                  className="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                  style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.04) inset" }}
                 >
                   <Reply className="h-3.5 w-3.5" />
                   Reply
                 </button>
               ) : (
-                <div className="mt-6">
-                  <ComposeWindow
-                    draft={selectedDraft}
-                    from={selected.from}
-                    sending={sendingId === selected.id}
-                    regenerating={regeneratingId === selected.id}
-                    justSent={lastSentId === selected.id && selected.folder === "Sent"}
-                    onUpdate={updateDraft}
-                    onSend={sendDraft}
-                    onRegenerate={regenerateDraft}
-                    onDiscard={() => {
-                      setDrafts((current) => ({
-                        ...current,
-                        [selected.id]: { ...selectedDraft, status: "closed" },
-                      }));
-                      toast.success("Draft discarded");
-                    }}
-                    onMinimize={() => updateDraft({ status: "minimized" })}
-                    onRestore={() => updateDraft({ status: "open" })}
-                  />
-                </div>
+                <ComposeWindow
+                  draft={selectedDraft}
+                  from={selected.from}
+                  sending={sendingId === selected.id}
+                  regenerating={regeneratingId === selected.id}
+                  justSent={lastSentId === selected.id && selected.folder === "Sent"}
+                  onUpdate={updateDraft}
+                  onSend={sendDraft}
+                  onRegenerate={regenerateDraft}
+                  onDiscard={() => {
+                    setDrafts((current) => ({
+                      ...current,
+                      [selected.id]: { ...selectedDraft, status: "closed" },
+                    }));
+                    toast.success("Draft discarded");
+                  }}
+                  onMinimize={() => updateDraft({ status: "minimized" })}
+                  onRestore={() => updateDraft({ status: "open" })}
+                />
               )}
             </div>
           </div>
         </main>
-
       </div>
       <SyraChatWidget
         inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${threads.filter((t) => t.needsReply).length} need reply`}
