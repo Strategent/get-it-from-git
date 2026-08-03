@@ -55,7 +55,14 @@ export function NeatBackground() {
     <canvas
       ref={ref}
       aria-hidden
-      className="absolute inset-0 h-full w-full pointer-events-none"
+      className="absolute pointer-events-none"
+      style={{
+        left: "-6%",
+        top: "-4%",
+        width: "112%",
+        height: "calc(100% + 120px)",
+        filter: "saturate(0.72)",
+      }}
     />
   );
 }

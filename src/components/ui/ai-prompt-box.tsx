@@ -300,7 +300,7 @@ const PromptInput = React.forwardRef<HTMLDivElement, PromptInputProps>(
           <div
             ref={ref}
             className={cn(
-              "prompt-box-scroll rounded-2xl border border-border bg-card/70 backdrop-blur-xl p-2 transition-all duration-300",
+          "prompt-box-scroll rounded-2xl border border-border bg-card p-2 shadow-xl transition-all duration-300",
               className,
             )}
             onDragOver={onDragOver}
