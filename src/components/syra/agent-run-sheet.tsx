@@ -3,14 +3,14 @@ import { ArrowUp, Maximize2, X } from "lucide-react";
 import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
+type Question = { label: string; prompt: string; options: string[]; defaultOption: number };
 type Script = {
   title: string;
   steps: Step[];
-  question: string;
-  options: string[];
-  defaultOption: number;
-  /** Steps streamed after the user confirms, e.g. drafting + routing for review. */
-  result: (choice: string, client: string) => Step[];
+  /** Sequential intake questions — all answered before the agent acts. */
+  questions: Question[];
+  /** Steps streamed after every question is answered. */
+  result: (answers: string[], client: string) => Step[];
   /** Teammate who receives the review email (must map to a PNG avatar asset). */
   reviewer?: string;
 };
@@ -40,11 +40,29 @@ const SCRIPTS: Script[] = [
       { verb: "Reviewed", object: "Prior countersigned agreements" },
       { verb: "Checked", object: "Compliance clause library — 2026 revisions" },
     ],
-    question: "Which agreement should Syra draft?",
-    options: ["Advisory engagement letter", "IPS amendment", "NDA for prospect"],
-    defaultOption: 0,
-    result: (choice, client) => [
-      { verb: "Drafted", object: `${choice} — ${client}` },
+    questions: [
+      {
+        label: "Document type",
+        prompt: "Which agreement should Syra draft?",
+        options: ["Advisory engagement letter", "IPS amendment", "NDA for prospect"],
+        defaultOption: 0,
+      },
+      {
+        label: "Fee schedule",
+        prompt: "Which fee schedule applies?",
+        options: ["Standard AUM tiers", "Flat annual retainer", "Match prior agreement"],
+        defaultOption: 2,
+      },
+      {
+        label: "Routing",
+        prompt: "Who signs off before it goes out?",
+        options: ["Elena Smith (compliance)", "Send to client directly", "Hold in my drafts"],
+        defaultOption: 0,
+      },
+    ],
+    result: (a, client) => [
+      { verb: "Drafted", object: `${a[0]} — ${client}` },
+      { verb: "Applied", object: a[1].toLowerCase() },
       { verb: "Inserted", object: "Fee schedule + custodian language" },
       { verb: "Attached", object: "Client record and prior terms" },
       { verb: "Emailed", object: `Elena Smith — ${senderEmailAddress("Elena Smith")} for review` },
@@ -58,11 +76,22 @@ const SCRIPTS: Script[] = [
       { verb: "Read", object: "Client priority rules" },
       { verb: "Reviewed", object: "Past reply tone" },
     ],
-    question: "How should Syra handle replies?",
-    options: ["Draft and hold for review", "Send routine replies", "Summarize only"],
-    defaultOption: 0,
-    result: (choice) => [
-      { verb: "Applied", object: choice.toLowerCase() },
+    questions: [
+      {
+        label: "Handling",
+        prompt: "How should Syra handle replies?",
+        options: ["Draft and hold for review", "Send routine replies", "Summarize only"],
+        defaultOption: 0,
+      },
+      {
+        label: "Scope",
+        prompt: "Which mail should Syra touch?",
+        options: ["Clients only", "Everything unread", "Flagged and urgent only"],
+        defaultOption: 0,
+      },
+    ],
+    result: (a) => [
+      { verb: "Applied", object: `${a[0].toLowerCase()} · ${a[1].toLowerCase()}` },
       { verb: "Drafted", object: "6 replies — held for your review" },
       { verb: "Archived", object: "11 newsletters and receipts" },
     ],
@@ -70,17 +99,48 @@ const SCRIPTS: Script[] = [
   {
     title: "Scheduling agent",
     steps: [
-      { verb: "Read", object: "Calendar / this week" },
+      { verb: "Read", object: "Calendar / next 10 business days" },
       { verb: "Read", object: "Advisor availability rules" },
-      { verb: "Reviewed", object: "Client time preferences" },
+      { verb: "Reviewed", object: "Client time-zone and contact preferences" },
     ],
-    question: "Which windows should Syra offer?",
-    options: ["Mornings only", "Afternoons only", "Any open slot"],
-    defaultOption: 2,
-    result: (choice) => [
-      { verb: "Offered", object: `${choice} across the next 5 business days` },
-      { verb: "Sent", object: "Booking links to 3 clients" },
-      { verb: "Held", object: "Buffer blocks around each slot" },
+    questions: [
+      {
+        label: "Attendee",
+        prompt: "Who is the meeting with?",
+        options: ["Hartley Family Trust", "Marlow Capital", "Sterling Holdings"],
+        defaultOption: 0,
+      },
+      {
+        label: "Purpose",
+        prompt: "What is the meeting about?",
+        options: ["Quarterly portfolio review", "Onboarding kickoff", "Estate planning follow-up"],
+        defaultOption: 0,
+      },
+      {
+        label: "Length",
+        prompt: "How long should it run?",
+        options: ["30 minutes", "45 minutes", "60 minutes"],
+        defaultOption: 1,
+      },
+      {
+        label: "Format",
+        prompt: "Where should it take place?",
+        options: ["Zoom video call", "Phone call", "In office"],
+        defaultOption: 0,
+      },
+      {
+        label: "Windows",
+        prompt: "Which windows should Syra offer?",
+        options: ["Mornings only", "Afternoons only", "Any open slot"],
+        defaultOption: 2,
+      },
+    ],
+    result: (a) => [
+      { verb: "Confirmed", object: `${a[0]} · ${a[1]}` },
+      { verb: "Set", object: `${a[2]} · ${a[3]}` },
+      { verb: "Offered", object: `${a[4].toLowerCase()} across the next 5 business days` },
+      { verb: "Sent", object: `Booking link to ${a[0]} with agenda attached` },
+      { verb: "Held", object: "Provisional holds + buffer blocks on your calendar" },
     ],
   },
 ];
