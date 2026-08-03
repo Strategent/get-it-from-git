@@ -49,15 +49,15 @@ function SyraPage() {
   };
   const activeModel = models.find((m) => m.id === modelId) ?? models[0];
 
-  const bgStart = isDark ? "rgb(10, 10, 14)" : "rgb(250, 249, 252)";
-  const bgEnd = isDark ? "rgb(20, 18, 28)" : "rgb(245, 244, 248)";
-  // Light mode: extremely desaturated, subtle gray-lavender blobs so the
-  // animation is visible but never overwhelms the near-white background.
-  const c1 = isDark ? "120, 110, 150" : "225, 223, 230";
-  const c2 = isDark ? "90, 85, 115"   : "215, 213, 222";
-  const c3 = isDark ? "140, 130, 170" : "230, 228, 235";
-  const c4 = isDark ? "70, 65, 95"    : "210, 208, 218";
-  const c5 = isDark ? "105, 95, 135"  : "220, 218, 228";
+  // Colors pulled from the Daily Brief hero mountain photo for continuity:
+  // warm cream sky, muted sage-gray ridges, deep warm mountain shadow.
+  const bgStart = isDark ? "rgb(52, 48, 43)" : "rgb(240, 235, 228)";
+  const bgEnd = isDark ? "rgb(34, 32, 29)" : "rgb(228, 220, 210)";
+  const c1 = isDark ? "142, 144, 137" : "216, 208, 198"; // sage / warm cream
+  const c2 = isDark ? "90, 84, 76"    : "190, 182, 172"; // warm brown / taupe
+  const c3 = isDark ? "120, 116, 108" : "200, 194, 184"; // mid warm gray
+  const c4 = isDark ? "74, 66, 56"    : "176, 170, 160"; // deep ridge / soft stone
+  const c5 = isDark ? "108, 100, 92"  : "208, 200, 190"; // bridge tone
   const blending = isDark ? "soft-light" : "normal";
 
 
