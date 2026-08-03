@@ -1,18 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Paperclip,
   FileText,
   Inbox,
   Calendar,
   ChevronDown,
   Check,
-  Mic,
   X,
 } from "lucide-react";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
+
 
 export const Route = createFileRoute("/syra")({
   component: SyraPage,
