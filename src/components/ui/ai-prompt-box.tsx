@@ -1,7 +1,7 @@
 import React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { ArrowUp, Paperclip, Square, X, StopCircle, Mic, Globe, BrainCog, FolderCode } from "lucide-react";
+import { ArrowUp, Paperclip, Square, X, Mic, Globe, BrainCog, FolderCode } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { cn } from "@/lib/utils";
 
@@ -143,73 +143,22 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 Button.displayName = "Button";
 
-// VoiceRecorder
-interface VoiceRecorderProps {
-  isRecording: boolean;
-  onStartRecording: () => void;
-  onStopRecording: (duration: number) => void;
-  visualizerBars?: number;
-}
-const VoiceRecorder: React.FC<VoiceRecorderProps> = ({
-  isRecording,
-  onStartRecording,
-  onStopRecording,
-  visualizerBars = 32,
-}) => {
-  const [time, setTime] = React.useState(0);
-  const timeRef = React.useRef(0);
-  const timerRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-
-  React.useEffect(() => {
-    if (isRecording) {
-      onStartRecording();
-      timerRef.current = setInterval(() => {
-        timeRef.current += 1;
-        setTime(timeRef.current);
-      }, 1000);
-      return () => {
-        if (timerRef.current) clearInterval(timerRef.current);
-        timerRef.current = null;
-        onStopRecording(timeRef.current);
-        timeRef.current = 0;
-        setTime(0);
-      };
-    }
-  }, [isRecording]);
-
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  return (
-    <div
-      className={cn(
-        "flex flex-col items-center justify-center w-full transition-all duration-300 py-3",
-        isRecording ? "opacity-100" : "opacity-0 h-0",
-      )}
-    >
-      <div className="flex items-center gap-2 mb-3">
-        <div className="h-2 w-2 rounded-full bg-destructive animate-pulse" />
-        <span className="font-mono text-sm text-muted-foreground">{formatTime(time)}</span>
-      </div>
-      <div className="w-full h-10 flex items-center justify-center gap-0.5 px-4">
-        {[...Array(visualizerBars)].map((_, i) => (
-          <div
-            key={i}
-            className="w-0.5 rounded-full bg-foreground/40 animate-pulse"
-            style={{
-              height: `${Math.max(15, ((i * 37) % 100))}%`,
-              animationDelay: `${i * 0.05}s`,
-              animationDuration: `${0.5 + ((i % 5) * 0.1)}s`,
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-};
+// Inline recording waveform (matches template: small bars beside the stop button)
+const VoiceWaveform: React.FC<{ bars?: number }> = ({ bars = 5 }) => (
+  <div className="flex items-end gap-[3px] h-4 mr-1">
+    {[...Array(bars)].map((_, i) => (
+      <div
+        key={i}
+        className="w-[3px] rounded-full bg-foreground animate-pulse"
+        style={{
+          height: `${[55, 85, 100, 70, 45][i % 5]}%`,
+          animationDelay: `${i * 0.12}s`,
+          animationDuration: `${0.6 + ((i % 3) * 0.15)}s`,
+        }}
+      />
+    ))}
+  </div>
+);
 
 // ImageViewDialog
 const ImageViewDialog: React.FC<{ imageUrl: string | null; onClose: () => void }> = ({ imageUrl, onClose }) => {
@@ -509,8 +458,8 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
         onValueChange={setInput}
         isLoading={isLoading}
         onSubmit={handleSubmit}
-        className={cn("w-full shadow-xl", isRecording && "border-destructive/60", className)}
-        disabled={isLoading || isRecording}
+        className={cn("w-full shadow-xl", className)}
+        disabled={isLoading}
         ref={ref || promptBoxRef}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -542,21 +491,13 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
           </div>
         )}
 
-        <div className={cn("transition-all duration-300", isRecording ? "h-0 overflow-hidden opacity-0" : "opacity-100")}>
+        <div className="transition-all duration-300">
           <PromptInputTextarea
             placeholder={
               showSearch ? "Search the web…" : showThink ? "Think deeply…" : showCanvas ? "Create on canvas…" : placeholder
             }
           />
         </div>
-
-        {isRecording && (
-          <VoiceRecorder
-            isRecording={isRecording}
-            onStartRecording={() => onVoiceStart?.()}
-            onStopRecording={() => setIsRecording(false)}
-          />
-        )}
 
         <PromptInputActions className="flex items-center justify-between gap-2 p-0 pt-2">
           <div
@@ -693,6 +634,8 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
             </div>
           </div>
 
+          <div className="flex items-center gap-1">
+          {isRecording && <VoiceWaveform />}
           <PromptInputAction
             tooltip={
               isLoading ? "Stop generation" : isRecording ? "Stop recording" : hasContent ? "Send message" : "Voice message"
@@ -704,7 +647,7 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               className={cn(
                 "h-8 w-8 rounded-full transition-all duration-200",
                 isRecording
-                  ? "bg-transparent hover:bg-muted text-destructive"
+                  ? "bg-foreground text-background hover:bg-foreground/90 shadow-md"
                   : hasContent
                     ? "bg-primary text-primary-foreground hover:bg-primary/90"
                     : "bg-transparent hover:bg-muted text-muted-foreground hover:text-foreground",
@@ -712,14 +655,17 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               onClick={() => {
                 if (isRecording) setIsRecording(false);
                 else if (hasContent) handleSubmit();
-                else setIsRecording(true);
+                else {
+                  setIsRecording(true);
+                  onVoiceStart?.();
+                }
               }}
               disabled={isLoading && !hasContent}
             >
               {isLoading ? (
                 <Square className="h-4 w-4 animate-pulse" />
               ) : isRecording ? (
-                <StopCircle className="h-5 w-5" />
+                <Square className="h-2.5 w-2.5 fill-current" />
               ) : hasContent ? (
                 <ArrowUp className="h-4 w-4" />
               ) : (
@@ -727,6 +673,7 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               )}
             </Button>
           </PromptInputAction>
+          </div>
         </PromptInputActions>
       </PromptInput>
 
