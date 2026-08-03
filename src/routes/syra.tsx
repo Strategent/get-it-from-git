@@ -87,7 +87,7 @@ function SyraPage() {
       `}</style>
 
       {/* Giga-mountain mood: horizontal, fluid, subtle color washes. */}
-      <div className="absolute inset-0 pointer-events-none isolate">
+      <div className="absolute inset-0 pointer-events-none isolate" style={{ filter: "saturate(1.25)" }}>
         {/* Base vertical gradient — dark valley floor to misty sky. */}
         <div
           className="absolute inset-0"
