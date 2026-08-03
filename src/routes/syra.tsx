@@ -98,8 +98,12 @@ function SyraPage() {
 
       <NeatBackground />
 
-      {/* Content — composer only, no copy outside the chat box. */}
-      <div className="relative h-full flex flex-col items-center justify-center px-6">
+      {/* Content — composer only, hidden when an agent sheet is open. */}
+      <div
+        className={`relative h-full flex flex-col items-center justify-center px-6 transition-opacity duration-300 ${
+          agentPrompt ? "opacity-0 pointer-events-none" : "opacity-100"
+        }`}
+      >
         {/* Input bar */}
         <div className="w-full max-w-3xl">
           <PromptInputBox
