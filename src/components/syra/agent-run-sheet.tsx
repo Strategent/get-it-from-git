@@ -222,6 +222,11 @@ export function SyraAgentRunSheet({
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState(script.questions[0].defaultOption);
+  const [contactQuery, setContactQuery] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [newContact, setNewContact] = useState(false);
+  const [meetDate, setMeetDate] = useState("");
+  const [meetTime, setMeetTime] = useState("");
   const [done, setDone] = useState<string[] | null>(null);
   const [resultRevealed, setResultRevealed] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -234,6 +239,11 @@ export function SyraAgentRunSheet({
     setQIndex(0);
     setAnswers([]);
     setSelected(script.questions[0].defaultOption);
+    setContactQuery("");
+    setContactEmail("");
+    setNewContact(false);
+    setMeetDate("");
+    setMeetTime("");
     timers.current.forEach(clearTimeout);
     timers.current = [];
     script.steps.forEach((_, i) => {
@@ -247,9 +257,44 @@ export function SyraAgentRunSheet({
 
   const resultSteps = done ? script.result(done, client) : [];
   const currentQuestion = script.questions[qIndex];
+  const kind = currentQuestion?.kind ?? "choice";
+
+  const suggestions =
+    kind === "contact" && !newContact && contactQuery.trim().length > 0
+      ? CRM_CONTACTS.filter((c) =>
+          `${c.name} ${c.org} ${c.email}`.toLowerCase().includes(contactQuery.trim().toLowerCase()),
+        ).slice(0, 4)
+      : [];
+
+  const canConfirm =
+    kind === "choice"
+      ? true
+      : kind === "contact"
+        ? contactQuery.trim().length > 1 && (!newContact || /.+@.+\..+/.test(contactEmail))
+        : Boolean(meetDate && meetTime);
+
+  const formatWhen = () => {
+    const d = new Date(`${meetDate}T${meetTime}`);
+    if (Number.isNaN(d.getTime())) return `${meetDate} ${meetTime}`;
+    return d.toLocaleString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
 
   const confirm = () => {
-    const choice = currentQuestion.options[selected];
+    if (!canConfirm) return;
+    const choice =
+      kind === "contact"
+        ? contactEmail
+          ? `${contactQuery.trim()} (${contactEmail.trim()})`
+          : contactQuery.trim()
+        : kind === "when"
+          ? formatWhen()
+          : currentQuestion.options[selected];
     const next = [...answers, choice];
     setAnswers(next);
 
@@ -257,6 +302,9 @@ export function SyraAgentRunSheet({
       const ni = qIndex + 1;
       setQIndex(ni);
       setSelected(script.questions[ni].defaultOption);
+      setContactQuery("");
+      setContactEmail("");
+      setNewContact(false);
       return;
     }
 
