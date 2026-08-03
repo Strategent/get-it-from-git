@@ -93,6 +93,34 @@ function pickScript(prompt: string): Script {
   return SCRIPTS[0];
 }
 
+/** One streamed action line — soft, staggered fade-and-rise instead of a hard pop. */
+function StepLine({ step, index }: { step: Step; index: number }) {
+  return (
+    <div
+      className="text-[14px] syra-step-line"
+      style={{ animationDelay: `${Math.min(index, 6) * 70}ms` }}
+    >
+      <span className="font-medium text-foreground">{step.verb}</span>{" "}
+      <span className="text-muted-foreground">{step.object}</span>
+    </div>
+  );
+}
+
+/** Gentle three-dot working indicator. */
+function Working() {
+  return (
+    <div className="flex items-center gap-1.5 py-0.5 text-[14px] text-muted-foreground/70">
+      {[0, 1, 2].map((i) => (
+        <span
+          key={i}
+          className="h-1.5 w-1.5 rounded-full bg-current syra-step-dot"
+          style={{ animationDelay: `${i * 180}ms` }}
+        />
+      ))}
+    </div>
+  );
+}
+
 
 export function SyraAgentRunSheet({
   prompt,
