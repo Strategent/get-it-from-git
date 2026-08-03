@@ -314,8 +314,8 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
       className="absolute inset-0 z-40 flex flex-col items-center justify-center px-6"
       style={{
         background: isDark
-          ? "radial-gradient(120% 80% at 50% 40%, rgba(20,18,28,0.72), rgba(6,6,10,0.92))"
-          : "radial-gradient(120% 80% at 50% 40%, rgba(245,244,250,0.85), rgba(230,228,238,0.95))",
+          ? "radial-gradient(120% 80% at 50% 40%, rgba(52,48,43,0.72), rgba(30,28,25,0.92))"
+          : "radial-gradient(120% 80% at 50% 40%, rgba(240,235,228,0.85), rgba(220,212,202,0.95))",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
       }}
