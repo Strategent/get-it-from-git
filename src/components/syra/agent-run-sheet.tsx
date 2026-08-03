@@ -3,7 +3,14 @@ import { ArrowUp, Maximize2, X } from "lucide-react";
 import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
-type Question = { label: string; prompt: string; options: string[]; defaultOption: number };
+type Question = {
+  label: string;
+  prompt: string;
+  /** "choice" = option list (default), "contact" = CRM lookup / new contact, "when" = date + time */
+  kind?: "choice" | "contact" | "when";
+  options: string[];
+  defaultOption: number;
+};
 type Script = {
   title: string;
   steps: Step[];
@@ -22,6 +29,17 @@ const KNOWN_CLIENTS = [
   "Marlow Capital",
   "Beaumont Group",
   "Castellanos Holdings",
+];
+
+/** Stand-in CRM directory used for the attendee type-ahead. */
+const CRM_CONTACTS = [
+  { name: "Marcus Hartley", org: "Hartley Family Trust", email: "marcus@hartleytrust.com" },
+  { name: "Diane Hartley", org: "Hartley Family Trust", email: "diane@hartleytrust.com" },
+  { name: "Jenna Park", org: "Marlow Capital", email: "jenna.park@marlowcap.com" },
+  { name: "Sarah Lin", org: "Sterling Holdings", email: "sarah@sterlingholdings.com" },
+  { name: "Olivia Chen", org: "Beaumont Group", email: "olivia.chen@beaumontgrp.com" },
+  { name: "Ray Castellanos", org: "Castellanos Holdings", email: "ray@castellanos.co" },
+  { name: "Marcus Reed", org: "Caldwell Estate", email: "marcus.reed@caldwellestate.com" },
 ];
 
 function detectClient(prompt: string): string {
@@ -107,7 +125,8 @@ const SCRIPTS: Script[] = [
       {
         label: "Attendee",
         prompt: "Who is the meeting with?",
-        options: ["Hartley Family Trust", "Marlow Capital", "Sterling Holdings"],
+        kind: "contact",
+        options: [],
         defaultOption: 0,
       },
       {
@@ -129,17 +148,18 @@ const SCRIPTS: Script[] = [
         defaultOption: 0,
       },
       {
-        label: "Windows",
-        prompt: "Which windows should Syra offer?",
-        options: ["Mornings only", "Afternoons only", "Any open slot"],
-        defaultOption: 2,
+        label: "When",
+        prompt: "What date and time should Syra book?",
+        kind: "when",
+        options: [],
+        defaultOption: 0,
       },
     ],
     result: (a) => [
       { verb: "Confirmed", object: `${a[0]} · ${a[1]}` },
       { verb: "Set", object: `${a[2]} · ${a[3]}` },
-      { verb: "Offered", object: `${a[4].toLowerCase()} across the next 5 business days` },
-      { verb: "Sent", object: `Booking link to ${a[0]} with agenda attached` },
+      { verb: "Scheduled", object: a[4] },
+      { verb: "Sent", object: `Calendar invite to ${a[0]} with agenda attached` },
       { verb: "Held", object: "Provisional holds + buffer blocks on your calendar" },
     ],
   },
@@ -202,6 +222,11 @@ export function SyraAgentRunSheet({
   const [qIndex, setQIndex] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [selected, setSelected] = useState(script.questions[0].defaultOption);
+  const [contactQuery, setContactQuery] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [newContact, setNewContact] = useState(false);
+  const [meetDate, setMeetDate] = useState("");
+  const [meetTime, setMeetTime] = useState("");
   const [done, setDone] = useState<string[] | null>(null);
   const [resultRevealed, setResultRevealed] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -214,6 +239,11 @@ export function SyraAgentRunSheet({
     setQIndex(0);
     setAnswers([]);
     setSelected(script.questions[0].defaultOption);
+    setContactQuery("");
+    setContactEmail("");
+    setNewContact(false);
+    setMeetDate("");
+    setMeetTime("");
     timers.current.forEach(clearTimeout);
     timers.current = [];
     script.steps.forEach((_, i) => {
@@ -227,9 +257,44 @@ export function SyraAgentRunSheet({
 
   const resultSteps = done ? script.result(done, client) : [];
   const currentQuestion = script.questions[qIndex];
+  const kind = currentQuestion?.kind ?? "choice";
+
+  const suggestions =
+    kind === "contact" && !newContact && contactQuery.trim().length > 0
+      ? CRM_CONTACTS.filter((c) =>
+          `${c.name} ${c.org} ${c.email}`.toLowerCase().includes(contactQuery.trim().toLowerCase()),
+        ).slice(0, 4)
+      : [];
+
+  const canConfirm =
+    kind === "choice"
+      ? true
+      : kind === "contact"
+        ? contactQuery.trim().length > 1 && (!newContact || /.+@.+\..+/.test(contactEmail))
+        : Boolean(meetDate && meetTime);
+
+  const formatWhen = () => {
+    const d = new Date(`${meetDate}T${meetTime}`);
+    if (Number.isNaN(d.getTime())) return `${meetDate} ${meetTime}`;
+    return d.toLocaleString(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
 
   const confirm = () => {
-    const choice = currentQuestion.options[selected];
+    if (!canConfirm) return;
+    const choice =
+      kind === "contact"
+        ? contactEmail
+          ? `${contactQuery.trim()} (${contactEmail.trim()})`
+          : contactQuery.trim()
+        : kind === "when"
+          ? formatWhen()
+          : currentQuestion.options[selected];
     const next = [...answers, choice];
     setAnswers(next);
 
@@ -237,6 +302,9 @@ export function SyraAgentRunSheet({
       const ni = qIndex + 1;
       setQIndex(ni);
       setSelected(script.questions[ni].defaultOption);
+      setContactQuery("");
+      setContactEmail("");
+      setNewContact(false);
       return;
     }
 
@@ -315,28 +383,108 @@ export function SyraAgentRunSheet({
                 <div className="mt-1.5 text-[15px] font-medium leading-snug text-foreground">
                   {currentQuestion.prompt}
                 </div>
-                <div className="mt-2.5 space-y-1">
-                  {currentQuestion.options.map((o, i) => (
+                {kind === "choice" && (
+                  <div className="mt-2.5 space-y-1">
+                    {currentQuestion.options.map((o, i) => (
+                      <button
+                        key={o}
+                        onClick={() => setSelected(i)}
+                        className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors ${
+                          selected === i ? "bg-foreground/10" : "hover:bg-foreground/5"
+                        }`}
+                      >
+                        <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md bg-foreground/5 text-[10.5px] text-muted-foreground">
+                          {i + 1}
+                        </span>
+                        <span className="text-[13.5px] text-foreground">{o}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {kind === "contact" && (
+                  <div className="mt-2.5 space-y-2">
+                    <input
+                      autoFocus
+                      value={contactQuery}
+                      onChange={(e) => setContactQuery(e.target.value)}
+                      placeholder={newContact ? "Full name" : "Start typing a name…"}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none"
+                    />
+
+                    {newContact ? (
+                      <input
+                        value={contactEmail}
+                        onChange={(e) => setContactEmail(e.target.value)}
+                        placeholder="Email address"
+                        type="email"
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground placeholder:text-muted-foreground/70 focus:border-foreground/30 focus:outline-none"
+                      />
+                    ) : (
+                      suggestions.length > 0 && (
+                        <div className="space-y-1">
+                          <div className="text-[11px] uppercase tracking-wide text-muted-foreground/80">
+                            From CRM
+                          </div>
+                          {suggestions.map((c) => (
+                            <button
+                              key={c.email}
+                              onClick={() => {
+                                setContactQuery(c.name);
+                                setContactEmail(c.email);
+                              }}
+                              className={`flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left transition-colors ${
+                                contactEmail === c.email ? "bg-foreground/10" : "hover:bg-foreground/5"
+                              }`}
+                            >
+                              <span className="min-w-0">
+                                <span className="block truncate text-[13.5px] text-foreground">{c.name}</span>
+                                <span className="block truncate text-[11.5px] text-muted-foreground">
+                                  {c.org} · {c.email}
+                                </span>
+                              </span>
+                            </button>
+                          ))}
+                        </div>
+                      )
+                    )}
+
                     <button
-                      key={o}
-                      onClick={() => setSelected(i)}
-                      className={`flex w-full items-center gap-2.5 rounded-lg px-2 py-1.5 text-left transition-colors ${
-                        selected === i ? "bg-foreground/10" : "hover:bg-foreground/5"
-                      }`}
+                      onClick={() => {
+                        setNewContact((v) => !v);
+                        setContactEmail("");
+                      }}
+                      className="text-[12.5px] text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
                     >
-                      <span className="grid h-5 w-5 shrink-0 place-items-center rounded-md bg-foreground/5 text-[10.5px] text-muted-foreground">
-                        {i + 1}
-                      </span>
-                      <span className="text-[13.5px] text-foreground">{o}</span>
+                      {newContact ? "Search CRM instead" : "+ New contact"}
                     </button>
-                  ))}
-                </div>
+                  </div>
+                )}
+
+                {kind === "when" && (
+                  <div className="mt-2.5 grid grid-cols-2 gap-2">
+                    <input
+                      type="date"
+                      value={meetDate}
+                      onChange={(e) => setMeetDate(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground focus:border-foreground/30 focus:outline-none"
+                    />
+                    <input
+                      type="time"
+                      value={meetTime}
+                      onChange={(e) => setMeetTime(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13.5px] text-foreground focus:border-foreground/30 focus:outline-none"
+                    />
+                  </div>
+                )}
+
                 <div className="mt-3 flex items-center justify-end gap-2">
                   <button
                     onClick={confirm}
-                    className="rounded-lg bg-foreground px-3.5 py-1.5 text-[13.5px] font-medium text-background"
+                    disabled={!canConfirm}
+                    className="rounded-lg bg-foreground px-3.5 py-1.5 text-[13.5px] font-medium text-background transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    {qIndex + 1 < script.questions.length ? "Next" : "Confirm & run"}
+                    {qIndex + 1 < script.questions.length ? "Next" : "Confirm & send invite"}
                   </button>
                 </div>
               </div>
@@ -380,10 +528,10 @@ export function SyraAgentRunSheet({
 
           {/* follow-up */}
           <div className="px-4 pb-4">
-            <div className="relative rounded-xl bg-muted/60">
+            <div className="relative rounded-xl border border-border bg-background/80 shadow-inner">
               <input
                 placeholder="Ask a follow-up…"
-                className="w-full bg-transparent py-4 pl-4 pr-14 text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none"
+                className="w-full bg-transparent py-3.5 pl-4 pr-14 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
               />
               <button
                 aria-label="Send"
