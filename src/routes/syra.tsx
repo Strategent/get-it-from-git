@@ -49,15 +49,15 @@ function SyraPage() {
   };
   const activeModel = models.find((m) => m.id === modelId) ?? models[0];
 
-  const bgStart = isDark ? "rgb(10, 10, 14)" : "rgb(250, 249, 252)";
-  const bgEnd = isDark ? "rgb(20, 18, 28)" : "rgb(245, 244, 248)";
-  // Light mode: extremely desaturated, subtle gray-lavender blobs so the
-  // animation is visible but never overwhelms the near-white background.
-  const c1 = isDark ? "120, 110, 150" : "225, 223, 230";
-  const c2 = isDark ? "90, 85, 115"   : "215, 213, 222";
-  const c3 = isDark ? "140, 130, 170" : "230, 228, 235";
-  const c4 = isDark ? "70, 65, 95"    : "210, 208, 218";
-  const c5 = isDark ? "105, 95, 135"  : "220, 218, 228";
+  // Colors pulled from the Daily Brief hero mountain photo for continuity:
+  // warm cream sky, muted sage-gray ridges, deep warm mountain shadow.
+  const bgStart = isDark ? "rgb(52, 48, 43)" : "rgb(240, 235, 228)";
+  const bgEnd = isDark ? "rgb(34, 32, 29)" : "rgb(228, 220, 210)";
+  const c1 = isDark ? "142, 144, 137" : "216, 208, 198"; // sage / warm cream
+  const c2 = isDark ? "90, 84, 76"    : "190, 182, 172"; // warm brown / taupe
+  const c3 = isDark ? "120, 116, 108" : "200, 194, 184"; // mid warm gray
+  const c4 = isDark ? "74, 66, 56"    : "176, 170, 160"; // deep ridge / soft stone
+  const c5 = isDark ? "108, 100, 92"  : "208, 200, 190"; // bridge tone
   const blending = isDark ? "soft-light" : "normal";
 
 
@@ -87,8 +87,8 @@ function SyraPage() {
           className="absolute inset-0"
           style={{
             background: isDark
-              ? "radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 55%)"
-              : "radial-gradient(120% 80% at 50% 100%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 55%)",
+              ? "radial-gradient(120% 80% at 50% 100%, rgba(34,32,29,0.55) 0%, rgba(34,32,29,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(52,48,43,0.4) 0%, rgba(52,48,43,0) 55%)"
+              : "radial-gradient(120% 80% at 50% 100%, rgba(240,235,228,0.7) 0%, rgba(240,235,228,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(228,220,210,0.6) 0%, rgba(228,220,210,0) 55%)",
           }}
         />
       </div>
@@ -314,8 +314,8 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
       className="absolute inset-0 z-40 flex flex-col items-center justify-center px-6"
       style={{
         background: isDark
-          ? "radial-gradient(120% 80% at 50% 40%, rgba(20,18,28,0.72), rgba(6,6,10,0.92))"
-          : "radial-gradient(120% 80% at 50% 40%, rgba(245,244,250,0.85), rgba(230,228,238,0.95))",
+          ? "radial-gradient(120% 80% at 50% 40%, rgba(52,48,43,0.72), rgba(30,28,25,0.92))"
+          : "radial-gradient(120% 80% at 50% 40%, rgba(240,235,228,0.85), rgba(220,212,202,0.95))",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
       }}
@@ -340,12 +340,12 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
             width: orbSize,
             height: orbSize,
             background: isDark
-              ? "radial-gradient(circle at 30% 30%, rgba(180,168,220,0.55), rgba(70,60,110,0.35) 55%, rgba(20,18,28,0) 75%)"
-              : "radial-gradient(circle at 30% 30%, rgba(220,214,240,0.9), rgba(190,182,220,0.55) 55%, rgba(255,255,255,0) 75%)",
+              ? "radial-gradient(circle at 30% 30%, rgba(170,164,152,0.55), rgba(74,66,56,0.35) 55%, rgba(34,32,29,0) 75%)"
+              : "radial-gradient(circle at 30% 30%, rgba(232,224,214,0.9), rgba(180,172,162,0.55) 55%, rgba(255,255,255,0) 75%)",
             filter: "blur(0.5px)",
             boxShadow: isDark
-              ? "0 0 80px rgba(160,150,200,0.35), inset 0 0 60px rgba(255,255,255,0.05)"
-              : "0 0 60px rgba(180,170,210,0.35), inset 0 0 40px rgba(255,255,255,0.6)",
+              ? "0 0 80px rgba(142,136,124,0.35), inset 0 0 60px rgba(255,255,255,0.05)"
+              : "0 0 60px rgba(190,182,172,0.35), inset 0 0 40px rgba(255,255,255,0.6)",
           }}
         />
         <div
@@ -353,7 +353,7 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
           style={{
             width: 260 + level * 40,
             height: 260 + level * 40,
-            borderColor: isDark ? "rgba(200,190,230,0.15)" : "rgba(120,110,150,0.18)",
+            borderColor: isDark ? "rgba(180,172,160,0.15)" : "rgba(120,114,106,0.18)",
             transition: "width 200ms ease-out, height 200ms ease-out",
           }}
         />
@@ -362,7 +362,7 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
           style={{
             width: 300 + level * 20,
             height: 300 + level * 20,
-            borderColor: isDark ? "rgba(200,190,230,0.08)" : "rgba(120,110,150,0.1)",
+            borderColor: isDark ? "rgba(180,172,160,0.08)" : "rgba(120,114,106,0.1)",
             transition: "width 260ms ease-out, height 260ms ease-out",
           }}
         />
