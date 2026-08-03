@@ -454,10 +454,8 @@ export function SyraAgentRunSheet({
             </div>
 
             {/* steps */}
-            <div className="mt-4 space-y-1.5">
-              {script.steps.slice(0, revealed).map((s, i) => (
-                <StepLine key={s.object} step={s} index={i} />
-              ))}
+            <div className="mt-4">
+              <ToolTimeline steps={script.steps.slice(0, revealed)} working={revealed < script.steps.length} />
               {revealed < script.steps.length && <Working />}
             </div>
 
@@ -599,10 +597,11 @@ export function SyraAgentRunSheet({
             )}
 
             {done && (
-              <div className="mt-3 space-y-1.5">
-                {resultSteps.slice(0, resultRevealed).map((s, i) => (
-                  <StepLine key={s.object} step={s} index={i} />
-                ))}
+              <div className="mt-3">
+                <ToolTimeline
+                  steps={resultSteps.slice(0, resultRevealed)}
+                  working={resultRevealed < resultSteps.length}
+                />
                 {resultRevealed < resultSteps.length && <Working />}
 
                 {resultRevealed >= resultSteps.length && script.reviewer && (
