@@ -87,8 +87,8 @@ function SyraPage() {
           className="absolute inset-0"
           style={{
             background: isDark
-              ? "radial-gradient(120% 80% at 50% 100%, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 55%)"
-              : "radial-gradient(120% 80% at 50% 100%, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 55%)",
+              ? "radial-gradient(120% 80% at 50% 100%, rgba(34,32,29,0.55) 0%, rgba(34,32,29,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(52,48,43,0.4) 0%, rgba(52,48,43,0) 55%)"
+              : "radial-gradient(120% 80% at 50% 100%, rgba(240,235,228,0.7) 0%, rgba(240,235,228,0) 60%), radial-gradient(120% 80% at 50% 0%, rgba(228,220,210,0.6) 0%, rgba(228,220,210,0) 55%)",
           }}
         />
       </div>
