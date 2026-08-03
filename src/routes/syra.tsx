@@ -11,6 +11,7 @@ import {
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
+import { NeatBackground } from "@/components/syra/neat-background";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,141 +96,7 @@ function SyraPage() {
         }
       `}</style>
 
-      {/* Aurora field: horizontal fluid ribbons of moss, lavender and teal. */}
-      <div className="syra-stage absolute inset-0 pointer-events-none isolate" style={{ animation: "syraHue 40s ease-in-out infinite" }}>
-        {/* Base vertical gradient — dark valley floor to misty sky. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: isDark
-              ? "linear-gradient(180deg, rgb(9,12,17) 0%, rgb(13,17,23) 14%, rgb(17,22,30) 28%, rgb(21,28,36) 42%, rgb(26,34,43) 56%, rgb(31,40,50) 70%, rgb(38,48,60) 85%, rgb(46,57,71) 100%)"
-              : "linear-gradient(180deg, rgb(236,240,245) 0%, rgb(230,235,241) 16%, rgb(223,229,236) 32%, rgb(215,222,231) 48%, rgb(207,215,225) 64%, rgb(199,208,219) 80%, rgb(192,202,214) 100%)",
-          }}
-        />
-
-        {/* Ribbon 1 — moss, low and wide. */}
-        <div
-          className="syra-layer absolute"
-          style={{
-            inset: "-30% -25%",
-            top: "22%",
-            background: isDark
-              ? "linear-gradient(96deg, rgba(46,86,68,0) 0%, rgba(62,116,86,0.55) 22%, rgba(84,146,108,0.62) 40%, rgba(50,90,72,0.25) 58%, rgba(74,132,98,0.55) 78%, rgba(46,86,68,0) 100%)"
-              : "linear-gradient(96deg, rgba(96,132,104,0) 0%, rgba(104,146,114,0.34) 24%, rgba(120,162,128,0.38) 42%, rgba(96,132,104,0.14) 60%, rgba(112,152,120,0.32) 80%, rgba(96,132,104,0) 100%)",
-            backgroundSize: "220% 100%",
-            mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(90px)",
-            animation: "syraRibbon 26s ease-in-out infinite, syraFlow 38s ease-in-out infinite",
-          }}
-        />
-
-        {/* Ribbon 2 — lavender, counter-motion through the middle. */}
-        <div
-          className="syra-layer absolute"
-          style={{
-            inset: "-30% -25%",
-            bottom: "24%",
-            background: isDark
-              ? "linear-gradient(84deg, rgba(96,80,144,0) 0%, rgba(128,102,182,0.55) 20%, rgba(100,84,150,0.22) 42%, rgba(150,118,200,0.6) 64%, rgba(112,92,164,0.3) 84%, rgba(96,80,144,0) 100%)"
-              : "linear-gradient(84deg, rgba(120,104,164,0) 0%, rgba(136,116,184,0.32) 22%, rgba(120,104,164,0.12) 46%, rgba(146,124,196,0.34) 68%, rgba(120,104,164,0) 100%)",
-            backgroundSize: "240% 100%",
-            mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(100px)",
-            animation: "syraRibbonAlt 34s ease-in-out infinite, syraFlow 52s ease-in-out infinite reverse",
-          }}
-        />
-
-        {/* Ribbon 3 — teal undertow, slowest. */}
-        <div
-          className="syra-layer absolute"
-          style={{
-            inset: "-35% -30%",
-            background: isDark
-              ? "linear-gradient(90deg, rgba(38,90,98,0) 0%, rgba(48,110,116,0.42) 28%, rgba(66,138,140,0.18) 56%, rgba(48,110,116,0.4) 80%, rgba(38,90,98,0) 100%)"
-              : "linear-gradient(90deg, rgba(90,138,142,0) 0%, rgba(96,148,152,0.22) 30%, rgba(90,138,142,0.08) 58%, rgba(96,148,152,0.2) 82%, rgba(90,138,142,0) 100%)",
-            backgroundSize: "280% 100%",
-            mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(120px)",
-            animation: "syraRibbon 58s ease-in-out infinite reverse, syraBreathe 30s ease-in-out infinite",
-          }}
-        />
-
-        {/* Ribbon 4 — pale moss highlight riding the top third. */}
-        <div
-          className="syra-layer absolute"
-          style={{
-            inset: "-20% -20%",
-            bottom: "56%",
-            background: isDark
-              ? "linear-gradient(102deg, rgba(120,164,132,0) 0%, rgba(140,182,150,0.3) 30%, rgba(120,164,132,0.08) 56%, rgba(158,150,196,0.28) 78%, rgba(120,164,132,0) 100%)"
-              : "linear-gradient(102deg, rgba(150,178,156,0) 0%, rgba(150,178,156,0.2) 32%, rgba(160,150,190,0.18) 74%, rgba(150,178,156,0) 100%)",
-            backgroundSize: "260% 100%",
-            mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(80px)",
-            animation: "syraRibbonAlt 44s ease-in-out infinite, syraFlow 64s ease-in-out infinite",
-          }}
-        />
-
-        {/* Specular sheen sweeping horizontally. */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div
-            className="syra-layer absolute -inset-y-1/2 w-2/5"
-            style={{
-              background: isDark
-                ? "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(214,228,255,0.08) 50%, rgba(255,255,255,0) 100%)"
-                : "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)",
-              filter: "blur(60px)",
-              animation: "syraSheen 22s cubic-bezier(0.4,0,0.6,1) infinite",
-            }}
-          />
-        </div>
-
-        {/* Horizon glow at the vanishing line. */}
-        <div
-          className="syra-layer absolute inset-0"
-          style={{
-            background: isDark
-              ? "radial-gradient(150% 48% at 50% 74%, rgba(104,120,146,0.42) 0%, rgba(92,106,130,0.18) 36%, rgba(80,92,108,0) 74%)"
-              : "radial-gradient(150% 48% at 50% 74%, rgba(188,198,208,0.5) 0%, rgba(184,194,204,0.2) 38%, rgba(180,190,200,0) 72%)",
-            opacity: 0.34,
-            animation: "syraBreathe 24s ease-in-out infinite",
-          }}
-        />
-
-        {/* Vignette to keep the composer legible. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background: isDark
-              ? "radial-gradient(90% 70% at 50% 50%, rgba(0,0,0,0) 40%, rgba(6,8,12,0.55) 100%)"
-              : "radial-gradient(90% 70% at 50% 50%, rgba(255,255,255,0) 45%, rgba(210,216,224,0.45) 100%)",
-          }}
-        />
-
-        {/* Coarse dither — breaks up wide flat washes. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            opacity: isDark ? 0.16 : 0.1,
-            mixBlendMode: "overlay",
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E\")",
-            backgroundSize: "200px 200px",
-          }}
-        />
-
-        {/* Fine per-pixel dither — kills residual 8-bit banding steps. */}
-        <div
-          className="absolute inset-0"
-          style={{
-            opacity: isDark ? 0.1 : 0.06,
-            mixBlendMode: "soft-light",
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23f)'/%3E%3C/svg%3E\")",
-            backgroundSize: "120px 120px",
-          }}
-        />
-      </div>
+      <NeatBackground />
 
       {/* Content — composer only, no copy outside the chat box. */}
       <div className="relative h-full flex flex-col items-center justify-center px-6">
