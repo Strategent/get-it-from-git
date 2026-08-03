@@ -61,106 +61,148 @@ function SyraPage() {
     <div className="relative w-full overflow-hidden" style={{ height: "calc(100dvh - 53px)" }}>
       <style>{`
         .font-radley { font-family: 'Radley', Georgia, serif; }
-        @keyframes syraGradientFlow {
-          0% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        @keyframes syraRibbon {
+          0%   { transform: translate3d(-12%, 0, 0) scaleY(1) rotate(-1.2deg); }
+          50%  { transform: translate3d(12%, 3%, 0) scaleY(1.25) rotate(1.4deg); }
+          100% { transform: translate3d(-12%, 0, 0) scaleY(1) rotate(-1.2deg); }
+        }
+        @keyframes syraRibbonAlt {
+          0%   { transform: translate3d(10%, 2%, 0) scaleY(1.15) rotate(1deg); }
+          50%  { transform: translate3d(-14%, -3%, 0) scaleY(0.9) rotate(-1.6deg); }
+          100% { transform: translate3d(10%, 2%, 0) scaleY(1.15) rotate(1deg); }
+        }
+        @keyframes syraFlow {
+          0%   { background-position: 0% 50%; }
+          50%  { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
         }
-        @keyframes syraGradientFlowReverse {
-          0% { background-position: 100% 50%; }
-          50% { background-position: 0% 50%; }
-          100% { background-position: 100% 50%; }
-        }
-        @keyframes syraDrift {
-          0%   { background-position: 0% 50%;   opacity: 0.55; }
-          33%  { background-position: 60% 50%;  opacity: 0.85; }
-          66%  { background-position: 120% 50%; opacity: 0.62; }
-          100% { background-position: 0% 50%;   opacity: 0.55; }
+        @keyframes syraBreathe {
+          0%, 100% { opacity: 0.55; }
+          50%      { opacity: 0.95; }
         }
         @keyframes syraSheen {
-          0%   { transform: translate3d(-30%, 0, 0) skewX(-8deg); }
-          100% { transform: translate3d(130%, 0, 0) skewX(-8deg); }
+          0%   { transform: translate3d(-40%, 0, 0) skewX(-10deg); opacity: 0; }
+          12%  { opacity: 1; }
+          88%  { opacity: 1; }
+          100% { transform: translate3d(180%, 0, 0) skewX(-10deg); opacity: 0; }
+        }
+        @keyframes syraHue {
+          0%, 100% { filter: saturate(1.3) hue-rotate(0deg); }
+          50%      { filter: saturate(1.5) hue-rotate(12deg); }
         }
         @media (prefers-reduced-motion: reduce) {
-          .syra-layer { animation: none !important; }
+          .syra-layer, .syra-stage { animation: none !important; }
         }
       `}</style>
 
-      {/* Giga-mountain mood: horizontal, fluid, subtle color washes. */}
-      <div className="absolute inset-0 pointer-events-none isolate" style={{ filter: "saturate(1.25)" }}>
+      {/* Aurora field: horizontal fluid ribbons of moss, lavender and teal. */}
+      <div className="syra-stage absolute inset-0 pointer-events-none isolate" style={{ animation: "syraHue 40s ease-in-out infinite" }}>
         {/* Base vertical gradient — dark valley floor to misty sky. */}
         <div
           className="absolute inset-0"
           style={{
             background: isDark
-              ? "linear-gradient(180deg, rgb(10,13,18) 0%, rgb(13,17,23) 12%, rgb(16,21,28) 24%, rgb(20,26,34) 36%, rgb(24,31,40) 48%, rgb(29,37,47) 60%, rgb(34,43,54) 72%, rgb(40,50,62) 86%, rgb(46,57,71) 100%)"
-              : "linear-gradient(180deg, rgb(234,238,243) 0%, rgb(229,234,240) 15%, rgb(223,229,236) 30%, rgb(216,223,231) 45%, rgb(208,216,225) 60%, rgb(201,210,220) 75%, rgb(194,204,215) 100%)",
+              ? "linear-gradient(180deg, rgb(9,12,17) 0%, rgb(13,17,23) 14%, rgb(17,22,30) 28%, rgb(21,28,36) 42%, rgb(26,34,43) 56%, rgb(31,40,50) 70%, rgb(38,48,60) 85%, rgb(46,57,71) 100%)"
+              : "linear-gradient(180deg, rgb(236,240,245) 0%, rgb(230,235,241) 16%, rgb(223,229,236) 32%, rgb(215,222,231) 48%, rgb(207,215,225) 64%, rgb(199,208,219) 80%, rgb(192,202,214) 100%)",
           }}
         />
 
-        {/* Horizontal moss band — slow drift. */}
+        {/* Ribbon 1 — moss, low and wide. */}
         <div
-          className="syra-layer absolute inset-0"
+          className="syra-layer absolute"
           style={{
+            inset: "-30% -25%",
+            top: "22%",
             background: isDark
-              ? "linear-gradient(100deg, rgba(52,84,66,0) 0%, rgba(58,102,76,0.34) 18%, rgba(72,126,94,0.42) 32%, rgba(48,80,64,0.16) 50%, rgba(66,116,88,0.38) 70%, rgba(52,84,66,0.20) 86%, rgba(52,84,66,0) 100%)"
-              : "linear-gradient(100deg, rgba(96,132,104,0) 0%, rgba(96,132,104,0.24) 20%, rgba(112,150,118,0.28) 34%, rgba(96,132,104,0.10) 52%, rgba(106,144,114,0.24) 72%, rgba(96,132,104,0) 100%)",
+              ? "linear-gradient(96deg, rgba(46,86,68,0) 0%, rgba(62,116,86,0.55) 22%, rgba(84,146,108,0.62) 40%, rgba(50,90,72,0.25) 58%, rgba(74,132,98,0.55) 78%, rgba(46,86,68,0) 100%)"
+              : "linear-gradient(96deg, rgba(96,132,104,0) 0%, rgba(104,146,114,0.34) 24%, rgba(120,162,128,0.38) 42%, rgba(96,132,104,0.14) 60%, rgba(112,152,120,0.32) 80%, rgba(96,132,104,0) 100%)",
+            backgroundSize: "220% 100%",
+            mixBlendMode: isDark ? "screen" : "multiply",
+            filter: "blur(90px)",
+            animation: "syraRibbon 26s ease-in-out infinite, syraFlow 38s ease-in-out infinite",
+          }}
+        />
+
+        {/* Ribbon 2 — lavender, counter-motion through the middle. */}
+        <div
+          className="syra-layer absolute"
+          style={{
+            inset: "-30% -25%",
+            bottom: "24%",
+            background: isDark
+              ? "linear-gradient(84deg, rgba(96,80,144,0) 0%, rgba(128,102,182,0.55) 20%, rgba(100,84,150,0.22) 42%, rgba(150,118,200,0.6) 64%, rgba(112,92,164,0.3) 84%, rgba(96,80,144,0) 100%)"
+              : "linear-gradient(84deg, rgba(120,104,164,0) 0%, rgba(136,116,184,0.32) 22%, rgba(120,104,164,0.12) 46%, rgba(146,124,196,0.34) 68%, rgba(120,104,164,0) 100%)",
             backgroundSize: "240% 100%",
             mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(60px)",
-            animation: "syraDrift 34s cubic-bezier(0.45,0,0.55,1) infinite",
+            filter: "blur(100px)",
+            animation: "syraRibbonAlt 34s ease-in-out infinite, syraFlow 52s ease-in-out infinite reverse",
           }}
         />
 
-        {/* Horizontal lavender band — counter-motion. */}
+        {/* Ribbon 3 — teal undertow, slowest. */}
         <div
-          className="syra-layer absolute inset-0"
+          className="syra-layer absolute"
           style={{
+            inset: "-35% -30%",
             background: isDark
-              ? "linear-gradient(80deg, rgba(104,86,150,0) 0%, rgba(118,96,168,0.34) 22%, rgba(92,78,140,0.14) 44%, rgba(134,108,182,0.40) 66%, rgba(104,86,150,0.20) 84%, rgba(104,86,150,0) 100%)"
-              : "linear-gradient(80deg, rgba(120,104,164,0) 0%, rgba(130,112,176,0.22) 24%, rgba(118,102,160,0.08) 48%, rgba(138,118,186,0.22) 70%, rgba(120,104,164,0) 100%)",
+              ? "linear-gradient(90deg, rgba(38,90,98,0) 0%, rgba(48,110,116,0.42) 28%, rgba(66,138,140,0.18) 56%, rgba(48,110,116,0.4) 80%, rgba(38,90,98,0) 100%)"
+              : "linear-gradient(90deg, rgba(90,138,142,0) 0%, rgba(96,148,152,0.22) 30%, rgba(90,138,142,0.08) 58%, rgba(96,148,152,0.2) 82%, rgba(90,138,142,0) 100%)",
+            backgroundSize: "280% 100%",
+            mixBlendMode: isDark ? "screen" : "multiply",
+            filter: "blur(120px)",
+            animation: "syraRibbon 58s ease-in-out infinite reverse, syraBreathe 30s ease-in-out infinite",
+          }}
+        />
+
+        {/* Ribbon 4 — pale moss highlight riding the top third. */}
+        <div
+          className="syra-layer absolute"
+          style={{
+            inset: "-20% -20%",
+            bottom: "56%",
+            background: isDark
+              ? "linear-gradient(102deg, rgba(120,164,132,0) 0%, rgba(140,182,150,0.3) 30%, rgba(120,164,132,0.08) 56%, rgba(158,150,196,0.28) 78%, rgba(120,164,132,0) 100%)"
+              : "linear-gradient(102deg, rgba(150,178,156,0) 0%, rgba(150,178,156,0.2) 32%, rgba(160,150,190,0.18) 74%, rgba(150,178,156,0) 100%)",
             backgroundSize: "260% 100%",
             mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(70px)",
-            animation: "syraGradientFlowReverse 46s cubic-bezier(0.45,0,0.55,1) infinite",
-          }}
-        />
-
-        {/* Teal-moss undertow — third, slowest hue for depth. */}
-        <div
-          className="syra-layer absolute inset-0 opacity-70"
-          style={{
-            background: isDark
-              ? "linear-gradient(90deg, rgba(46,96,102,0) 0%, rgba(46,96,102,0.26) 30%, rgba(60,118,120,0.10) 58%, rgba(46,96,102,0.24) 82%, rgba(46,96,102,0) 100%)"
-              : "linear-gradient(90deg, rgba(90,138,142,0) 0%, rgba(90,138,142,0.16) 30%, rgba(90,138,142,0.06) 58%, rgba(90,138,142,0.14) 82%, rgba(90,138,142,0) 100%)",
-            backgroundSize: "300% 100%",
-            mixBlendMode: isDark ? "screen" : "multiply",
             filter: "blur(80px)",
-            animation: "syraGradientFlow 62s cubic-bezier(0.45,0,0.55,1) infinite",
+            animation: "syraRibbonAlt 44s ease-in-out infinite, syraFlow 64s ease-in-out infinite",
           }}
         />
 
-        {/* Slow specular sheen sweeping horizontally. */}
+        {/* Specular sheen sweeping horizontally. */}
         <div className="absolute inset-0 overflow-hidden">
           <div
-            className="syra-layer absolute -inset-y-1/2 w-1/2"
+            className="syra-layer absolute -inset-y-1/2 w-2/5"
             style={{
               background: isDark
-                ? "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(210,225,255,0.055) 50%, rgba(255,255,255,0) 100%)"
-                : "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
-              filter: "blur(40px)",
-              animation: "syraSheen 24s linear infinite",
+                ? "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(214,228,255,0.08) 50%, rgba(255,255,255,0) 100%)"
+                : "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%)",
+              filter: "blur(60px)",
+              animation: "syraSheen 22s cubic-bezier(0.4,0,0.6,1) infinite",
             }}
           />
         </div>
 
-        {/* Soft horizon glow — warm whisper at the vanishing line. */}
+        {/* Horizon glow at the vanishing line. */}
         <div
-          className="absolute inset-0 opacity-30"
+          className="syra-layer absolute inset-0"
           style={{
             background: isDark
-              ? "radial-gradient(140% 46% at 50% 72%, rgba(96,110,132,0.40) 0%, rgba(90,104,126,0.18) 34%, rgba(80,92,108,0.06) 60%, rgba(80,92,108,0) 78%)"
-              : "radial-gradient(140% 46% at 50% 72%, rgba(186,196,206,0.48) 0%, rgba(184,194,204,0.20) 36%, rgba(180,190,200,0) 70%)",
+              ? "radial-gradient(150% 48% at 50% 74%, rgba(104,120,146,0.42) 0%, rgba(92,106,130,0.18) 36%, rgba(80,92,108,0) 74%)"
+              : "radial-gradient(150% 48% at 50% 74%, rgba(188,198,208,0.5) 0%, rgba(184,194,204,0.2) 38%, rgba(180,190,200,0) 72%)",
+            opacity: 0.34,
+            animation: "syraBreathe 24s ease-in-out infinite",
+          }}
+        />
+
+        {/* Vignette to keep the composer legible. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: isDark
+              ? "radial-gradient(90% 70% at 50% 50%, rgba(0,0,0,0) 40%, rgba(6,8,12,0.55) 100%)"
+              : "radial-gradient(90% 70% at 50% 50%, rgba(255,255,255,0) 45%, rgba(210,216,224,0.45) 100%)",
           }}
         />
 
