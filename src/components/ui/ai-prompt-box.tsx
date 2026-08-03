@@ -634,8 +634,8 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
             </div>
           </div>
 
+          <div className="flex items-center gap-1">
           {isRecording && <VoiceWaveform />}
-
           <PromptInputAction
             tooltip={
               isLoading ? "Stop generation" : isRecording ? "Stop recording" : hasContent ? "Send message" : "Voice message"
@@ -673,6 +673,7 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
               )}
             </Button>
           </PromptInputAction>
+          </div>
         </PromptInputActions>
       </PromptInput>
 
