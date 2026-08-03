@@ -1,5 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowUp, Maximize2, X } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowUpRight,
+  CalendarDays,
+  ChevronDown,
+  ChevronUp,
+  FileText,
+  FolderLock,
+  Mail,
+  Maximize2,
+  PenLine,
+  SquareCode,
+  X,
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
@@ -173,18 +187,112 @@ function pickScript(prompt: string): Script {
   return SCRIPTS[0];
 }
 
-/** One streamed action line — soft, staggered fade-and-rise instead of a hard pop. */
-function StepLine({ step, index }: { step: Step; index: number }) {
+/** Tool identities rendered as app-style squircle icons. */
+type ToolMeta = { key: string; label: string; icon: LucideIcon; tint: string; fg: string };
+
+const TOOLS: Record<string, ToolMeta> = {
+  gmail: { key: "gmail", label: "Gmail", icon: Mail, tint: "bg-[#2b1f1f]", fg: "text-[#ea4335]" },
+  calendar: { key: "calendar", label: "Google Calendar", icon: CalendarDays, tint: "bg-[#16233a]", fg: "text-[#4285f4]" },
+  docs: { key: "docs", label: "Documents", icon: FileText, tint: "bg-[#1e2530]", fg: "text-[#9ab6e8]" },
+  vault: { key: "vault", label: "Vault / CRM", icon: FolderLock, tint: "bg-[#231f2e]", fg: "text-[#b39ddb]" },
+  sign: { key: "sign", label: "DocuSign", icon: PenLine, tint: "bg-[#2a2418]", fg: "text-[#e0b64a]" },
+  executor: { key: "executor", label: "Executor", icon: SquareCode, tint: "bg-[#16261f]", fg: "text-[#34c78a]" },
+  handoff: { key: "handoff", label: "Handoff", icon: ArrowUpRight, tint: "bg-[#132434]", fg: "text-[#3ea6f0]" },
+};
+
+function inferTool(step: Step): ToolMeta {
+  const t = `${step.verb} ${step.object}`.toLowerCase();
+  if (/(email|inbox|mail|reply|replies|newsletter|sent to)/.test(t)) return TOOLS.gmail;
+  if (/(calendar|invite|meeting|schedul|hold|buffer|availability)/.test(t)) return TOOLS.calendar;
+  if (/(docusign|signature|sign-off|routing)/.test(t)) return TOOLS.sign;
+  if (/(vault|client record|crm|contact)/.test(t)) return TOOLS.vault;
+  if (/(draft|template|letter|clause|fee|agreement|document|attach)/.test(t)) return TOOLS.docs;
+  if (/(deleg|assistant|handoff)/.test(t)) return TOOLS.handoff;
+  return TOOLS.executor;
+}
+
+function ToolIcon({ tool, className = "" }: { tool: ToolMeta; className?: string }) {
+  const Icon = tool.icon;
   return (
-    <div
-      className="flex items-start gap-2 text-[13px] leading-[1.35] syra-step-line"
-      style={{ animationDelay: `${Math.min(index, 6) * 70}ms` }}
+    <span
+      className={`grid h-9 w-9 shrink-0 place-items-center rounded-[11px] ring-1 ring-inset ring-white/10 ${tool.tint} ${className}`}
     >
-      <span className="mt-[6px] h-1 w-1 shrink-0 rounded-full bg-foreground/40" />
-      <span className="min-w-0">
-        <span className="font-medium text-foreground">{step.verb}</span>{" "}
-        <span className="text-muted-foreground">{step.object}</span>
-      </span>
+      <Icon className={`h-[18px] w-[18px] ${tool.fg}`} strokeWidth={2.2} />
+    </span>
+  );
+}
+
+/** Collapsible "Used N tools" timeline — app icons, action title, tool subtitle. */
+function ToolTimeline({ steps, working }: { steps: Step[]; working?: boolean }) {
+  const [open, setOpen] = useState(true);
+  const [expanded, setExpanded] = useState<number | null>(null);
+  const items = steps.map((s) => ({ step: s, tool: inferTool(s) }));
+  const stack = items.map((i) => i.tool).filter((t, i, a) => a.findIndex((x) => x.key === t.key) === i);
+
+  if (items.length === 0) return null;
+
+  return (
+    <div>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-3 rounded-lg py-1 pr-2 text-left"
+      >
+        <span className="flex items-center">
+          {stack.slice(0, 4).map((t, i) => (
+            <span key={t.key} className={i === 0 ? "" : "-ml-2.5"} style={{ zIndex: 10 - i }}>
+              <ToolIcon tool={t} className="ring-2 ring-card" />
+            </span>
+          ))}
+        </span>
+        <span className="text-[15px] font-medium text-foreground">
+          Used {stack.length} {stack.length === 1 ? "tool" : "tools"}
+        </span>
+        {open ? (
+          <ChevronUp className="h-4 w-4 text-muted-foreground" />
+        ) : (
+          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+        )}
+      </button>
+
+      {open && (
+        <div className="mt-2">
+          {items.map(({ step, tool }, i) => (
+            <div
+              key={`${step.verb}-${step.object}`}
+              className="relative flex gap-3 pb-3 syra-step-line"
+              style={{ animationDelay: `${Math.min(i, 6) * 90}ms` }}
+            >
+              {(i < items.length - 1 || working) && (
+                <span className="absolute left-[17px] top-10 bottom-0 w-px bg-border" />
+              )}
+              <ToolIcon tool={tool} />
+              <div className="min-w-0 pt-0.5">
+                <button
+                  type="button"
+                  onClick={() => setExpanded(expanded === i ? null : i)}
+                  className="flex items-center gap-1.5 text-left"
+                >
+                  <span className="text-[15px] leading-snug text-foreground">
+                    {step.verb} {step.object}
+                  </span>
+                  <ChevronDown
+                    className={`h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform ${
+                      expanded === i ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                <div className="text-[13.5px] text-muted-foreground">{tool.label}</div>
+                {expanded === i && (
+                  <div className="mt-1.5 rounded-lg bg-muted/50 px-2.5 py-1.5 text-[12.5px] leading-snug text-muted-foreground">
+                    {step.verb} · {step.object}
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -346,10 +454,8 @@ export function SyraAgentRunSheet({
             </div>
 
             {/* steps */}
-            <div className="mt-4 space-y-1.5">
-              {script.steps.slice(0, revealed).map((s, i) => (
-                <StepLine key={s.object} step={s} index={i} />
-              ))}
+            <div className="mt-4">
+              <ToolTimeline steps={script.steps.slice(0, revealed)} working={revealed < script.steps.length} />
               {revealed < script.steps.length && <Working />}
             </div>
 
@@ -491,10 +597,11 @@ export function SyraAgentRunSheet({
             )}
 
             {done && (
-              <div className="mt-3 space-y-1.5">
-                {resultSteps.slice(0, resultRevealed).map((s, i) => (
-                  <StepLine key={s.object} step={s} index={i} />
-                ))}
+              <div className="mt-3">
+                <ToolTimeline
+                  steps={resultSteps.slice(0, resultRevealed)}
+                  working={resultRevealed < resultSteps.length}
+                />
                 {resultRevealed < resultSteps.length && <Working />}
 
                 {resultRevealed >= resultSteps.length && script.reviewer && (
