@@ -1,11 +1,11 @@
 {
-  "version": 1,
   "asset_id": "58eb650b-bba7-4312-894a-88ed704c0a74",
-  "project_id": "51504194-8df4-485d-9dbb-6576e1c3185b",
-  "url": "/__l5e/assets-v1/58eb650b-bba7-4312-894a-88ed704c0a74/sidebar-icon.png",
-  "r2_key": "a/v1/51504194-8df4-485d-9dbb-6576e1c3185b/58eb650b-bba7-4312-894a-88ed704c0a74/sidebar-icon.png",
-  "original_filename": "sidebar-icon.png",
-  "size": 261520,
   "content_type": "image/png",
-  "created_at": "2026-08-02T20:51:01Z"
+  "created_at": "2026-08-02T20:51:01Z",
+  "original_filename": "sidebar-icon.png",
+  "project_id": "ef429bee-4ee5-46db-8e9b-72a5ad147e8e",
+  "r2_key": "a/v1/ef429bee-4ee5-46db-8e9b-72a5ad147e8e/58eb650b-bba7-4312-894a-88ed704c0a74/sidebar-icon.png",
+  "size": 261520,
+  "url": "/__l5e/assets-v1/58eb650b-bba7-4312-894a-88ed704c0a74/sidebar-icon.png",
+  "version": 1
 }
