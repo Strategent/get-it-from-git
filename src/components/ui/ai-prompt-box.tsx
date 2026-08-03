@@ -491,21 +491,13 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
           </div>
         )}
 
-        <div className={cn("transition-all duration-300", isRecording ? "h-0 overflow-hidden opacity-0" : "opacity-100")}>
+        <div className="transition-all duration-300">
           <PromptInputTextarea
             placeholder={
               showSearch ? "Search the web…" : showThink ? "Think deeply…" : showCanvas ? "Create on canvas…" : placeholder
             }
           />
         </div>
-
-        {isRecording && (
-          <VoiceRecorder
-            isRecording={isRecording}
-            onStartRecording={() => onVoiceStart?.()}
-            onStopRecording={() => setIsRecording(false)}
-          />
-        )}
 
         <PromptInputActions className="flex items-center justify-between gap-2 p-0 pt-2">
           <div
