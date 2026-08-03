@@ -127,19 +127,19 @@ function SyraPage() {
                   sideOffset={8}
                   collisionPadding={12}
                   avoidCollisions
-                  className="z-[60] w-64 max-h-[min(60vh,420px)] overflow-y-auto rounded-xl border-border bg-popover/95 backdrop-blur-xl p-1 shadow-2xl"
+                  className="z-[60] w-56 max-h-[188px] overflow-y-auto overscroll-contain rounded-xl border-border bg-popover/95 backdrop-blur-xl p-1 shadow-2xl"
                 >
                   {models.map((m) => (
                     <DropdownMenuItem
                       key={m.id}
                       onSelect={() => setModelId(m.id)}
-                      className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg cursor-pointer"
+                      className="flex items-center justify-between gap-3 px-2.5 py-1.5 rounded-lg cursor-pointer"
                     >
                       <div className="min-w-0">
-                        <div className="text-[13px] text-popover-foreground truncate">{m.name}</div>
-                        <div className="text-[11px] text-muted-foreground">{m.provider}</div>
+                        <div className="text-[12.5px] leading-tight text-popover-foreground truncate">{m.name}</div>
+                        <div className="text-[10.5px] leading-tight text-muted-foreground">{m.provider}</div>
                       </div>
-                      {m.id === modelId && <Check className="h-3.5 w-3.5 text-primary shrink-0" />}
+                      {m.id === modelId && <Check className="h-3 w-3 text-primary shrink-0" />}
                     </DropdownMenuItem>
                   ))}
                 </DropdownMenuContent>
