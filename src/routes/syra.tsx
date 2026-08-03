@@ -107,7 +107,7 @@ function SyraPage() {
               : "linear-gradient(100deg, rgba(96,132,104,0) 0%, rgba(96,132,104,0.24) 20%, rgba(112,150,118,0.28) 34%, rgba(96,132,104,0.10) 52%, rgba(106,144,114,0.24) 72%, rgba(96,132,104,0) 100%)",
             backgroundSize: "240% 100%",
             mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(28px)",
+            filter: "blur(60px)",
             animation: "syraDrift 34s cubic-bezier(0.45,0,0.55,1) infinite",
           }}
         />
@@ -121,7 +121,7 @@ function SyraPage() {
               : "linear-gradient(80deg, rgba(120,104,164,0) 0%, rgba(130,112,176,0.22) 24%, rgba(118,102,160,0.08) 48%, rgba(138,118,186,0.22) 70%, rgba(120,104,164,0) 100%)",
             backgroundSize: "260% 100%",
             mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(34px)",
+            filter: "blur(70px)",
             animation: "syraGradientFlowReverse 46s cubic-bezier(0.45,0,0.55,1) infinite",
           }}
         />
@@ -135,7 +135,7 @@ function SyraPage() {
               : "linear-gradient(90deg, rgba(90,138,142,0) 0%, rgba(90,138,142,0.16) 30%, rgba(90,138,142,0.06) 58%, rgba(90,138,142,0.14) 82%, rgba(90,138,142,0) 100%)",
             backgroundSize: "300% 100%",
             mixBlendMode: isDark ? "screen" : "multiply",
-            filter: "blur(46px)",
+            filter: "blur(80px)",
             animation: "syraGradientFlow 62s cubic-bezier(0.45,0,0.55,1) infinite",
           }}
         />
@@ -164,15 +164,27 @@ function SyraPage() {
           }}
         />
 
-        {/* Dither grain — kills gradient banding on wide flat washes. */}
+        {/* Coarse dither — breaks up wide flat washes. */}
         <div
           className="absolute inset-0"
           style={{
-            opacity: isDark ? 0.055 : 0.035,
+            opacity: isDark ? 0.16 : 0.1,
             mixBlendMode: "overlay",
             backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E\")",
-            backgroundSize: "160px 160px",
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            backgroundSize: "200px 200px",
+          }}
+        />
+
+        {/* Fine per-pixel dither — kills residual 8-bit banding steps. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            opacity: isDark ? 0.1 : 0.06,
+            mixBlendMode: "soft-light",
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23f)'/%3E%3C/svg%3E\")",
+            backgroundSize: "120px 120px",
           }}
         />
       </div>
