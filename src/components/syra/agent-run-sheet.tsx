@@ -3,7 +3,14 @@ import { ArrowUp, Maximize2, X } from "lucide-react";
 import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
-type Question = { label: string; prompt: string; options: string[]; defaultOption: number };
+type Question = {
+  label: string;
+  prompt: string;
+  /** "choice" = option list (default), "contact" = CRM lookup / new contact, "when" = date + time */
+  kind?: "choice" | "contact" | "when";
+  options: string[];
+  defaultOption: number;
+};
 type Script = {
   title: string;
   steps: Step[];
@@ -22,6 +29,17 @@ const KNOWN_CLIENTS = [
   "Marlow Capital",
   "Beaumont Group",
   "Castellanos Holdings",
+];
+
+/** Stand-in CRM directory used for the attendee type-ahead. */
+const CRM_CONTACTS = [
+  { name: "Marcus Hartley", org: "Hartley Family Trust", email: "marcus@hartleytrust.com" },
+  { name: "Diane Hartley", org: "Hartley Family Trust", email: "diane@hartleytrust.com" },
+  { name: "Jenna Park", org: "Marlow Capital", email: "jenna.park@marlowcap.com" },
+  { name: "Sarah Lin", org: "Sterling Holdings", email: "sarah@sterlingholdings.com" },
+  { name: "Olivia Chen", org: "Beaumont Group", email: "olivia.chen@beaumontgrp.com" },
+  { name: "Ray Castellanos", org: "Castellanos Holdings", email: "ray@castellanos.co" },
+  { name: "Marcus Reed", org: "Caldwell Estate", email: "marcus.reed@caldwellestate.com" },
 ];
 
 function detectClient(prompt: string): string {
