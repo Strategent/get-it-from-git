@@ -149,7 +149,7 @@ function SyraPage() {
               <button
                 key={a.label}
                 onClick={() => runAgent(a.label === "Draft Email" ? "Draft up an agreement" : a.label)}
-                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/30 px-3.5 py-1.5 text-[12.5px] text-muted-foreground hover:bg-muted/60 hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-[12.5px] text-muted-foreground shadow-md hover:bg-muted hover:text-foreground transition-colors"
               >
                 <a.icon className="h-3.5 w-3.5" /> {a.label}
               </button>
