@@ -11,6 +11,12 @@ import {
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 
 export const Route = createFileRoute("/syra")({
@@ -40,7 +46,6 @@ function SyraPage() {
   const isDark = theme === "dark";
   const [input, setInput] = useState("");
   const [modelId, setModelId] = useState(models[0].id);
-  const [open, setOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
 
@@ -66,51 +71,108 @@ function SyraPage() {
           50% { background-position: 0% 50%; }
           100% { background-position: 100% 50%; }
         }
+        @keyframes syraDrift {
+          0%   { background-position: 0% 50%;   opacity: 0.55; }
+          33%  { background-position: 60% 50%;  opacity: 0.85; }
+          66%  { background-position: 120% 50%; opacity: 0.62; }
+          100% { background-position: 0% 50%;   opacity: 0.55; }
+        }
+        @keyframes syraSheen {
+          0%   { transform: translate3d(-30%, 0, 0) skewX(-8deg); }
+          100% { transform: translate3d(130%, 0, 0) skewX(-8deg); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .syra-layer { animation: none !important; }
+        }
       `}</style>
 
       {/* Giga-mountain mood: horizontal, fluid, subtle color washes. */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div className="absolute inset-0 pointer-events-none isolate">
         {/* Base vertical gradient — dark valley floor to misty sky. */}
         <div
           className="absolute inset-0"
           style={{
             background: isDark
-              ? "linear-gradient(180deg, rgb(11, 14, 19) 0%, rgb(16, 21, 28) 25%, rgb(24, 31, 40) 50%, rgb(34, 43, 54) 75%, rgb(45, 56, 70) 100%)"
-              : "linear-gradient(180deg, rgb(232, 236, 241) 0%, rgb(222, 228, 235) 30%, rgb(208, 216, 225) 60%, rgb(194, 204, 215) 100%)",
+              ? "linear-gradient(180deg, rgb(10,13,18) 0%, rgb(13,17,23) 12%, rgb(16,21,28) 24%, rgb(20,26,34) 36%, rgb(24,31,40) 48%, rgb(29,37,47) 60%, rgb(34,43,54) 72%, rgb(40,50,62) 86%, rgb(46,57,71) 100%)"
+              : "linear-gradient(180deg, rgb(234,238,243) 0%, rgb(229,234,240) 15%, rgb(223,229,236) 30%, rgb(216,223,231) 45%, rgb(208,216,225) 60%, rgb(201,210,220) 75%, rgb(194,204,215) 100%)",
           }}
         />
 
-        {/* Horizontal moss band — very low opacity, slow drift. */}
+        {/* Horizontal moss band — slow drift. */}
         <div
-          className="absolute inset-0 opacity-40"
+          className="syra-layer absolute inset-0"
           style={{
             background: isDark
-              ? "linear-gradient(90deg, rgba(58, 74, 64, 0) 0%, rgba(58, 74, 64, 0.35) 25%, rgba(58, 74, 64, 0.15) 50%, rgba(58, 74, 64, 0.30) 75%, rgba(58, 74, 64, 0) 100%)"
-              : "linear-gradient(90deg, rgba(80, 100, 86, 0) 0%, rgba(80, 100, 86, 0.22) 25%, rgba(80, 100, 86, 0.10) 50%, rgba(80, 100, 86, 0.20) 75%, rgba(80, 100, 86, 0) 100%)",
-            backgroundSize: "200% 100%",
-            animation: "syraGradientFlow 28s ease-in-out infinite",
+              ? "linear-gradient(100deg, rgba(52,84,66,0) 0%, rgba(58,102,76,0.34) 18%, rgba(72,126,94,0.42) 32%, rgba(48,80,64,0.16) 50%, rgba(66,116,88,0.38) 70%, rgba(52,84,66,0.20) 86%, rgba(52,84,66,0) 100%)"
+              : "linear-gradient(100deg, rgba(96,132,104,0) 0%, rgba(96,132,104,0.24) 20%, rgba(112,150,118,0.28) 34%, rgba(96,132,104,0.10) 52%, rgba(106,144,114,0.24) 72%, rgba(96,132,104,0) 100%)",
+            backgroundSize: "240% 100%",
+            mixBlendMode: isDark ? "screen" : "multiply",
+            filter: "blur(28px)",
+            animation: "syraDrift 34s cubic-bezier(0.45,0,0.55,1) infinite",
           }}
         />
 
-        {/* Horizontal lavender band — shifted, counter-motion. */}
+        {/* Horizontal lavender band — counter-motion. */}
         <div
-          className="absolute inset-0 opacity-35"
+          className="syra-layer absolute inset-0"
           style={{
             background: isDark
-              ? "linear-gradient(90deg, rgba(72, 62, 88, 0) 0%, rgba(72, 62, 88, 0.28) 35%, rgba(72, 62, 88, 0.10) 55%, rgba(72, 62, 88, 0.24) 80%, rgba(72, 62, 88, 0) 100%)"
-              : "linear-gradient(90deg, rgba(95, 85, 120, 0) 0%, rgba(95, 85, 120, 0.18) 35%, rgba(95, 85, 120, 0.08) 55%, rgba(95, 85, 120, 0.16) 80%, rgba(95, 85, 120, 0) 100%)",
-            backgroundSize: "220% 100%",
-            animation: "syraGradientFlowReverse 36s ease-in-out infinite",
+              ? "linear-gradient(80deg, rgba(104,86,150,0) 0%, rgba(118,96,168,0.34) 22%, rgba(92,78,140,0.14) 44%, rgba(134,108,182,0.40) 66%, rgba(104,86,150,0.20) 84%, rgba(104,86,150,0) 100%)"
+              : "linear-gradient(80deg, rgba(120,104,164,0) 0%, rgba(130,112,176,0.22) 24%, rgba(118,102,160,0.08) 48%, rgba(138,118,186,0.22) 70%, rgba(120,104,164,0) 100%)",
+            backgroundSize: "260% 100%",
+            mixBlendMode: isDark ? "screen" : "multiply",
+            filter: "blur(34px)",
+            animation: "syraGradientFlowReverse 46s cubic-bezier(0.45,0,0.55,1) infinite",
           }}
         />
+
+        {/* Teal-moss undertow — third, slowest hue for depth. */}
+        <div
+          className="syra-layer absolute inset-0 opacity-70"
+          style={{
+            background: isDark
+              ? "linear-gradient(90deg, rgba(46,96,102,0) 0%, rgba(46,96,102,0.26) 30%, rgba(60,118,120,0.10) 58%, rgba(46,96,102,0.24) 82%, rgba(46,96,102,0) 100%)"
+              : "linear-gradient(90deg, rgba(90,138,142,0) 0%, rgba(90,138,142,0.16) 30%, rgba(90,138,142,0.06) 58%, rgba(90,138,142,0.14) 82%, rgba(90,138,142,0) 100%)",
+            backgroundSize: "300% 100%",
+            mixBlendMode: isDark ? "screen" : "multiply",
+            filter: "blur(46px)",
+            animation: "syraGradientFlow 62s cubic-bezier(0.45,0,0.55,1) infinite",
+          }}
+        />
+
+        {/* Slow specular sheen sweeping horizontally. */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div
+            className="syra-layer absolute -inset-y-1/2 w-1/2"
+            style={{
+              background: isDark
+                ? "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(210,225,255,0.055) 50%, rgba(255,255,255,0) 100%)"
+                : "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0) 100%)",
+              filter: "blur(40px)",
+              animation: "syraSheen 24s linear infinite",
+            }}
+          />
+        </div>
 
         {/* Soft horizon glow — warm whisper at the vanishing line. */}
         <div
-          className="absolute inset-0 opacity-25"
+          className="absolute inset-0 opacity-30"
           style={{
             background: isDark
-              ? "radial-gradient(120% 40% at 50% 70%, rgba(80, 92, 108, 0.35) 0%, rgba(80, 92, 108, 0) 60%)"
-              : "radial-gradient(120% 40% at 50% 70%, rgba(180, 190, 200, 0.45) 0%, rgba(180, 190, 200, 0) 60%)",
+              ? "radial-gradient(140% 46% at 50% 72%, rgba(96,110,132,0.40) 0%, rgba(90,104,126,0.18) 34%, rgba(80,92,108,0.06) 60%, rgba(80,92,108,0) 78%)"
+              : "radial-gradient(140% 46% at 50% 72%, rgba(186,196,206,0.48) 0%, rgba(184,194,204,0.20) 36%, rgba(180,190,200,0) 70%)",
+          }}
+        />
+
+        {/* Dither grain — kills gradient banding on wide flat washes. */}
+        <div
+          className="absolute inset-0"
+          style={{
+            opacity: isDark ? 0.055 : 0.035,
+            mixBlendMode: "overlay",
+            backgroundImage:
+              "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            backgroundSize: "160px 160px",
           }}
         />
       </div>
