@@ -1,18 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Paperclip,
   FileText,
   Inbox,
   Calendar,
   ChevronDown,
   Check,
-  Mic,
   X,
 } from "lucide-react";
 import { BackgroundGradientAnimation } from "@/components/ui/background-gradient-animation";
+import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
+
 
 export const Route = createFileRoute("/syra")({
   component: SyraPage,
@@ -107,36 +107,23 @@ function SyraPage() {
 
         {/* Input bar */}
         <div className="mt-10 w-full max-w-3xl">
-          <div className="relative rounded-2xl border border-border bg-card/60 backdrop-blur-xl shadow-xl">
-            <input
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") runAgent(input || "Draft up an agreement");
-              }}
-              placeholder="Ask Syra anything…"
-              className="w-full bg-transparent px-5 pt-5 pb-16 text-[15px] text-foreground placeholder:text-muted-foreground focus:outline-none"
-            />
-            <div className="absolute left-3 bottom-3 flex items-center gap-1.5">
-              <button
-                aria-label="Attach"
-                className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <Paperclip className="h-4 w-4" />
-              </button>
-              {/* Perplexity-style model switch */}
+          <PromptInputBox
+            placeholder="Ask Syra anything…"
+            onSend={(message) => runAgent(message)}
+            onVoiceStart={() => setVoiceOpen(true)}
+            leading={
               <div className="relative">
                 <button
                   type="button"
                   onClick={() => setOpen((v) => !v)}
-                  className="inline-flex items-center gap-1.5 h-9 px-3 rounded-lg text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-full text-[12px] text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                 >
                   {activeModel.name}
                   <ChevronDown className="h-3.5 w-3.5 opacity-70" />
                 </button>
                 {open && (
                   <div
-                    className="absolute left-0 bottom-11 z-30 w-64 rounded-xl border border-border bg-popover backdrop-blur-xl p-1 shadow-2xl"
+                    className="absolute left-0 bottom-10 z-30 w-64 rounded-xl border border-border bg-popover backdrop-blur-xl p-1 shadow-2xl"
                     onMouseLeave={() => setOpen(false)}
                   >
                     {models.map((m) => (
@@ -155,24 +142,9 @@ function SyraPage() {
                   </div>
                 )}
               </div>
-            </div>
-            <div className="absolute right-3 bottom-3 flex items-center gap-1.5">
-              <button
-                aria-label="Talk to Syra"
-                onClick={() => setVoiceOpen(true)}
-                className="grid h-9 w-9 place-items-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <Mic className="h-4 w-4" />
-              </button>
-              <button
-                aria-label="Send"
-                onClick={() => runAgent(input || "Draft up an agreement")}
-                className="h-9 px-4 rounded-lg bg-primary text-primary-foreground text-[12.5px] font-medium hover:bg-primary/90 transition-colors"
-              >
-                Send
-              </button>
-            </div>
-          </div>
+            }
+          />
+
 
           {/* Quick actions */}
           <div className="mt-5 flex flex-wrap justify-center gap-2">
