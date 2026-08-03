@@ -104,15 +104,7 @@ export function Topbar() {
 
   return (
     <div
-      className="sticky top-0 z-30 border-b border-white/[0.06] bg-background/55 backdrop-blur-2xl backdrop-saturate-150 supports-[backdrop-filter]:bg-background/40 dark:bg-background/45 dark:supports-[backdrop-filter]:bg-background/35"
-      style={{
-        WebkitBackdropFilter: "blur(28px) saturate(160%)",
-        backdropFilter: "blur(28px) saturate(160%)",
-        boxShadow:
-          "inset 0 1px 0 0 rgba(255,255,255,0.06), 0 1px 0 0 rgba(0,0,0,0.28), 0 12px 32px -24px rgba(0,0,0,0.9)",
-        backgroundImage:
-          "linear-gradient(180deg, rgba(255,255,255,0.045) 0%, rgba(255,255,255,0.012) 45%, rgba(0,0,0,0.06) 100%)",
-      }}
+      className="sticky top-0 z-30 border-b border-sidebar-border bg-sidebar text-sidebar-foreground"
     >
       <div className="px-6 py-3 flex items-center gap-3">
         <SidebarTrigger className="text-muted-foreground hover:text-foreground" />
