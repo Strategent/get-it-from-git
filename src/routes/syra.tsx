@@ -340,12 +340,12 @@ function LiveVoiceOverlay({ isDark, onClose }: { isDark: boolean; onClose: () =>
             width: orbSize,
             height: orbSize,
             background: isDark
-              ? "radial-gradient(circle at 30% 30%, rgba(180,168,220,0.55), rgba(70,60,110,0.35) 55%, rgba(20,18,28,0) 75%)"
-              : "radial-gradient(circle at 30% 30%, rgba(220,214,240,0.9), rgba(190,182,220,0.55) 55%, rgba(255,255,255,0) 75%)",
+              ? "radial-gradient(circle at 30% 30%, rgba(170,164,152,0.55), rgba(74,66,56,0.35) 55%, rgba(34,32,29,0) 75%)"
+              : "radial-gradient(circle at 30% 30%, rgba(232,224,214,0.9), rgba(180,172,162,0.55) 55%, rgba(255,255,255,0) 75%)",
             filter: "blur(0.5px)",
             boxShadow: isDark
-              ? "0 0 80px rgba(160,150,200,0.35), inset 0 0 60px rgba(255,255,255,0.05)"
-              : "0 0 60px rgba(180,170,210,0.35), inset 0 0 40px rgba(255,255,255,0.6)",
+              ? "0 0 80px rgba(142,136,124,0.35), inset 0 0 60px rgba(255,255,255,0.05)"
+              : "0 0 60px rgba(190,182,172,0.35), inset 0 0 40px rgba(255,255,255,0.6)",
           }}
         />
         <div
