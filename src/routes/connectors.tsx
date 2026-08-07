@@ -34,6 +34,7 @@ type Connector = {
   tags: string[];
   categories: string[];
   connected: boolean;
+  darkIcon?: boolean;
 };
 
 const CATEGORIES = [
