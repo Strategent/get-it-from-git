@@ -175,15 +175,20 @@ function AppIcon({
       style={{ backgroundColor: brand }}
     >
       <img
-        src={`https://cdn.simpleicons.org/${slug}/${darkIcon ? "black" : "white"}`}
+        src={`https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`}
         alt={`${name} logo`}
         loading="lazy"
         className="h-7 w-7 object-contain"
+        style={{
+          filter: darkIcon
+            ? "brightness(0)"
+            : "brightness(0) invert(1)",
+        }}
         onError={(e) => {
           const el = e.currentTarget as HTMLImageElement;
           if (!el.dataset["fallback"]) {
             el.dataset["fallback"] = "1";
-            el.src = `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`;
+            el.src = `https://cdn.simpleicons.org/${slug}/${darkIcon ? "black" : "white"}`;
             el.style.filter = darkIcon ? "none" : "brightness(0) invert(1)";
           } else {
             el.style.display = "none";
