@@ -198,88 +198,86 @@ function ConnectorsPage() {
 
   return (
     <PageShell>
-      <div className="rounded-[28px] border border-border/70 bg-muted/40 p-5 sm:p-7 dark:bg-white/[0.02]">
-        {/* Header row: title + category pills */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="font-serif-display text-[30px] leading-none tracking-[-0.02em] text-foreground">
-            Apps integration
-          </h1>
-          <div className="flex flex-wrap items-center gap-2.5">
-            {CATEGORIES.map((cat) => {
-              const on = active === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setActive(on ? null : cat)}
-                  className={cn(
-                    "h-9 rounded-xl border px-4 text-[13px] font-medium transition-colors",
-                    on
-                      ? "border-transparent bg-foreground text-background"
-                      : "border-border/70 bg-card text-foreground/80 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:text-foreground dark:bg-white/[0.04] dark:hover:bg-white/[0.07]",
-                  )}
-                >
-                  {cat}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Cards */}
-        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {visible.map((c) => (
-            <article
-              key={c.name}
-              className="group flex flex-col rounded-[20px] border border-border/70 bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-14px_rgba(0,0,0,0.35)] dark:border-white/[0.07] dark:bg-white/[0.035] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] dark:hover:bg-white/[0.055]"
-            >
-              <div className="flex items-start justify-between">
-                <AppIcon slug={c.slug} brand={c.brand} name={c.name} />
-                <button
-                  type="button"
-                  onClick={() => toggle(c.name)}
-                  aria-label={c.connected ? `Manage ${c.name}` : `Connect ${c.name}`}
-                  title={c.connected ? "Connected" : "Connect"}
-                  className={cn(
-                    "grid h-9 w-9 place-items-center rounded-xl transition-transform active:scale-95",
-                    c.connected
-                      ? "bg-[#E9FF5A] text-black shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
-                      : "bg-foreground text-background",
-                  )}
-                >
-                  {c.connected ? (
-                    <Link2 className="h-4 w-4" strokeWidth={2.2} />
-                  ) : (
-                    <Plus className="h-4 w-4" strokeWidth={2.4} />
-                  )}
-                </button>
-              </div>
-
-              <h2 className="mt-5 text-[15px] font-medium tracking-tight text-foreground">
-                {c.name}
-              </h2>
-              <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-muted-foreground">
-                {c.desc}
-              </p>
-
-              <div className="mt-4 flex flex-wrap gap-2">
-                {c.tags.map((t) => (
-                  <span
-                    key={t}
-                    className="rounded-lg bg-muted px-2.5 py-1.5 text-[11.5px] font-medium text-foreground/75 dark:bg-white/[0.06] dark:text-foreground/70"
-                  >
-                    {t}
-                  </span>
-                ))}
-                {c.connected && (
-                  <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/12 px-2.5 py-1.5 text-[11.5px] font-medium text-emerald-600 dark:text-emerald-400">
-                    <Check className="h-3 w-3" /> Connected
-                  </span>
+      {/* Header row: title + category pills */}
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <h1 className="font-serif-display text-[30px] leading-none tracking-[-0.02em] text-foreground">
+          Apps integration
+        </h1>
+        <div className="flex flex-wrap items-center gap-2.5">
+          {CATEGORIES.map((cat) => {
+            const on = active === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => setActive(on ? null : cat)}
+                className={cn(
+                  "h-9 rounded-xl border px-4 text-[13px] font-medium transition-colors",
+                  on
+                    ? "border-transparent bg-foreground text-background"
+                    : "border-border/70 bg-card text-foreground/80 shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:text-foreground dark:bg-white/[0.04] dark:hover:bg-white/[0.07]",
                 )}
-              </div>
-            </article>
-          ))}
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
+      </div>
+
+      {/* Cards */}
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {visible.map((c) => (
+          <article
+            key={c.name}
+            className="group flex flex-col rounded-[20px] border border-border/70 bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-14px_rgba(0,0,0,0.35)] dark:border-white/[0.07] dark:bg-white/[0.035] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] dark:hover:bg-white/[0.055]"
+          >
+            <div className="flex items-start justify-between">
+              <AppIcon slug={c.slug} brand={c.brand} name={c.name} />
+              <button
+                type="button"
+                onClick={() => toggle(c.name)}
+                aria-label={c.connected ? `Manage ${c.name}` : `Connect ${c.name}`}
+                title={c.connected ? "Connected" : "Connect"}
+                className={cn(
+                  "grid h-9 w-9 place-items-center rounded-xl transition-transform active:scale-95",
+                  c.connected
+                    ? "bg-[#E9FF5A] text-black shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                    : "bg-foreground text-background",
+                )}
+              >
+                {c.connected ? (
+                  <Link2 className="h-4 w-4" strokeWidth={2.2} />
+                ) : (
+                  <Plus className="h-4 w-4" strokeWidth={2.4} />
+                )}
+              </button>
+            </div>
+
+            <h2 className="mt-5 text-[15px] font-medium tracking-tight text-foreground">
+              {c.name}
+            </h2>
+            <p className="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-muted-foreground">
+              {c.desc}
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              {c.tags.map((t) => (
+                <span
+                  key={t}
+                  className="rounded-lg bg-muted px-2.5 py-1.5 text-[11.5px] font-medium text-foreground/75 dark:bg-white/[0.06] dark:text-foreground/70"
+                >
+                  {t}
+                </span>
+              ))}
+              {c.connected && (
+                <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/12 px-2.5 py-1.5 text-[11.5px] font-medium text-emerald-600 dark:text-emerald-400">
+                  <Check className="h-3 w-3" /> Connected
+                </span>
+              )}
+            </div>
+          </article>
+        ))}
       </div>
     </PageShell>
   );
