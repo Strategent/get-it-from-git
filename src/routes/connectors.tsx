@@ -167,6 +167,16 @@ function AppIcon({ slug, brand, name }: { slug: string; brand: string; name: str
         alt={`${name} logo`}
         loading="lazy"
         className="h-7 w-7 object-contain"
+        onError={(e) => {
+          const el = e.currentTarget as HTMLImageElement;
+          if (!el.dataset["fallback"]) {
+            el.dataset["fallback"] = "1";
+            el.src = `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`;
+            el.style.filter = "brightness(0) invert(1)";
+          } else {
+            el.style.display = "none";
+          }
+        }}
       />
     </div>
   );
