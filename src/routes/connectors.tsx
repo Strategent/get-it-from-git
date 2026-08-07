@@ -34,6 +34,7 @@ type Connector = {
   tags: string[];
   categories: string[];
   connected: boolean;
+  darkIcon?: boolean;
 };
 
 const CATEGORIES = [
@@ -50,10 +51,11 @@ const CONNECTORS: Connector[] = [
     name: "DocuSign",
     slug: "docusign",
     desc: "Send agreements out for e-signature and track every envelope from one place.",
-    brand: "#000000",
+    brand: "#FFCC00",
     tags: ["Documents", "Agreements"],
     categories: ["Documents"],
     connected: true,
+    darkIcon: true,
   },
   {
     name: "Stripe",
@@ -156,14 +158,24 @@ const CONNECTORS: Connector[] = [
   },
 ];
 
-function AppIcon({ slug, brand, name }: { slug: string; brand: string; name: string }) {
+function AppIcon({
+  slug,
+  brand,
+  name,
+  darkIcon = false,
+}: {
+  slug: string;
+  brand: string;
+  name: string;
+  darkIcon?: boolean;
+}) {
   return (
     <div
       className="grid h-[58px] w-[58px] place-items-center rounded-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.18)] ring-1 ring-black/5 dark:ring-white/10"
       style={{ backgroundColor: brand }}
     >
       <img
-        src={`https://cdn.simpleicons.org/${slug}/white`}
+        src={`https://cdn.simpleicons.org/${slug}/${darkIcon ? "black" : "white"}`}
         alt={`${name} logo`}
         loading="lazy"
         className="h-7 w-7 object-contain"
@@ -172,7 +184,7 @@ function AppIcon({ slug, brand, name }: { slug: string; brand: string; name: str
           if (!el.dataset["fallback"]) {
             el.dataset["fallback"] = "1";
             el.src = `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`;
-            el.style.filter = "brightness(0) invert(1)";
+            el.style.filter = darkIcon ? "none" : "brightness(0) invert(1)";
           } else {
             el.style.display = "none";
           }
@@ -233,7 +245,7 @@ function ConnectorsPage() {
             className="group flex flex-col rounded-[20px] border border-border/70 bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-14px_rgba(0,0,0,0.35)] dark:border-white/[0.07] dark:bg-white/[0.035] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] dark:hover:bg-white/[0.055]"
           >
             <div className="flex items-start justify-between">
-              <AppIcon slug={c.slug} brand={c.brand} name={c.name} />
+              <AppIcon slug={c.slug} brand={c.brand} name={c.name} darkIcon={c.darkIcon} />
               <button
                 type="button"
                 onClick={() => toggle(c.name)}
