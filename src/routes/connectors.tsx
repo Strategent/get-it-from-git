@@ -156,14 +156,24 @@ const CONNECTORS: Connector[] = [
   },
 ];
 
-function AppIcon({ slug, brand, name }: { slug: string; brand: string; name: string }) {
+function AppIcon({
+  slug,
+  brand,
+  name,
+  darkIcon = false,
+}: {
+  slug: string;
+  brand: string;
+  name: string;
+  darkIcon?: boolean;
+}) {
   return (
     <div
       className="grid h-[58px] w-[58px] place-items-center rounded-[18px] shadow-[0_1px_2px_rgba(0,0,0,0.18)] ring-1 ring-black/5 dark:ring-white/10"
       style={{ backgroundColor: brand }}
     >
       <img
-        src={`https://cdn.simpleicons.org/${slug}/white`}
+        src={`https://cdn.simpleicons.org/${slug}/${darkIcon ? "black" : "white"}`}
         alt={`${name} logo`}
         loading="lazy"
         className="h-7 w-7 object-contain"
@@ -172,7 +182,7 @@ function AppIcon({ slug, brand, name }: { slug: string; brand: string; name: str
           if (!el.dataset["fallback"]) {
             el.dataset["fallback"] = "1";
             el.src = `https://cdn.jsdelivr.net/npm/simple-icons@latest/icons/${slug}.svg`;
-            el.style.filter = "brightness(0) invert(1)";
+            el.style.filter = darkIcon ? "none" : "brightness(0) invert(1)";
           } else {
             el.style.display = "none";
           }
