@@ -254,7 +254,7 @@ function ConnectorsPage() {
                 className={cn(
                   "grid h-9 w-9 place-items-center rounded-xl transition-transform active:scale-95",
                   c.connected
-                    ? "bg-[#E9FF5A] text-black shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
+                    ? "bg-[oklch(0.72_0.14_285)] text-[oklch(0.18_0.02_285)] shadow-[0_1px_2px_rgba(0,0,0,0.15)]"
                     : "bg-foreground text-background",
                 )}
               >
