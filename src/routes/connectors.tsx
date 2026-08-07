@@ -50,10 +50,11 @@ const CONNECTORS: Connector[] = [
     name: "DocuSign",
     slug: "docusign",
     desc: "Send agreements out for e-signature and track every envelope from one place.",
-    brand: "#000000",
+    brand: "#FFCC00",
     tags: ["Documents", "Agreements"],
     categories: ["Documents"],
     connected: true,
+    darkIcon: true,
   },
   {
     name: "Stripe",
