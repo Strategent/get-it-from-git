@@ -245,7 +245,7 @@ function ConnectorsPage() {
             className="group flex flex-col rounded-[20px] border border-border/70 bg-card p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] transition-all hover:-translate-y-0.5 hover:shadow-[0_10px_28px_-14px_rgba(0,0,0,0.35)] dark:border-white/[0.07] dark:bg-white/[0.035] dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] dark:hover:bg-white/[0.055]"
           >
             <div className="flex items-start justify-between">
-              <AppIcon slug={c.slug} brand={c.brand} name={c.name} />
+              <AppIcon slug={c.slug} brand={c.brand} name={c.name} darkIcon={c.darkIcon} />
               <button
                 type="button"
                 onClick={() => toggle(c.name)}
