@@ -8,13 +8,13 @@ export const Route = createFileRoute("/connectors")({
   component: ConnectorsPage,
   head: () => ({
     meta: [
-      { title: "Apps integration — strategent" },
+      { title: "Connectors — strategent" },
       {
         name: "description",
         content:
           "Browse and connect the business apps that power your workspace — email, calendar, CRM, payments, documents and more.",
       },
-      { property: "og:title", content: "Apps integration — strategent" },
+      { property: "og:title", content: "Connectors — strategent" },
       {
         property: "og:description",
         content:
@@ -218,7 +218,7 @@ function ConnectorsPage() {
       {/* Header row: title + category pills */}
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-serif-display text-[30px] leading-none tracking-[-0.02em] text-foreground">
-          Apps integration
+          Connectors
         </h1>
         <div className="flex flex-wrap items-center gap-2.5">
           {CATEGORIES.map((cat) => {
