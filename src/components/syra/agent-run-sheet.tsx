@@ -158,11 +158,11 @@ function pickScript(prompt: string): Script {
 function ActionLine({ step, delay }: { step: Step; delay: number }) {
   return (
     <div
-      className="syra-step-line text-[15px] leading-[1.75]"
+      className="syra-step-line text-[15px] leading-[1.8] tracking-[-0.005em]"
       style={{ animationDelay: `${delay}ms` }}
     >
       <span className="font-semibold text-foreground">{step.verb}</span>{" "}
-      <span className="text-muted-foreground">{step.object}</span>
+      <span className="text-muted-foreground/85">{step.object}</span>
     </div>
   );
 }
@@ -310,10 +310,10 @@ export function SyraAgentRunSheet({
       <div className="absolute inset-0" onClick={onClose} />
 
       <div className="relative w-full max-w-[24rem] sm:max-w-[30rem]">
-        <div className="overflow-hidden rounded-[18px] border border-border bg-card shadow-[0_40px_100px_-24px_rgba(0,0,0,0.65)]">
+        <div className="overflow-hidden rounded-[20px] border border-white/[0.06] bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_50px_120px_-30px_rgba(0,0,0,0.7)]">
           {/* header */}
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
-            <div className="text-[16px] font-semibold tracking-[-0.01em] text-foreground">
+          <div className="flex items-center justify-between border-b border-border/60 px-5 py-3.5">
+            <div className="text-[16px] font-semibold tracking-[-0.015em] text-foreground">
               {script.title}
             </div>
             <div className="flex items-center gap-1 text-muted-foreground">
