@@ -158,11 +158,11 @@ function pickScript(prompt: string): Script {
 function ActionLine({ step, delay }: { step: Step; delay: number }) {
   return (
     <div
-      className="syra-step-line text-[15px] leading-[1.75]"
+      className="syra-step-line text-[15px] leading-[1.8] tracking-[-0.005em]"
       style={{ animationDelay: `${delay}ms` }}
     >
       <span className="font-semibold text-foreground">{step.verb}</span>{" "}
-      <span className="text-muted-foreground">{step.object}</span>
+      <span className="text-muted-foreground/85">{step.object}</span>
     </div>
   );
 }
@@ -310,10 +310,10 @@ export function SyraAgentRunSheet({
       <div className="absolute inset-0" onClick={onClose} />
 
       <div className="relative w-full max-w-[24rem] sm:max-w-[30rem]">
-        <div className="overflow-hidden rounded-[18px] border border-border bg-card shadow-[0_40px_100px_-24px_rgba(0,0,0,0.65)]">
+        <div className="overflow-hidden rounded-[20px] border border-white/[0.06] bg-card shadow-[0_1px_0_0_rgba(255,255,255,0.06)_inset,0_50px_120px_-30px_rgba(0,0,0,0.7)]">
           {/* header */}
-          <div className="flex items-center justify-between border-b border-border px-5 py-3.5">
-            <div className="text-[16px] font-semibold tracking-[-0.01em] text-foreground">
+          <div className="flex items-center justify-between border-b border-border/60 px-5 py-3.5">
+            <div className="text-[16px] font-semibold tracking-[-0.015em] text-foreground">
               {script.title}
             </div>
             <div className="flex items-center gap-1 text-muted-foreground">
@@ -354,10 +354,10 @@ export function SyraAgentRunSheet({
             {showQuestion && !done && currentQuestion && (
               <div
                 key={currentQuestion.label}
-                className="mt-4 animate-in fade-in slide-in-from-bottom-2 rounded-[14px] border border-border bg-muted/40 p-4 duration-300"
+                className="mt-4 animate-in fade-in slide-in-from-bottom-2 rounded-[16px] border border-white/[0.06] bg-muted/35 p-4 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset] duration-300"
               >
-                <div className="text-[13px] text-muted-foreground">Questions</div>
-                <div className="mt-1.5 text-[16px] font-semibold leading-snug tracking-[-0.01em] text-foreground">
+                <div className="text-[12.5px] text-muted-foreground/80">Questions</div>
+                <div className="mt-1.5 text-[16px] font-semibold leading-snug tracking-[-0.015em] text-foreground">
                   {currentQuestion.prompt}
                 </div>
 
@@ -492,10 +492,10 @@ export function SyraAgentRunSheet({
                 )}
 
                 <div className="mt-4 flex items-center gap-2">
-                  <button className="rounded-[10px] bg-foreground px-4 py-2 text-[15px] font-medium text-background">
+                  <button className="rounded-[10px] bg-foreground px-4 py-2 text-[15px] font-medium tracking-[-0.01em] text-background transition-opacity hover:opacity-90">
                     {script.primaryAction}
                   </button>
-                  <button className="rounded-[10px] border border-border px-4 py-2 text-[15px] font-medium text-foreground hover:bg-muted">
+                  <button className="rounded-[10px] border border-white/[0.08] px-4 py-2 text-[15px] font-medium tracking-[-0.01em] text-foreground transition-colors hover:bg-muted">
                     {script.secondaryAction}
                   </button>
                 </div>
@@ -505,7 +505,7 @@ export function SyraAgentRunSheet({
 
           {/* follow-up */}
           <div className="px-5 pb-5">
-            <div className="relative rounded-[14px] bg-muted/60">
+            <div className="relative rounded-[14px] border border-white/[0.05] bg-muted/50">
               <input
                 placeholder="Ask a follow-up…"
                 className="w-full bg-transparent py-3.5 pl-4 pr-14 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none"

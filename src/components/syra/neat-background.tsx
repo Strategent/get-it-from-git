@@ -2,12 +2,13 @@ import { useEffect, useRef } from "react";
 
 const config = {
   colors: [
-    { color: "#FF5772", enabled: true },
-    { color: "#4CB4BB", enabled: true },
-    { color: "#FFC600", enabled: true },
-    { color: "#8B6AE6", enabled: true },
-    { color: "#2E0EC7", enabled: true },
-    { color: "#FF9A9E", enabled: true },
+    // On-brand neutrals: lavender, moss, maroon, oceanic blue, and two deep anchors.
+    { color: "#8E86C4", enabled: true },
+    { color: "#5B6B45", enabled: true },
+    { color: "#6E2F38", enabled: true },
+    { color: "#2C4A5C", enabled: true },
+    { color: "#23262B", enabled: true },
+    { color: "#B9AFC6", enabled: true },
   ],
   speed: 2.5,
   horizontalPressure: 3,
@@ -15,14 +16,14 @@ const config = {
   waveFrequencyX: 2,
   waveFrequencyY: 3,
   waveAmplitude: 5,
-  shadows: 1,
-  highlights: 5,
-  colorBrightness: 1,
-  colorSaturation: 7,
+  shadows: 2,
+  highlights: 3,
+  colorBrightness: 0.95,
+  colorSaturation: 2,
   wireframe: false,
   antialias: false,
   colorBlending: 8,
-  backgroundColor: "#003FFF",
+  backgroundColor: "#1B1E24",
   backgroundAlpha: 1,
   grainScale: 0,
   grainSparsity: 0,
@@ -61,7 +62,7 @@ export function NeatBackground() {
         top: "-4%",
         width: "112%",
         height: "calc(100% + 120px)",
-        filter: "saturate(0.72)",
+        filter: "saturate(0.85) contrast(0.98)",
       }}
     />
   );
