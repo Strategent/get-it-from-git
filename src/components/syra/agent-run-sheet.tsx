@@ -354,10 +354,10 @@ export function SyraAgentRunSheet({
             {showQuestion && !done && currentQuestion && (
               <div
                 key={currentQuestion.label}
-                className="mt-4 animate-in fade-in slide-in-from-bottom-2 rounded-[14px] border border-border bg-muted/40 p-4 duration-300"
+                className="mt-4 animate-in fade-in slide-in-from-bottom-2 rounded-[16px] border border-white/[0.06] bg-muted/35 p-4 shadow-[0_1px_0_0_rgba(255,255,255,0.05)_inset] duration-300"
               >
-                <div className="text-[13px] text-muted-foreground">Questions</div>
-                <div className="mt-1.5 text-[16px] font-semibold leading-snug tracking-[-0.01em] text-foreground">
+                <div className="text-[12.5px] text-muted-foreground/80">Questions</div>
+                <div className="mt-1.5 text-[16px] font-semibold leading-snug tracking-[-0.015em] text-foreground">
                   {currentQuestion.prompt}
                 </div>
 
@@ -492,10 +492,10 @@ export function SyraAgentRunSheet({
                 )}
 
                 <div className="mt-4 flex items-center gap-2">
-                  <button className="rounded-[10px] bg-foreground px-4 py-2 text-[15px] font-medium text-background">
+                  <button className="rounded-[10px] bg-foreground px-4 py-2 text-[15px] font-medium tracking-[-0.01em] text-background transition-opacity hover:opacity-90">
                     {script.primaryAction}
                   </button>
-                  <button className="rounded-[10px] border border-border px-4 py-2 text-[15px] font-medium text-foreground hover:bg-muted">
+                  <button className="rounded-[10px] border border-white/[0.08] px-4 py-2 text-[15px] font-medium tracking-[-0.01em] text-foreground transition-colors hover:bg-muted">
                     {script.secondaryAction}
                   </button>
                 </div>
@@ -505,7 +505,7 @@ export function SyraAgentRunSheet({
 
           {/* follow-up */}
           <div className="px-5 pb-5">
-            <div className="relative rounded-[14px] bg-muted/60">
+            <div className="relative rounded-[14px] border border-white/[0.05] bg-muted/50">
               <input
                 placeholder="Ask a follow-up…"
                 className="w-full bg-transparent py-3.5 pl-4 pr-14 text-[15px] text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
