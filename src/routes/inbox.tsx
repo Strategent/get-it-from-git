@@ -1541,40 +1541,18 @@ function InboxPage() {
         <main
           className={`${mobileReading ? "flex" : "hidden md:flex"} relative z-10 flex-1 flex-col min-w-0 bg-background`}
         >
-          {/* header block */}
-          <div className="relative border-b border-border/60 bg-card/50 px-6 py-5">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/12 to-transparent" />
-            <div className="flex flex-col gap-4">
-              <div className="flex min-w-0 items-start gap-3.5">
-                <button
-                  type="button"
-                  onClick={() => setMobileReading(false)}
-                  aria-label="Back to inbox"
-                  className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
-                >
-                  <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
-                </button>
-                <LemniAvatar name={selected.from} size={40} />
-                <div className="min-w-0">
-                  <div className="truncate text-[17px] font-semibold tracking-tight text-foreground">
-                    {selected.from}
-                    <span className="ml-2 text-[12px] font-normal text-muted-foreground">
-                      {selected.email}
-                    </span>
-                  </div>
-                  <div className="mt-1 truncate text-[12px] text-muted-foreground">
-                    From: <span className="text-foreground/85">{selected.email}</span>
-                    <span className="px-1.5 opacity-50">•</span>
-                    To: <span className="text-foreground/85">john.harwick@harwicksterne.com</span>
-                  </div>
-                </div>
-                <div className="ml-auto shrink-0 pt-1 text-[11.5px] tabular-nums text-muted-foreground">
-                  {selected.sentAt ?? `${selected.time} ago`}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end">
-                <div className="flex items-center gap-0.5">
+          {/* header block — Gmail-style: toolbar row, then subject */}
+          <div className="relative border-b border-border/60 bg-background px-6 pb-4 pt-3">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileReading(false)}
+                aria-label="Back to inbox"
+                className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
+              >
+                <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+              <div className="flex items-center gap-0.5">
                   <ToolbarBtn
                     icon={Sparkles}
                     label="Summarize"
@@ -1630,13 +1608,20 @@ function InboxPage() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
               </div>
+              <span className="ml-auto shrink-0 text-[11.5px] tabular-nums text-muted-foreground">
+                {selected.sentAt ?? `${selected.time} ago`}
+              </span>
             </div>
 
-            <h2 className="mt-5 text-[21px] font-semibold tracking-tight text-foreground">
+            <h2 className="mt-3 text-[20px] font-semibold leading-snug tracking-tight text-foreground">
               {selected.subject}
             </h2>
+            {selected.tag && (
+              <span className="mt-2 inline-flex items-center rounded-md border border-border/70 bg-foreground/[0.04] px-2 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {selected.tag}
+              </span>
+            )}
           </div>
 
           {/* body — recessed dark stage with layered panels */}
@@ -1680,20 +1665,46 @@ function InboxPage() {
               </div>
 
               <article
-                className="relative overflow-hidden rounded-2xl border border-border/70 bg-card px-7 py-6"
+                className="relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card"
                 style={{
                   boxShadow:
-                    "0 1px 0 rgba(255,255,255,0.05) inset, 0 24px 60px -32px rgba(0,0,0,0.95), 0 2px 8px -4px rgba(0,0,0,0.4)",
+                    "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -34px rgba(0,0,0,0.9)",
                 }}
               >
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
-                <div className="whitespace-pre-line text-[14px] leading-[1.65] text-foreground/90">
+                {/* sender row */}
+                <div className="flex items-start gap-3 px-6 pt-5">
+                  <LemniAvatar name={selected.from} size={36} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="truncate text-[14px] font-semibold tracking-tight text-foreground">
+                        {selected.from}
+                      </span>
+                      <span className="truncate text-[12px] text-muted-foreground">
+                        &lt;{selected.email}&gt;
+                      </span>
+                    </div>
+                    <div className="mt-0.5 truncate text-[11.5px] text-muted-foreground">
+                      to john.harwick@harwicksterne.com
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-0.5 pt-0.5">
+                    <span className="mr-1 text-[11px] tabular-nums text-muted-foreground">
+                      {selected.sentAt ?? `${selected.time} ago`}
+                    </span>
+                    <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
+                  </div>
+                </div>
+
+                <div className="mt-4 h-px bg-border/50 dark:bg-white/[0.05]" />
+
+                <div className="whitespace-pre-line px-6 py-5 text-[14px] leading-[1.7] text-foreground/90">
                   {selected.body}
                 </div>
+                <div className="px-6 pb-6 -mt-1">
 
                 {selected.hasAttachment && (
                   <button
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl border border-border/70 bg-foreground/[0.04] px-3.5 py-2.5 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.07] transition-colors"
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-foreground/[0.04] px-3.5 py-2.5 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.07] transition-colors"
                     style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset" }}
                   >
                     <Paperclip className="h-3.5 w-3.5" />
@@ -1704,6 +1715,7 @@ function InboxPage() {
                         : "Security_questionnaire.pdf"}
                   </button>
                 )}
+                </div>
               </article>
 
               {selectedDraft.status === "closed" ? (
