@@ -343,6 +343,36 @@ function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
   };
 }
 
+const AVATAR_TINTS = [
+  "#7C5CFF",
+  "#E05CA8",
+  "#E0703C",
+  "#3C9BE0",
+  "#C9A227",
+  "#4FA87A",
+];
+
+function tintFor(name: string) {
+  return AVATAR_TINTS[hashString(name) % AVATAR_TINTS.length];
+}
+
+function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
+  return (
+    <span
+      className="grid shrink-0 place-items-center rounded-full font-semibold text-white"
+      style={{
+        width: size,
+        height: size,
+        fontSize: size * 0.42,
+        background: tintFor(name),
+        boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset",
+      }}
+    >
+      {name.trim().charAt(0).toUpperCase()}
+    </span>
+  );
+}
+
 function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
