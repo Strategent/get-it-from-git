@@ -1110,7 +1110,7 @@ function InboxPage() {
         />
 
         {/* ── Nav rail ───────────────────────────────────────────── */}
-        <aside className="relative z-10 hidden lg:flex w-[212px] shrink-0 flex-col border-r border-border/50 bg-card/30">
+        <aside className="relative z-10 hidden xl:flex w-[212px] shrink-0 flex-col border-r border-border/50 bg-card/30">
           {/* workspace switcher */}
           <button className="mx-2 mt-3 mb-1 flex items-center gap-2.5 rounded-lg px-2 py-2 text-left transition-colors hover:bg-foreground/[0.04]">
             <span
@@ -1209,7 +1209,7 @@ function InboxPage() {
 
         {/* ── Thread list ─────────────────────────────────────────── */}
         <section
-          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[320px] lg:w-[352px] shrink-0 flex-col border-r border-border/50 bg-background min-w-0`}
+          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[300px] lg:w-[340px] shrink-0 flex-col border-r border-border/50 bg-background min-w-0`}
         >
           {/* list header — "6 Todo" + Filter / Sort */}
           <div className="flex h-[46px] shrink-0 items-center gap-2 px-4">
