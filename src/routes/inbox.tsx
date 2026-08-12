@@ -1542,7 +1542,7 @@ function InboxPage() {
           className={`${mobileReading ? "flex" : "hidden md:flex"} relative z-10 flex-1 flex-col min-w-0 bg-background`}
         >
           {/* header block — Gmail-style: toolbar row, then subject */}
-          <div className="relative border-b border-border/60 bg-background px-6 pb-4 pt-3">
+          <div className="relative bg-background px-6 pb-3 pt-2.5">
             <div className="flex items-center gap-1">
               <button
                 type="button"
@@ -1614,120 +1614,99 @@ function InboxPage() {
               </span>
             </div>
 
-            <h2 className="mt-3 text-[20px] font-semibold leading-snug tracking-tight text-foreground">
-              {selected.subject}
-            </h2>
-            {selected.tag && (
-              <span className="mt-2 inline-flex items-center rounded-md border border-border/70 bg-foreground/[0.04] px-2 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
-                {selected.tag}
-              </span>
-            )}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <h2 className="text-[22px] font-normal leading-snug tracking-tight text-foreground">
+                {selected.subject}
+              </h2>
+              {selected.tag && (
+                <span className="inline-flex items-center rounded-[4px] bg-foreground/[0.07] px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                  {selected.tag}
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* body — recessed dark stage with layered panels */}
-          <div
-            className="relative flex-1 overflow-y-auto no-scrollbar px-6 py-6"
-            style={{
-              background:
-                "linear-gradient(180deg, color-mix(in oklab, var(--foreground) 4%, transparent), transparent 240px)",
-            }}
-          >
-            <div className="mx-auto max-w-3xl space-y-4">
-              {/* Smart summary */}
-              <div
-                className="relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card"
-                style={{
-                  boxShadow:
-                    "0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px -30px rgba(0,0,0,0.9)",
-                }}
-              >
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
-                <div className="flex items-center justify-between gap-2 px-5 pt-3.5 pb-2">
-                  <div className="flex items-center gap-2">
-                    <SyraMark className="h-3.5 w-3.5" />
-                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-foreground/75">
-                      Smart summary
-                    </span>
-                  </div>
-                  <span className="text-[10.5px] tabular-nums text-muted-foreground/80">just now</span>
+          {/* body — Gmail flat message stack */}
+          <div className="relative flex-1 overflow-y-auto no-scrollbar px-6 pb-8">
+            <div className="mx-auto max-w-3xl">
+              {/* Smart summary — quiet inline strip, not a floating card */}
+              <div className="mb-4 rounded-xl bg-foreground/[0.035] px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <SyraMark className="h-3.5 w-3.5" />
+                  <span className="text-[11px] font-medium tracking-tight text-foreground/70">
+                    Smart summary
+                  </span>
                 </div>
-                <div className="px-5 pb-4 text-[13.5px] leading-[1.6] text-foreground/85">
+                <p className="mt-1.5 text-[13px] leading-[1.6] text-foreground/80">
                   {threadSummary(selected)}
-                </div>
-                <div className="flex items-center gap-2.5 border-t border-border/60 dark:border-white/[0.06] bg-foreground/[0.02] px-5 py-3">
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                    Next
-                  </span>
-                  <span className="truncate text-[12.5px] font-medium text-foreground/90">
-                    {threadNextAction(selected)}
-                  </span>
-                </div>
+                </p>
+                <p className="mt-1.5 text-[12.5px] text-muted-foreground">
+                  Next · {threadNextAction(selected)}
+                </p>
               </div>
 
-              <article
-                className="relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card"
-                style={{
-                  boxShadow:
-                    "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -34px rgba(0,0,0,0.9)",
-                }}
-              >
+              <article className="border-t border-border/50 pt-5">
                 {/* sender row */}
-                <div className="flex items-start gap-3 px-6 pt-5">
-                  <LemniAvatar name={selected.from} size={36} />
+                <div className="flex items-start gap-3">
+                  <LemniAvatar name={selected.from} size={38} />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
+                    <div className="flex items-baseline gap-1.5">
                       <span className="truncate text-[14px] font-semibold tracking-tight text-foreground">
                         {selected.from}
                       </span>
-                      <span className="truncate text-[12px] text-muted-foreground">
+                      <span className="truncate text-[12.5px] text-muted-foreground">
                         &lt;{selected.email}&gt;
                       </span>
                     </div>
-                    <div className="mt-0.5 truncate text-[11.5px] text-muted-foreground">
-                      to john.harwick@harwicksterne.com
+                    <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
+                      to me
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-0.5 pt-0.5">
-                    <span className="mr-1 text-[11px] tabular-nums text-muted-foreground">
+                  <div className="flex shrink-0 items-center gap-1 pt-0.5">
+                    <span className="text-[12px] tabular-nums text-muted-foreground">
                       {selected.sentAt ?? `${selected.time} ago`}
                     </span>
                     <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
                   </div>
                 </div>
 
-                <div className="mt-4 h-px bg-border/50 dark:bg-white/[0.05]" />
-
-                <div className="whitespace-pre-line px-6 py-5 text-[14px] leading-[1.7] text-foreground/90">
+                <div className="whitespace-pre-line pl-[50px] pr-1 pt-4 text-[14px] leading-[1.75] text-foreground/90">
                   {selected.body}
                 </div>
-                <div className="px-6 pb-6 -mt-1">
 
                 {selected.hasAttachment && (
-                  <button
-                    className="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-foreground/[0.04] px-3.5 py-2.5 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.07] transition-colors"
-                    style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset" }}
-                  >
-                    <Paperclip className="h-3.5 w-3.5" />
-                    {selected.tag === "Legal"
-                      ? "Completed_MSA.pdf"
-                      : selected.tag === "Billing"
-                        ? "Stripe_reconciliation.csv"
-                        : "Security_questionnaire.pdf"}
-                  </button>
+                  <div className="pl-[50px] pt-5">
+                    <button className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.05] transition-colors">
+                      <Paperclip className="h-3.5 w-3.5" />
+                      {selected.tag === "Legal"
+                        ? "Completed_MSA.pdf"
+                        : selected.tag === "Billing"
+                          ? "Stripe_reconciliation.csv"
+                          : "Security_questionnaire.pdf"}
+                    </button>
+                  </div>
                 )}
-                </div>
               </article>
 
               {selectedDraft.status === "closed" ? (
-                <button
-                  onClick={() => openComposer("reply")}
-                  className="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-card/60 px-3.5 py-2.5 text-[12.5px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
-                  style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.04) inset" }}
-                >
-                  <Reply className="h-3.5 w-3.5" />
-                  Reply
-                </button>
+                <div className="flex items-center gap-2 pl-[50px] pt-6">
+                  <button
+                    onClick={() => openComposer("reply")}
+                    className="inline-flex items-center gap-2 rounded-full border border-border/70 px-4 py-2 text-[13px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                  >
+                    <Reply className="h-3.5 w-3.5" />
+                    Reply
+                  </button>
+                  <button
+                    onClick={() => openComposer("forward")}
+                    className="inline-flex items-center gap-2 rounded-full border border-border/70 px-4 py-2 text-[13px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                  >
+                    <Forward className="h-3.5 w-3.5" />
+                    Forward
+                  </button>
+                </div>
               ) : (
+                <div className="pt-6">
                 <ComposeWindow
                   draft={selectedDraft}
                   from={selected.from}
@@ -1747,6 +1726,7 @@ function InboxPage() {
                   onMinimize={() => updateDraft({ status: "minimized" })}
                   onRestore={() => updateDraft({ status: "open" })}
                 />
+                </div>
               )}
             </div>
           </div>
@@ -1772,7 +1752,7 @@ function ToolbarBtn({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className={`grid h-9 w-9 place-items-center rounded-full border border-border/50 bg-background hover:text-foreground hover:bg-foreground/[0.05] transition-colors ${
+      className={`grid h-8 w-8 place-items-center rounded-full hover:text-foreground hover:bg-foreground/[0.07] transition-colors ${
         active ? "text-foreground bg-foreground/[0.06]" : "text-muted-foreground"
       }`}
 
