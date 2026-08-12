@@ -1483,53 +1483,75 @@ function InboxPage() {
                 No messages match this view.
               </div>
             ) : (
-              visibleThreads.map((thread) => {
+              visibleThreads.map((thread, i) => {
                 const active = selected.id === thread.id;
                 const draft = drafts[thread.id];
+                const prevActive =
+                  i > 0 && selected.id === visibleThreads[i - 1].id;
                 return (
                   <button
                     key={thread.id}
                     onClick={() => selectThread(thread)}
-                    className={`group relative flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left transition-colors ${
-                      active ? "bg-foreground/[0.07]" : "hover:bg-foreground/[0.035]"
+                    className={`group relative block w-full rounded-xl px-3 py-3 text-left transition-colors ${
+                      active
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-foreground/[0.035]"
+                    } ${
+                      !active && !prevActive && i > 0
+                        ? "border-t border-border/50"
+                        : ""
                     }`}
                   >
-                    <LemniAvatar name={thread.from} />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`truncate text-[13px] leading-tight ${
-                            thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/85"
-                          }`}
-                        >
-                          {thread.from}
-                        </span>
-                        <span className="ml-auto shrink-0 text-[11px] tabular-nums text-muted-foreground/80">
-                          {thread.sentAt ?? thread.time}
-                        </span>
-                      </div>
-                      <div className="mt-0.5 flex items-center gap-1.5">
-                        <span className="min-w-0 flex-1 truncate text-[12px] leading-tight text-muted-foreground">
-                          {draft && draft.status !== "closed" ? (
-                            <>
-                              <span className="text-foreground/70">Draft · </span>
-                              {htmlToText(draft.body)}
-                            </>
-                          ) : (
-                            thread.subject
-                          )}
-                        </span>
-                        {thread.hasAttachment && (
-                          <Paperclip className="h-3 w-3 shrink-0 text-muted-foreground/70" />
-                        )}
-                        {thread.needsReply && (
-                          <SyraMark className="h-3 w-3 shrink-0 opacity-70" />
-                        )}
-                        {thread.unread && (
-                          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground" />
-                        )}
-                      </div>
+                    <div className="flex items-center gap-2">
+                      <LemniAvatar name={thread.from} size={22} />
+                      <span
+                        className={`truncate text-[13.5px] font-semibold leading-none ${
+                          active ? "text-primary-foreground" : "text-foreground"
+                        }`}
+                      >
+                        {thread.from}
+                      </span>
+                      {thread.hasAttachment && (
+                        <Paperclip
+                          className={`h-3 w-3 shrink-0 ${active ? "text-primary-foreground/70" : "text-muted-foreground/70"}`}
+                        />
+                      )}
+                      {thread.needsReply && (
+                        <SyraMark className="h-3 w-3 shrink-0 opacity-70" />
+                      )}
+                      <span
+                        className={`ml-auto shrink-0 text-[11.5px] tabular-nums ${
+                          active ? "text-primary-foreground/75" : "text-muted-foreground/80"
+                        }`}
+                      >
+                        {thread.sentAt ?? thread.time}
+                      </span>
                     </div>
+                    <div
+                      className={`mt-2 truncate text-[15px] leading-snug tracking-[-0.01em] ${
+                        active
+                          ? "text-primary-foreground"
+                          : thread.unread
+                            ? "font-medium text-foreground"
+                            : "text-foreground/90"
+                      }`}
+                    >
+                      {thread.subject}
+                    </div>
+                    <p
+                      className={`mt-1.5 line-clamp-2 text-[12.5px] leading-[1.5] ${
+                        active ? "text-primary-foreground/75" : "text-muted-foreground/75"
+                      }`}
+                    >
+                      {draft && draft.status !== "closed" ? (
+                        <>
+                          <span className={active ? "" : "text-foreground/70"}>Draft · </span>
+                          {htmlToText(draft.body)}
+                        </>
+                      ) : (
+                        thread.preview
+                      )}
+                    </p>
                   </button>
                 );
               })
