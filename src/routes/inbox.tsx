@@ -937,7 +937,7 @@ function InboxPage() {
                     <div className="flex items-center gap-2">
                       <SyraMark className="h-3.5 w-3.5" />
                       <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-foreground/75">
-                        Syra · Smart summary
+                        Smart summary
                       </span>
                     </div>
                     <span className="text-[10px] text-muted-foreground/80 tabular-nums">just now</span>
