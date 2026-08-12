@@ -352,7 +352,7 @@ const AVATAR_TINTS = [
 ];
 
 function tintFor(name: string) {
-  return AVATAR_TINTS[hashString(name) % AVATAR_TINTS.length];
+  return AVATAR_TINTS[Math.abs(hashString(name)) % AVATAR_TINTS.length];
 }
 
 function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
