@@ -1930,37 +1930,34 @@ function ComposeWindow({
 
   return (
     <div className="relative mt-8 max-w-2xl">
+    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_16px_40px_-16px_rgba(0,0,0,0.5),0_4px_12px_-4px_rgba(0,0,0,0.25)]">
       {draft.mode !== "forward" && (
-        <div className="pointer-events-none absolute -top-3 left-6 right-6 z-10 flex justify-start">
-          <div className="pointer-events-auto group relative flex items-center gap-2.5 rounded-full border border-border/70 bg-card/95 px-3 py-1.5 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.35),0_2px_6px_-2px_rgba(0,0,0,0.2)] backdrop-blur-md dark:bg-neutral-900/90 dark:border-white/10">
-            <SyraMark size={18} />
-            <div className="flex flex-col leading-tight">
-              <span className="text-[11.5px] font-semibold tracking-tight">Suggested reply from Syra</span>
-              <span className="text-[10.5px] text-muted-foreground">Review, edit, and send as John — signature attached</span>
-            </div>
-            <span className="mx-1 h-4 w-px bg-border/70" />
-            <button
-              onClick={onRegenerate}
-              disabled={regenerating}
-              className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] disabled:opacity-70"
-            >
-              {regenerating ? (
-                <Loader2 className="h-3 w-3 animate-spin" />
-              ) : (
-                <RefreshCw className="h-3 w-3" />
-              )}
-              Regenerate
-            </button>
-            {/* pointer tail into compose window */}
-            <span
-              aria-hidden
-              className="absolute -bottom-[5px] left-8 h-2.5 w-2.5 rotate-45 border-b border-r border-border/70 bg-card/95 dark:bg-neutral-900/90 dark:border-white/10"
-            />
-          </div>
+        <div className="flex items-center gap-2.5 border-b border-border/60 px-3.5 py-2">
+          <span
+            aria-hidden
+            className="h-4 w-[2px] shrink-0 rounded-full"
+            style={{ background: "var(--sparkle, #7c6cff)" }}
+          />
+          <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
+            Drafted by Syra
+          </span>
+          <span className="hidden sm:inline truncate text-[11.5px] text-muted-foreground/70">
+            · review and send as John
+          </span>
+          <button
+            onClick={onRegenerate}
+            disabled={regenerating}
+            className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full px-2 py-1 text-[11.5px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.06] hover:text-foreground disabled:opacity-60"
+          >
+            {regenerating ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3 w-3" />
+            )}
+            Regenerate
+          </button>
         </div>
       )}
-
-    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_16px_40px_-16px_rgba(0,0,0,0.5),0_4px_12px_-4px_rgba(0,0,0,0.25)]">
       <div className="flex items-center justify-between px-3.5 h-9 bg-foreground/[0.04] dark:bg-white/[0.04] border-b border-border/60">
         <div className="flex items-center gap-2 text-[12px] font-medium text-foreground/85">
           <CornerUpLeft className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.85} />
