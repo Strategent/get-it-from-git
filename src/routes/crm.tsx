@@ -11,7 +11,6 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { SyraChatWidget } from "@/components/syra-chat-widget";
 import {
   Plus,
   Filter,
@@ -299,7 +298,6 @@ function CrmPage() {
           </table>
         </div>
     </div>
-    <SyraChatWidget />
     </>
   );
 }

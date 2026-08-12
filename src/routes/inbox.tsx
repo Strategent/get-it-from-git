@@ -53,7 +53,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { SyraMark } from "@/components/syra-mark";
 import { avatarUrl } from "@/lib/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -888,9 +887,6 @@ function InboxPage() {
               </div>
             )}
           </div>
-          <SyraChatWidget
-            inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${needsReplyCount} need reply`}
-          />
         </>
       );
     }
@@ -1093,9 +1089,6 @@ function InboxPage() {
             )}
           </div>
         </div>
-        <SyraChatWidget
-          inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${needsReplyCount} need reply`}
-        />
       </>
     );
   }
@@ -1511,9 +1504,6 @@ function InboxPage() {
           </div>
         </main>
       </div>
-      <SyraChatWidget
-        inboxSummary={`${folderCounts.Inbox} inbox, ${folderCounts.Drafts} drafts, ${threads.filter((t) => t.needsReply).length} need reply`}
-      />
     </>
   );
 }
