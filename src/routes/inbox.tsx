@@ -1356,15 +1356,13 @@ function InboxPage() {
                 >
                   <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
                 </button>
-                <div
-                  className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-foreground/[0.06] text-[13px] font-semibold text-foreground/80"
-                  style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.08) inset, 0 0 0 1px color-mix(in oklab, var(--foreground) 8%, transparent)" }}
-                >
-                  {initials(selected.from)}
-                </div>
+                <LemniAvatar name={selected.from} size={40} />
                 <div className="min-w-0">
-                  <div className="truncate text-[19px] font-semibold tracking-tight text-foreground">
-                    {selected.company}
+                  <div className="truncate text-[17px] font-semibold tracking-tight text-foreground">
+                    {selected.from}
+                    <span className="ml-2 text-[12px] font-normal text-muted-foreground">
+                      {selected.email}
+                    </span>
                   </div>
                   <div className="mt-1 truncate text-[12px] text-muted-foreground">
                     From: <span className="text-foreground/85">{selected.email}</span>
