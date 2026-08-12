@@ -58,6 +58,14 @@ import { SyraMark } from "@/components/syra-mark";
 import { avatarUrl } from "@/lib/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import {
+  ArrowUpDown,
+  SlidersHorizontal,
+  Bot,
+  BookOpen,
+  Settings2,
+  UserSquare2,
+} from "lucide-react";
 
 
 export const Route = createFileRoute("/inbox")({
