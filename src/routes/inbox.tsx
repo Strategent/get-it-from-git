@@ -1541,40 +1541,18 @@ function InboxPage() {
         <main
           className={`${mobileReading ? "flex" : "hidden md:flex"} relative z-10 flex-1 flex-col min-w-0 bg-background`}
         >
-          {/* header block */}
-          <div className="relative border-b border-border/60 bg-card/50 px-6 py-5">
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/12 to-transparent" />
-            <div className="flex flex-col gap-4">
-              <div className="flex min-w-0 items-start gap-3.5">
-                <button
-                  type="button"
-                  onClick={() => setMobileReading(false)}
-                  aria-label="Back to inbox"
-                  className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
-                >
-                  <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
-                </button>
-                <LemniAvatar name={selected.from} size={40} />
-                <div className="min-w-0">
-                  <div className="truncate text-[17px] font-semibold tracking-tight text-foreground">
-                    {selected.from}
-                    <span className="ml-2 text-[12px] font-normal text-muted-foreground">
-                      {selected.email}
-                    </span>
-                  </div>
-                  <div className="mt-1 truncate text-[12px] text-muted-foreground">
-                    From: <span className="text-foreground/85">{selected.email}</span>
-                    <span className="px-1.5 opacity-50">•</span>
-                    To: <span className="text-foreground/85">john.harwick@harwicksterne.com</span>
-                  </div>
-                </div>
-                <div className="ml-auto shrink-0 pt-1 text-[11.5px] tabular-nums text-muted-foreground">
-                  {selected.sentAt ?? `${selected.time} ago`}
-                </div>
-              </div>
-
-              <div className="flex items-center justify-end">
-                <div className="flex items-center gap-0.5">
+          {/* header block — Gmail-style: toolbar row, then subject */}
+          <div className="relative border-b border-border/60 bg-background px-6 pb-4 pt-3">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setMobileReading(false)}
+                aria-label="Back to inbox"
+                className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
+              >
+                <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
+              </button>
+              <div className="flex items-center gap-0.5">
                   <ToolbarBtn
                     icon={Sparkles}
                     label="Summarize"
@@ -1630,13 +1608,20 @@ function InboxPage() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
-                </div>
               </div>
+              <span className="ml-auto shrink-0 text-[11.5px] tabular-nums text-muted-foreground">
+                {selected.sentAt ?? `${selected.time} ago`}
+              </span>
             </div>
 
-            <h2 className="mt-5 text-[21px] font-semibold tracking-tight text-foreground">
+            <h2 className="mt-3 text-[20px] font-semibold leading-snug tracking-tight text-foreground">
               {selected.subject}
             </h2>
+            {selected.tag && (
+              <span className="mt-2 inline-flex items-center rounded-md border border-border/70 bg-foreground/[0.04] px-2 py-0.5 text-[10.5px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+                {selected.tag}
+              </span>
+            )}
           </div>
 
           {/* body — recessed dark stage with layered panels */}
