@@ -252,6 +252,211 @@ const baseThreads: Thread[] = [
   },
 ];
 
+const extraThreads: Thread[] = [
+  {
+    id: 8,
+    from: "Priya Shah",
+    company: "Lumen Capital",
+    email: "priya@lumencap.example",
+    subject: "Enterprise quote — 3 year projection",
+    preview: "Following up on our call. Can you send the formal quote with the 3-year view...",
+    body: "Hi John,\n\nFollowing up on our call — can you send the formal quote with the 3-year projection by Friday? Our board reviews vendor spend next Tuesday and I'd like this in the packet.\n\nThanks,\nPriya",
+    time: "12m",
+    tag: "Sales",
+    folder: "Inbox",
+    unread: true,
+    starred: false,
+    flagged: false,
+    vip: true,
+    hasAttachment: false,
+    needsReply: true,
+  },
+  {
+    id: 9,
+    from: "Diego Alvarez",
+    company: "Vertex Health",
+    email: "diego@vertexhealth.example",
+    subject: "Security review — data residency gap",
+    preview: "Our infosec team flagged EU residency in the questionnaire. Need a written response...",
+    body: "John,\n\nOur infosec team flagged EU data residency in section 4 of the questionnaire. We need a written response before we can move to contracting. Happy to jump on a call with your security lead.\n\nDiego",
+    time: "47m",
+    tag: "Legal",
+    folder: "Inbox",
+    unread: true,
+    starred: false,
+    flagged: true,
+    vip: false,
+    hasAttachment: true,
+    needsReply: true,
+  },
+  {
+    id: 10,
+    from: "Amara Osei",
+    company: "Kestrel Partners",
+    email: "amara@kestrel.example",
+    subject: "Deck feedback before Thursday",
+    preview: "Slide 6 needs the updated retention curve. Everything else reads well...",
+    body: "Slide 6 needs the updated retention curve — the one from the April cohort analysis. Everything else reads well. Can you send a revised version before Thursday's committee?\n\nAmara",
+    time: "2h",
+    tag: "Hot lead",
+    folder: "Inbox",
+    unread: false,
+    starred: false,
+    flagged: false,
+    vip: false,
+    hasAttachment: false,
+    needsReply: true,
+  },
+  {
+    id: 11,
+    from: "Notion",
+    company: "Workspace",
+    email: "team@makenotion.com",
+    subject: "Weekly digest — 12 pages updated",
+    preview: "Your team edited 12 pages this week across Client Ops and Playbooks...",
+    body: "Your team edited 12 pages this week across Client Ops and Playbooks. Most active: Onboarding Checklist v3, Q3 Pipeline Review, and Escalation Matrix.",
+    time: "4h",
+    tag: "System",
+    folder: "Inbox",
+    unread: false,
+    starred: false,
+    flagged: false,
+    vip: false,
+    hasAttachment: false,
+    needsReply: false,
+  },
+  {
+    id: 12,
+    from: "Tom Whitaker",
+    company: "Meridian Group",
+    email: "tom@meridiangroup.example",
+    subject: "Invoice 4471 — payment terms",
+    preview: "Accounting asked if we can move to net-45 for the remainder of the term...",
+    body: "Hi,\n\nAccounting asked whether we can move to net-45 for the remainder of the term. Invoice 4471 is queued either way — just want to confirm before it's scheduled.\n\nTom",
+    time: "5h",
+    tag: "Billing",
+    folder: "Inbox",
+    unread: false,
+    starred: false,
+    flagged: false,
+    vip: false,
+    hasAttachment: true,
+    needsReply: true,
+  },
+  {
+    id: 13,
+    from: "Hannah Blake",
+    company: "Cobalt Advisory",
+    email: "hannah@cobalt.example",
+    subject: "Reschedule Thursday's working session",
+    preview: "Something came up on our side — could we push to Friday morning...",
+    body: "Something came up on our side — could we push Thursday's working session to Friday morning? 9:30 or 11:00 both work for our team.\n\nHannah",
+    time: "8h",
+    tag: "Intro",
+    folder: "Inbox",
+    unread: false,
+    starred: false,
+    flagged: false,
+    vip: false,
+    hasAttachment: false,
+    needsReply: true,
+  },
+  {
+    id: 14,
+    from: "Ravi Menon",
+    company: "Atlas Freight",
+    email: "ravi@atlasfreight.example",
+    subject: "Pilot results — 3 week readout",
+    preview: "We cut manual triage time by 38% in the pilot. Full readout attached...",
+    body: "We cut manual triage time by 38% over the three week pilot. Full readout is attached. Our exec team wants to discuss expanding to the claims desk next quarter.\n\nRavi",
+    time: "Yesterday",
+    tag: "Hot lead",
+    folder: "Inbox",
+    unread: false,
+    starred: true,
+    flagged: false,
+    vip: true,
+    hasAttachment: true,
+    needsReply: true,
+  },
+  {
+    id: 15,
+    from: "Elena Sokolova",
+    company: "Harborline",
+    email: "elena@harborline.example",
+    subject: "Renewal terms — seat true-up",
+    preview: "We added 22 seats since January. Can you reflect that in the renewal quote...",
+    body: "We added 22 seats since January. Can you reflect that in the renewal quote and let me know if the volume tier changes? Procurement wants numbers by the 20th.\n\nElena",
+    time: "Yesterday",
+    tag: "Renewal",
+    folder: "Inbox",
+    unread: false,
+    starred: false,
+    flagged: false,
+    vip: false,
+    hasAttachment: false,
+    needsReply: true,
+  },
+  {
+    id: 16,
+    from: "Calendly",
+    company: "Scheduling",
+    email: "no-reply@calendly.com",
+    subject: "New event: Intro call with Vertex",
+    preview: "Diego Alvarez booked 30 minutes on Thursday at 2:00 PM...",
+    body: "Diego Alvarez booked 30 minutes on Thursday at 2:00 PM. A calendar invite with the conferencing link has been added to your calendar.",
+    time: "2d",
+    tag: "System",
+    folder: "Inbox",
+    unread: false,
+    starred: false,
+    flagged: false,
+    vip: false,
+    hasAttachment: false,
+    needsReply: false,
+  },
+];
+
+baseThreads.push(...extraThreads);
+
+function threadSummary(t: Thread) {
+  switch (t.tag) {
+    case "Hot lead":
+      return `${t.from.split(" ")[0]} is engaged and moving — the ask is specific and time-boxed. Clearing it this week keeps the deal on its current track.`;
+    case "Sales":
+      return `${t.from.split(" ")[0]} needs concrete answers before the next step. Nothing here is blocked on approval — only on a reply with the details attached.`;
+    case "Renewal":
+      return `Renewal thread with commercial exposure. Procurement is driving the timeline, so numbers matter more than narrative.`;
+    case "Billing":
+      return `Finance-side item. No decision required beyond confirming terms and letting the transaction proceed.`;
+    case "Legal":
+      return `Contract and compliance thread. A written, on-the-record answer moves this to signature faster than a call.`;
+    case "Intro":
+      return `Relationship thread — low effort, high signal. A quick, warm reply keeps momentum with the new contact.`;
+    default:
+      return `Automated notification. No reply expected; noted for awareness and filed under ${t.company}.`;
+  }
+}
+
+function threadNextAction(t: Thread) {
+  switch (t.tag) {
+    case "Hot lead":
+      return `Reply to ${t.from.split(" ")[0]} with the requested update`;
+    case "Sales":
+      return "Send the details and confirm next step";
+    case "Renewal":
+      return "Share updated seat count and pricing";
+    case "Billing":
+      return "Confirm terms with finance";
+    case "Legal":
+      return "Send written response to review";
+    case "Intro":
+      return "Acknowledge and propose a time";
+    default:
+      return "No action needed — archive";
+  }
+}
+
 const folderMeta = [
   { name: "Inbox" as const, icon: InboxIcon },
   { name: "VIPs" as const, icon: Star },
