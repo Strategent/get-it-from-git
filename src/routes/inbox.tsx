@@ -1752,7 +1752,7 @@ function ToolbarBtn({
       aria-label={label}
       title={label}
       onClick={onClick}
-      className={`grid h-9 w-9 place-items-center rounded-full border border-border/50 bg-background hover:text-foreground hover:bg-foreground/[0.05] transition-colors ${
+      className={`grid h-8 w-8 place-items-center rounded-full hover:text-foreground hover:bg-foreground/[0.07] transition-colors ${
         active ? "text-foreground bg-foreground/[0.06]" : "text-muted-foreground"
       }`}
 
