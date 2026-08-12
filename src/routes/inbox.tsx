@@ -1615,11 +1615,11 @@ function InboxPage() {
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <h2 className="text-[22px] font-normal leading-snug tracking-tight text-foreground">
+              <h2 className="text-[26px] font-normal leading-[1.25] tracking-[-0.01em] text-foreground">
                 {selected.subject}
               </h2>
               {selected.tag && (
-                <span className="inline-flex items-center rounded-[4px] bg-foreground/[0.07] px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+                <span className="inline-flex items-center rounded-[4px] bg-foreground/[0.07] px-2 py-0.5 text-[12px] font-medium text-muted-foreground">
                   {selected.tag}
                 </span>
               )}
@@ -1627,57 +1627,57 @@ function InboxPage() {
           </div>
 
           {/* body — Gmail flat message stack */}
-          <div className="relative flex-1 overflow-y-auto no-scrollbar px-6 pb-8">
-            <div className="mx-auto max-w-3xl">
+          <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
+            <div className="mx-auto max-w-[820px]">
               {/* Smart summary — quiet inline strip, not a floating card */}
-              <div className="mb-4 rounded-xl bg-foreground/[0.035] px-4 py-3">
+              <div className="mb-6 rounded-xl bg-foreground/[0.035] px-5 py-4">
                 <div className="flex items-center gap-2">
-                  <SyraMark className="h-3.5 w-3.5" />
-                  <span className="text-[11px] font-medium tracking-tight text-foreground/70">
+                  <SyraMark className="h-4 w-4" />
+                  <span className="text-[12px] font-medium tracking-tight text-foreground/70">
                     Smart summary
                   </span>
                 </div>
-                <p className="mt-1.5 text-[13px] leading-[1.6] text-foreground/80">
+                <p className="mt-2 text-[14px] leading-[1.65] text-foreground/85">
                   {threadSummary(selected)}
                 </p>
-                <p className="mt-1.5 text-[12.5px] text-muted-foreground">
+                <p className="mt-2 text-[13px] text-muted-foreground">
                   Next · {threadNextAction(selected)}
                 </p>
               </div>
 
-              <article className="border-t border-border/50 pt-5">
+              <article className="border-t border-border/50 pt-6">
                 {/* sender row */}
-                <div className="flex items-start gap-3">
-                  <LemniAvatar name={selected.from} size={38} />
+                <div className="flex items-start gap-4">
+                  <LemniAvatar name={selected.from} size={44} />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-1.5">
-                      <span className="truncate text-[14px] font-semibold tracking-tight text-foreground">
+                    <div className="flex items-baseline gap-2">
+                      <span className="truncate text-[15px] font-semibold tracking-tight text-foreground">
                         {selected.from}
                       </span>
-                      <span className="truncate text-[12.5px] text-muted-foreground">
+                      <span className="truncate text-[13px] text-muted-foreground">
                         &lt;{selected.email}&gt;
                       </span>
                     </div>
-                    <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
+                    <div className="mt-1 truncate text-[13px] text-muted-foreground">
                       to me
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-1 pt-0.5">
-                    <span className="text-[12px] tabular-nums text-muted-foreground">
+                  <div className="flex shrink-0 items-center gap-2 pt-0.5">
+                    <span className="text-[13px] tabular-nums text-muted-foreground">
                       {selected.sentAt ?? `${selected.time} ago`}
                     </span>
                     <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
                   </div>
                 </div>
 
-                <div className="whitespace-pre-line pl-[50px] pr-1 pt-4 text-[14px] leading-[1.75] text-foreground/90">
+                <div className="whitespace-pre-line pl-[60px] pr-2 pt-5 text-[15px] leading-[1.8] tracking-[0.002em] text-foreground/90">
                   {selected.body}
                 </div>
 
                 {selected.hasAttachment && (
-                  <div className="pl-[50px] pt-5">
-                    <button className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-3 py-2 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.05] transition-colors">
-                      <Paperclip className="h-3.5 w-3.5" />
+                  <div className="pl-[60px] pt-6">
+                    <button className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-3.5 py-2.5 text-[13px] text-foreground/85 hover:bg-foreground/[0.05] transition-colors">
+                      <Paperclip className="h-4 w-4" />
                       {selected.tag === "Legal"
                         ? "Completed_MSA.pdf"
                         : selected.tag === "Billing"
@@ -1689,19 +1689,19 @@ function InboxPage() {
               </article>
 
               {selectedDraft.status === "closed" ? (
-                <div className="flex items-center gap-2 pl-[50px] pt-6">
+                <div className="flex items-center gap-2 pl-[60px] pt-8">
                   <button
                     onClick={() => openComposer("reply")}
-                    className="inline-flex items-center gap-2 rounded-full border border-border/70 px-4 py-2 text-[13px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/70 px-5 py-2.5 text-[14px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
                   >
-                    <Reply className="h-3.5 w-3.5" />
+                    <Reply className="h-4 w-4" />
                     Reply
                   </button>
                   <button
                     onClick={() => openComposer("forward")}
-                    className="inline-flex items-center gap-2 rounded-full border border-border/70 px-4 py-2 text-[13px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
+                    className="inline-flex items-center gap-2 rounded-full border border-border/70 px-5 py-2.5 text-[14px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
                   >
-                    <Forward className="h-3.5 w-3.5" />
+                    <Forward className="h-4 w-4" />
                     Forward
                   </button>
                 </div>
