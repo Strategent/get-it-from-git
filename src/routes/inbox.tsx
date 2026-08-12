@@ -1669,35 +1669,35 @@ function InboxPage() {
 
               <article className="border-t border-border/50 pt-6">
                 {/* sender row */}
-                <div className="flex items-start gap-4">
-                  <LemniAvatar name={selected.from} size={44} />
+                <div className="flex items-start gap-3">
+                  <LemniAvatar name={selected.from} size={34} />
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
-                      <span className="truncate text-[15px] font-semibold tracking-tight text-foreground">
+                    <div className="flex min-w-0 items-baseline gap-1.5">
+                      <span className="shrink-0 text-[13.5px] font-semibold tracking-tight text-foreground">
                         {selected.from}
                       </span>
-                      <span className="truncate text-[13px] text-muted-foreground">
+                      <span className="hidden min-w-0 truncate text-[12.5px] text-muted-foreground sm:inline">
                         &lt;{selected.email}&gt;
                       </span>
                     </div>
-                    <div className="mt-1 truncate text-[13px] text-muted-foreground">
+                    <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
                       to me
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-2 pt-0.5">
-                    <span className="text-[13px] tabular-nums text-muted-foreground">
+                  <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
+                    <span className="text-[12px] tabular-nums text-muted-foreground">
                       {selected.sentAt ?? `${selected.time} ago`}
                     </span>
                     <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
                   </div>
                 </div>
 
-                <div className="whitespace-pre-line pl-[60px] pr-2 pt-5 text-[15px] leading-[1.8] tracking-[0.002em] text-foreground/90">
+                <div className="whitespace-pre-line pl-0 pr-2 pt-4 text-[14px] leading-[1.65] text-foreground/90 sm:pl-[46px]">
                   {selected.body}
                 </div>
 
                 {selected.hasAttachment && (
-                  <div className="pl-[60px] pt-6">
+                  <div className="pl-0 pt-5 sm:pl-[46px]">
                     <button className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-3.5 py-2.5 text-[13px] text-foreground/85 hover:bg-foreground/[0.05] transition-colors">
                       <Paperclip className="h-4 w-4" />
                       {selected.tag === "Legal"
@@ -1711,7 +1711,7 @@ function InboxPage() {
               </article>
 
               {selectedDraft.status === "closed" ? (
-                <div className="flex items-center gap-2 pl-[60px] pt-8">
+                <div className="flex items-center gap-2 pl-0 pt-7 sm:pl-[46px]">
                   <button
                     onClick={() => openComposer("reply")}
                     className="inline-flex items-center gap-2 rounded-full border border-border/70 px-5 py-2.5 text-[14px] text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] transition-colors"
