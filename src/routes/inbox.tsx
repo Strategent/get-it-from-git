@@ -1956,8 +1956,24 @@ function ComposeWindow({
             )}
             Regenerate
           </button>
+          <span className="mx-1 h-3.5 w-px bg-border/60" />
+          <button
+            onClick={onMinimize}
+            className="grid h-6 w-6 shrink-0 place-items-center rounded text-muted-foreground hover:bg-foreground/[0.06] hover:text-foreground"
+            aria-label="Minimize"
+          >
+            <Minus className="h-3.5 w-3.5" />
+          </button>
+          <button
+            onClick={onDiscard}
+            className="grid h-6 w-6 shrink-0 place-items-center rounded text-muted-foreground hover:bg-foreground/[0.06] hover:text-foreground"
+            aria-label="Close"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
         </div>
       )}
+      {(draft.mode === "forward" || justSent) && (
       <div className="flex items-center justify-between px-3.5 h-9 bg-foreground/[0.04] dark:bg-white/[0.04] border-b border-border/60">
         <div className="flex items-center gap-2 text-[12px] font-medium text-foreground/85">
           <CornerUpLeft className="h-3.5 w-3.5 text-muted-foreground" strokeWidth={1.85} />
@@ -1989,6 +2005,7 @@ function ComposeWindow({
           </button>
         </div>
       </div>
+      )}
 
 
       <div className="text-[13px]">
