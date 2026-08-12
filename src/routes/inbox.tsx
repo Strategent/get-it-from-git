@@ -1648,6 +1648,37 @@ function InboxPage() {
             }}
           >
             <div className="mx-auto max-w-3xl space-y-4">
+              {/* Smart summary */}
+              <div
+                className="relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card"
+                style={{
+                  boxShadow:
+                    "0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 50px -30px rgba(0,0,0,0.9)",
+                }}
+              >
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
+                <div className="flex items-center justify-between gap-2 px-5 pt-3.5 pb-2">
+                  <div className="flex items-center gap-2">
+                    <SyraMark className="h-3.5 w-3.5" />
+                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-foreground/75">
+                      Smart summary
+                    </span>
+                  </div>
+                  <span className="text-[10.5px] tabular-nums text-muted-foreground/80">just now</span>
+                </div>
+                <div className="px-5 pb-4 text-[13.5px] leading-[1.6] text-foreground/85">
+                  {threadSummary(selected)}
+                </div>
+                <div className="flex items-center gap-2.5 border-t border-border/60 dark:border-white/[0.06] bg-foreground/[0.02] px-5 py-3">
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                    Next
+                  </span>
+                  <span className="truncate text-[12.5px] font-medium text-foreground/90">
+                    {threadNextAction(selected)}
+                  </span>
+                </div>
+              </div>
+
               <article
                 className="relative overflow-hidden rounded-2xl border border-border/70 bg-card px-7 py-6"
                 style={{
