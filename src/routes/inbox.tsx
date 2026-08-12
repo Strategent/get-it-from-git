@@ -1665,20 +1665,46 @@ function InboxPage() {
               </div>
 
               <article
-                className="relative overflow-hidden rounded-2xl border border-border/70 bg-card px-7 py-6"
+                className="relative overflow-hidden rounded-2xl border border-border/70 dark:border-white/[0.07] bg-card"
                 style={{
                   boxShadow:
-                    "0 1px 0 rgba(255,255,255,0.05) inset, 0 24px 60px -32px rgba(0,0,0,0.95), 0 2px 8px -4px rgba(0,0,0,0.4)",
+                    "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -34px rgba(0,0,0,0.9)",
                 }}
               >
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/20 to-transparent" />
-                <div className="whitespace-pre-line text-[14px] leading-[1.65] text-foreground/90">
+                {/* sender row */}
+                <div className="flex items-start gap-3 px-6 pt-5">
+                  <LemniAvatar name={selected.from} size={36} />
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-baseline gap-2">
+                      <span className="truncate text-[14px] font-semibold tracking-tight text-foreground">
+                        {selected.from}
+                      </span>
+                      <span className="truncate text-[12px] text-muted-foreground">
+                        &lt;{selected.email}&gt;
+                      </span>
+                    </div>
+                    <div className="mt-0.5 truncate text-[11.5px] text-muted-foreground">
+                      to john.harwick@harwicksterne.com
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-0.5 pt-0.5">
+                    <span className="mr-1 text-[11px] tabular-nums text-muted-foreground">
+                      {selected.sentAt ?? `${selected.time} ago`}
+                    </span>
+                    <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
+                  </div>
+                </div>
+
+                <div className="mt-4 h-px bg-border/50 dark:bg-white/[0.05]" />
+
+                <div className="whitespace-pre-line px-6 py-5 text-[14px] leading-[1.7] text-foreground/90">
                   {selected.body}
                 </div>
+                <div className="px-6 pb-6 -mt-1">
 
                 {selected.hasAttachment && (
                   <button
-                    className="mt-6 inline-flex items-center gap-2 rounded-xl border border-border/70 bg-foreground/[0.04] px-3.5 py-2.5 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.07] transition-colors"
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/70 bg-foreground/[0.04] px-3.5 py-2.5 text-[12.5px] text-foreground/85 hover:bg-foreground/[0.07] transition-colors"
                     style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.05) inset" }}
                   >
                     <Paperclip className="h-3.5 w-3.5" />
@@ -1689,6 +1715,7 @@ function InboxPage() {
                         : "Security_questionnaire.pdf"}
                   </button>
                 )}
+                </div>
               </article>
 
               {selectedDraft.status === "closed" ? (
