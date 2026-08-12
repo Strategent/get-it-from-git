@@ -3,7 +3,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Bell, Search, Sun, Moon, X } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { SyraChatWidget } from "@/components/syra-chat-widget";
 import { useTheme } from "@/components/theme-provider";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRouterState } from "@tanstack/react-router";
@@ -260,7 +259,6 @@ export function PageShell({ children }: { children: ReactNode }) {
       <div className="min-h-screen bg-background px-4 sm:px-6 md:px-8 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] md:pt-6 pb-28 md:pb-6 space-y-4 md:space-y-5">
         {children}
       </div>
-      <SyraChatWidget />
     </>
   );
 }
