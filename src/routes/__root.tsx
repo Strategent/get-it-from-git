@@ -263,6 +263,7 @@ function RootComponent() {
           </div>
           <MobileBottomNav />
           <MobileSwipeNav />
+          <RouteProgress />
           <Toaster />
         </SidebarProvider>
       </ThemeProvider>
