@@ -527,8 +527,9 @@ const ME_EMAIL = "john.harwick@harwicksterne.com";
 
 /** Real email header block: sender, address, recipients, date, expandable details. */
 function MessageHeaderBlock({ thread }: { thread: Thread }) {
-  const [open, setOpen] = useState(false);
   const when = thread.sentAt ?? `${thread.time} ago`;
+  const domain = thread.email.split("@")[1] ?? "example.com";
+  const cc = threadCc(thread);
   return (
     <div className="border-b border-border/60 pb-3">
       <div className="flex items-start gap-3">
@@ -542,41 +543,46 @@ function MessageHeaderBlock({ thread }: { thread: Thread }) {
               &lt;{thread.email}&gt;
             </span>
           </div>
-          <button
-            onClick={() => setOpen((v) => !v)}
-            className="mt-0.5 inline-flex items-center gap-1 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
-          >
-            to me
-            <ChevronRight
-              className={`h-3 w-3 transition-transform ${open ? "rotate-90" : ""}`}
-            />
-          </button>
+          <div className="mt-1 space-y-[2px] text-[12px] leading-[1.45]">
+            <div className="flex min-w-0 gap-1.5">
+              <span className="w-[42px] shrink-0 text-muted-foreground">To</span>
+              <span className="min-w-0 truncate text-foreground/80">
+                {ME_NAME} &lt;{ME_EMAIL}&gt;
+              </span>
+            </div>
+            {cc.length > 0 && (
+              <div className="flex min-w-0 gap-1.5">
+                <span className="w-[42px] shrink-0 text-muted-foreground">Cc</span>
+                <span className="min-w-0 truncate text-foreground/80">{cc.join(", ")}</span>
+              </div>
+            )}
+            <div className="flex min-w-0 gap-1.5">
+              <span className="w-[42px] shrink-0 text-muted-foreground">Subject</span>
+              <span className="min-w-0 truncate text-foreground/80">{thread.subject}</span>
+            </div>
+          </div>
         </div>
         <span className="shrink-0 pt-0.5 text-[12px] tabular-nums text-muted-foreground">
           {when}
         </span>
       </div>
-
-      {open && (
-        <dl className="mt-3 grid grid-cols-[54px_minmax(0,1fr)] gap-x-3 gap-y-1 pl-0 text-[12px] leading-[1.5] sm:pl-[46px]">
-          <dt className="text-right text-muted-foreground">from</dt>
-          <dd className="truncate text-foreground/85">
-            {thread.from} &lt;{thread.email}&gt;
-          </dd>
-          <dt className="text-right text-muted-foreground">to</dt>
-          <dd className="truncate text-foreground/85">
-            {ME_NAME} &lt;{ME_EMAIL}&gt;
-          </dd>
-          <dt className="text-right text-muted-foreground">date</dt>
-          <dd className="text-foreground/85">{when}</dd>
-          <dt className="text-right text-muted-foreground">subject</dt>
-          <dd className="truncate text-foreground/85">{thread.subject}</dd>
-          <dt className="text-right text-muted-foreground">mailed-by</dt>
-          <dd className="truncate text-foreground/85">{thread.email.split("@")[1]}</dd>
-        </dl>
-      )}
+      <div className="mt-2 pl-0 text-[11.5px] text-muted-foreground sm:pl-[46px]">
+        mailed-by {domain} · signed-by {domain}
+      </div>
     </div>
   );
+}
+
+/** Deterministic demo Cc list so every message reads like a real email. */
+function threadCc(thread: Thread): string[] {
+  const domain = thread.email.split("@")[1] ?? "example.com";
+  const pool = [
+    [`assistant@${domain}`],
+    [`ops@harwicksterne.com`],
+    [`assistant@${domain}`, `paralegal@harwicksterne.com`],
+    [],
+  ];
+  return pool[thread.id % pool.length];
 }
 
 function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
