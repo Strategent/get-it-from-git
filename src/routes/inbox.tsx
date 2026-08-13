@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
+import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
@@ -674,6 +675,17 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
+  // iOS-style transient skeleton while a thread pushes in / pops out.
+  const [threadLoading, setThreadLoading] = useState(false);
+  const threadLoadTimer = useRef<number | null>(null);
+  const beginThreadLoad = (ms: number) => {
+    if (threadLoadTimer.current) window.clearTimeout(threadLoadTimer.current);
+    setThreadLoading(true);
+    threadLoadTimer.current = window.setTimeout(() => setThreadLoading(false), ms);
+  };
+  useEffect(() => () => {
+    if (threadLoadTimer.current) window.clearTimeout(threadLoadTimer.current);
+  }, []);
   const [mobileClosing, setMobileClosing] = useState(false);
   const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
@@ -772,6 +784,7 @@ function InboxPage() {
   };
 
   const selectThread = (thread: Thread) => {
+    if (thread.id !== selectedId || !mobileReading) beginThreadLoad(420);
     setSelectedId(thread.id);
     setMobileReading(true);
     setMobileClosing(false);
@@ -779,6 +792,9 @@ function InboxPage() {
   };
 
   const closeMobileReading = () => {
+    // Content collapses to a skeleton as the pane slides away, so a re-open
+    // never flashes stale content.
+    beginThreadLoad(300);
     setMobileClosing(true);
     window.setTimeout(() => {
       setMobileReading(false);
@@ -997,6 +1013,10 @@ function InboxPage() {
                   : "calc(env(safe-area-inset-bottom, 0px) + 84px)",
               }}
             >
+              {threadLoading ? (
+                <ThreadSkeleton variant="mobile" />
+              ) : (
+              <div className="ios-skeleton-fade">
               {/* Editorial subject */}
               <div className="px-5 pt-5 pb-4">
                 <div className="flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/80">
@@ -1164,6 +1184,8 @@ function InboxPage() {
                     </div>
                   </div>
                 </div>
+              )}
+              </div>
               )}
             </div>
 
@@ -1722,7 +1744,14 @@ function InboxPage() {
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <h2 className="text-[26px] font-normal leading-[1.25] tracking-[-0.01em] text-foreground">
+              {threadLoading ? (
+                <>
+                  <div className="ios-skeleton h-6 w-[46%]" />
+                  <div className="ios-skeleton h-5 w-16" />
+                </>
+              ) : (
+              <>
+              <h2 className="ios-skeleton-fade text-[26px] font-normal leading-[1.25] tracking-[-0.01em] text-foreground">
                 {selected.subject}
               </h2>
               {selected.tag && (
@@ -1730,12 +1759,15 @@ function InboxPage() {
                   {selected.tag}
                 </span>
               )}
+              </>
+              )}
             </div>
           </div>
 
           {/* body — Gmail flat message stack */}
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
-            <div className="mx-auto max-w-[820px]">
+            {threadLoading && <ThreadSkeleton />}
+            <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
               {/* Smart summary — quiet inline strip, not a floating card */}
               <div className="mb-6 rounded-xl bg-foreground/[0.035] px-5 py-4">
                 <div className="flex items-center gap-2">

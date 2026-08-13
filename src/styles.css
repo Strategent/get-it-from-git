@@ -875,3 +875,26 @@
 @media (prefers-reduced-motion: reduce) {
   .avatar-shimmer { animation: none; }
 }
+
+/* ── iOS-style skeleton loading ─────────────────────────────────────────
+   A soft breathing placeholder (Apple's Mail / News pattern): low-contrast
+   fills that pulse gently rather than a harsh sweeping shimmer. */
+@keyframes ios-skeleton-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 0.95; }
+}
+.ios-skeleton {
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  border-radius: 6px;
+  animation: ios-skeleton-pulse 1.5s ease-in-out infinite;
+}
+.ios-skeleton-fade {
+  animation: ios-skeleton-fade-in 220ms ease-out both;
+}
+@keyframes ios-skeleton-fade-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ios-skeleton, .ios-skeleton-fade { animation: none; }
+}
