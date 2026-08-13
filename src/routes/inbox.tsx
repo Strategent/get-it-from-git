@@ -638,6 +638,7 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
+  const [mobileClosing, setMobileClosing] = useState(false);
   const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
   const [foldersOpen, setFoldersOpen] = useState(false);
@@ -737,7 +738,16 @@ function InboxPage() {
   const selectThread = (thread: Thread) => {
     setSelectedId(thread.id);
     setMobileReading(true);
+    setMobileClosing(false);
     if (thread.unread) updateThread(thread.id, { unread: false });
+  };
+
+  const closeMobileReading = () => {
+    setMobileClosing(true);
+    window.setTimeout(() => {
+      setMobileReading(false);
+      setMobileClosing(false);
+    }, 240);
   };
 
   const openComposer = (mode: ComposerMode) => {
