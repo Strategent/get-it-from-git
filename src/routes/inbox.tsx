@@ -1136,6 +1136,7 @@ function InboxPage() {
                       rows={8}
                       className="w-full px-4 py-3 text-[14px] leading-[1.55] bg-transparent text-foreground/95 placeholder:text-muted-foreground focus:outline-none resize-none"
                     />
+                    <SignatureBlock compact />
                     <div className="flex items-center justify-between gap-2 px-3 h-12 border-t border-border/60 bg-muted/20">
                       <button
                         onClick={() => {
