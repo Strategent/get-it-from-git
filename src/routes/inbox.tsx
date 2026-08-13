@@ -515,12 +515,42 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-const SIGNATURE_BLOCK = `Best,
+/** Sign-off that closes the written body; the signature card renders below it. */
+const SIGN_OFF = "Best,";
 
-John Harwick
-Managing Partner  ·  Harwick & Sterne
-john.harwick@harwicksterne.com  ·  +1 (212) 555-0136
-harwicksterne.com`;
+/**
+ * Fixed sender signature, rendered as its own block under the composer body so it
+ * reads as a real email signature instead of another paragraph of body text.
+ */
+function SignatureBlock({ compact = false }: { compact?: boolean }) {
+  return (
+    <div
+      className={`border-t border-border/60 ${compact ? "mx-4 mt-1 pt-3 pb-3" : "mx-4 mt-2 pt-4 pb-4"}`}
+    >
+      <div className="flex items-start gap-3">
+        <span
+          aria-hidden
+          className="mt-[3px] h-9 w-[2px] shrink-0 rounded-full bg-foreground/25"
+        />
+        <div className="min-w-0">
+          <div className="text-[13px] font-semibold leading-tight tracking-tight text-foreground">
+            John Harwick
+          </div>
+          <div className="mt-[2px] text-[11.5px] leading-tight text-muted-foreground">
+            Managing Partner · Harwick &amp; Sterne
+          </div>
+          <div className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] leading-tight text-muted-foreground">
+            <span className="truncate text-foreground/75">john.harwick@harwicksterne.com</span>
+            <span className="text-border">|</span>
+            <span className="text-foreground/75">+1 (212) 555-0136</span>
+            <span className="text-border">|</span>
+            <span className="text-foreground/75">harwicksterne.com</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const ME_NAME = "John Harwick";
 const ME_EMAIL = "john.harwick@harwicksterne.com";
@@ -598,7 +628,7 @@ function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
     body: textToHtml(
       mode === "forward"
         ? `\n\n---------- Forwarded message ---------\nFrom: ${thread.from} <${thread.email}>\nSubject: ${thread.subject}\n\n${thread.body}`
-        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\n${SIGNATURE_BLOCK}`,
+        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\n${SIGN_OFF}`,
     ),
     attachments: [],
     links: [],
@@ -840,7 +870,7 @@ function InboxPage() {
     window.setTimeout(() => {
       const next = regenerateOptions[Math.floor(Math.random() * regenerateOptions.length)];
       updateDraft({
-        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\n${SIGNATURE_BLOCK}`),
+        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\n${SIGN_OFF}`),
         status: "open",
       });
       setRegeneratingId(null);
@@ -1106,6 +1136,7 @@ function InboxPage() {
                       rows={8}
                       className="w-full px-4 py-3 text-[14px] leading-[1.55] bg-transparent text-foreground/95 placeholder:text-muted-foreground focus:outline-none resize-none"
                     />
+                    <SignatureBlock compact />
                     <div className="flex items-center justify-between gap-2 px-3 h-12 border-t border-border/60 bg-muted/20">
                       <button
                         onClick={() => {
@@ -2457,6 +2488,7 @@ function ComposeWindow({
           </div>
         )}
       </div>
+      <SignatureBlock />
       {(draft.attachments.length > 0 || draft.links.length > 0 || draft.images.length > 0) && (
         <div className="border-t border-border/50 px-4 pt-3 pb-3">
           {(draft.attachments.length > 0 || draft.images.length > 0) && (
