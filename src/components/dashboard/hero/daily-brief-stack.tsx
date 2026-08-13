@@ -289,7 +289,14 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[calc(100vw-32px)] max-w-[420px] sm:max-w-[440px] p-0 bg-transparent border-0 shadow-none [&>button]:hidden">
         <DialogTitle className="sr-only">Daily brief</DialogTitle>
-        <div className="relative w-full select-none touch-pan-y" style={{ height: "min(620px, calc(88svh - 80px))" }}>
+        <div
+          className="relative w-full select-none"
+          style={{
+            height: "min(620px, calc(100dvh - 160px))",
+            touchAction: "pan-y",
+            transform: "translateZ(0)",
+          }}
+        >
 
           {SECTIONS.map((section, i) => {
             if (i > index + 2) return null;
