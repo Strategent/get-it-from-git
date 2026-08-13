@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useTheme } from "@/components/theme-provider";
 
 const config = {
   colors: [
@@ -33,8 +34,29 @@ const config = {
   yOffset: 1274,
 };
 
+/** Light mode: same motion, but a soft daylight wash so the canvas doesn't
+ *  slam a dark block against the light app chrome. */
+const lightConfig = {
+  ...config,
+  colors: [
+    { color: "#C9C2E4", enabled: true },
+    { color: "#B7C4A3", enabled: true },
+    { color: "#D9B9BC", enabled: true },
+    { color: "#AFC6D4", enabled: true },
+    { color: "#EFEBE4", enabled: true },
+    { color: "#E4DEEA", enabled: true },
+  ],
+  colorBrightness: 1.15,
+  colorSaturation: 1,
+  shadows: 1,
+  highlights: 4,
+  backgroundColor: "#F2EFEA",
+};
+
 export function NeatBackground() {
   const ref = useRef<HTMLCanvasElement>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
 
   useEffect(() => {
     let destroy: (() => void) | undefined;
@@ -42,7 +64,7 @@ export function NeatBackground() {
 
     import("@firecms/neat").then(({ NeatGradient }) => {
       if (cancelled || !ref.current) return;
-      const gradient = new NeatGradient({ ref: ref.current, ...(config as any) });
+      const gradient = new NeatGradient({ ref: ref.current, ...((isDark ? config : lightConfig) as any) });
       destroy = () => gradient.destroy();
     });
 
@@ -50,7 +72,7 @@ export function NeatBackground() {
       cancelled = true;
       destroy?.();
     };
-  }, []);
+  }, [isDark]);
 
   return (
     <canvas
@@ -62,7 +84,7 @@ export function NeatBackground() {
         top: "-4%",
         width: "112%",
         height: "calc(100% + 120px)",
-        filter: "saturate(0.85) contrast(0.98)",
+        filter: isDark ? "saturate(0.85) contrast(0.98)" : "saturate(0.7) contrast(0.96) brightness(1.03)",
       }}
     />
   );
