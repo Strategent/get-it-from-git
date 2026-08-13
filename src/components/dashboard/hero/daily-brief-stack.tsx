@@ -225,6 +225,7 @@ function SwipeCard({
       drag={isTop ? "x" : false}
       dragElastic={0.18}
       dragMomentum={false}
+      dragDirectionLock
       onDrag={isTop ? (_, info) => onDragMotion(info.offset.x) : undefined}
       onDragEnd={isTop ? handleDragEnd : undefined}
     >
