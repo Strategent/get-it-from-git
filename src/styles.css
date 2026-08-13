@@ -798,3 +798,13 @@
 @media (prefers-reduced-motion: reduce) {
   .syra-step-line, .syra-step-dot { animation: none; }
 }
+
+/* Indeterminate route-transition progress bar. */
+@keyframes route-progress {
+  0% { transform: scaleX(0); }
+  50% { transform: scaleX(0.7); }
+  100% { transform: scaleX(1); }
+}
+.animate-route-progress {
+  animation: route-progress 1.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
