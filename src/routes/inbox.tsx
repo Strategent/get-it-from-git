@@ -522,6 +522,63 @@ Managing Partner  ·  Harwick & Sterne
 john.harwick@harwicksterne.com  ·  +1 (212) 555-0136
 harwicksterne.com`;
 
+const ME_NAME = "John Harwick";
+const ME_EMAIL = "john.harwick@harwicksterne.com";
+
+/** Real email header block: sender, address, recipients, date, expandable details. */
+function MessageHeaderBlock({ thread }: { thread: Thread }) {
+  const [open, setOpen] = useState(false);
+  const when = thread.sentAt ?? `${thread.time} ago`;
+  return (
+    <div className="border-b border-border/60 pb-3">
+      <div className="flex items-start gap-3">
+        <LemniAvatar name={thread.from} size={34} />
+        <div className="min-w-0 flex-1">
+          <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5">
+            <span className="text-[13.5px] font-semibold tracking-tight text-foreground">
+              {thread.from}
+            </span>
+            <span className="min-w-0 truncate text-[12.5px] text-muted-foreground">
+              &lt;{thread.email}&gt;
+            </span>
+          </div>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            className="mt-0.5 inline-flex items-center gap-1 text-[12px] text-muted-foreground hover:text-foreground transition-colors"
+          >
+            to me
+            <ChevronRight
+              className={`h-3 w-3 transition-transform ${open ? "rotate-90" : ""}`}
+            />
+          </button>
+        </div>
+        <span className="shrink-0 pt-0.5 text-[12px] tabular-nums text-muted-foreground">
+          {when}
+        </span>
+      </div>
+
+      {open && (
+        <dl className="mt-3 grid grid-cols-[54px_minmax(0,1fr)] gap-x-3 gap-y-1 pl-0 text-[12px] leading-[1.5] sm:pl-[46px]">
+          <dt className="text-right text-muted-foreground">from</dt>
+          <dd className="truncate text-foreground/85">
+            {thread.from} &lt;{thread.email}&gt;
+          </dd>
+          <dt className="text-right text-muted-foreground">to</dt>
+          <dd className="truncate text-foreground/85">
+            {ME_NAME} &lt;{ME_EMAIL}&gt;
+          </dd>
+          <dt className="text-right text-muted-foreground">date</dt>
+          <dd className="text-foreground/85">{when}</dd>
+          <dt className="text-right text-muted-foreground">subject</dt>
+          <dd className="truncate text-foreground/85">{thread.subject}</dd>
+          <dt className="text-right text-muted-foreground">mailed-by</dt>
+          <dd className="truncate text-foreground/85">{thread.email.split("@")[1]}</dd>
+        </dl>
+      )}
+    </div>
+  );
+}
+
 function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
   const firstName = thread.from.split(" ")[0];
   const subjectPrefix = mode === "forward" ? "Fwd:" : "Re:";
@@ -975,13 +1032,14 @@ function InboxPage() {
               {/* Message card */}
               <div className="px-4 pt-4">
                 <div
-                  className="rounded-xl border border-border/60 bg-card px-4 py-4"
+                  className="rounded-xl border border-border/60 bg-card px-4 pb-4 pt-3.5"
                   style={{
                     boxShadow:
                       "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
                   }}
                 >
-                  <div className="text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
+                  <MessageHeaderBlock thread={s} />
+                  <div className="pt-3.5 text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
                     {s.body}
                   </div>
                   {s.hasAttachment && (
@@ -1668,29 +1726,8 @@ function InboxPage() {
               </div>
 
               <article className="border-t border-border/50 pt-6">
-                {/* sender row */}
-                <div className="flex items-start gap-3">
-                  <LemniAvatar name={selected.from} size={34} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex min-w-0 items-baseline gap-1.5">
-                      <span className="shrink-0 text-[13.5px] font-semibold tracking-tight text-foreground">
-                        {selected.from}
-                      </span>
-                      <span className="hidden min-w-0 truncate text-[12.5px] text-muted-foreground sm:inline">
-                        &lt;{selected.email}&gt;
-                      </span>
-                    </div>
-                    <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
-                      to me
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
-                    <span className="text-[12px] tabular-nums text-muted-foreground">
-                      {selected.sentAt ?? `${selected.time} ago`}
-                    </span>
-                    <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
-                  </div>
-                </div>
+                {/* sender / header row */}
+                <MessageHeaderBlock thread={selected} />
 
                 <div className="whitespace-pre-line pl-0 pr-2 pt-4 text-[14px] leading-[1.65] text-foreground/90 sm:pl-[46px]">
                   {selected.body}
