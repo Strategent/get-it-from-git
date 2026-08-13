@@ -1,6 +1,7 @@
+import { SmartAvatar } from "@/components/smart-avatar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUp, Maximize2, X } from "lucide-react";
-import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
+import { senderEmailAddress } from "@/lib/avatar";
 
 type Step = { verb: string; object: string };
 type Question = {
@@ -480,11 +481,7 @@ export function SyraAgentRunSheet({
 
                 {script.reviewer && (
                   <div className="mt-3 flex items-center gap-3">
-                    <img
-                      src={avatarUrl(script.reviewer, 96)}
-                      alt={script.reviewer}
-                      className="h-8 w-8 rounded-full object-cover"
-                    />
+                    <SmartAvatar name={script.reviewer} size={96} className="h-8 w-8 rounded-full object-cover" alt={script.reviewer} />
                     <div className="min-w-0 text-[13px] text-muted-foreground">
                       Awaiting sign-off from {script.reviewer}
                     </div>

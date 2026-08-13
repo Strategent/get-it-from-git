@@ -842,3 +842,22 @@
   .ios-push-in, .ios-push-out { animation: none; }
   .ios-tap:active { transform: none; }
 }
+
+/* Avatar loading shimmer */
+@keyframes avatar-shimmer-sweep {
+  0% { background-position: -150% 0; }
+  100% { background-position: 250% 0; }
+}
+.avatar-shimmer {
+  background-image: linear-gradient(
+    90deg,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 0%,
+    color-mix(in oklab, var(--foreground) 11%, transparent) 50%,
+    color-mix(in oklab, var(--foreground) 4%, transparent) 100%
+  );
+  background-size: 200% 100%;
+  animation: avatar-shimmer-sweep 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .avatar-shimmer { animation: none; }
+}

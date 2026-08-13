@@ -54,7 +54,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
-import { avatarUrl } from "@/lib/avatar";
+import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import {
@@ -973,14 +973,7 @@ function InboxPage() {
                   {s.subject}
                 </h1>
                 <div className="mt-3 flex items-center gap-2.5">
-                  <img
-                    src={avatarUrl(s.from)}
-                    alt=""
-                    className="h-7 w-7 rounded-full object-cover grayscale-[0.15]"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).style.display = "none";
-                    }}
-                  />
+                  <SmartAvatar name={s.from} className="h-7 w-7 rounded-full object-cover grayscale-[0.15]" />
                   <div className="min-w-0 flex-1">
                     <div className="text-[12.5px] font-medium text-foreground/95 truncate">
                       {s.from} <span className="text-muted-foreground font-normal">· {s.company}</span>
@@ -1291,22 +1284,7 @@ function InboxPage() {
                         }`}
                       >
                         <div className="relative shrink-0">
-                          <img
-                            src={avatarUrl(thread.from)}
-                            alt=""
-                            className="h-10 w-10 rounded-full object-cover grayscale-[0.2]"
-                            onError={(e) => {
-                              const el = e.currentTarget as HTMLImageElement;
-                              el.style.display = "none";
-                              (el.nextSibling as HTMLElement).style.display = "grid";
-                            }}
-                          />
-                          <div
-                            className="h-10 w-10 rounded-full bg-muted text-muted-foreground place-items-center text-[12px] font-semibold"
-                            style={{ display: "none" }}
-                          >
-                            {initials(thread.from)}
-                          </div>
+                          <SmartAvatar name={thread.from} className="h-10 w-10 rounded-full object-cover grayscale-[0.2]" />
                         </div>
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
@@ -2320,11 +2298,7 @@ function ComposeWindow({
                   onClick={() => onUpdate({ to: draft.to.filter((item) => item !== email) })}
                   className="group inline-flex items-center gap-1.5 h-7 pl-0.5 pr-2.5 rounded-full bg-background border border-border/70 text-[12px] shadow-[0_1px_2px_rgba(0,0,0,0.04)] hover:bg-foreground/[0.04] dark:bg-white/[0.04] dark:border-white/10"
                 >
-                  <img
-                    src={avatarUrl(local, 40)}
-                    alt=""
-                    className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60"
-                  />
+                  <SmartAvatar name={local} size={40} className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60" />
                   <span className="text-foreground/85">{email}</span>
                   <X className="h-2.5 w-2.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>

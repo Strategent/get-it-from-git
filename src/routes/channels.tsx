@@ -16,7 +16,7 @@ import {
   ArrowLeft,
   X,
 } from "lucide-react";
-import { avatarUrl } from "@/lib/avatar";
+import { SmartAvatar } from "@/components/smart-avatar";
 import { SyraMark } from "@/components/syra-mark";
 
 export const Route = createFileRoute("/channels")({
@@ -309,11 +309,7 @@ function ChannelsPage() {
                   {active === "Syra" ? (
                     <SyraMark size={16} flat />
                   ) : (
-                    <img
-                      src={avatarUrl(active, 48)}
-                      alt=""
-                      className="h-4 w-4 rounded object-cover"
-                    />
+                    <SmartAvatar name={active} size={48} className="h-4 w-4 rounded object-cover" />
                   )}
                 </span>
               )}
@@ -390,12 +386,7 @@ function ChannelsPage() {
                   {isAi ? (
                     <SyraMark size={36} className="shrink-0 rounded-md" />
                   ) : (
-                    <img
-                      src={avatarUrl(m.user, 72)}
-                      alt={m.user}
-                      loading="lazy"
-                      className="h-9 w-9 rounded-md object-cover shrink-0"
-                    />
+                    <SmartAvatar name={m.user} size={72} className="h-9 w-9 rounded-md object-cover shrink-0" alt={m.user} />
                   )}
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2 flex-wrap">

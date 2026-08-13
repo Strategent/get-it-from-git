@@ -1,3 +1,4 @@
+import { SmartAvatar } from "@/components/smart-avatar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -18,7 +19,7 @@ import { toast } from "sonner";
 import { Panel } from "@/components/ui/panel";
 import { PillButton } from "@/components/ui/pill-button";
 import { emails } from "@/components/dashboard/data";
-import { avatarUrl, senderEmailAddress } from "@/lib/avatar";
+import { senderEmailAddress } from "@/lib/avatar";
 
 /**
  * InboxCard — Gmail-style mini inbox: focused/other tabs, thread list, and a
@@ -198,12 +199,7 @@ export function InboxCard() {
                   }}
                   className="flex items-start gap-3 border-b border-border/40 px-4 py-3 text-left transition-colors active:bg-foreground/[0.05]"
                 >
-                  <img
-                    src={avatarUrl(m.sender, 72)}
-                    alt={m.sender}
-                    loading="lazy"
-                    className="h-9 w-9 shrink-0 rounded-full border border-border object-cover"
-                  />
+                  <SmartAvatar name={m.sender} size={72} className="h-9 w-9 shrink-0 rounded-full border border-border object-cover" alt={m.sender} />
                   <div className="min-w-0 flex-1 leading-tight">
                     <div className="flex items-center justify-between gap-2">
                       <div className={`truncate text-[14px] ${unread ? "font-semibold text-foreground" : "font-semibold text-foreground/90"}`}>
@@ -239,12 +235,7 @@ export function InboxCard() {
               >
                 <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
               </button>
-              <img
-                src={avatarUrl(e.sender, 64)}
-                alt={e.sender}
-                loading="lazy"
-                className="h-6 w-6 shrink-0 rounded-full border border-border object-cover"
-              />
+              <SmartAvatar name={e.sender} size={64} className="h-6 w-6 shrink-0 rounded-full border border-border object-cover" alt={e.sender} />
               <div className="min-w-0 flex-1 leading-tight">
                 <div className="truncate text-[12.5px] font-semibold text-foreground">
                   {e.sender}
@@ -351,12 +342,7 @@ export function InboxCard() {
                 {unread && !active && (
                   <span className="absolute left-1 top-[calc(0.5rem+0.875rem)] h-1 w-1 -translate-y-1/2 rounded-full bg-foreground/70" />
                 )}
-                <img
-                  src={avatarUrl(m.sender, 64)}
-                  alt={m.sender}
-                  loading="lazy"
-                  className="h-8 w-8 shrink-0 rounded-full border border-border object-cover"
-                />
+                <SmartAvatar name={m.sender} size={64} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" alt={m.sender} />
                 <div className="min-w-0 flex-1 leading-tight">
                   <div className="flex items-center justify-between gap-2">
                     <div
@@ -423,12 +409,7 @@ export function InboxCard() {
 
           {/* From / To meta */}
           <div className="flex items-start gap-3 px-4 pt-4">
-            <img
-              src={avatarUrl(e.sender, 96)}
-              alt={e.sender}
-              loading="lazy"
-              className="h-8 w-8 shrink-0 rounded-full border border-border object-cover"
-            />
+            <SmartAvatar name={e.sender} size={96} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" alt={e.sender} />
             <div className="min-w-0 flex-1 leading-tight">
               <div className="flex items-center justify-between gap-2">
                 <div className="min-w-0 truncate text-[13px] text-foreground/95">
@@ -918,12 +899,7 @@ function MobileThreadMessage({
           borderBottom: "1px solid color-mix(in oklab, var(--foreground) 6%, transparent)",
         }}
       >
-        <img
-          src={avatarUrl(isMe ? "John Harwick" : e.sender, 96)}
-          alt={isMe ? "You" : e.sender}
-          loading="lazy"
-          className="h-8 w-8 shrink-0 rounded-full border border-border object-cover"
-        />
+        <SmartAvatar name={isMe ? "John Harwick" : e.sender} size={96} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" alt={isMe ? "You" : e.sender} />
         <div className="min-w-0 flex-1 leading-tight">
           <div className="flex items-baseline justify-between gap-2">
             <div className="min-w-0 truncate text-[13px] font-semibold text-foreground">
