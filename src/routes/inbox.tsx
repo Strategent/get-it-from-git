@@ -638,6 +638,7 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
+  const [mobileClosing, setMobileClosing] = useState(false);
   const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
   const [foldersOpen, setFoldersOpen] = useState(false);
@@ -737,7 +738,16 @@ function InboxPage() {
   const selectThread = (thread: Thread) => {
     setSelectedId(thread.id);
     setMobileReading(true);
+    setMobileClosing(false);
     if (thread.unread) updateThread(thread.id, { unread: false });
+  };
+
+  const closeMobileReading = () => {
+    setMobileClosing(true);
+    window.setTimeout(() => {
+      setMobileReading(false);
+      setMobileClosing(false);
+    }, 240);
   };
 
   const openComposer = (mode: ComposerMode) => {
@@ -870,7 +880,9 @@ function InboxPage() {
       return (
         <>
           <div
-            className="fixed inset-x-0 bottom-0 z-40 flex flex-col bg-background"
+            className={`fixed inset-x-0 bottom-0 z-40 flex flex-col bg-background ${
+              mobileClosing ? "ios-push-out" : "ios-push-in"
+            }`}
             style={{
               top: 0,
               paddingTop: "calc(env(safe-area-inset-top, 0px))",
@@ -879,7 +891,7 @@ function InboxPage() {
             {/* Top bar */}
             <div className="flex h-11 items-center gap-1 px-2 border-b border-border/50 bg-background/95 backdrop-blur-xl">
               <button
-                onClick={() => setMobileReading(false)}
+                onClick={closeMobileReading}
                 className="inline-flex items-center gap-0.5 h-8 pl-1 pr-2 rounded-md text-foreground/85 hover:bg-foreground/[0.06] active:bg-foreground/[0.09] transition-colors"
               >
                 <ChevronLeft className="h-[18px] w-[18px]" strokeWidth={2} />
@@ -898,7 +910,7 @@ function InboxPage() {
               <button
                 onClick={() => {
                   moveSelected("Archive", "Archived message");
-                  setMobileReading(false);
+                  closeMobileReading();
                 }}
                 aria-label="Archive"
                 className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
@@ -924,7 +936,7 @@ function InboxPage() {
                   <DropdownMenuItem
                     onClick={() => {
                       moveSelected("Trash", "Moved to trash");
-                      setMobileReading(false);
+                      closeMobileReading();
                     }}
                     className="text-xs"
                   >
@@ -1134,7 +1146,7 @@ function InboxPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openComposer("reply")}
-                    className="flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-foreground text-background text-[13.5px] font-medium active:opacity-90 transition-opacity"
+                    className="ios-tap flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-foreground text-background text-[13.5px] font-medium active:opacity-90"
                   >
                     <Reply className="h-4 w-4" strokeWidth={2} />
                     Reply with Syra
@@ -1142,7 +1154,7 @@ function InboxPage() {
                   <button
                     onClick={() => openComposer("forward")}
                     aria-label="Forward"
-                    className="grid h-11 w-11 place-items-center rounded-full border border-border/70 bg-card text-foreground/80 active:bg-foreground/[0.06]"
+                    className="ios-tap grid h-11 w-11 place-items-center rounded-full border border-border/70 bg-card text-foreground/80 active:bg-foreground/[0.06]"
                   >
                     <Forward className="h-4 w-4" strokeWidth={1.85} />
                   </button>
@@ -1207,7 +1219,7 @@ function InboxPage() {
                           setActiveFolder(f.name);
                           setFoldersOpen(false);
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] transition-colors ${
+                        className={`ios-tap w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] ${
                           active
                             ? "bg-foreground/[0.08] text-foreground font-medium"
                             : "text-foreground/85 active:bg-foreground/[0.06]"
@@ -1274,7 +1286,7 @@ function InboxPage() {
                     <li key={thread.id}>
                       <button
                         onClick={() => selectThread(thread)}
-                        className={`w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05] transition-colors ${
+                        className={`ios-tap w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05] ${
                           idx > 0 ? "border-t border-border/40" : ""
                         }`}
                       >
@@ -1550,7 +1562,7 @@ function InboxPage() {
                   <button
                     key={thread.id}
                     onClick={() => selectThread(thread)}
-                    className={`group relative block w-full rounded-xl px-3 py-3 text-left transition-colors ${
+                    className={`ios-tap group relative block w-full rounded-xl px-3 py-3 text-left ${
                       active
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-foreground/[0.035]"
@@ -1626,7 +1638,7 @@ function InboxPage() {
             <div className="flex items-center gap-1">
               <button
                 type="button"
-                onClick={() => setMobileReading(false)}
+                onClick={closeMobileReading}
                 aria-label="Back to inbox"
                 className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
               >
