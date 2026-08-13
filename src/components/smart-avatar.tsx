@@ -6,7 +6,7 @@ function initialsOf(name: string) {
     .trim()
     .split(/\s+/)
     .slice(0, 2)
-    .map((part) => part[0］ ?? "")
+    .map((part) => part[0] ?? "")
     .join("")
     .toUpperCase();
 }
