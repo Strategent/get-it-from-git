@@ -1146,7 +1146,7 @@ function InboxPage() {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openComposer("reply")}
-                    className="flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-foreground text-background text-[13.5px] font-medium active:opacity-90 transition-opacity"
+                    className="ios-tap flex-1 inline-flex items-center justify-center gap-2 h-11 rounded-full bg-foreground text-background text-[13.5px] font-medium active:opacity-90"
                   >
                     <Reply className="h-4 w-4" strokeWidth={2} />
                     Reply with Syra
@@ -1154,7 +1154,7 @@ function InboxPage() {
                   <button
                     onClick={() => openComposer("forward")}
                     aria-label="Forward"
-                    className="grid h-11 w-11 place-items-center rounded-full border border-border/70 bg-card text-foreground/80 active:bg-foreground/[0.06]"
+                    className="ios-tap grid h-11 w-11 place-items-center rounded-full border border-border/70 bg-card text-foreground/80 active:bg-foreground/[0.06]"
                   >
                     <Forward className="h-4 w-4" strokeWidth={1.85} />
                   </button>
@@ -1219,7 +1219,7 @@ function InboxPage() {
                           setActiveFolder(f.name);
                           setFoldersOpen(false);
                         }}
-                        className={`w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] transition-colors ${
+                        className={`ios-tap w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] ${
                           active
                             ? "bg-foreground/[0.08] text-foreground font-medium"
                             : "text-foreground/85 active:bg-foreground/[0.06]"
@@ -1286,7 +1286,7 @@ function InboxPage() {
                     <li key={thread.id}>
                       <button
                         onClick={() => selectThread(thread)}
-                        className={`w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05] transition-colors ${
+                        className={`ios-tap w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05] ${
                           idx > 0 ? "border-t border-border/40" : ""
                         }`}
                       >
@@ -1562,7 +1562,7 @@ function InboxPage() {
                   <button
                     key={thread.id}
                     onClick={() => selectThread(thread)}
-                    className={`group relative block w-full rounded-xl px-3 py-3 text-left transition-colors ${
+                    className={`ios-tap group relative block w-full rounded-xl px-3 py-3 text-left ${
                       active
                         ? "bg-primary text-primary-foreground"
                         : "hover:bg-foreground/[0.035]"
