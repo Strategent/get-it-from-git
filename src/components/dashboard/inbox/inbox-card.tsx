@@ -909,12 +909,23 @@ function MobileThreadMessage({
               {m.time}
             </div>
           </div>
-          <div className="mt-0.5 flex items-center gap-1 truncate text-[10.5px] text-muted-foreground">
-            <span className="truncate">
-              {isMe ? `to ${e.sender.split(" ")[0]}` : (
-                <>to me <span className="text-foreground/25">·</span> {senderEmail}</>
-              )}
-            </span>
+          <div className="mt-0.5 space-y-[1px] text-[10.5px] leading-[1.45] text-muted-foreground">
+            <div className="flex min-w-0 gap-1.5">
+              <span className="w-[34px] shrink-0">From</span>
+              <span className="min-w-0 truncate text-foreground/75">
+                {isMe ? "john.harwick@harwicksterne.com" : senderEmail}
+              </span>
+            </div>
+            <div className="flex min-w-0 gap-1.5">
+              <span className="w-[34px] shrink-0">To</span>
+              <span className="min-w-0 truncate text-foreground/75">
+                {isMe ? senderEmail : "john.harwick@harwicksterne.com"}
+              </span>
+            </div>
+            <div className="flex min-w-0 gap-1.5">
+              <span className="w-[34px] shrink-0">Subject</span>
+              <span className="min-w-0 truncate text-foreground/75">{e.subject}</span>
+            </div>
           </div>
         </div>
       </div>
