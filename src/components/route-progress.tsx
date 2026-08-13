@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useRouterState } from "@tanstack/react-router";
 
 /**
@@ -6,11 +7,14 @@ import { useRouterState } from "@tanstack/react-router";
  * web app.
  */
 export function RouteProgress() {
-  const isLoading = useRouterState({ select: (s) => s.status === "pending" });
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const pending = useRouterState({ select: (s) => s.status === "pending" });
+  const isLoading = mounted && pending;
 
   return (
     <div
-      aria-hidden={!isLoading}
+      aria-hidden
       className="pointer-events-none fixed inset-x-0 z-[60]"
       style={{ top: "env(safe-area-inset-top, 0px)" }}
     >
