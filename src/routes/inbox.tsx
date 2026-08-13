@@ -1013,6 +1013,10 @@ function InboxPage() {
                   : "calc(env(safe-area-inset-bottom, 0px) + 84px)",
               }}
             >
+              {threadLoading ? (
+                <ThreadSkeleton variant="mobile" />
+              ) : (
+              <div className="ios-skeleton-fade">
               {/* Editorial subject */}
               <div className="px-5 pt-5 pb-4">
                 <div className="flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/80">
@@ -1180,6 +1184,8 @@ function InboxPage() {
                     </div>
                   </div>
                 </div>
+              )}
+              </div>
               )}
             </div>
 
@@ -1738,7 +1744,14 @@ function InboxPage() {
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
-              <h2 className="text-[26px] font-normal leading-[1.25] tracking-[-0.01em] text-foreground">
+              {threadLoading ? (
+                <>
+                  <div className="ios-skeleton h-6 w-[46%]" />
+                  <div className="ios-skeleton h-5 w-16" />
+                </>
+              ) : (
+              <>
+              <h2 className="ios-skeleton-fade text-[26px] font-normal leading-[1.25] tracking-[-0.01em] text-foreground">
                 {selected.subject}
               </h2>
               {selected.tag && (
@@ -1746,12 +1759,15 @@ function InboxPage() {
                   {selected.tag}
                 </span>
               )}
+              </>
+              )}
             </div>
           </div>
 
           {/* body — Gmail flat message stack */}
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
-            <div className="mx-auto max-w-[820px]">
+            {threadLoading && <ThreadSkeleton />}
+            <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
               {/* Smart summary — quiet inline strip, not a floating card */}
               <div className="mb-6 rounded-xl bg-foreground/[0.035] px-5 py-4">
                 <div className="flex items-center gap-2">
