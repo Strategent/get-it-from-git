@@ -891,7 +891,7 @@ function InboxPage() {
             {/* Top bar */}
             <div className="flex h-11 items-center gap-1 px-2 border-b border-border/50 bg-background/95 backdrop-blur-xl">
               <button
-                onClick={() => setMobileReading(false)}
+                onClick={closeMobileReading}
                 className="inline-flex items-center gap-0.5 h-8 pl-1 pr-2 rounded-md text-foreground/85 hover:bg-foreground/[0.06] active:bg-foreground/[0.09] transition-colors"
               >
                 <ChevronLeft className="h-[18px] w-[18px]" strokeWidth={2} />
@@ -1638,7 +1638,7 @@ function InboxPage() {
             <div className="flex items-center gap-1">
               <button
                 type="button"
-                onClick={() => setMobileReading(false)}
+                onClick={closeMobileReading}
                 aria-label="Back to inbox"
                 className="md:hidden grid h-8 w-8 shrink-0 place-items-center rounded-lg text-muted-foreground hover:bg-foreground/[0.05]"
               >
