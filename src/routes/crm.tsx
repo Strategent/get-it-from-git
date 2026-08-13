@@ -113,7 +113,7 @@ function CrmPage() {
     <>
     <div className="w-full bg-background flex flex-col" style={{ minHeight: "calc(100dvh - 53px)" }}>
       {/* Header */}
-      <div className="px-4 md:px-8 pt-6 md:pt-10 pb-6 md:pb-8 border-b border-border/50 flex items-end justify-between flex-wrap gap-6">
+      <div className="px-4 md:px-8 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)] md:pt-10 pb-6 md:pb-8 border-b border-border/50 flex items-end justify-between flex-wrap gap-6">
         <div className="min-w-0">
           <div className="inline-flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.22em] text-muted-foreground/80">
             <span aria-hidden className="inline-block h-1 w-1 rounded-full bg-foreground/40" />
