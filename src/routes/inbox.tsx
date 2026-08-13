@@ -880,7 +880,9 @@ function InboxPage() {
       return (
         <>
           <div
-            className="fixed inset-x-0 bottom-0 z-40 flex flex-col bg-background"
+            className={`fixed inset-x-0 bottom-0 z-40 flex flex-col bg-background ${
+              mobileClosing ? "ios-push-out" : "ios-push-in"
+            }`}
             style={{
               top: 0,
               paddingTop: "calc(env(safe-area-inset-top, 0px))",
