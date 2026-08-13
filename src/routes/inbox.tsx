@@ -2488,6 +2488,7 @@ function ComposeWindow({
           </div>
         )}
       </div>
+      <SignatureBlock />
       {(draft.attachments.length > 0 || draft.links.length > 0 || draft.images.length > 0) && (
         <div className="border-t border-border/50 px-4 pt-3 pb-3">
           {(draft.attachments.length > 0 || draft.images.length > 0) && (
