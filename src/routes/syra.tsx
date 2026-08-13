@@ -12,6 +12,10 @@ import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
 import { SyraAgentRunSheet } from "@/components/syra/agent-run-sheet";
 import { NeatBackground } from "@/components/syra/neat-background";
+import { SyraChatThread, type SyraMessage } from "@/components/syra/chat-thread";
+import { classifyIntent } from "@/lib/syra-knowledge";
+import { syraChat } from "@/lib/syra.functions";
+import { useServerFn } from "@tanstack/react-start";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,6 +53,42 @@ function SyraPage() {
   const [modelId, setModelId] = useState(models[0].id);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
+  const [messages, setMessages] = useState<SyraMessage[]>([]);
+  const [thinking, setThinking] = useState(false);
+  const askSyra = useServerFn(syraChat);
+
+  /** Agent-style requests open the run sheet; everything else is a grounded chat reply. */
+  const handleSend = async (text: string) => {
+    const t = text.trim();
+    if (!t || thinking) return;
+    setInput("");
+
+    if (classifyIntent(t) === "agent") {
+      setAgentPrompt(t);
+      return;
+    }
+
+    const history = messages.map((m) => ({ role: m.role, content: m.content }));
+    setMessages((prev) => [...prev, { role: "user", content: t }]);
+    setThinking(true);
+    try {
+      const reply = await askSyra({ data: { message: t, history } });
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: reply.text, sources: reply.sources },
+      ]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: "I couldn't reach the model just now. Try again in a moment.",
+        },
+      ]);
+    } finally {
+      setThinking(false);
+    }
+  };
 
   const runAgent = (text: string) => {
     const t = text.trim();
@@ -100,15 +140,19 @@ function SyraPage() {
 
       {/* Content — composer only, hidden when an agent sheet is open. */}
       <div
-        className={`relative h-full flex flex-col items-center justify-center px-6 transition-opacity duration-300 ${
+        className={`relative h-full flex flex-col items-center justify-center gap-4 px-6 transition-opacity duration-300 ${
           agentPrompt ? "opacity-0 pointer-events-none" : "opacity-100"
         }`}
       >
+        {(messages.length > 0 || thinking) && (
+          <SyraChatThread messages={messages} thinking={thinking} />
+        )}
+
         {/* Input bar */}
         <div className="w-full max-w-3xl">
           <PromptInputBox
             placeholder="Ask Syra anything…"
-            onSend={(message) => runAgent(message)}
+            onSend={(message) => void handleSend(message)}
             onVoiceStart={() => setVoiceOpen(true)}
             leading={
               <DropdownMenu>
