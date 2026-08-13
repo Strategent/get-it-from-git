@@ -698,12 +698,9 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
                     : "bg-transparent hover:bg-muted text-muted-foreground hover:text-foreground",
               )}
               onClick={() => {
-                if (isRecording) setIsRecording(false);
+                if (isRecording) stopRecording();
                 else if (hasContent) handleSubmit();
-                else {
-                  setIsRecording(true);
-                  onVoiceStart?.();
-                }
+                else startRecording();
               }}
               disabled={isLoading && !hasContent}
             >
