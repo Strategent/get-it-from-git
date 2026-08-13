@@ -263,12 +263,9 @@ export function PageShell({ children }: { children: ReactNode }) {
   return (
     <>
       <div
-        className="min-h-screen bg-background px-4 sm:px-6 md:px-8 md:pt-6 pb-28 md:pb-6 space-y-4 md:space-y-5"
-        style={{
-          paddingTop: hasTopbar
-            ? "1rem"
-            : "calc(env(safe-area-inset-top, 0px) + 1.5rem)",
-        }}
+        className={`min-h-screen bg-background px-4 sm:px-6 md:px-8 md:pt-6 pb-28 md:pb-6 space-y-4 md:space-y-5 ${
+          hasTopbar ? "pt-4" : "pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]"
+        }`}
       >
         {children}
       </div>
