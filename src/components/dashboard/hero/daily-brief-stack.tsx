@@ -225,10 +225,19 @@ function SwipeCard({
       drag={isTop ? "x" : false}
       dragElastic={0.18}
       dragMomentum={false}
+      dragDirectionLock
       onDrag={isTop ? (_, info) => onDragMotion(info.offset.x) : undefined}
       onDragEnd={isTop ? handleDragEnd : undefined}
     >
-      <div className="db-card h-full w-full rounded-[24px] px-6 pt-7 pb-6 sm:px-7 overflow-hidden cursor-grab active:cursor-grabbing will-change-transform">
+      <div
+        className="db-card h-full w-full rounded-[24px] px-6 pt-7 pb-6 sm:px-7 overflow-y-auto overflow-x-hidden overscroll-contain cursor-grab active:cursor-grabbing"
+        style={{
+          WebkitOverflowScrolling: "touch",
+          transform: "translateZ(0)",
+          backfaceVisibility: "hidden",
+          WebkitBackfaceVisibility: "hidden",
+        }}
+      >
         {section.render()}
       </div>
     </motion.div>
@@ -280,7 +289,14 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="w-[calc(100vw-32px)] max-w-[420px] sm:max-w-[440px] p-0 bg-transparent border-0 shadow-none [&>button]:hidden">
         <DialogTitle className="sr-only">Daily brief</DialogTitle>
-        <div className="relative w-full select-none touch-pan-y" style={{ height: "min(620px, calc(88svh - 80px))" }}>
+        <div
+          className="relative w-full select-none"
+          style={{
+            height: "min(620px, calc(100dvh - 160px))",
+            touchAction: "pan-y",
+            transform: "translateZ(0)",
+          }}
+        >
 
           {SECTIONS.map((section, i) => {
             if (i > index + 2) return null;
