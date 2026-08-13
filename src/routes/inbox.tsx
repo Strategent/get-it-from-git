@@ -1032,13 +1032,14 @@ function InboxPage() {
               {/* Message card */}
               <div className="px-4 pt-4">
                 <div
-                  className="rounded-xl border border-border/60 bg-card px-4 py-4"
+                  className="rounded-xl border border-border/60 bg-card px-4 pb-4 pt-3.5"
                   style={{
                     boxShadow:
                       "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
                   }}
                 >
-                  <div className="text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
+                  <MessageHeaderBlock thread={s} />
+                  <div className="pt-3.5 text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
                     {s.body}
                   </div>
                   {s.hasAttachment && (
