@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import {
   FileText,
   Inbox,
   Calendar,
   ChevronDown,
   Check,
-  X,
 } from "lucide-react";
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
@@ -51,7 +50,6 @@ function SyraPage() {
   const isDark = theme === "dark";
   const [input, setInput] = useState("");
   const [modelId, setModelId] = useState(models[0].id);
-  const [voiceOpen, setVoiceOpen] = useState(false);
   const [agentPrompt, setAgentPrompt] = useState<string | null>(null);
   const [messages, setMessages] = useState<SyraMessage[]>([]);
   const [thinking, setThinking] = useState(false);
@@ -153,7 +151,6 @@ function SyraPage() {
           <PromptInputBox
             placeholder="Ask Syra anything…"
             onSend={(message) => void handleSend(message)}
-            onVoiceStart={() => setVoiceOpen(true)}
             leading={
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -210,7 +207,6 @@ function SyraPage() {
         <SyraAgentRunSheet prompt={agentPrompt} isDark={isDark} onClose={() => setAgentPrompt(null)} />
       )}
 
-      {voiceOpen && <LiveVoiceOverlay isDark={isDark} onClose={() => setVoiceOpen(false)} />}
     </div>
   );
 }
