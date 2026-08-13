@@ -18,6 +18,7 @@ import {
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { Button } from "@/components/ui/button";
 import { avatarUrl } from "@/lib/avatar";
+import { SmartAvatar } from "@/components/smart-avatar";
 
 export const Route = createFileRoute("/calendar")({
   component: CalendarPage,
@@ -392,11 +393,7 @@ function CalendarPage() {
                       </div>
                       <div className="mt-1.5 flex items-center gap-2.5 sm:gap-3 text-[11.5px] text-muted-foreground overflow-hidden">
                         <span className="inline-flex items-center gap-1 min-w-0 shrink">
-                          <img
-                            src={avatarUrl(m.host)}
-                            alt=""
-                            className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60 shrink-0"
-                          />
+                          <SmartAvatar name={m.host} className="h-4 w-4 rounded-full object-cover ring-1 ring-border/60 shrink-0" />
                           <span className="truncate whitespace-nowrap">{m.host}</span>
                         </span>
                         <span className="inline-flex items-center gap-1 min-w-0 shrink-0 whitespace-nowrap">

@@ -18,6 +18,7 @@ import { PageShell, PageHeader } from "@/components/page-shell";
 import { toast } from "sonner";
 import { UserPlus, Mail, MessageSquare, MessageCircle, Copy, Send, Users } from "lucide-react";
 import { avatarUrl } from "@/lib/avatar";
+import { SmartAvatar } from "@/components/smart-avatar";
 
 export const Route = createFileRoute("/team")({
   component: TeamPage,
@@ -232,12 +233,7 @@ function TeamPage() {
             return (
               <Card key={m.name} className="bento p-5">
                 <div className="flex items-center gap-3">
-                  <img
-                    src={avatarUrl(m.name, 128)}
-                    alt={m.name}
-                    loading="lazy"
-                    className={`h-11 w-11 rounded-full object-cover border border-border/60 ${m.pending ? "grayscale opacity-80" : ""}`}
-                  />
+                  <SmartAvatar name={m.name} size={128} alt={m.name}} />
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-semibold truncate">{m.name}</div>
                     <div className="text-xs text-muted-foreground truncate">{m.role}</div>
@@ -310,15 +306,7 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
     <div className="flex items-center">
       <div className="flex -space-x-2">
         {shown.map((m) => (
-          <img
-            key={m.name}
-            src={avatarUrl(m.name, 96)}
-            alt={m.name}
-            title={m.name}
-            loading="lazy"
-            className={`h-7 w-7 rounded-full object-cover ring-2 ring-card bg-card ${m.pending ? "grayscale opacity-80" : ""}`}
-            style={{ boxShadow: `0 0 0 1px color-mix(in oklab, ${accent} 50%, transparent)` }}
-          />
+          <SmartAvatar name={m.name} size={96} alt={m.name}} />
         ))}
         {extra > 0 && (
           <span
