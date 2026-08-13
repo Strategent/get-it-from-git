@@ -899,7 +899,7 @@ function MobileThreadMessage({
           borderBottom: "1px solid color-mix(in oklab, var(--foreground) 6%, transparent)",
         }}
       >
-        <SmartAvatar name={isMe ? "John Harwick" : e.sender} size={96} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" alt={isMe} />
+        <SmartAvatar name={isMe ? "John Harwick" : e.sender} size={96} className="h-8 w-8 shrink-0 rounded-full border border-border object-cover" alt={isMe ? "You" : e.sender} />
         <div className="min-w-0 flex-1 leading-tight">
           <div className="flex items-baseline justify-between gap-2">
             <div className="min-w-0 truncate text-[13px] font-semibold text-foreground">
