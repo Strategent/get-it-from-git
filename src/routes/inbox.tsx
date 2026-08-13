@@ -1579,7 +1579,7 @@ function InboxPage() {
                     onClick={() => selectThread(thread)}
                     className={`ios-tap group relative block w-full rounded-xl px-3 py-3 text-left ${
                       active
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-selected text-selected-foreground"
                         : "hover:bg-foreground/[0.035]"
                     } ${
                       !active && !prevActive && i > 0
@@ -1591,14 +1591,14 @@ function InboxPage() {
                       <LemniAvatar name={thread.from} size={22} />
                       <span
                         className={`truncate text-[13.5px] font-semibold leading-none ${
-                          active ? "text-primary-foreground" : "text-foreground"
+                          active ? "text-selected-foreground" : "text-foreground"
                         }`}
                       >
                         {thread.from}
                       </span>
                       {thread.hasAttachment && (
                         <Paperclip
-                          className={`h-3 w-3 shrink-0 ${active ? "text-primary-foreground/70" : "text-muted-foreground/70"}`}
+                          className={`h-3 w-3 shrink-0 ${active ? "text-selected-foreground/70" : "text-muted-foreground/70"}`}
                         />
                       )}
                       {thread.needsReply && (
@@ -1606,7 +1606,7 @@ function InboxPage() {
                       )}
                       <span
                         className={`ml-auto shrink-0 text-[11.5px] tabular-nums ${
-                          active ? "text-primary-foreground/75" : "text-muted-foreground/80"
+                          active ? "text-selected-foreground/75" : "text-muted-foreground/80"
                         }`}
                       >
                         {thread.sentAt ?? thread.time}
@@ -1615,7 +1615,7 @@ function InboxPage() {
                     <div
                       className={`mt-2 truncate text-[15px] leading-snug tracking-[-0.01em] ${
                         active
-                          ? "text-primary-foreground"
+                          ? "text-selected-foreground"
                           : thread.unread
                             ? "font-medium text-foreground"
                             : "text-foreground/90"
@@ -1625,7 +1625,7 @@ function InboxPage() {
                     </div>
                     <p
                       className={`mt-1.5 line-clamp-2 text-[12.5px] leading-[1.5] ${
-                        active ? "text-primary-foreground/75" : "text-muted-foreground/75"
+                        active ? "text-selected-foreground/75" : "text-muted-foreground/75"
                       }`}
                     >
                       {draft && draft.status !== "closed" ? (
