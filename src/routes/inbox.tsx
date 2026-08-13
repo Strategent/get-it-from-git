@@ -910,7 +910,7 @@ function InboxPage() {
               <button
                 onClick={() => {
                   moveSelected("Archive", "Archived message");
-                  setMobileReading(false);
+                  closeMobileReading();
                 }}
                 aria-label="Archive"
                 className="grid h-8 w-8 place-items-center rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
@@ -936,7 +936,7 @@ function InboxPage() {
                   <DropdownMenuItem
                     onClick={() => {
                       moveSelected("Trash", "Moved to trash");
-                      setMobileReading(false);
+                      closeMobileReading();
                     }}
                     className="text-xs"
                   >
