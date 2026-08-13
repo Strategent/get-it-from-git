@@ -16,7 +16,6 @@ import { Topbar } from "@/components/page-shell";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
-import { MobileSwipeNav } from "@/components/mobile-swipe-nav";
 import { RouteProgress } from "@/components/route-progress";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -262,7 +261,6 @@ function RootComponent() {
             </div>
           </div>
           <MobileBottomNav />
-          <MobileSwipeNav />
           <RouteProgress />
           <Toaster />
         </SidebarProvider>
