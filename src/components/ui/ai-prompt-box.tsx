@@ -368,6 +368,51 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
   const [showCanvas, setShowCanvas] = React.useState(false);
   const uploadInputRef = React.useRef<HTMLInputElement>(null);
   const promptBoxRef = React.useRef<HTMLDivElement>(null);
+  const recognitionRef = React.useRef<any>(null);
+  const baseTranscriptRef = React.useRef("");
+
+  const stopRecording = React.useCallback(() => {
+    try {
+      recognitionRef.current?.stop();
+    } catch {
+      /* noop */
+    }
+    recognitionRef.current = null;
+    setIsRecording(false);
+  }, []);
+
+  const startRecording = React.useCallback(() => {
+    setIsRecording(true);
+    onVoiceStart?.();
+    const SR =
+      typeof window !== "undefined"
+        ? (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+        : undefined;
+    if (!SR) return;
+    const rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.lang = "en-US";
+    baseTranscriptRef.current = input ? input.trim() + " " : "";
+    rec.onresult = (e: any) => {
+      let text = "";
+      for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+      setInput(baseTranscriptRef.current + text);
+    };
+    rec.onerror = () => stopRecording();
+    rec.onend = () => {
+      recognitionRef.current = null;
+      setIsRecording(false);
+    };
+    recognitionRef.current = rec;
+    try {
+      rec.start();
+    } catch {
+      /* noop */
+    }
+  }, [input, onVoiceStart, stopRecording]);
+
+  React.useEffect(() => () => stopRecording(), [stopRecording]);
 
   const handleToggleChange = (value: string) => {
     if (value === "search") {
@@ -653,12 +698,9 @@ export const PromptInputBox = React.forwardRef<HTMLDivElement, PromptInputBoxPro
                     : "bg-transparent hover:bg-muted text-muted-foreground hover:text-foreground",
               )}
               onClick={() => {
-                if (isRecording) setIsRecording(false);
+                if (isRecording) stopRecording();
                 else if (hasContent) handleSubmit();
-                else {
-                  setIsRecording(true);
-                  onVoiceStart?.();
-                }
+                else startRecording();
               }}
               disabled={isLoading && !hasContent}
             >
