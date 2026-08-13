@@ -17,7 +17,6 @@ import {
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { toast } from "sonner";
 import { UserPlus, Mail, MessageSquare, MessageCircle, Copy, Send, Users } from "lucide-react";
-import { avatarUrl } from "@/lib/avatar";
 import { SmartAvatar } from "@/components/smart-avatar";
 
 export const Route = createFileRoute("/team")({
@@ -233,7 +232,7 @@ function TeamPage() {
             return (
               <Card key={m.name} className="bento p-5">
                 <div className="flex items-center gap-3">
-                  <SmartAvatar name={m.name} size={128} alt={m.name}} />
+                  <SmartAvatar name={m.name} size={128} alt={m.name} />
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-semibold truncate">{m.name}</div>
                     <div className="text-xs text-muted-foreground truncate">{m.role}</div>
@@ -306,7 +305,7 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
     <div className="flex items-center">
       <div className="flex -space-x-2">
         {shown.map((m) => (
-          <SmartAvatar name={m.name} size={96} alt={m.name}} />
+          <SmartAvatar name={m.name} size={96} alt={m.name} />
         ))}
         {extra > 0 && (
           <span

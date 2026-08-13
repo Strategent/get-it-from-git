@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { PageShell, PageHeader } from "@/components/page-shell";
 import { TEAMS as ORG_TEAMS, seedTeam, type TeamId } from "@/routes/team";
-import { avatarUrl } from "@/lib/avatar";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { Plus, Check, Users, ChevronDown, ChevronRight, Circle, CircleDot, CheckCircle2, GitBranch } from "lucide-react";
 
@@ -131,7 +130,7 @@ function AssigneeStack({ assignees, size = 20 }: { assignees: Assignee[]; size?:
   return (
     <div className="flex items-center -space-x-1.5" title={assignees.map((a) => a.name).join(", ")}>
       {shown.map((a) => (
-        <SmartAvatar name={a.name} className="rounded-full object-cover ring-2 ring-background" alt={a.name}} />
+        <SmartAvatar name={a.name} className="rounded-full object-cover ring-2 ring-background" alt={a.name} />
       ))}
       {extra > 0 && (
         <span
@@ -548,7 +547,7 @@ function NewTaskDialog({
                         on ? "border-foreground/40 bg-foreground/[0.06]" : "border-border hover:bg-foreground/[0.03]"
                       }`}
                     >
-                      <SmartAvatar name={p.name} className="h-6 w-6 rounded-full object-cover" alt={p.name}} />
+                      <SmartAvatar name={p.name} className="h-6 w-6 rounded-full object-cover" alt={p.name} />
                       <span className="text-[12px] font-medium leading-none">{p.name}</span>
                       {on && <Check className="h-3.5 w-3.5 text-foreground/70" />}
                     </button>
