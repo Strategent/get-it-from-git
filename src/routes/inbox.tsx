@@ -54,6 +54,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
+import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
@@ -674,6 +675,17 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
+  // iOS-style transient skeleton while a thread pushes in / pops out.
+  const [threadLoading, setThreadLoading] = useState(false);
+  const threadLoadTimer = useRef<number | null>(null);
+  const beginThreadLoad = (ms: number) => {
+    if (threadLoadTimer.current) window.clearTimeout(threadLoadTimer.current);
+    setThreadLoading(true);
+    threadLoadTimer.current = window.setTimeout(() => setThreadLoading(false), ms);
+  };
+  useEffect(() => () => {
+    if (threadLoadTimer.current) window.clearTimeout(threadLoadTimer.current);
+  }, []);
   const [mobileClosing, setMobileClosing] = useState(false);
   const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
@@ -772,6 +784,7 @@ function InboxPage() {
   };
 
   const selectThread = (thread: Thread) => {
+    if (thread.id !== selectedId || !mobileReading) beginThreadLoad(420);
     setSelectedId(thread.id);
     setMobileReading(true);
     setMobileClosing(false);
@@ -779,6 +792,9 @@ function InboxPage() {
   };
 
   const closeMobileReading = () => {
+    // Content collapses to a skeleton as the pane slides away, so a re-open
+    // never flashes stale content.
+    beginThreadLoad(300);
     setMobileClosing(true);
     window.setTimeout(() => {
       setMobileReading(false);
