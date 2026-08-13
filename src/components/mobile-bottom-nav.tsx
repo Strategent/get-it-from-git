@@ -138,71 +138,81 @@ export function MobileBottomNav() {
         </div>
       </div>
 
-      {/* Bottom nav pill */}
-      <nav
-        className="fixed bottom-3.5 left-1/2 z-50 -translate-x-1/2"
-        style={{
-          width: "min(calc(100% - 28px), 402px)",
-          padding: "8px 10px",
-          borderRadius: "24px",
-          background: pillBg,
-          border: pillBorder,
-          backdropFilter: "blur(28px)",
-          boxShadow: pillShadow,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
+      {/* Bottom nav pill - fixed wrapper keeps it anchored on mobile even when
+          the URL bar collapses or the main area scrolls. */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-[60] pointer-events-none"
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        {primaryNav.map((item) => {
-          const active = isActive(item.url);
-          return (
-            <Link
-              key={item.title}
-              to={item.url}
-              aria-label={item.title}
-              style={{
-                display: "grid",
-                placeItems: "center",
-                width: 44,
-                height: 44,
-                borderRadius: 14,
-                flexShrink: 0,
-                color: iconColor(active),
-                background: iconBg(active),
-                border: iconBorder(active),
-                transition: "background 0.15s, color 0.15s",
-              }}
-            >
-              {item.isSyra ? (
-                <SyraIcon />
-              ) : item.icon ? (
-                <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
-              ) : null}
-            </Link>
-          );
-        })}
-
-        {/* More button */}
-        <button
-          onClick={() => setMoreOpen((v) => !v)}
-          aria-label="More navigation"
+        <nav
+          className="pointer-events-auto mx-auto"
           style={{
-            display: "grid",
-            placeItems: "center",
-            width: 44,
-            height: 44,
-            borderRadius: 14,
-            flexShrink: 0,
-            color: iconColor(moreOpen || anyMoreActive),
-            background: iconBg(moreOpen || anyMoreActive),
-            border: iconBorder(moreOpen || anyMoreActive),
-            transition: "background 0.15s, color 0.15s",
+            width: "min(calc(100% - 28px), 402px)",
+            marginBottom: 14,
+            padding: "8px 10px",
+            borderRadius: 24,
+            background: pillBg,
+            border: pillBorder,
+            backdropFilter: "blur(28px)",
+            WebkitBackdropFilter: "blur(28px)",
+            boxShadow: pillShadow,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            transform: "translateZ(0)",
+            willChange: "transform",
           }}
         >
-          <MoreHorizontal className="h-[18px] w-[18px]" />
-        </button>
-      </nav>
+          {primaryNav.map((item) => {
+            const active = isActive(item.url);
+            return (
+              <Link
+                key={item.title}
+                to={item.url}
+                aria-label={item.title}
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  flexShrink: 0,
+                  color: iconColor(active),
+                  background: iconBg(active),
+                  border: iconBorder(active),
+                  transition: "background 0.15s, color 0.15s",
+                }}
+              >
+                {item.isSyra ? (
+                  <SyraIcon />
+                ) : item.icon ? (
+                  <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
+                ) : null}
+              </Link>
+            );
+          })}
+
+          {/* More button */}
+          <button
+            onClick={() => setMoreOpen((v) => !v)}
+            aria-label="More navigation"
+            style={{
+              display: "grid",
+              placeItems: "center",
+              width: 44,
+              height: 44,
+              borderRadius: 14,
+              flexShrink: 0,
+              color: iconColor(moreOpen || anyMoreActive),
+              background: iconBg(moreOpen || anyMoreActive),
+              border: iconBorder(moreOpen || anyMoreActive),
+              transition: "background 0.15s, color 0.15s",
+            }}
+          >
+            <MoreHorizontal className="h-[18px] w-[18px]" />
+          </button>
+        </nav>
+      </div>
     </>
   );
 }
