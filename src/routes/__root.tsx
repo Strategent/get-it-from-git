@@ -17,6 +17,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { MobileSwipeNav } from "@/components/mobile-swipe-nav";
+import { RouteProgress } from "@/components/route-progress";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -139,6 +140,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     links: [
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
@@ -261,6 +263,7 @@ function RootComponent() {
           </div>
           <MobileBottomNav />
           <MobileSwipeNav />
+          <RouteProgress />
           <Toaster />
         </SidebarProvider>
       </ThemeProvider>
