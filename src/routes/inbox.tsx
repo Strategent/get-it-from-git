@@ -1726,29 +1726,8 @@ function InboxPage() {
               </div>
 
               <article className="border-t border-border/50 pt-6">
-                {/* sender row */}
-                <div className="flex items-start gap-3">
-                  <LemniAvatar name={selected.from} size={34} />
-                  <div className="min-w-0 flex-1">
-                    <div className="flex min-w-0 items-baseline gap-1.5">
-                      <span className="shrink-0 text-[13.5px] font-semibold tracking-tight text-foreground">
-                        {selected.from}
-                      </span>
-                      <span className="hidden min-w-0 truncate text-[12.5px] text-muted-foreground sm:inline">
-                        &lt;{selected.email}&gt;
-                      </span>
-                    </div>
-                    <div className="mt-0.5 truncate text-[12px] text-muted-foreground">
-                      to me
-                    </div>
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1.5 pt-0.5">
-                    <span className="text-[12px] tabular-nums text-muted-foreground">
-                      {selected.sentAt ?? `${selected.time} ago`}
-                    </span>
-                    <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
-                  </div>
-                </div>
+                {/* sender / header row */}
+                <MessageHeaderBlock thread={selected} />
 
                 <div className="whitespace-pre-line pl-0 pr-2 pt-4 text-[14px] leading-[1.65] text-foreground/90 sm:pl-[46px]">
                   {selected.body}
