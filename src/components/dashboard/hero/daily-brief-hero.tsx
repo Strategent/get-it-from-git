@@ -74,7 +74,7 @@ export function DailyBriefHero({
   return (
     <>
       <section
-        className="relative h-full w-full"
+        className="relative h-full w-full overflow-hidden"
         style={{ borderRadius: "var(--radius)" }}
       >
         <div
