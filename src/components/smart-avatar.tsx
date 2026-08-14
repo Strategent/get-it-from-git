@@ -44,7 +44,6 @@ export function SmartAvatar({ name, size = 96, className = "", alt }: SmartAvata
       <img
         src={avatarUrl(name, size)}
         alt={alt ?? ""}
-        loading="lazy"
         decoding="async"
         onLoad={() => setState("loaded")}
         onError={() => setState("error")}
