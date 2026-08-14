@@ -28,9 +28,9 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import syraSidebarIcon from "@/assets/sidebar-icon.png.asset.json";
+import syraSidebarIcon from "@/assets/sidebar-icon.png";
 const johnHarwickAvatar = { url: "/john-harwick.png" };
-const syraSIcon = { url: syraSidebarIcon.url };
+const syraSIcon = { url: syraSidebarIcon };
 
 const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
   <span aria-hidden className={`relative inline-grid place-items-center ${className ?? ""}`}>

@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import syraLogo from "@/assets/syra-mark-3d.png.asset.json";
+import syraLogo from "@/assets/syra-mark-3d.png";
 
 /**
  * SyraMark — the canonical brand mark for Syra.
@@ -29,7 +29,7 @@ export function SyraMark({
       }}
     >
       <img
-        src={syraLogo.url}
+        src={syraLogo}
         alt=""
         className="h-full w-full"
         style={{ objectFit: "contain" }}

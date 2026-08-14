@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { DailyBriefStack } from "./daily-brief-stack";
-import heroScenery from "@/assets/daily-brief-hero.jpg.asset.json";
+import heroScenery from "@/assets/daily-brief-hero.jpg";
 
 export interface BriefPriority {
   status: "urgent" | "this-week" | "closed";
@@ -78,7 +78,7 @@ export function DailyBriefHero({
         style={{
           borderRadius: "var(--radius)",
           backgroundColor: "#1a1a1d",
-          backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.06) 100%), linear-gradient(to top, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 55%), url("${heroScenery.url}")`,
+          backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.06) 100%), linear-gradient(to top, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 55%), url("${heroScenery}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",

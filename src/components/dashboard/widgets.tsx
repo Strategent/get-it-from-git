@@ -4,7 +4,7 @@ import { Plus, Paperclip, TrendingUp } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
-import heroScenery from "@/assets/daily-brief-hero.jpg.asset.json";
+import heroScenery from "@/assets/daily-brief-hero.jpg";
 import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
 
 
@@ -102,7 +102,7 @@ export function MobileDailyBriefCard() {
         aria-hidden
         className="pointer-events-none absolute inset-0 -z-10"
         style={{
-          backgroundImage: `url(${heroScenery.url})`,
+          backgroundImage: `url(${heroScenery})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
