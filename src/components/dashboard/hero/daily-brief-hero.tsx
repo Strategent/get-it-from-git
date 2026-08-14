@@ -75,7 +75,7 @@ export function DailyBriefHero({
     <>
       <section
         className="relative h-full w-full overflow-hidden"
-        style={{ borderRadius: "var(--radius)" }}
+        style={{ borderRadius: "var(--radius)", containerType: "size" }}
       >
         <div
           aria-hidden
@@ -90,10 +90,23 @@ export function DailyBriefHero({
           }}
         />
 
-        <div className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-8 lg:pl-20 lg:pr-16 lg:py-12">
+        {/* Sizing is driven by container-query units so the text stays
+            proportional to this fixed-height card at any viewport or zoom
+            level. Plain px values act as the fallback where cq units are
+            unsupported. */}
+        <div
+          className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-6"
+          style={{
+            paddingLeft: "clamp(1.25rem, 5cqw, 5rem)",
+            paddingRight: "clamp(1rem, 4cqw, 4rem)",
+            paddingTop: "clamp(0.75rem, 5cqh, 2rem)",
+            paddingBottom: "clamp(0.75rem, 5cqh, 2rem)",
+          }}
+        >
           <h1
-            className="font-serif-display font-normal tracking-[-0.015em] text-white text-[30px] leading-[1.2] sm:text-[34px] lg:text-[42px]"
+            className="font-serif-display font-normal tracking-[-0.015em] text-white text-[30px] leading-[1.15]"
             style={{
+              fontSize: "clamp(20px, 17cqh, 42px)",
               textShadow: "0 1px 6px rgba(0,0,0,0.3)",
             }}
           >
@@ -101,8 +114,12 @@ export function DailyBriefHero({
           </h1>
 
           <p
-            className="mt-5 max-w-[30rem] text-[13.5px] font-medium leading-[1.6] text-white/[0.88] lg:text-[14px]"
-            style={{ textShadow: "0 1px 5px rgba(0,0,0,0.4)" }}
+            className="mt-3 max-w-[30rem] text-[13.5px] font-medium leading-[1.5] text-white/[0.88]"
+            style={{
+              marginTop: "clamp(0.375rem, 3cqh, 1.25rem)",
+              fontSize: "clamp(11px, 6.5cqh, 14px)",
+              textShadow: "0 1px 5px rgba(0,0,0,0.4)",
+            }}
           >
             {summary}
           </p>
@@ -110,7 +127,15 @@ export function DailyBriefHero({
           <button
             type="button"
             onClick={handleClick}
-            className="mt-7 w-fit rounded-full border border-white/70 bg-white/[0.08] px-7 py-2.5 text-[13.5px] font-medium text-white backdrop-blur-md transition-all hover:bg-white/[0.18] lg:mt-8"
+            className="mt-4 w-fit rounded-full border border-white/70 bg-white/[0.08] px-7 py-2 text-[13.5px] font-medium text-white backdrop-blur-md transition-all hover:bg-white/[0.18]"
+            style={{
+              marginTop: "clamp(0.5rem, 4cqh, 1.75rem)",
+              paddingLeft: "clamp(1rem, 3.5cqw, 1.75rem)",
+              paddingRight: "clamp(1rem, 3.5cqw, 1.75rem)",
+              paddingTop: "clamp(0.3rem, 2cqh, 0.625rem)",
+              paddingBottom: "clamp(0.3rem, 2cqh, 0.625rem)",
+              fontSize: "clamp(11px, 6cqh, 13.5px)",
+            }}
           >
             Read daily brief
           </button>
