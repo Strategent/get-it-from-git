@@ -74,16 +74,21 @@ export function DailyBriefHero({
   return (
     <>
       <section
-        className="relative h-full w-full overflow-hidden"
-        style={{
-          borderRadius: "var(--radius)",
-          backgroundColor: "#1a1a1d",
-          backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.06) 100%), linear-gradient(to top, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 55%), url("${heroScenery}")`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+        className="relative h-full w-full"
+        style={{ borderRadius: "var(--radius)" }}
       >
+        <div
+          aria-hidden
+          className="absolute inset-0 overflow-hidden"
+          style={{
+            borderRadius: "var(--radius)",
+            backgroundColor: "#1a1a1d",
+            backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.06) 100%), linear-gradient(to top, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 55%), url("${heroScenery}")`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
 
         <div className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-8 lg:pl-20 lg:pr-16 lg:py-12">
           <h1
