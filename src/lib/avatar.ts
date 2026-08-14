@@ -1,28 +1,28 @@
 const senderImages: Record<string, string> = {
-  "John Harwick": "/john-harwick.png",
-  "Elena Smith": "/email-elena-smith.png",
-  "Emma Reeves": "/email-emma-reeves.png",
-  "Adrian Engman": "/email-adrian-engman.png",
-  "Claire Bennett": "/email-claire-bennett.png",
-  "Daniel Brooks": "/email-daniel-brooks.png",
-  "Lena Foster": "/email-lena-foster.png",
-  "Maya Lopez": "/email-maya-lopez.png",
-  "Nina Mercer": "/email-nina-mercer.png",
-  Stripe: "/email-stripe-logo.png",
+  "John Harwick": "/john-harwick.webp",
+  "Elena Smith": "/email-elena-smith.webp",
+  "Emma Reeves": "/email-emma-reeves.webp",
+  "Adrian Engman": "/email-adrian-engman.webp",
+  "Claire Bennett": "/email-claire-bennett.webp",
+  "Daniel Brooks": "/email-daniel-brooks.webp",
+  "Lena Foster": "/email-lena-foster.webp",
+  "Maya Lopez": "/email-maya-lopez.webp",
+  "Nina Mercer": "/email-nina-mercer.webp",
+  Stripe: "/email-stripe-logo.webp",
 };
 
-// Only the provided PNG assets are ever used. Unknown names map
+// Only the provided WebP assets are ever used. Unknown names map
 // deterministically into this same pool so a given name always keeps the
 // same face across every page (inbox, team, channels, calendar, tasks).
 const photoPool = [
-  "/email-elena-smith.png",
-  "/email-emma-reeves.png",
-  "/email-adrian-engman.png",
-  "/email-claire-bennett.png",
-  "/email-daniel-brooks.png",
-  "/email-lena-foster.png",
-  "/email-maya-lopez.png",
-  "/email-nina-mercer.png",
+  "/email-elena-smith.webp",
+  "/email-emma-reeves.webp",
+  "/email-adrian-engman.webp",
+  "/email-claire-bennett.webp",
+  "/email-daniel-brooks.webp",
+  "/email-lena-foster.webp",
+  "/email-maya-lopez.webp",
+  "/email-nina-mercer.webp",
 ];
 
 

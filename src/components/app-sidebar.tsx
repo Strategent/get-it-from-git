@@ -29,7 +29,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import syraSidebarIcon from "@/assets/sidebar-icon.png";
-const johnHarwickAvatar = { url: "/john-harwick.png" };
+const johnHarwickAvatar = { url: "/john-harwick.webp" };
 const syraSIcon = { url: syraSidebarIcon };
 
 const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
