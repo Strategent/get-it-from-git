@@ -87,10 +87,8 @@ export function DailyBriefHero({
 
         <div className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-8 lg:pl-20 lg:pr-16 lg:py-12">
           <h1
-            className="font-serif-display font-normal tracking-[-0.015em] text-white"
+            className="font-serif-display font-normal tracking-[-0.015em] text-white text-[30px] leading-[1.2] sm:text-[34px] lg:text-[42px]"
             style={{
-              fontSize: "clamp(30px, 3vw, 42px)",
-              lineHeight: 1.05,
               textShadow: "0 1px 6px rgba(0,0,0,0.3)",
             }}
           >
