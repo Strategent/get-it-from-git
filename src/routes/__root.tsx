@@ -140,6 +140,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "icon", type: "image/png", href: "/favicon.png" },
       { rel: "apple-touch-icon", href: "/favicon.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
+      // Preloaded so the (tiny, ~84KB total) avatar pool starts fetching
+      // during HTML parse instead of waiting on SmartAvatar's JS chunk to
+      // load and mount before the <img> even exists to trigger the request.
+      { rel: "preload", as: "image", type: "image/webp", href: "/john-harwick.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-elena-smith.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-emma-reeves.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-adrian-engman.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-claire-bennett.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-daniel-brooks.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-lena-foster.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-maya-lopez.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-nina-mercer.webp" },
+      { rel: "preload", as: "image", type: "image/webp", href: "/email-stripe-logo.webp" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
