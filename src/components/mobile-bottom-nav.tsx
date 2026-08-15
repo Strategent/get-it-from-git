@@ -206,8 +206,7 @@ export function MobileBottomNav() {
                 transitionDelay: hidden ? "0s" : "0.18s",
               }}
             >
-              <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
-                {primaryNav.map((item) => {
+              {primaryNav.map((item) => {
                   const active = isActive(item.url);
                   return (
                     <Link
@@ -234,12 +233,10 @@ export function MobileBottomNav() {
                       ) : null}
                     </Link>
                   );
-                })}
-              </div>
+              })}
 
-              <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
-                {/* More button — never appears selected; it only reveals other views */}
-                <button
+              {/* More button — never appears selected; it only reveals other views */}
+              <button
                   onClick={() => setMoreOpen((v) => !v)}
                   aria-label="More navigation"
                   style={{
@@ -256,11 +253,10 @@ export function MobileBottomNav() {
                   }}
                 >
                   <MoreHorizontal className="h-[18px] w-[18px]" />
-                </button>
+              </button>
 
-                {/* Spacer mirrors the absolute chevron toggle */}
-                <div style={{ width: 44, height: 44, flexShrink: 0 }} />
-              </div>
+              {/* Spacer mirrors the absolute chevron toggle */}
+              <div style={{ width: 44, height: 44, flexShrink: 0 }} />
             </div>
 
             {/* Chevron toggle — anchored at the right edge and morphs with the bar */}
