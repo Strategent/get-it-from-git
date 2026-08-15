@@ -20,6 +20,7 @@ import { Panel } from "@/components/ui/panel";
 import { PillButton } from "@/components/ui/pill-button";
 import { emails } from "@/components/dashboard/data";
 import { senderEmailAddress } from "@/lib/avatar";
+import { isCoarsePointer } from "@/lib/mobile-focus";
 
 /**
  * InboxCard — Gmail-style mini inbox: focused/other tabs, thread list, and a
@@ -96,7 +97,7 @@ export function InboxCard() {
   const focusComposer = () =>
     requestAnimationFrame(() => {
       const el = composerRef.current;
-      if (!el) return;
+      if (!el || isCoarsePointer()) return;
       el.focus();
       el.setSelectionRange(0, 0);
     });

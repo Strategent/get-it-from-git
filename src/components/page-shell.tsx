@@ -14,6 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { isCoarsePointer } from "@/lib/mobile-focus";
 
 
 export function Topbar() {
@@ -32,7 +33,8 @@ export function Topbar() {
     return () => clearInterval(id);
   }, []);
   useEffect(() => {
-    if (searchOpen) inputRef.current?.focus();
+    // Touch devices: let the user tap the field so the keyboard is never forced open.
+    if (searchOpen && !isCoarsePointer()) inputRef.current?.focus();
   }, [searchOpen]);
   const time = now
     ? now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })

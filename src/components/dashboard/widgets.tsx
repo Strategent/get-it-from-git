@@ -6,6 +6,7 @@ import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import heroScenery from "@/assets/daily-brief-hero.jpg";
 import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
+import { autoFocusUnlessTouch } from "@/lib/mobile-focus";
 
 
 
@@ -297,7 +298,7 @@ export function PlannerCard() {
               if (e.key === "Escape") setAdding(false);
             }}
             placeholder="New task…"
-            autoFocus
+            autoFocus={autoFocusUnlessTouch()}
             className="h-8 min-w-0 flex-1 rounded-md border border-border bg-foreground/[0.03] px-2.5 text-[13px] outline-none placeholder:text-muted-foreground/60 focus:border-foreground/30"
           />
           <input
