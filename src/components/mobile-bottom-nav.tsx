@@ -59,10 +59,43 @@ export function MobileBottomNav() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [moreOpen, setMoreOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastY = useRef(0);
+  const pinnedUntil = useRef(0);
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
   const anyMoreActive = moreNav.some((item) => isActive(item.url));
+
+  const onAnyScroll = useCallback((e: Event) => {
+    const t = e.target as HTMLElement | Document | null;
+    const y =
+      t && (t as HTMLElement).scrollTop !== undefined && t !== document
+        ? (t as HTMLElement).scrollTop
+        : window.scrollY;
+    const delta = y - lastY.current;
+    lastY.current = y;
+    if (Date.now() < pinnedUntil.current) return;
+    if (Math.abs(delta) < 6) return;
+    if (delta > 0 && y > 48) setHidden(true);
+    else if (delta < 0) setHidden(false);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobile) return;
+    window.addEventListener("scroll", onAnyScroll, { passive: true, capture: true });
+    return () =>
+      window.removeEventListener("scroll", onAnyScroll, { capture: true } as EventListenerOptions);
+  }, [isMobile, onAnyScroll]);
+
+  // Any route change re-reveals the bar, like iOS does on new screens.
+  useEffect(() => {
+    setHidden(false);
+  }, [currentPath]);
+
+  useEffect(() => {
+    if (moreOpen) setHidden(false);
+  }, [moreOpen]);
 
   if (!isMobile) return null;
 
@@ -146,9 +179,41 @@ export function MobileBottomNav() {
 
       {/* Bottom nav pill - fixed wrapper keeps it anchored on mobile even when
           the URL bar collapses or the main area scrolls. */}
+      {/* Manual reveal handle — appears only while the bar is tucked away. */}
+      <button
+        aria-label="Show navigation"
+        onClick={() => {
+          pinnedUntil.current = Date.now() + 1200;
+          setHidden(false);
+        }}
+        className="fixed right-4 z-[59] grid place-items-center rounded-full transition-all duration-300 ease-out"
+        style={{
+          bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
+          width: 40,
+          height: 40,
+          background: pillBg,
+          border: pillBorder,
+          boxShadow: pillShadow,
+          backdropFilter: "blur(28px)",
+          WebkitBackdropFilter: "blur(28px)",
+          color: iconColor(true),
+          opacity: hidden ? 1 : 0,
+          transform: hidden ? "translateY(0) scale(1)" : "translateY(8px) scale(0.9)",
+          pointerEvents: hidden ? "auto" : "none",
+        }}
+      >
+        <ChevronUp className="h-[18px] w-[18px]" />
+      </button>
+
       <div
         className="fixed bottom-0 left-0 right-0 z-[60] pointer-events-none"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        style={{
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+          transform: hidden ? "translateY(calc(100% + 8px))" : "translateY(0)",
+          opacity: hidden ? 0 : 1,
+          transition:
+            "transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
+        }}
       >
         <nav
           className="pointer-events-auto mx-auto"
@@ -190,7 +255,7 @@ export function MobileBottomNav() {
                 }}
               >
                 {item.isSyra ? (
-                  <SyraIcon />
+                  <SyraIcon isDark={isDark} active={active} />
                 ) : item.icon ? (
                   <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
                 ) : null}
