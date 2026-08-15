@@ -255,41 +255,45 @@ export function MobileBottomNav() {
                   <MoreHorizontal className="h-[18px] w-[18px]" />
               </button>
 
-              {/* Spacer mirrors the absolute chevron toggle */}
-              <div style={{ width: 44, height: 44, flexShrink: 0 }} />
+              {/* Collapse toggle — inline, last item in the row */}
+              <button
+                aria-label="Hide navigation"
+                onClick={() => setHidden(true)}
+                className="active:scale-90 transition-transform"
+                style={{
+                  display: "grid",
+                  placeItems: "center",
+                  width: 44,
+                  height: 44,
+                  borderRadius: 14,
+                  flexShrink: 0,
+                  color: iconColor(false),
+                  background: iconBg(false),
+                  border: iconBorder(false),
+                  transition: "background 0.15s, color 0.15s",
+                }}
+              >
+                <ChevronLeft className="h-[18px] w-[18px]" />
+              </button>
             </div>
 
-            {/* Chevron toggle — anchored at the right edge and morphs with the bar */}
+            {/* Expand affordance — only inside the collapsed 44px pill */}
             <button
-              aria-label={hidden ? "Show navigation" : "Hide navigation"}
-              onClick={() => {
-                setHidden((v) => !v);
-              }}
-              className="active:scale-90 transition-transform"
+              aria-label="Show navigation"
+              onClick={() => setHidden(false)}
               style={{
                 position: "absolute",
-                right: hidden ? 0 : 10,
-                top: hidden ? 0 : 8,
-                width: 44,
-                height: 44,
-                borderRadius: 14,
+                inset: 0,
                 display: "grid",
                 placeItems: "center",
                 color: iconColor(true),
-                background: hidden ? "transparent" : iconBg(false),
-                border: hidden ? "1px solid transparent" : iconBorder(false),
-                transition: `right 0.45s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, top 0.35s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, background 0.15s, color 0.15s, border 0.15s`,
-                willChange: "right, top",
+                opacity: hidden ? 1 : 0,
+                pointerEvents: hidden ? "auto" : "none",
+                transition: "opacity 0.2s ease-out",
+                transitionDelay: hidden ? "0.18s" : "0s",
               }}
             >
-              <span className="relative grid h-full w-full place-items-center">
-                <ChevronLeft
-                  className={`absolute h-[18px] w-[18px] transition-all duration-300 ease-out ${hidden ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"}`}
-                />
-                <ChevronUp
-                  className={`absolute h-[18px] w-[18px] transition-all duration-300 ease-out ${hidden ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"}`}
-                />
-              </span>
+              <ChevronUp className="h-[18px] w-[18px]" />
             </button>
           </nav>
         </div>
