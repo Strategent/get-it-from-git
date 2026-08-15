@@ -1,43 +1,58 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Video } from "lucide-react";
 import { Panel } from "@/components/ui/panel";
 import { todaysMeetings } from "@/components/dashboard/data";
 
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function startOfWeekMonday(date: Date): Date {
+  const d = new Date(date);
+  const jsDow = d.getDay(); // 0=Sun
+  const offset = (jsDow + 6) % 7; // Monday-start offset
+  d.setDate(d.getDate() - offset);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
 /**
- * CalendarCard — Monday-start week strip + today's meetings with Join buttons.
+ * CalendarCard — Monday-start week strip + selected day's meetings with Join buttons.
  * Wrapped in the Origin <Panel> (CALENDAR ›).
  *
  * Owns its own clock so the dashboard route stays static — the bento grid
  * parent must not re-render on a timer or gridstack/React fight over the DOM.
  */
 export function CalendarCard() {
-  const [today, setToday] = useState<Date>(() => new Date(2026, 0, 16));
-  const [weekOffset, setWeekOffset] = useState(0);
+  const [today, setToday] = useState<Date>(() => new Date());
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
   useEffect(() => {
     const now = new Date();
     setToday(now);
+    setSelectedKey(now.toDateString());
     const id = setInterval(() => setToday(new Date()), 30_000);
     return () => clearInterval(id);
   }, []);
 
-  // The visible week = today shifted by the user's week navigation. `todayKey`
-  // still tracks the real date, so the circle only shows on the current week.
-  const anchor = new Date(today);
-  anchor.setDate(today.getDate() + weekOffset * 7);
-  const startOfWeek = new Date(anchor);
-  const jsDow = anchor.getDay(); // 0=Sun
-  const offset = (jsDow + 6) % 7; // Monday-start offset
-  startOfWeek.setDate(anchor.getDate() - offset);
-  const week = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date(startOfWeek);
-    d.setDate(startOfWeek.getDate() + i);
-    return d;
-  });
   const todayKey = today.toDateString();
   const activeKey = selectedKey ?? todayKey;
+  const activeDate = useMemo(() => new Date(activeKey), [activeKey]);
   const isViewingToday = activeKey === todayKey;
-  const activeDate = new Date(activeKey);
+
+  // Week strip is always anchored to the selected date's Monday-start week.
+  const startOfWeek = useMemo(() => startOfWeekMonday(activeDate), [activeDate]);
+  const week = useMemo(
+    () => Array.from({ length: 7 }, (_, i) => addDays(startOfWeek, i)),
+    [startOfWeek],
+  );
+
+  const shiftDay = (direction: -1 | 1) => {
+    setSelectedKey(addDays(activeDate, direction).toDateString());
+  };
+
   const meetings = isViewingToday ? todaysMeetings : [];
   const weekRangeLabel = (() => {
     const end = week[6];
@@ -58,28 +73,16 @@ export function CalendarCard() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={() => setWeekOffset((o) => o - 1)}
-            aria-label="Previous week"
+            onClick={() => shiftDay(-1)}
+            aria-label="Previous day"
             className="grid h-7 w-7 place-items-center rounded-full border border-border bg-foreground/[0.05] text-foreground/80 hover:bg-foreground/[0.1]"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
-          {weekOffset !== 0 && (
-            <button
-              type="button"
-              onClick={() => {
-                setWeekOffset(0);
-                setSelectedKey(null);
-              }}
-              className="h-7 rounded-full border border-border bg-foreground/[0.05] px-2.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/80 hover:bg-foreground/[0.1]"
-            >
-              Today
-            </button>
-          )}
           <button
             type="button"
-            onClick={() => setWeekOffset((o) => o + 1)}
-            aria-label="Next week"
+            onClick={() => shiftDay(1)}
+            aria-label="Next day"
             className="grid h-7 w-7 place-items-center rounded-full border border-border bg-foreground/[0.05] text-foreground/80 hover:bg-foreground/[0.1]"
           >
             <ChevronRight className="h-3.5 w-3.5" />
