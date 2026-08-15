@@ -703,6 +703,61 @@ function InboxPage() {
   const [lastSentId, setLastSentId] = useState<number | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
 
+  // ---- Draft autosave (survives navigation away + full refresh) ----
+  const draftsHydrated = useRef(false);
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(DRAFTS_STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as Record<string, Draft>;
+        const restored: Record<number, Draft> = {};
+        for (const [key, value] of Object.entries(parsed)) {
+          if (value && typeof value === "object") restored[Number(key)] = value;
+        }
+        if (Object.keys(restored).length) {
+          setDrafts((current) => ({ ...current, ...restored }));
+        }
+      }
+    } catch {
+      /* corrupt or unavailable storage — start fresh */
+    }
+    draftsHydrated.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (!draftsHydrated.current) return;
+    const id = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(DRAFTS_STORAGE_KEY, JSON.stringify(drafts));
+      } catch {
+        /* quota or private mode — ignore */
+      }
+    }, 350);
+    return () => window.clearTimeout(id);
+  }, [drafts]);
+
+  // Flush immediately if the tab is hidden or closed mid-edit.
+  useEffect(() => {
+    const flush = () => {
+      if (!draftsHydrated.current) return;
+      try {
+        window.localStorage.setItem(DRAFTS_STORAGE_KEY, JSON.stringify(drafts));
+      } catch {
+        /* ignore */
+      }
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") flush();
+    };
+    window.addEventListener("pagehide", flush);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      window.removeEventListener("pagehide", flush);
+      document.removeEventListener("visibilitychange", onVisibility);
+      flush();
+    };
+  }, [drafts]);
+
   useEffect(() => {
     if (!foldersOpen) return;
     const onClick = (e: MouseEvent) => {
