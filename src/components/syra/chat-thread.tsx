@@ -6,7 +6,10 @@ export type SyraMessage = {
   sources?: { source: string; title: string }[];
 };
 
-/** Grounded chat transcript shown above the Syra composer. */
+/**
+ * Grounded chat transcript. Scrolls independently and sticks to the newest
+ * message unless the user has scrolled up to read history.
+ */
 export function SyraChatThread({
   messages,
   thinking,
@@ -14,31 +17,50 @@ export function SyraChatThread({
   messages: SyraMessage[];
   thinking: boolean;
 }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const stick = useRef(true);
+
+  const onScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    stick.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80;
+  };
 
   useEffect(() => {
+    if (!stick.current) return;
     endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [messages.length, thinking]);
+  }, [messages.length, thinking, messages[messages.length - 1]?.content]);
 
   return (
-    <div className="w-full max-w-3xl max-h-[42vh] overflow-y-auto no-scrollbar rounded-2xl border border-border bg-card/95 p-4 shadow-xl backdrop-blur-sm">
-      <div className="space-y-4">
+    <div
+      ref={scrollRef}
+      onScroll={onScroll}
+      className="h-full w-full overflow-y-auto overscroll-contain no-scrollbar"
+      role="log"
+      aria-live="polite"
+      aria-label="Conversation with Syra"
+    >
+      <div className="mx-auto w-full max-w-3xl space-y-5 px-4 pb-6 pt-6">
         {messages.map((m, i) => (
-          <div key={i} className={m.role === "user" ? "flex justify-end" : ""}>
+          <div
+            key={i}
+            className={`animate-fade-in ${m.role === "user" ? "flex justify-end" : ""}`}
+          >
             {m.role === "user" ? (
-              <div className="max-w-[80%] rounded-2xl rounded-br-md bg-muted px-3.5 py-2 text-[13.5px] leading-[1.55] text-foreground">
+              <div className="max-w-[82%] rounded-2xl rounded-br-md bg-card px-4 py-2.5 text-[14.5px] leading-[1.55] text-foreground shadow-lg">
                 {m.content}
               </div>
             ) : (
-              <div className="max-w-[92%]">
+              <div className="max-w-[92%] rounded-2xl rounded-bl-md bg-card px-4 py-3 shadow-lg">
                 <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                   Syra
                 </div>
-                <p className="mt-1 whitespace-pre-line text-[14px] leading-[1.6] tracking-[-0.011em] text-foreground/95">
+                <p className="mt-1.5 whitespace-pre-line text-[14.5px] leading-[1.65] tracking-[-0.011em] text-foreground/95">
                   {m.content}
                 </p>
                 {m.sources && m.sources.length > 0 && (
-                  <div className="mt-2 flex flex-wrap gap-1.5">
+                  <div className="mt-2.5 flex flex-wrap gap-1.5">
                     {m.sources.map((s) => (
                       <span
                         key={`${s.source}-${s.title}`}
@@ -58,7 +80,7 @@ export function SyraChatThread({
         ))}
 
         {thinking && (
-          <div className="flex items-center gap-1.5 text-muted-foreground">
+          <div className="inline-flex items-center gap-1.5 rounded-2xl rounded-bl-md bg-card px-4 py-3 text-muted-foreground shadow-lg">
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:-0.2s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current [animation-delay:-0.1s]" />
             <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-current" />
