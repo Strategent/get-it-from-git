@@ -251,6 +251,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    let isFirst = true;
+    const unsubscribe = router.subscribe("onResolved", () => {
+      if (isFirst) {
+        isFirst = false;
+        return;
+      }
+      try {
+        const gc = (window as unknown as { goatcounter?: { count?: (opts: { path: string }) => void } }).goatcounter;
+        if (typeof gc?.count === "function") {
+          gc.count({ path: location.pathname });
+        }
+      } catch (e) {
+        // silently fail if analytics is blocked
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
