@@ -13,8 +13,10 @@ import { todaysMeetings } from "@/components/dashboard/data";
 export function CalendarCard() {
   const [today, setToday] = useState<Date>(() => new Date(2026, 0, 16));
   const [weekOffset, setWeekOffset] = useState(0);
+  const [selectedKey, setSelectedKey] = useState<string | null>(null);
   useEffect(() => {
-    setToday(new Date());
+    const now = new Date();
+    setToday(now);
     const id = setInterval(() => setToday(new Date()), 30_000);
     return () => clearInterval(id);
   }, []);
@@ -33,6 +35,10 @@ export function CalendarCard() {
     return d;
   });
   const todayKey = today.toDateString();
+  const activeKey = selectedKey ?? todayKey;
+  const isViewingToday = activeKey === todayKey;
+  const activeDate = new Date(activeKey);
+  const meetings = isViewingToday ? todaysMeetings : [];
   const weekRangeLabel = (() => {
     const end = week[6];
     const sameMonth = startOfWeek.getMonth() === end.getMonth();
@@ -61,7 +67,10 @@ export function CalendarCard() {
           {weekOffset !== 0 && (
             <button
               type="button"
-              onClick={() => setWeekOffset(0)}
+              onClick={() => {
+                setWeekOffset(0);
+                setSelectedKey(null);
+              }}
               className="h-7 rounded-full border border-border bg-foreground/[0.05] px-2.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/80 hover:bg-foreground/[0.1]"
             >
               Today
@@ -100,17 +109,25 @@ export function CalendarCard() {
           })}
           {week.map((d, i) => {
             const isToday = d.toDateString() === todayKey;
+            const isSelected = d.toDateString() === activeKey;
             return (
               <button
                 key={i}
+                type="button"
+                onClick={() => setSelectedKey(d.toDateString())}
                 className="group flex items-center justify-center py-1"
                 aria-label={d.toDateString()}
+                aria-pressed={isSelected}
               >
                 <span
                   className={`flex h-8 w-8 items-center justify-center rounded-full text-[15px] leading-none tabular-nums transition-colors ${
-                    isToday
-                      ? "bg-white text-black font-semibold"
-                      : "text-foreground/85 font-normal hover:bg-foreground/[0.06]"
+                    isSelected && isToday
+                      ? "bg-primary text-primary-foreground font-semibold"
+                      : isSelected
+                        ? "bg-foreground text-background font-semibold"
+                        : isToday
+                          ? "font-semibold text-primary hover:bg-primary/10"
+                          : "text-foreground/85 font-normal hover:bg-foreground/[0.06]"
                   }`}
                 >
                   {d.getDate()}
@@ -125,15 +142,31 @@ export function CalendarCard() {
       <div className="relative flex min-h-0 flex-1 flex-col gap-3">
         <div className="flex shrink-0 items-center justify-between">
           <div className="font-label text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/80">
-            Today's meetings
+            {isViewingToday
+              ? "Today's meetings"
+              : activeDate.toLocaleDateString("en-US", {
+                  weekday: "long",
+                  month: "short",
+                  day: "numeric",
+                })}
           </div>
           <span className="text-[11px] tabular-nums text-muted-foreground">
-            {todaysMeetings.length} scheduled
+            {meetings.length} scheduled
           </span>
         </div>
         {/* Hairline-divided rows — no card-in-card */}
         <div className="flex min-h-0 flex-col overflow-hidden">
-          {todaysMeetings.slice(0, 3).map((m, i) => (
+          {meetings.length === 0 && (
+            <div className="flex flex-1 flex-col items-center justify-center gap-1 py-8 text-center">
+              <div className="text-[13px] font-medium text-foreground/70">
+                No meetings scheduled
+              </div>
+              <div className="text-[11.5px] text-muted-foreground">
+                Your calendar is clear for this day.
+              </div>
+            </div>
+          )}
+          {meetings.slice(0, 3).map((m, i) => (
             <div
               key={i}
               className={`flex items-center gap-3 py-3 ${
