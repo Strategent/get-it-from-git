@@ -230,7 +230,7 @@ function TeamPage() {
           {filtered.map((m) => {
             const t = teamById(m.team);
             return (
-      <Card key={m.name} className="bento p-4 sm:p-5">
+              <Card key={m.name} className="bento p-4 sm:p-5">
                 <div className="flex items-center gap-3">
                   <SmartAvatar
                     name={m.name}
@@ -244,7 +244,7 @@ function TeamPage() {
                   </div>
                   <Badge
                     variant="outline"
-                    className="hidden xs:flex sm:flex shrink-0 items-center gap-1.5 border-border/60 text-muted-foreground"
+                    className="flex shrink-0 items-center gap-1.5 border-border/60 text-muted-foreground"
                   >
                     <span
                       className="inline-block h-1.5 w-1.5 rounded-full"
@@ -310,7 +310,13 @@ function AvatarStack({ members, accent }: { members: Member[]; accent: string })
     <div className="flex items-center">
       <div className="flex -space-x-2">
         {shown.map((m) => (
-          <SmartAvatar name={m.name} size={96} alt={m.name} />
+          <SmartAvatar
+            key={m.name}
+            name={m.name}
+            size={96}
+            alt={m.name}
+            className="h-7 w-7 ring-2 ring-card"
+          />
         ))}
         {extra > 0 && (
           <span
@@ -355,7 +361,7 @@ function TeamSelector({
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className={`group relative flex min-w-[300px] max-w-[360px] flex-1 shrink-0 flex-col rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 ${
+      className={`group relative flex w-[min(78vw,300px)] shrink-0 flex-col rounded-sm border p-4 text-left transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 sm:w-auto sm:min-w-[300px] sm:max-w-[360px] sm:flex-1 ${
         active
           ? "bg-card border-foreground/20 shadow-md"
           : "bg-card/40 border-border/60 hover:bg-card/75 hover:border-foreground/10"
