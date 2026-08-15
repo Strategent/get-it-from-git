@@ -66,7 +66,6 @@ export function MobileBottomNav() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
-  const anyMoreActive = moreNav.some((item) => isActive(item.url));
 
   const onAnyScroll = useCallback((e: Event) => {
     const t = e.target as HTMLElement | Document | null;
@@ -268,7 +267,7 @@ export function MobileBottomNav() {
               </div>
 
               <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
-                {/* More button */}
+                {/* More button — never appears selected; it only reveals other views */}
                 <button
                   onClick={() => setMoreOpen((v) => !v)}
                   aria-label="More navigation"
@@ -279,9 +278,9 @@ export function MobileBottomNav() {
                     height: 44,
                     borderRadius: 14,
                     flexShrink: 0,
-                    color: iconColor(moreOpen || anyMoreActive),
-                    background: iconBg(moreOpen || anyMoreActive),
-                    border: iconBorder(moreOpen || anyMoreActive),
+                    color: iconColor(false),
+                    background: iconBg(false),
+                    border: iconBorder(false),
                     transition: "background 0.15s, color 0.15s",
                   }}
                 >
