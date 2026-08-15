@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 
 const config = {
@@ -57,6 +57,7 @@ export function NeatBackground() {
   const ref = useRef<HTMLCanvasElement>(null);
   const { theme } = useTheme();
   const isDark = theme === "dark";
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     let destroy: (() => void) | undefined;
@@ -66,26 +67,41 @@ export function NeatBackground() {
       if (cancelled || !ref.current) return;
       const gradient = new NeatGradient({ ref: ref.current, ...((isDark ? config : lightConfig) as any) });
       destroy = () => gradient.destroy();
+      // Wait one frame so the first WebGL paint has landed before revealing
+      // the canvas — otherwise a blank/transparent frame flashes on entry.
+      requestAnimationFrame(() => requestAnimationFrame(() => !cancelled && setReady(true)));
     });
 
     return () => {
       cancelled = true;
+      setReady(false);
       destroy?.();
     };
   }, [isDark]);
 
   return (
-    <canvas
-      ref={ref}
-      aria-hidden
-      className="absolute pointer-events-none"
-      style={{
-        left: "-6%",
-        top: "-4%",
-        width: "112%",
-        height: "calc(100% + 120px)",
-        filter: isDark ? "saturate(0.85) contrast(0.98)" : "saturate(0.7) contrast(0.96) brightness(1.03)",
-      }}
-    />
+    <>
+      {/* Solid base in the gradient's own backdrop colour: present on the very
+          first paint, so entering the route never flashes the app background. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: isDark ? config.backgroundColor : lightConfig.backgroundColor }}
+      />
+      <canvas
+        ref={ref}
+        aria-hidden
+        className="absolute pointer-events-none"
+        style={{
+          left: "-6%",
+          top: "-4%",
+          width: "112%",
+          height: "calc(100% + 120px)",
+          opacity: ready ? 1 : 0,
+          transition: "opacity 260ms ease-out",
+          filter: isDark ? "saturate(0.85) contrast(0.98)" : "saturate(0.7) contrast(0.96) brightness(1.03)",
+        }}
+      />
+    </>
   );
 }
