@@ -6,6 +6,7 @@ import {
   Calendar,
   ChevronDown,
   Check,
+  Plus,
 } from "lucide-react";
 import { PromptInputBox } from "@/components/ui/ai-prompt-box";
 import { useTheme } from "@/components/theme-provider";
@@ -95,6 +96,7 @@ function SyraPage() {
     setInput("");
   };
   const activeModel = models.find((m) => m.id === modelId) ?? models[0];
+  const hasConversation = messages.length > 0 || thinking;
 
   return (
     <div className="relative w-full overflow-hidden" style={{ height: "calc(100dvh - 53px)" }}>
@@ -138,16 +140,33 @@ function SyraPage() {
 
       {/* Content — composer only, hidden when an agent sheet is open. */}
       <div
-        className={`relative h-full flex flex-col items-center justify-center gap-4 px-6 transition-opacity duration-300 ${
-          agentPrompt ? "opacity-0 pointer-events-none" : "opacity-100"
-        }`}
+        className={`relative h-full flex flex-col px-4 sm:px-6 transition-opacity duration-300 ${
+          hasConversation ? "justify-end" : "justify-center"
+        } ${agentPrompt ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
-        {(messages.length > 0 || thinking) && (
-          <SyraChatThread messages={messages} thinking={thinking} />
+        {hasConversation && (
+          <>
+            {/* Conversation toolbar */}
+            <div className="mx-auto flex w-full max-w-3xl shrink-0 items-center justify-between pt-3">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-foreground/70">
+                Conversation
+              </span>
+              <button
+                type="button"
+                onClick={() => setMessages([])}
+                className="inline-flex items-center gap-1.5 rounded-full bg-card px-3 py-1.5 text-[12px] text-muted-foreground shadow-lg transition-colors hover:text-foreground"
+              >
+                <Plus className="h-3.5 w-3.5" /> New chat
+              </button>
+            </div>
+            <div className="min-h-0 flex-1">
+              <SyraChatThread messages={messages} thinking={thinking} />
+            </div>
+          </>
         )}
 
         {/* Input bar */}
-        <div className="w-full max-w-3xl">
+        <div className={`mx-auto w-full max-w-3xl shrink-0 ${hasConversation ? "pb-4" : ""}`}>
           <PromptInputBox
             placeholder="Ask Syra anything…"
             onSend={(message) => void handleSend(message)}
@@ -189,7 +208,8 @@ function SyraPage() {
           />
 
           {/* Quick actions — tinted moss and lavender to match the wash. */}
-          <div className="mt-5 flex flex-wrap justify-center gap-2">
+          {!hasConversation && (
+          <div className="mt-5 flex flex-wrap justify-center gap-2 animate-fade-in">
             {quickActions.map((a) => (
               <button
                 key={a.label}
@@ -200,6 +220,7 @@ function SyraPage() {
               </button>
             ))}
           </div>
+          )}
         </div>
       </div>
 
