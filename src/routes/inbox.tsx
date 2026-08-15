@@ -1093,33 +1093,7 @@ function InboxPage() {
                 </div>
               </div>
 
-              {/* Message card */}
-              <div className="px-4 pt-4">
-                <div
-                  className="rounded-xl border border-border/60 bg-card px-4 pb-4 pt-3.5"
-                  style={{
-                    boxShadow:
-                      "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
-                  }}
-                >
-                  <MessageHeaderBlock thread={s} />
-                  <div className="pt-3.5 text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
-                    {s.body}
-                  </div>
-                  {s.hasAttachment && (
-                    <button className="mt-4 inline-flex items-center gap-2 rounded-md border border-border/60 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85">
-                      <Paperclip className="h-3.5 w-3.5" />
-                      {s.tag === "Legal"
-                        ? "Completed_MSA.pdf"
-                        : s.tag === "Billing"
-                          ? "Stripe_reconciliation.csv"
-                          : "Security_questionnaire.pdf"}
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              {/* Inline mobile compose */}
+              {/* Inline mobile compose — sits above the message it replies to */}
               {selectedDraft.status === "open" && (
                 <div className="px-4 pt-4">
                   <div
@@ -1149,15 +1123,77 @@ function InboxPage() {
                         Regenerate
                       </button>
                     </div>
-                    <div className="px-4 py-3 border-b border-border/50 text-[12px] text-muted-foreground">
-                      <span className="text-foreground/60">To:</span>{" "}
-                      <span className="text-foreground/90">{selectedDraft.to.join(", ")}</span>
+                    <div className="space-y-2 border-b border-border/50 px-4 py-2.5 text-[12px]">
+                      <div className="flex items-center gap-2">
+                        <span className="w-7 shrink-0 text-muted-foreground">To</span>
+                        <input
+                          value={selectedDraft.to.join(", ")}
+                          onChange={(e) =>
+                            updateDraft({
+                              to: e.target.value
+                                .split(",")
+                                .map((v) => v.trim())
+                                .filter(Boolean),
+                            })
+                          }
+                          placeholder="Add recipient"
+                          className="min-w-0 flex-1 bg-transparent text-foreground/90 outline-none placeholder:text-muted-foreground"
+                        />
+                        <button
+                          onClick={() => updateDraft({ showCc: !selectedDraft.showCc })}
+                          className={`shrink-0 rounded-md px-1.5 py-0.5 ${selectedDraft.showCc ? "text-foreground" : "text-muted-foreground"}`}
+                        >
+                          Cc
+                        </button>
+                        <button
+                          onClick={() => updateDraft({ showBcc: !selectedDraft.showBcc })}
+                          className={`shrink-0 rounded-md px-1.5 py-0.5 ${selectedDraft.showBcc ? "text-foreground" : "text-muted-foreground"}`}
+                        >
+                          Bcc
+                        </button>
+                      </div>
+                      {selectedDraft.showCc && (
+                        <div className="flex items-center gap-2">
+                          <span className="w-7 shrink-0 text-muted-foreground">Cc</span>
+                          <input
+                            value={selectedDraft.cc.join(", ")}
+                            onChange={(e) =>
+                              updateDraft({
+                                cc: e.target.value
+                                  .split(",")
+                                  .map((v) => v.trim())
+                                  .filter(Boolean),
+                              })
+                            }
+                            placeholder="Cc recipients"
+                            className="min-w-0 flex-1 bg-transparent text-foreground/90 outline-none placeholder:text-muted-foreground"
+                          />
+                        </div>
+                      )}
+                      {selectedDraft.showBcc && (
+                        <div className="flex items-center gap-2">
+                          <span className="w-7 shrink-0 text-muted-foreground">Bcc</span>
+                          <input
+                            value={selectedDraft.bcc.join(", ")}
+                            onChange={(e) =>
+                              updateDraft({
+                                bcc: e.target.value
+                                  .split(",")
+                                  .map((v) => v.trim())
+                                  .filter(Boolean),
+                              })
+                            }
+                            placeholder="Bcc recipients"
+                            className="min-w-0 flex-1 bg-transparent text-foreground/90 outline-none placeholder:text-muted-foreground"
+                          />
+                        </div>
+                      )}
                     </div>
                     <textarea
                       value={htmlToText(selectedDraft.body)}
                       onChange={(e) => updateDraft({ body: textToHtml(e.target.value) })}
-                      rows={8}
-                      className="w-full px-4 py-3 text-[14px] leading-[1.55] bg-transparent text-foreground/95 placeholder:text-muted-foreground focus:outline-none resize-none"
+                      rows={9}
+                      className="w-full whitespace-pre-wrap px-4 py-3 text-[14px] leading-[1.6] bg-transparent text-foreground/95 placeholder:text-muted-foreground focus:outline-none resize-none"
                     />
                     <SignatureBlock compact />
                     <div className="flex items-center justify-between gap-2 px-3 h-12 border-t border-border/60 bg-muted/20">
@@ -1188,6 +1224,32 @@ function InboxPage() {
                   </div>
                 </div>
               )}
+
+              {/* Message card — the email being replied to */}
+              <div className="px-4 pt-4">
+                <div
+                  className="rounded-xl border border-border/60 bg-card px-4 pb-4 pt-3.5"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
+                  }}
+                >
+                  <MessageHeaderBlock thread={s} />
+                  <div className="pt-3.5 text-[14.5px] leading-[1.6] text-foreground/95 whitespace-pre-line">
+                    {s.body}
+                  </div>
+                  {s.hasAttachment && (
+                    <button className="mt-4 inline-flex items-center gap-2 rounded-md border border-border/60 bg-muted/40 px-3 py-2 text-[12px] text-foreground/85">
+                      <Paperclip className="h-3.5 w-3.5" />
+                      {s.tag === "Legal"
+                        ? "Completed_MSA.pdf"
+                        : s.tag === "Billing"
+                          ? "Stripe_reconciliation.csv"
+                          : "Security_questionnaire.pdf"}
+                    </button>
+                  )}
+                </div>
+              </div>
               </div>
               )}
             </div>
