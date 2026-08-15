@@ -99,7 +99,7 @@ function SyraPage() {
   const hasConversation = messages.length > 0 || thinking;
 
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: "calc(100dvh - 53px)" }}>
+    <div className="relative h-full min-h-0 w-full overflow-hidden">
       <style>{`
         .font-radley { font-family: 'Radley', Georgia, serif; }
         @keyframes syraRibbon {
