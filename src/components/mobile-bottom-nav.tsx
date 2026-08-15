@@ -177,32 +177,37 @@ export function MobileBottomNav() {
         </div>
       </div>
 
-      {/* Bottom nav pill - fixed wrapper keeps it anchored on mobile even when
-          the URL bar collapses or the main area scrolls. */}
-      {/* Manual reveal handle — appears only while the bar is tucked away. */}
+      {/* Manual toggle handle — centered above the nav when visible, or a
+          floating pill at the bottom when hidden. This lets users explicitly
+          expand/condense the bar without relying on scroll gestures. */}
       <button
-        aria-label="Show navigation"
+        aria-label={hidden ? "Show navigation" : "Hide navigation"}
         onClick={() => {
           pinnedUntil.current = Date.now() + 1200;
-          setHidden(false);
+          setHidden((v) => !v);
         }}
-        className="fixed right-4 z-[59] grid place-items-center rounded-full transition-all duration-300 ease-out"
+        className="fixed left-1/2 z-[59] grid -translate-x-1/2 place-items-center rounded-full transition-all duration-300 ease-out"
         style={{
-          bottom: "calc(16px + env(safe-area-inset-bottom, 0px))",
-          width: 40,
-          height: 40,
+          bottom: hidden
+            ? "calc(14px + env(safe-area-inset-bottom, 0px))"
+            : "calc(68px + env(safe-area-inset-bottom, 0px))",
+          width: 44,
+          height: 28,
           background: pillBg,
           border: pillBorder,
           boxShadow: pillShadow,
           backdropFilter: "blur(28px)",
           WebkitBackdropFilter: "blur(28px)",
           color: iconColor(true),
-          opacity: hidden ? 1 : 0,
-          transform: hidden ? "translateY(0) scale(1)" : "translateY(8px) scale(0.9)",
-          pointerEvents: hidden ? "auto" : "none",
+          transition:
+            "bottom 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
         }}
       >
-        <ChevronUp className="h-[18px] w-[18px]" />
+        {hidden ? (
+          <ChevronUp className="h-[16px] w-[16px]" />
+        ) : (
+          <ChevronDown className="h-[16px] w-[16px]" />
+        )}
       </button>
 
       <div
