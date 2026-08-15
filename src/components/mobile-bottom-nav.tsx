@@ -66,7 +66,6 @@ export function MobileBottomNav() {
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
-  const anyMoreActive = moreNav.some((item) => isActive(item.url));
 
   const onAnyScroll = useCallback((e: Event) => {
     const t = e.target as HTMLElement | Document | null;
