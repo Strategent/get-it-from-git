@@ -17,7 +17,7 @@ import {
   ChevronLeft,
   ChevronUp,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
 import syraSidebarIcon from "@/assets/sidebar-icon.png";
@@ -171,7 +171,6 @@ export function MobileBottomNav() {
             onClick={(e) => {
               if (hidden) {
                 e.preventDefault();
-                pinnedUntil.current = Date.now() + 1200;
                 setHidden(false);
               }
             }}
@@ -268,7 +267,6 @@ export function MobileBottomNav() {
             <button
               aria-label={hidden ? "Show navigation" : "Hide navigation"}
               onClick={() => {
-                pinnedUntil.current = Date.now() + 1200;
                 setHidden((v) => !v);
               }}
               className="active:scale-90 transition-transform"
