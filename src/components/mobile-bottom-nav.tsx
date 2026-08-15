@@ -194,65 +194,84 @@ export function MobileBottomNav() {
             marginBottom: 14,
           }}
         >
-          {/* Expand handle — appears in the same right-hand spot after the bar is condensed */}
-          <button
-            aria-label="Show navigation"
-            onClick={() => {
-              pinnedUntil.current = Date.now() + 1200;
-              setHidden(false);
-            }}
-            className="absolute grid place-items-center rounded-[14px]"
-            style={{
-              right: 10,
-              top: "50%",
-              marginTop: -22,
-              width: 44,
-              height: 44,
-              background: pillBg,
-              border: pillBorder,
-              boxShadow: pillShadow,
-              backdropFilter: "blur(28px)",
-              WebkitBackdropFilter: "blur(28px)",
-              color: iconColor(true),
-              opacity: hidden ? 1 : 0,
-              transform: hidden ? "scale(1)" : "scale(0.9)",
-              pointerEvents: hidden ? "auto" : "none",
-              transition: "opacity 0.24s ease-out, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
-              willChange: "opacity, transform",
-            }}
-          >
-            <ChevronUp className="h-[18px] w-[18px]" />
-          </button>
-
-          {/* Nav bar */}
+          {/* Morphing nav bar — fluidly shrinks into / expands from the chevron */}
           <nav
             className="pointer-events-auto"
+            onClick={(e) => {
+              if (hidden) {
+                e.preventDefault();
+                pinnedUntil.current = Date.now() + 1200;
+                setHidden(false);
+              }
+            }}
             style={{
-              width: "100%",
-              padding: "8px 10px",
-              borderRadius: 24,
+              width: hidden ? 44 : "100%",
+              height: hidden ? 44 : 60,
+              padding: hidden ? 0 : "8px 10px",
+              borderRadius: hidden ? 14 : 24,
+              marginLeft: hidden ? "auto" : 0,
               background: pillBg,
               border: pillBorder,
               backdropFilter: "blur(28px)",
               WebkitBackdropFilter: "blur(28px)",
               boxShadow: pillShadow,
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              transform: hidden ? "translateY(calc(100% + 8px))" : "translateY(0)",
-              opacity: hidden ? 0 : 1,
-              transition: "transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
-              transformOrigin: "center bottom",
-              willChange: "transform, opacity",
+              overflow: "hidden",
+              position: "relative",
+              transition: `width 0.45s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, height 0.35s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, padding 0.35s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, border-radius 0.35s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, margin-left 0.45s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}`,
+              transformOrigin: "right center",
+              willChange: "width, height, padding, border-radius, margin-left",
             }}
           >
-            {primaryNav.map((item) => {
-              const active = isActive(item.url);
-              return (
-                <Link
-                  key={item.title}
-                  to={item.url}
-                  aria-label={item.title}
+            {/* Nav content — fades/scale out as the bar shrinks into the chevron */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                height: "100%",
+                opacity: hidden ? 0 : 1,
+                transform: hidden ? "scale(0.92)" : "scale(1)",
+                pointerEvents: hidden ? "none" : "auto",
+                transition: "opacity 0.2s ease-out, transform 0.25s ease-out",
+                transitionDelay: hidden ? "0s" : "0.18s",
+              }}
+            >
+              <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
+                {primaryNav.map((item) => {
+                  const active = isActive(item.url);
+                  return (
+                    <Link
+                      key={item.title}
+                      to={item.url}
+                      aria-label={item.title}
+                      style={{
+                        display: "grid",
+                        placeItems: "center",
+                        width: 44,
+                        height: 44,
+                        borderRadius: 14,
+                        flexShrink: 0,
+                        color: iconColor(active),
+                        background: iconBg(active),
+                        border: iconBorder(active),
+                        transition: "background 0.15s, color 0.15s",
+                      }}
+                    >
+                      {item.isSyra ? (
+                        <SyraIcon isDark={isDark} active={active} />
+                      ) : item.icon ? (
+                        <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
+                      ) : null}
+                    </Link>
+                  );
+                })}
+              </div>
+
+              <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
+                {/* More button */}
+                <button
+                  onClick={() => setMoreOpen((v) => !v)}
+                  aria-label="More navigation"
                   style={{
                     display: "grid",
                     placeItems: "center",
@@ -260,62 +279,52 @@ export function MobileBottomNav() {
                     height: 44,
                     borderRadius: 14,
                     flexShrink: 0,
-                    color: iconColor(active),
-                    background: iconBg(active),
-                    border: iconBorder(active),
+                    color: iconColor(moreOpen || anyMoreActive),
+                    background: iconBg(moreOpen || anyMoreActive),
+                    border: iconBorder(moreOpen || anyMoreActive),
                     transition: "background 0.15s, color 0.15s",
                   }}
                 >
-                  {item.isSyra ? (
-                    <SyraIcon isDark={isDark} active={active} />
-                  ) : item.icon ? (
-                    <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
-                  ) : null}
-                </Link>
-              );
-            })}
+                  <MoreHorizontal className="h-[18px] w-[18px]" />
+                </button>
 
-            {/* More button */}
-            <button
-              onClick={() => setMoreOpen((v) => !v)}
-              aria-label="More navigation"
-              style={{
-                display: "grid",
-                placeItems: "center",
-                width: 44,
-                height: 44,
-                borderRadius: 14,
-                flexShrink: 0,
-                color: iconColor(moreOpen || anyMoreActive),
-                background: iconBg(moreOpen || anyMoreActive),
-                border: iconBorder(moreOpen || anyMoreActive),
-                transition: "background 0.15s, color 0.15s",
-              }}
-            >
-              <MoreHorizontal className="h-[18px] w-[18px]" />
-            </button>
+                {/* Spacer mirrors the absolute chevron toggle */}
+                <div style={{ width: 44, height: 44, flexShrink: 0 }} />
+              </div>
+            </div>
 
-            {/* Condense toggle — sits next to More, uses a “<” chevron to indicate the bar can be tucked away */}
+            {/* Chevron toggle — anchored at the right edge and morphs with the bar */}
             <button
-              aria-label="Hide navigation"
+              aria-label={hidden ? "Show navigation" : "Hide navigation"}
               onClick={() => {
                 pinnedUntil.current = Date.now() + 1200;
-                setHidden(true);
+                setHidden((v) => !v);
               }}
+              className="active:scale-90 transition-transform"
               style={{
-                display: "grid",
-                placeItems: "center",
+                position: "absolute",
+                right: hidden ? 0 : 10,
+                top: hidden ? 0 : 8,
                 width: 44,
                 height: 44,
                 borderRadius: 14,
-                flexShrink: 0,
-                color: iconColor(false),
-                background: "transparent",
-                border: "1px solid transparent",
-                transition: "background 0.15s, color 0.15s",
+                display: "grid",
+                placeItems: "center",
+                color: iconColor(true),
+                background: hidden ? "transparent" : iconBg(false),
+                border: hidden ? "1px solid transparent" : iconBorder(false),
+                transition: `right 0.45s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, top 0.35s cubic-bezier(0.32, 0.72, 0, 1) ${hidden ? "0.08s" : "0s"}, background 0.15s, color 0.15s, border 0.15s`,
+                willChange: "right, top",
               }}
             >
-              <ChevronLeft className="h-[18px] w-[18px]" />
+              <span className="relative grid h-full w-full place-items-center">
+                <ChevronLeft
+                  className={`absolute h-[18px] w-[18px] transition-all duration-300 ease-out ${hidden ? "opacity-0 rotate-90 scale-75" : "opacity-100 rotate-0 scale-100"}`}
+                />
+                <ChevronUp
+                  className={`absolute h-[18px] w-[18px] transition-all duration-300 ease-out ${hidden ? "opacity-100 rotate-0 scale-100" : "opacity-0 -rotate-90 scale-75"}`}
+                />
+              </span>
             </button>
           </nav>
         </div>
