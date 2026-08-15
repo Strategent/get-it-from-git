@@ -632,7 +632,7 @@ function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
     body: textToHtml(
       mode === "forward"
         ? `\n\n---------- Forwarded message ---------\nFrom: ${thread.from} <${thread.email}>\nSubject: ${thread.subject}\n\n${thread.body}`
-        : `Hi ${firstName},\n\n${regenerateOptions[0]}\n\n${SIGN_OFF}`,
+        : `Hi ${firstName},\n\n${regenerateOptions[0]}`,
     ),
     attachments: [],
     links: [],
@@ -889,7 +889,7 @@ function InboxPage() {
     window.setTimeout(() => {
       const next = regenerateOptions[Math.floor(Math.random() * regenerateOptions.length)];
       updateDraft({
-        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}\n\n${SIGN_OFF}`),
+        body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}`),
         status: "open",
       });
       setRegeneratingId(null);
