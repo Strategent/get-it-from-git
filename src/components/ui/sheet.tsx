@@ -4,7 +4,7 @@ import * as React from "react";
 import * as SheetPrimitive from "@radix-ui/react-dialog";
 import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-import { preventMobileAutoFocus } from "@/lib/mobile-focus";
+import { preventMobileAutoFocus, preventMobileCloseAutoFocus } from "@/lib/mobile-focus";
 
 import { cn } from "@/lib/utils";
 
@@ -64,6 +64,7 @@ const SheetContent = React.forwardRef<
     <SheetPrimitive.Content
       ref={ref}
       onOpenAutoFocus={props.onOpenAutoFocus ?? preventMobileAutoFocus}
+      onCloseAutoFocus={props.onCloseAutoFocus ?? preventMobileCloseAutoFocus}
       className={cn(sheetVariants({ side }), className)}
       {...props}
     >
