@@ -169,6 +169,7 @@ function SyraPage() {
         <div className={`mx-auto w-full max-w-3xl shrink-0 ${hasConversation ? "pb-4" : ""}`}>
           <PromptInputBox
             placeholder="Ask Syra anything…"
+            isLoading={thinking}
             onSend={(message) => void handleSend(message)}
             leading={
               <DropdownMenu>
