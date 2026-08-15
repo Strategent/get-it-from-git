@@ -1349,7 +1349,7 @@ function InboxPage() {
       <>
         <div className="flex min-h-[calc(100dvh-80px)] w-full flex-col bg-background pb-32">
           {/* Editorial header */}
-          <div className="px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+0.5rem)]">
+          <div className="px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
             <div className="flex items-baseline justify-between gap-2">
               <h1 className="font-serif-display text-[30px] leading-none tracking-[-0.02em] text-foreground">
                 {activeFolder}
