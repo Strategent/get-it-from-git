@@ -140,7 +140,7 @@ function SyraPage() {
 
       {/* Content — composer only, hidden when an agent sheet is open. */}
       <div
-        className={`relative h-full flex flex-col px-4 sm:px-6 transition-opacity duration-300 ${
+        className={`relative h-full flex flex-col px-4 sm:px-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-0 transition-opacity duration-300 ${
           hasConversation ? "justify-end" : "justify-center"
         } ${agentPrompt ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
@@ -166,7 +166,7 @@ function SyraPage() {
         )}
 
         {/* Input bar */}
-        <div className={`mx-auto w-full max-w-3xl shrink-0 ${hasConversation ? "pb-4" : ""}`}>
+        <div className={`mx-auto w-full max-w-3xl shrink-0 ${hasConversation ? "pb-4 md:pb-4" : ""}`}>
           <PromptInputBox
             placeholder="Ask Syra anything…"
             isLoading={thinking}
