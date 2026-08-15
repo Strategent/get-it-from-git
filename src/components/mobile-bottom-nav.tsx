@@ -17,7 +17,7 @@ import {
   ChevronLeft,
   ChevronUp,
 } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
 import syraSidebarIcon from "@/assets/sidebar-icon.png";
@@ -61,37 +61,9 @@ export function MobileBottomNav() {
   const isDark = theme === "dark";
   const [moreOpen, setMoreOpen] = useState(false);
   const [hidden, setHidden] = useState(false);
-  const lastY = useRef(0);
-  const pinnedUntil = useRef(0);
   const currentPath = useRouterState({ select: (r) => r.location.pathname });
   const isActive = (path: string) =>
     path === "/" ? currentPath === "/" : currentPath.startsWith(path);
-
-  const onAnyScroll = useCallback((e: Event) => {
-    const t = e.target as HTMLElement | Document | null;
-    const y =
-      t && (t as HTMLElement).scrollTop !== undefined && t !== document
-        ? (t as HTMLElement).scrollTop
-        : window.scrollY;
-    const delta = y - lastY.current;
-    lastY.current = y;
-    if (Date.now() < pinnedUntil.current) return;
-    if (Math.abs(delta) < 6) return;
-    if (delta > 0 && y > 48) setHidden(true);
-    else if (delta < 0) setHidden(false);
-  }, []);
-
-  useEffect(() => {
-    if (!isMobile) return;
-    window.addEventListener("scroll", onAnyScroll, { passive: true, capture: true });
-    return () =>
-      window.removeEventListener("scroll", onAnyScroll, { capture: true } as EventListenerOptions);
-  }, [isMobile, onAnyScroll]);
-
-  // Any route change re-reveals the bar, like iOS does on new screens.
-  useEffect(() => {
-    setHidden(false);
-  }, [currentPath]);
 
   useEffect(() => {
     if (moreOpen) setHidden(false);
@@ -199,7 +171,6 @@ export function MobileBottomNav() {
             onClick={(e) => {
               if (hidden) {
                 e.preventDefault();
-                pinnedUntil.current = Date.now() + 1200;
                 setHidden(false);
               }
             }}
@@ -235,8 +206,7 @@ export function MobileBottomNav() {
                 transitionDelay: hidden ? "0s" : "0.18s",
               }}
             >
-              <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
-                {primaryNav.map((item) => {
+              {primaryNav.map((item) => {
                   const active = isActive(item.url);
                   return (
                     <Link
@@ -263,12 +233,10 @@ export function MobileBottomNav() {
                       ) : null}
                     </Link>
                   );
-                })}
-              </div>
+              })}
 
-              <div style={{ display: "flex", gap: 0, alignItems: "center" }}>
-                {/* More button — never appears selected; it only reveals other views */}
-                <button
+              {/* More button — never appears selected; it only reveals other views */}
+              <button
                   onClick={() => setMoreOpen((v) => !v)}
                   aria-label="More navigation"
                   style={{
@@ -285,18 +253,16 @@ export function MobileBottomNav() {
                   }}
                 >
                   <MoreHorizontal className="h-[18px] w-[18px]" />
-                </button>
+              </button>
 
-                {/* Spacer mirrors the absolute chevron toggle */}
-                <div style={{ width: 44, height: 44, flexShrink: 0 }} />
-              </div>
+              {/* Spacer mirrors the absolute chevron toggle */}
+              <div style={{ width: 44, height: 44, flexShrink: 0 }} />
             </div>
 
             {/* Chevron toggle — anchored at the right edge and morphs with the bar */}
             <button
               aria-label={hidden ? "Show navigation" : "Hide navigation"}
               onClick={() => {
-                pinnedUntil.current = Date.now() + 1200;
                 setHidden((v) => !v);
               }}
               className="active:scale-90 transition-transform"
