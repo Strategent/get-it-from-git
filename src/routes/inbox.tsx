@@ -518,7 +518,7 @@ function initials(name: string) {
     .toUpperCase();
 }
 
-/** Sign-off that closes the written body; the signature card renders below it. */
+/** Sign-off lives inside the signature block, not the typed body. */
 const SIGN_OFF = "Best,";
 
 /**
@@ -530,6 +530,7 @@ function SignatureBlock({ compact = false }: { compact?: boolean }) {
     <div
       className={`border-t border-border/60 ${compact ? "mx-4 mt-1 pt-3 pb-3" : "mx-4 mt-2 pt-4 pb-4"}`}
     >
+      <div className="mb-3 text-[13px] leading-tight text-foreground/85">{SIGN_OFF}</div>
       <div className="flex items-start gap-3">
         <span
           aria-hidden
