@@ -1,5 +1,5 @@
 import { createOpenAI } from "@ai-sdk/openai";
-import { streamText } from "ai";
+import { generateText } from "ai";
 import { createLovableAiGatewayRunIdFetch } from "./ai-gateway.server";
 import { retrieve, classifyIntent, briefingDocs, type KnowledgeDoc } from "./syra-knowledge";
 
@@ -54,22 +54,19 @@ export async function runSyraChat({
     fetch: runIdFetch.fetch as typeof fetch,
   });
 
-  const result = streamText({
-    model: lovable.responses("openai/gpt-5.6-sol"),
-    system: `${SYSTEM_PROMPT}\n\n${contextBlock(docs)}`,
-    messages: [...history.slice(-8), { role: "user" as const, content: message }],
-    providerOptions: {
-      openai: {
-        forceReasoning: true,
-        reasoningEffort: "low",
-        reasoningSummary: "auto",
-        store: false,
-        include: ["reasoning.encrypted_content"],
-      },
-    },
-  });
-
-  const text = (await result.text).trim();
+  let text = "";
+  try {
+    const result = await generateText({
+      model: lovable.chat("openai/gpt-5.6-sol"),
+      system: `${SYSTEM_PROMPT}\n\n${contextBlock(docs)}`,
+      messages: [...history.slice(-8), { role: "user" as const, content: message }],
+      maxRetries: 2,
+      abortSignal: AbortSignal.timeout(25_000),
+    });
+    text = result.text.trim();
+  } catch (error) {
+    console.error("[syra-chat] model call failed", error);
+  }
 
   return {
     intent,
