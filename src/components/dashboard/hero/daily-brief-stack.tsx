@@ -162,7 +162,7 @@ function SwipeCard({
   stackDragX: MotionValue<number>;
   onDragMotion: (x: number) => void;
   onSwipeIntent: (dir: 1 | -1) => boolean;
-  onSwipeComplete: (dir: 1 | -1) => void;
+  onSwipeComplete: (dir: 1 | -1) => boolean;
   onClose: () => void;
   total: number;
 }) {
@@ -221,7 +221,8 @@ function SwipeCard({
       duration: 0.34,
       ease: [0.2, 0.82, 0.24, 1],
     }).then(() => {
-      onSwipeComplete(dir);
+      const closing = onSwipeComplete(dir);
+      if (closing) return; // keep the card off-screen; the sheet is dismissing
       stackDragX.set(0);
       x.set(0);
       isThrowing.current = false;
@@ -282,19 +283,20 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
     return true;
   };
 
-  const handleSwipeComplete = (dir: 1 | -1) => {
+  const handleSwipeComplete = (dir: 1 | -1): boolean => {
     // Swiping the last card away closes the brief smoothly.
     if (dir === 1 && index === total - 1) {
       setClosingAfterSwipe(true);
-      window.setTimeout(() => handleOpenChange(false), 120);
-      return;
+      handleOpenChange(false);
+      return true;
     }
     setIndex((i) => Math.max(0, Math.min(total - 1, i + dir)));
+    return false;
   };
 
   const handleCloseFromCard = () => {
     setClosingAfterSwipe(true);
-    window.setTimeout(() => handleOpenChange(false), 120);
+    handleOpenChange(false);
   };
 
   const handleOpenChange = (o: boolean) => {
