@@ -76,12 +76,8 @@ export function InboxCard() {
     if (sending || isSent || draft.trim().length === 0) return;
     setSending(true);
     const recipient = e.sender.split(" ")[0];
+    const sentIndex = e.originalIndex;
     window.setTimeout(() => {
-      setSentIds((prev) => {
-        const next = new Set(prev);
-        next.add(e.originalIndex);
-        return next;
-      });
       setSending(false);
       setJustSent(true);
       // Mobile: show temp banner then return to the list.
@@ -89,6 +85,16 @@ export function InboxCard() {
       window.setTimeout(() => {
         setMobileSentBanner(null);
         setMobileOpen(false);
+        // Remove the thread only after the reading pane has closed, so the
+        // selected message never swaps out underneath the open composer
+        // (that reflow is what made the Send button jump).
+        window.setTimeout(() => {
+          setSentIds((prev) => {
+            const next = new Set(prev);
+            next.add(sentIndex);
+            return next;
+          });
+        }, 220);
       }, 1800);
     }, 650);
   };
