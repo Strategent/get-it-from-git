@@ -140,7 +140,7 @@ function SyraPage() {
 
       {/* Content — composer only, hidden when an agent sheet is open. */}
       <div
-        className={`relative h-full flex flex-col px-4 sm:px-6 pb-[calc(76px+env(safe-area-inset-bottom))] md:pb-0 transition-opacity duration-300 ${
+        className={`relative h-full flex flex-col px-4 sm:px-6 pb-[calc(76px_+_env(safe-area-inset-bottom))] md:pb-0 transition-opacity duration-300 ${
           hasConversation ? "justify-end" : "justify-center"
         } ${agentPrompt ? "opacity-0 pointer-events-none" : "opacity-100"}`}
       >
