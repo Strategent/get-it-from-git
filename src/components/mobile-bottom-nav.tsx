@@ -108,17 +108,21 @@ export function MobileBottomNav() {
 
   const iconColor = (active: boolean) =>
     active
-      ? isDark ? "rgba(255,255,255,0.92)" : "rgba(0,0,0,0.85)"
-      : isDark ? "rgba(255,255,255,0.38)" : "rgba(0,0,0,0.36)";
+      ? isDark
+        ? "rgba(255,255,255,0.92)"
+        : "rgba(0,0,0,0.85)"
+      : isDark
+        ? "rgba(255,255,255,0.38)"
+        : "rgba(0,0,0,0.36)";
 
   const iconBg = (active: boolean) =>
-    active
-      ? isDark ? "rgba(255,255,255,0.09)" : "rgba(0,0,0,0.06)"
-      : "transparent";
+    active ? (isDark ? "rgba(255,255,255,0.09)" : "rgba(0,0,0,0.06)") : "transparent";
 
   const iconBorder = (active: boolean) =>
     active
-      ? isDark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.08)"
+      ? isDark
+        ? "1px solid rgba(255,255,255,0.08)"
+        : "1px solid rgba(0,0,0,0.08)"
       : "1px solid transparent";
 
   const drawerBg = isDark ? "rgba(10,10,10,0.97)" : "rgba(255,255,255,0.99)";
@@ -213,8 +217,7 @@ export function MobileBottomNav() {
               opacity: hidden ? 1 : 0,
               transform: hidden ? "scale(1)" : "scale(0.9)",
               pointerEvents: hidden ? "auto" : "none",
-              transition:
-                "opacity 0.24s ease-out, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+              transition: "opacity 0.24s ease-out, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
               willChange: "opacity, transform",
             }}
           >
@@ -238,8 +241,7 @@ export function MobileBottomNav() {
               alignItems: "center",
               transform: hidden ? "translateY(calc(100% + 8px))" : "translateY(0)",
               opacity: hidden ? 0 : 1,
-              transition:
-                "transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
+              transition: "transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
               transformOrigin: "center bottom",
               willChange: "transform, opacity",
             }}
