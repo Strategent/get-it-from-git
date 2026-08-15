@@ -246,6 +246,16 @@ export function InboxCard() {
               </div>
             </div>
 
+            {/* Mobile thread action toolbar */}
+            <div className="flex shrink-0 items-center justify-end gap-0.5 border-b border-border/40 px-2 py-1.5">
+              <IconBtn icon={Reply} label="Reply" onClick={() => startReply("reply")} disabled={isSent} />
+              <IconBtn icon={ReplyAll} label="Reply all" onClick={() => startReply("replyAll")} disabled={isSent} />
+              <IconBtn icon={Forward} label="Forward" onClick={startForward} disabled={isSent} />
+              <span className="mx-1 h-4 w-px bg-border" />
+              <IconBtn icon={Archive} label="Archive" onClick={handleArchive} />
+              <IconBtn icon={Star} label="Flag" onClick={toggleFlag} active={isFlagged} />
+            </div>
+
             {/* Body preview */}
             <div className="shrink-0 px-4 pt-2.5">
               <p className="line-clamp-2 text-[12px] leading-relaxed text-foreground/80">
