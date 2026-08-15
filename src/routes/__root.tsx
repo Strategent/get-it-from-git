@@ -200,6 +200,11 @@ function RootShell({ children }: { children: ReactNode }) {
             `,
           }}
         />
+        <script
+          data-goatcounter="https://demostgv1.goatcounter.com/count"
+          async
+          src="//gc.zgo.at/count.js"
+        />
       </head>
       <body>
         {/*
