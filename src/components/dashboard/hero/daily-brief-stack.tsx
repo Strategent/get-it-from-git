@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
 type Section = { label: string; render: () => React.ReactNode };
 
@@ -144,10 +145,12 @@ function SwipeCard({
   hidden,
   isPrevious,
   isTop,
+  isLast,
   stackDragX,
   onDragMotion,
   onSwipeIntent,
   onSwipeComplete,
+  onClose,
   total,
 }: {
   section: Section;
@@ -155,14 +158,17 @@ function SwipeCard({
   hidden: boolean;
   isPrevious: boolean;
   isTop: boolean;
+  isLast: boolean;
   stackDragX: MotionValue<number>;
   onDragMotion: (x: number) => void;
   onSwipeIntent: (dir: 1 | -1) => boolean;
   onSwipeComplete: (dir: 1 | -1) => void;
+  onClose: () => void;
   total: number;
 }) {
   const x = useMotionValue(0);
   const isThrowing = useRef(false);
+  const isClosing = useRef(false);
   const rotate = useTransform(x, [-360, 0, 360], [-15, 0, 15]);
   const opacity = useTransform(x, [-620, -260, 0, 260, 620], [0, 1, 1, 1, 0]);
   const previousOpacity = useTransform(stackDragX, [0, 48, 170], [0, 0.7, 1]);
@@ -180,11 +186,21 @@ function SwipeCard({
         : { zIndex: total - offset };
 
   useEffect(() => {
-    if (isTop && !isThrowing.current) x.set(0);
+    if (isTop && !isThrowing.current && !isClosing.current) x.set(0);
   }, [isTop, x]);
 
+  const handleClose = () => {
+    if (isThrowing.current || isClosing.current || !isLast) return;
+    isClosing.current = true;
+    animate(stackDragX, -170, { duration: 0.34, ease: [0.2, 0.82, 0.24, 1] });
+    animate(x, -680, { duration: 0.34, ease: [0.2, 0.82, 0.24, 1] }).then(() => {
+      onClose();
+      isClosing.current = false;
+    });
+  };
+
   const handleDragEnd = (_: unknown, info: PanInfo) => {
-    if (isThrowing.current) return;
+    if (isThrowing.current || isClosing.current) return;
 
     const dir: 1 | -1 = info.offset.x < 0 ? 1 : -1;
     const shouldThrow = Math.abs(info.offset.x) > 104 || Math.abs(info.velocity.x) > 520;
@@ -239,6 +255,16 @@ function SwipeCard({
           WebkitBackfaceVisibility: "hidden",
         }}
       >
+        {isTop && isLast && (
+          <button
+            type="button"
+            onClick={handleClose}
+            aria-label="Close daily brief"
+            className="absolute top-3 right-3 z-10 grid h-8 w-8 place-items-center rounded-full bg-foreground/[0.08] text-foreground/60 backdrop-blur-sm transition-colors hover:bg-foreground/[0.14] hover:text-foreground active:bg-foreground/[0.18]"
+          >
+            <X className="h-4 w-4" strokeWidth={2} />
+          </button>
+        )}
         {section.render()}
       </div>
     </motion.div>
@@ -253,14 +279,22 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
 
   const handleSwipeIntent = (dir: 1 | -1) => {
     if (dir === -1 && index === 0) return false;
-    // Last card: resist like an iOS carousel edge instead of throwing the
-    // card off-screen and racing the dialog close (which caused the jump).
-    if (dir === 1 && index === total - 1) return false;
     return true;
   };
 
   const handleSwipeComplete = (dir: 1 | -1) => {
+    // Swiping the last card away closes the brief smoothly.
+    if (dir === 1 && index === total - 1) {
+      setClosingAfterSwipe(true);
+      window.setTimeout(() => handleOpenChange(false), 120);
+      return;
+    }
     setIndex((i) => Math.max(0, Math.min(total - 1, i + dir)));
+  };
+
+  const handleCloseFromCard = () => {
+    setClosingAfterSwipe(true);
+    window.setTimeout(() => handleOpenChange(false), 120);
   };
 
   const handleOpenChange = (o: boolean) => {
@@ -297,10 +331,12 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
                 hidden={i < index}
                 isPrevious={i === index - 1}
                 isTop={i === index}
+                isLast={i === total - 1}
                 stackDragX={stackDragX}
                 onDragMotion={(value) => stackDragX.set(value)}
                 onSwipeIntent={handleSwipeIntent}
                 onSwipeComplete={handleSwipeComplete}
+                onClose={handleCloseFromCard}
                 total={total}
               />
             );
