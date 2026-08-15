@@ -345,8 +345,10 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
           })}
         </div>
 
-        {!closingAfterSwipe && (
-          <div className="flex justify-center gap-1.5 mt-5">
+        <div
+          className="flex justify-center gap-1.5 mt-5 transition-opacity duration-200"
+          style={{ opacity: closingAfterSwipe ? 0 : 1, pointerEvents: closingAfterSwipe ? "none" : "auto" }}
+        >
             {SECTIONS.map((_, i) => (
               <button
                 key={i}
@@ -362,8 +364,7 @@ export function DailyBriefStack({ open, onOpenChange }: { open: boolean; onOpenC
                 aria-label={`Go to ${SECTIONS[i].label}`}
               />
             ))}
-          </div>
-        )}
+        </div>
       </DialogContent>
     </Dialog>
   );
