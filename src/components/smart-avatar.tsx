@@ -24,9 +24,15 @@ type SmartAvatarProps = {
  */
 export function SmartAvatar({ name, size = 96, className = "", alt }: SmartAvatarProps) {
   const [state, setState] = useState<"loading" | "loaded" | "error">("loading");
+  // Guard against callers that pass only a request `size` and no box classes —
+  // without an explicit box the <img> would render at its natural size.
+  const hasBox = /(^|\s)(h-|size-)/.test(className);
 
   return (
-    <span className={`relative inline-block shrink-0 overflow-hidden rounded-full ${className}`}>
+    <span
+      className={`relative inline-block shrink-0 overflow-hidden rounded-full ${className}`}
+      style={hasBox ? undefined : { height: 36, width: 36 }}
+    >
       {state !== "loaded" && (
         <span
           aria-hidden
