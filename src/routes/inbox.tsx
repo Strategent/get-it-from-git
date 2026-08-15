@@ -620,6 +620,12 @@ function threadCc(thread: Thread): string[] {
 }
 
 function createDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
+  return buildDraft(thread, mode);
+}
+
+const DRAFTS_STORAGE_KEY = "syra.inbox.drafts.v1";
+
+function buildDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
   const firstName = thread.from.split(" ")[0];
   const subjectPrefix = mode === "forward" ? "Fwd:" : "Re:";
   return {
