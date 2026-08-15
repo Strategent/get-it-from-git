@@ -24,3 +24,15 @@ export function preventMobileAutoFocus(event: Event) {
 export function autoFocusUnlessTouch() {
   return !isCoarsePointer();
 }
+
+/**
+ * Use as `onCloseAutoFocus`. Radix restores focus to the trigger when an
+ * overlay closes; on iOS Safari that paints a blue focus rectangle around
+ * the trigger (and can re-open the keyboard). Touch users get no ring.
+ */
+export function preventMobileCloseAutoFocus(event: Event) {
+  if (!isCoarsePointer()) return;
+  event.preventDefault();
+  const active = document.activeElement as HTMLElement | null;
+  active?.blur?.();
+}

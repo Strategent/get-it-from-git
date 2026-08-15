@@ -206,6 +206,33 @@
       background-color: var(--app-surface, var(--color-background)) !important;
     }
   }
+
+  /* ── Touch polish (Apple/iOS behaviour) ───────────────────────────────
+     1. Never paint the grey/blue webkit tap flash on any element.
+     2. Never show a focus ring for pointer-driven focus — only for real
+        keyboard navigation (`:focus-visible`). This is what kills the blue
+        rectangle that Safari draws around a dialog trigger when focus is
+        restored after the overlay closes.
+     3. On coarse pointers suppress the ring entirely; there is no keyboard
+        focus loop to communicate. */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+  @media (pointer: coarse) {
+    :focus,
+    :focus-visible {
+      outline: none !important;
+    }
+  }
+  /* Smooth, momentum-correct scrolling everywhere on touch. */
+  @media (pointer: coarse) {
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
 
 /* Premium bento card chrome */
