@@ -9,6 +9,7 @@ import {
 } from "motion/react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { X } from "lucide-react";
 
 type Section = { label: string; render: () => React.ReactNode };
 
