@@ -16,7 +16,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronUp } from "lucide-react";
+import { ChevronUp, ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
 import syraSidebarIcon from "@/assets/sidebar-icon.png";
