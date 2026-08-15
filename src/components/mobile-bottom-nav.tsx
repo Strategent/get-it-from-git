@@ -190,7 +190,7 @@ export function MobileBottomNav() {
         style={{
           bottom: hidden
             ? "calc(14px + env(safe-area-inset-bottom, 0px))"
-            : "calc(68px + env(safe-area-inset-bottom, 0px))",
+            : "calc(76px + env(safe-area-inset-bottom, 0px))",
           width: 44,
           height: 28,
           background: pillBg,
@@ -199,6 +199,7 @@ export function MobileBottomNav() {
           backdropFilter: "blur(28px)",
           WebkitBackdropFilter: "blur(28px)",
           color: iconColor(true),
+          zIndex: 61,
           transition:
             "bottom 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
         }}
