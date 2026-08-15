@@ -161,16 +161,6 @@ export function InboxCard() {
       label="Inbox"
       to="/inbox"
       padding="none"
-      action={
-        <div className="flex items-center gap-1">
-          <IconBtn icon={Reply} label="Reply" onClick={() => startReply("reply")} disabled={isSent} />
-          <IconBtn icon={ReplyAll} label="Reply all" onClick={() => startReply("replyAll")} disabled={isSent} />
-          <IconBtn icon={Forward} label="Forward" onClick={startForward} disabled={isSent} />
-          <span className="mx-1 h-4 w-px bg-border" />
-          <IconBtn icon={Archive} label="Archive" onClick={handleArchive} />
-          <IconBtn icon={Star} label="Flag" onClick={toggleFlag} active={isFlagged} />
-        </div>
-      }
       bodyClassName="overflow-hidden"
     >
       {/* Focused / Other tabs — Linear-style monochrome underline */}
