@@ -191,7 +191,8 @@ function SwipeCard({
 
     if (!shouldThrow || !onSwipeIntent(dir)) {
       onDragMotion(0);
-      animate(x, 0, { type: "spring", stiffness: 520, damping: 38, mass: 0.55 });
+      animate(stackDragX, 0, { type: "spring", stiffness: 420, damping: 40, mass: 0.6 });
+      animate(x, 0, { type: "spring", stiffness: 420, damping: 40, mass: 0.6 });
       return;
     }
 
