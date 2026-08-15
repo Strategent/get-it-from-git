@@ -1849,6 +1849,30 @@ function InboxPage() {
                 </p>
               </div>
 
+              {selectedDraft.status !== "closed" && (
+                <div className="pb-6">
+                  <ComposeWindow
+                    draft={selectedDraft}
+                    from={selected.from}
+                    sending={sendingId === selected.id}
+                    regenerating={regeneratingId === selected.id}
+                    justSent={lastSentId === selected.id && selected.folder === "Sent"}
+                    onUpdate={updateDraft}
+                    onSend={sendDraft}
+                    onRegenerate={regenerateDraft}
+                    onDiscard={() => {
+                      setDrafts((current) => ({
+                        ...current,
+                        [selected.id]: { ...selectedDraft, status: "closed" },
+                      }));
+                      toast.success("Draft discarded");
+                    }}
+                    onMinimize={() => updateDraft({ status: "minimized" })}
+                    onRestore={() => updateDraft({ status: "open" })}
+                  />
+                </div>
+              )}
+
               <article className="border-t border-border/50 pt-6">
                 {/* sender / header row */}
                 <MessageHeaderBlock thread={selected} />
@@ -1871,7 +1895,7 @@ function InboxPage() {
                 )}
               </article>
 
-              {selectedDraft.status === "closed" ? (
+              {selectedDraft.status === "closed" && (
                 <div className="flex items-center gap-2 pl-0 pt-7 sm:pl-[46px]">
                   <button
                     onClick={() => openComposer("reply")}
@@ -1887,28 +1911,6 @@ function InboxPage() {
                     <Forward className="h-4 w-4" />
                     Forward
                   </button>
-                </div>
-              ) : (
-                <div className="pt-6">
-                <ComposeWindow
-                  draft={selectedDraft}
-                  from={selected.from}
-                  sending={sendingId === selected.id}
-                  regenerating={regeneratingId === selected.id}
-                  justSent={lastSentId === selected.id && selected.folder === "Sent"}
-                  onUpdate={updateDraft}
-                  onSend={sendDraft}
-                  onRegenerate={regenerateDraft}
-                  onDiscard={() => {
-                    setDrafts((current) => ({
-                      ...current,
-                      [selected.id]: { ...selectedDraft, status: "closed" },
-                    }));
-                    toast.success("Draft discarded");
-                  }}
-                  onMinimize={() => updateDraft({ status: "minimized" })}
-                  onRestore={() => updateDraft({ status: "open" })}
-                />
                 </div>
               )}
             </div>
