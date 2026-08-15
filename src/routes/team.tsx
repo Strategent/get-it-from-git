@@ -230,16 +230,21 @@ function TeamPage() {
           {filtered.map((m) => {
             const t = teamById(m.team);
             return (
-              <Card key={m.name} className="bento p-5">
+      <Card key={m.name} className="bento p-4 sm:p-5">
                 <div className="flex items-center gap-3">
-                  <SmartAvatar name={m.name} size={128} alt={m.name} />
+                  <SmartAvatar
+                    name={m.name}
+                    size={128}
+                    alt={m.name}
+                    className="h-11 w-11 shrink-0 border border-border/60"
+                  />
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-semibold truncate">{m.name}</div>
                     <div className="text-xs text-muted-foreground truncate">{m.role}</div>
                   </div>
                   <Badge
                     variant="outline"
-                    className="flex items-center gap-1.5 border-border/60 text-muted-foreground"
+                    className="hidden xs:flex sm:flex shrink-0 items-center gap-1.5 border-border/60 text-muted-foreground"
                   >
                     <span
                       className="inline-block h-1.5 w-1.5 rounded-full"

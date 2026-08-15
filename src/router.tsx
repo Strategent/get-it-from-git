@@ -63,12 +63,16 @@ export const getRouter = () => {
     routeTree,
     context: { queryClient },
     scrollRestoration: true,
-    defaultPreload: "intent",
-    defaultPreloadStaleTime: 0,
+    // "viewport" also prefetches on mobile, where there is no hover intent —
+    // routes are warm by the time the tap lands.
+    defaultPreload: "viewport",
+    defaultPreloadStaleTime: 30_000,
     defaultErrorComponent: DefaultErrorComponent,
     defaultPendingComponent: PageLoader,
-    defaultPendingMs: 150,
-    defaultPendingMinMs: 300,
+    // Only show a loader when a route is genuinely slow; instant routes must
+    // never flash a skeleton.
+    defaultPendingMs: 700,
+    defaultPendingMinMs: 0,
   });
 
   return router;
