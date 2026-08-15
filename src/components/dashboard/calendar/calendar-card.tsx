@@ -73,28 +73,16 @@ export function CalendarCard() {
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={() => setWeekOffset((o) => o - 1)}
-            aria-label="Previous week"
+            onClick={() => shiftDay(-1)}
+            aria-label="Previous day"
             className="grid h-7 w-7 place-items-center rounded-full border border-border bg-foreground/[0.05] text-foreground/80 hover:bg-foreground/[0.1]"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
           </button>
-          {weekOffset !== 0 && (
-            <button
-              type="button"
-              onClick={() => {
-                setWeekOffset(0);
-                setSelectedKey(null);
-              }}
-              className="h-7 rounded-full border border-border bg-foreground/[0.05] px-2.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/80 hover:bg-foreground/[0.1]"
-            >
-              Today
-            </button>
-          )}
           <button
             type="button"
-            onClick={() => setWeekOffset((o) => o + 1)}
-            aria-label="Next week"
+            onClick={() => shiftDay(1)}
+            aria-label="Next day"
             className="grid h-7 w-7 place-items-center rounded-full border border-border bg-foreground/[0.05] text-foreground/80 hover:bg-foreground/[0.1]"
           >
             <ChevronRight className="h-3.5 w-3.5" />
