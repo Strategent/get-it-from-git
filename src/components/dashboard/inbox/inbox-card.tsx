@@ -387,7 +387,7 @@ export function InboxCard() {
 
         {/* Reading pane — Gmail-style */}
         <div className="col-span-12 flex min-w-0 flex-col overflow-hidden md:col-span-8">
-          {/* Subject row */}
+          {/* Subject row with thread actions */}
           <div className="flex items-center justify-between gap-3 border-b border-border/40 px-4 py-3">
             <div className="flex min-w-0 flex-1 items-center gap-2">
               <button
@@ -404,18 +404,12 @@ export function InboxCard() {
             </div>
 
             <div className="flex shrink-0 items-center gap-0.5">
-              <button
-
-                type="button"
-                onClick={toggleFlag}
-                aria-label="Flag"
-                aria-pressed={isFlagged}
-                className={`grid h-6 w-6 place-items-center rounded-md transition-colors hover:bg-foreground/[0.06] ${
-                  isFlagged ? "text-amber-400" : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <Star className={`h-3.5 w-3.5 ${isFlagged ? "fill-amber-400" : ""}`} strokeWidth={1.75} />
-              </button>
+              <IconBtn icon={Reply} label="Reply" onClick={() => startReply("reply")} disabled={isSent} />
+              <IconBtn icon={ReplyAll} label="Reply all" onClick={() => startReply("replyAll")} disabled={isSent} />
+              <IconBtn icon={Forward} label="Forward" onClick={startForward} disabled={isSent} />
+              <span className="mx-1 h-4 w-px bg-border" />
+              <IconBtn icon={Archive} label="Archive" onClick={handleArchive} />
+              <IconBtn icon={Star} label="Flag" onClick={toggleFlag} active={isFlagged} />
             </div>
           </div>
 
