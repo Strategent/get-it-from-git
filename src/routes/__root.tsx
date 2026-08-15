@@ -92,37 +92,26 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "strategent" },
-      { title: "strategent | demo build" },
+      { title: "strategent — Dashboard" },
       {
         name: "description",
         content:
-          "Private wealth admin console for Harwick & Sterne: portfolios, client meetings, planner, documents and the Syra agent.",
+          "One operating layer for the business: inbox, calls, CRM, calendar and documents, run by the Syra agent with human approval at every decision point.",
       },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "strategent | demo build" },
+      { name: "author", content: "Strategent" },
+      { property: "og:title", content: "strategent — Dashboard" },
       {
         property: "og:description",
         content:
-          "Private wealth admin console for Harwick & Sterne across portfolios, meetings, planner and the Syra agent.",
+          "One operating layer for the business: inbox, calls, CRM, calendar and documents, run by the Syra agent with human approval at every decision point.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "strategent | demo build" },
-      {
-        name: "description",
-        content:
-          "Strategent is an AI operations workspace — unified inbox, CRM, calendar and the Syra agent in one demo build.",
-      },
-      {
-        property: "og:description",
-        content:
-          "Strategent is an AI operations workspace — unified inbox, CRM, calendar and the Syra agent in one demo build.",
-      },
+      { name: "twitter:title", content: "strategent — Dashboard" },
       {
         name: "twitter:description",
         content:
-          "Strategent is an AI operations workspace — unified inbox, CRM, calendar and the Syra agent in one demo build.",
+          "One operating layer for the business: inbox, calls, CRM, calendar and documents, run by the Syra agent with human approval at every decision point.",
       },
       {
         property: "og:image",
@@ -211,6 +200,11 @@ function RootShell({ children }: { children: ReactNode }) {
             `,
           }}
         />
+        <script
+          data-goatcounter="https://demostgv1.goatcounter.com/count"
+          async
+          src="//gc.zgo.at/count.js"
+        />
       </head>
       <body>
         {/*
@@ -257,6 +251,26 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    let isFirst = true;
+    const unsubscribe = router.subscribe("onResolved", () => {
+      if (isFirst) {
+        isFirst = false;
+        return;
+      }
+      try {
+        const gc = (window as unknown as { goatcounter?: { count?: (opts: { path: string }) => void } }).goatcounter;
+        if (typeof gc?.count === "function") {
+          gc.count({ path: location.pathname });
+        }
+      } catch (e) {
+        // silently fail if analytics is blocked
+      }
+    });
+    return () => unsubscribe();
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
