@@ -7,7 +7,6 @@ import { useTheme } from "@/components/theme-provider";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRouterState } from "@tanstack/react-router";
 import {
-import { isCoarsePointer } from "@/lib/mobile-focus";
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -15,6 +14,7 @@ import { isCoarsePointer } from "@/lib/mobile-focus";
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { isCoarsePointer } from "@/lib/mobile-focus";
 
 
 export function Topbar() {
