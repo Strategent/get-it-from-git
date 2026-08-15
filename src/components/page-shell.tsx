@@ -7,6 +7,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRouterState } from "@tanstack/react-router";
 import {
+import { isCoarsePointer } from "@/lib/mobile-focus";
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -32,7 +33,8 @@ export function Topbar() {
     return () => clearInterval(id);
   }, []);
   useEffect(() => {
-    if (searchOpen) inputRef.current?.focus();
+    // Touch devices: let the user tap the field so the keyboard is never forced open.
+    if (searchOpen && !isCoarsePointer()) inputRef.current?.focus();
   }, [searchOpen]);
   const time = now
     ? now.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", hour12: true })

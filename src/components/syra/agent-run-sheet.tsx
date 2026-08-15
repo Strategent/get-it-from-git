@@ -2,6 +2,7 @@ import { SmartAvatar } from "@/components/smart-avatar";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowUp, Maximize2, X } from "lucide-react";
 import { senderEmailAddress } from "@/lib/avatar";
+import { autoFocusUnlessTouch } from "@/lib/mobile-focus";
 
 type Step = { verb: string; object: string };
 type Question = {
@@ -384,7 +385,7 @@ export function SyraAgentRunSheet({
                 {kind === "contact" && (
                   <div className="mt-3 space-y-2">
                     <input
-                      autoFocus
+                      autoFocus={autoFocusUnlessTouch()}
                       value={contactQuery}
                       onChange={(e) => setContactQuery(e.target.value)}
                       placeholder={newContact ? "Full name" : "Start typing a name…"}
