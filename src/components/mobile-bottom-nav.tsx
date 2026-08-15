@@ -14,9 +14,10 @@ import {
   Plug,
   LifeBuoy,
   MoreHorizontal,
+  ChevronLeft,
+  ChevronUp,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronUp, ChevronDown } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
 import syraSidebarIcon from "@/assets/sidebar-icon.png";
@@ -177,118 +178,145 @@ export function MobileBottomNav() {
         </div>
       </div>
 
-      {/* Manual toggle handle — centered above the nav when visible, or a
-          floating pill at the bottom when hidden. This lets users explicitly
-          expand/condense the bar without relying on scroll gestures. */}
-      <button
-        aria-label={hidden ? "Show navigation" : "Hide navigation"}
-        onClick={() => {
-          pinnedUntil.current = Date.now() + 1200;
-          setHidden((v) => !v);
-        }}
-        className="fixed left-1/2 z-[59] grid -translate-x-1/2 place-items-center rounded-full transition-all duration-300 ease-out"
-        style={{
-          bottom: hidden
-            ? "calc(14px + env(safe-area-inset-bottom, 0px))"
-            : "calc(76px + env(safe-area-inset-bottom, 0px))",
-          width: 44,
-          height: 28,
-          background: pillBg,
-          border: pillBorder,
-          boxShadow: pillShadow,
-          backdropFilter: "blur(28px)",
-          WebkitBackdropFilter: "blur(28px)",
-          color: iconColor(true),
-          zIndex: 61,
-          transition:
-            "bottom 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
-        }}
-      >
-        {hidden ? (
-          <ChevronUp className="h-[16px] w-[16px]" />
-        ) : (
-          <ChevronDown className="h-[16px] w-[16px]" />
-        )}
-      </button>
-
+      {/* Bottom nav assembly */}
       <div
         className="fixed bottom-0 left-0 right-0 z-[60] pointer-events-none"
-        style={{
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
-          transform: hidden ? "translateY(calc(100% + 8px))" : "translateY(0)",
-          opacity: hidden ? 0 : 1,
-          transition:
-            "transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
-        }}
+        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        <nav
-          className="pointer-events-auto mx-auto"
+        <div
+          className="relative mx-auto"
           style={{
             width: "min(calc(100% - 28px), 402px)",
             marginBottom: 14,
-            padding: "8px 10px",
-            borderRadius: 24,
-            background: pillBg,
-            border: pillBorder,
-            backdropFilter: "blur(28px)",
-            WebkitBackdropFilter: "blur(28px)",
-            boxShadow: pillShadow,
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            transform: "translateZ(0)",
-            willChange: "transform",
           }}
         >
-          {primaryNav.map((item) => {
-            const active = isActive(item.url);
-            return (
-              <Link
-                key={item.title}
-                to={item.url}
-                aria-label={item.title}
-                style={{
-                  display: "grid",
-                  placeItems: "center",
-                  width: 44,
-                  height: 44,
-                  borderRadius: 14,
-                  flexShrink: 0,
-                  color: iconColor(active),
-                  background: iconBg(active),
-                  border: iconBorder(active),
-                  transition: "background 0.15s, color 0.15s",
-                }}
-              >
-                {item.isSyra ? (
-                  <SyraIcon isDark={isDark} active={active} />
-                ) : item.icon ? (
-                  <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
-                ) : null}
-              </Link>
-            );
-          })}
-
-          {/* More button */}
+          {/* Expand handle — appears in the same right-hand spot after the bar is condensed */}
           <button
-            onClick={() => setMoreOpen((v) => !v)}
-            aria-label="More navigation"
+            aria-label="Show navigation"
+            onClick={() => {
+              pinnedUntil.current = Date.now() + 1200;
+              setHidden(false);
+            }}
+            className="absolute grid place-items-center rounded-[14px]"
             style={{
-              display: "grid",
-              placeItems: "center",
+              right: 10,
+              top: "50%",
+              marginTop: -22,
               width: 44,
               height: 44,
-              borderRadius: 14,
-              flexShrink: 0,
-              color: iconColor(moreOpen || anyMoreActive),
-              background: iconBg(moreOpen || anyMoreActive),
-              border: iconBorder(moreOpen || anyMoreActive),
-              transition: "background 0.15s, color 0.15s",
+              background: pillBg,
+              border: pillBorder,
+              boxShadow: pillShadow,
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              color: iconColor(true),
+              opacity: hidden ? 1 : 0,
+              transform: hidden ? "scale(1)" : "scale(0.9)",
+              pointerEvents: hidden ? "auto" : "none",
+              transition:
+                "opacity 0.24s ease-out, transform 0.3s cubic-bezier(0.32, 0.72, 0, 1)",
+              willChange: "opacity, transform",
             }}
           >
-            <MoreHorizontal className="h-[18px] w-[18px]" />
+            <ChevronUp className="h-[18px] w-[18px]" />
           </button>
-        </nav>
+
+          {/* Nav bar */}
+          <nav
+            className="pointer-events-auto"
+            style={{
+              width: "100%",
+              padding: "8px 10px",
+              borderRadius: 24,
+              background: pillBg,
+              border: pillBorder,
+              backdropFilter: "blur(28px)",
+              WebkitBackdropFilter: "blur(28px)",
+              boxShadow: pillShadow,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              transform: hidden ? "translateY(calc(100% + 8px))" : "translateY(0)",
+              opacity: hidden ? 0 : 1,
+              transition:
+                "transform 0.42s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.24s ease-out",
+              transformOrigin: "center bottom",
+              willChange: "transform, opacity",
+            }}
+          >
+            {primaryNav.map((item) => {
+              const active = isActive(item.url);
+              return (
+                <Link
+                  key={item.title}
+                  to={item.url}
+                  aria-label={item.title}
+                  style={{
+                    display: "grid",
+                    placeItems: "center",
+                    width: 44,
+                    height: 44,
+                    borderRadius: 14,
+                    flexShrink: 0,
+                    color: iconColor(active),
+                    background: iconBg(active),
+                    border: iconBorder(active),
+                    transition: "background 0.15s, color 0.15s",
+                  }}
+                >
+                  {item.isSyra ? (
+                    <SyraIcon isDark={isDark} active={active} />
+                  ) : item.icon ? (
+                    <item.icon strokeWidth={1.5} className="h-[18px] w-[18px]" />
+                  ) : null}
+                </Link>
+              );
+            })}
+
+            {/* More button */}
+            <button
+              onClick={() => setMoreOpen((v) => !v)}
+              aria-label="More navigation"
+              style={{
+                display: "grid",
+                placeItems: "center",
+                width: 44,
+                height: 44,
+                borderRadius: 14,
+                flexShrink: 0,
+                color: iconColor(moreOpen || anyMoreActive),
+                background: iconBg(moreOpen || anyMoreActive),
+                border: iconBorder(moreOpen || anyMoreActive),
+                transition: "background 0.15s, color 0.15s",
+              }}
+            >
+              <MoreHorizontal className="h-[18px] w-[18px]" />
+            </button>
+
+            {/* Condense toggle — sits next to More, uses a “<” chevron to indicate the bar can be tucked away */}
+            <button
+              aria-label="Hide navigation"
+              onClick={() => {
+                pinnedUntil.current = Date.now() + 1200;
+                setHidden(true);
+              }}
+              style={{
+                display: "grid",
+                placeItems: "center",
+                width: 44,
+                height: 44,
+                borderRadius: 14,
+                flexShrink: 0,
+                color: iconColor(false),
+                background: "transparent",
+                border: "1px solid transparent",
+                transition: "background 0.15s, color 0.15s",
+              }}
+            >
+              <ChevronLeft className="h-[18px] w-[18px]" />
+            </button>
+          </nav>
+        </div>
       </div>
     </>
   );
