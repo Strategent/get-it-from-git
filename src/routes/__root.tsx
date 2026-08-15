@@ -112,27 +112,30 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "Remix of v2 is a web application that allows users to import and integrate GitHub projects.",
+          "Strategent is an AI operations workspace — unified inbox, CRM, calendar and the Syra agent in one demo build.",
       },
       {
         property: "og:description",
         content:
-          "Remix of v2 is a web application that allows users to import and integrate GitHub projects.",
+          "Strategent is an AI operations workspace — unified inbox, CRM, calendar and the Syra agent in one demo build.",
       },
       {
         name: "twitter:description",
         content:
-          "Remix of v2 is a web application that allows users to import and integrate GitHub projects.",
+          "Strategent is an AI operations workspace — unified inbox, CRM, calendar and the Syra agent in one demo build.",
       },
       {
         property: "og:image",
-        content: "https://demo.strategent.app/og-image.png",
+        content: "https://demo.strategent.app/og-image-v2.jpg",
       },
+      { property: "og:image:secure_url", content: "https://demo.strategent.app/og-image-v2.jpg" },
+      { property: "og:image:type", content: "image/jpeg" },
       { property: "og:image:width", content: "1920" },
       { property: "og:image:height", content: "1080" },
+      { property: "og:image:alt", content: "Strategent dashboard preview" },
       {
         name: "twitter:image",
-        content: "https://demo.strategent.app/og-image.png",
+        content: "https://demo.strategent.app/og-image-v2.jpg",
       },
     ],
     links: [
