@@ -99,16 +99,16 @@ function BillingPage() {
         description="Subscriptions, invoices and payouts."
         actions={<NewInvoiceDialog nextId={nextId} onCreate={addInvoice} />}
       />
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
         {[
           { label: "MRR", value: "$128,400" },
           { label: "Outstanding", value: "$8,210", accent: true },
           { label: "Next payout", value: "May 30" },
           { label: "Churn (30d)", value: "0.9%" },
         ].map((s) => (
-          <Card key={s.label} className="bento p-5">
-            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
-            <div className={`mt-2 text-2xl font-semibold tracking-tight ${s.accent ? "text-accent" : ""}`}>{s.value}</div>
+          <Card key={s.label} className="bento p-4 md:p-5">
+            <div className="truncate text-[10.5px] uppercase tracking-wider text-muted-foreground">{s.label}</div>
+            <div className={`mt-2 text-xl md:text-2xl font-semibold tracking-tight ${s.accent ? "text-accent" : ""}`}>{s.value}</div>
           </Card>
         ))}
       </div>
@@ -116,16 +116,31 @@ function BillingPage() {
         <div className="px-5 py-3 border-b border-border/60 text-sm font-semibold">Recent invoices</div>
         <div className="divide-y divide-border/60">
           {invoices.map((inv) => (
-            <div key={inv.id} className="grid grid-cols-12 items-center px-5 py-3 text-[13px] hover:bg-white/[0.03]">
-              <div className="col-span-3 font-mono text-muted-foreground">{inv.id}</div>
-              <div className="col-span-4 font-medium">{inv.client}</div>
-              <div className="col-span-2">{inv.amount}</div>
-              <div className="col-span-2">
-                <Badge className={`border ${statusClass(inv.status)}`}>{inv.status}</Badge>
+            <div
+              key={inv.id}
+              className="flex items-center gap-3 px-4 py-3 text-[13px] md:grid md:grid-cols-12 md:px-5 hover:bg-foreground/[0.03]"
+            >
+              {/* Mobile: stacked two-line row. Desktop: 12-col table. */}
+              <div className="min-w-0 flex-1 md:col-span-3 md:flex-none">
+                <div className="truncate font-medium md:hidden">{inv.client}</div>
+                <div className="mt-0.5 font-mono text-[11.5px] text-muted-foreground md:mt-0 md:text-[13px]">
+                  {inv.id} <span className="md:hidden">· {inv.date}</span>
+                </div>
               </div>
-              <div className="col-span-1 flex justify-end gap-1 text-muted-foreground">
-                <span className="mr-2 text-xs">{inv.date}</span>
-                <Button variant="ghost" size="icon" onClick={() => downloadInvoice(inv)} aria-label={`Download ${inv.id}`}>
+              <div className="hidden truncate font-medium md:col-span-4 md:block">{inv.client}</div>
+              <div className="shrink-0 tabular-nums md:col-span-2">{inv.amount}</div>
+              <div className="shrink-0 md:col-span-2">
+                <Badge className={`border text-[10.5px] md:text-xs ${statusClass(inv.status)}`}>{inv.status}</Badge>
+              </div>
+              <div className="flex shrink-0 justify-end gap-1 text-muted-foreground md:col-span-1">
+                <span className="mr-2 hidden text-xs md:inline">{inv.date}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-9 w-9"
+                  onClick={() => downloadInvoice(inv)}
+                  aria-label={`Download ${inv.id}`}
+                >
                   <Download className="h-3.5 w-3.5" />
                 </Button>
               </div>
