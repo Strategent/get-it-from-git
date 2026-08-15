@@ -15,16 +15,22 @@ import {
   LifeBuoy,
   MoreHorizontal,
 } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ChevronUp } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useTheme } from "@/components/theme-provider";
 import syraSidebarIcon from "@/assets/sidebar-icon.png";
 
-const SyraIcon = () => (
+const SyraIcon = ({ isDark, active }: { isDark: boolean; active: boolean }) => (
   <img
     src={syraSidebarIcon}
     alt=""
     className="h-[22px] w-[22px] object-contain"
+    style={{
+      // The mark is a light glyph; invert it in light mode so it reads black-ish.
+      filter: isDark ? "none" : "invert(1)",
+      opacity: active ? 0.9 : 0.42,
+    }}
   />
 );
 
