@@ -299,10 +299,25 @@ export function InboxCard() {
               <button
                 type="button"
                 onClick={handleSend}
-                disabled={sending || isSent || draft.trim().length === 0}
-                className="inline-flex h-8 items-center gap-1.5 rounded-md bg-foreground px-3.5 text-[12px] font-semibold text-background transition-opacity disabled:opacity-40"
+                disabled={sending || isSent || justSent || draft.trim().length === 0}
+                className="ios-tap relative inline-flex h-8 w-[92px] shrink-0 items-center justify-center rounded-md bg-foreground text-[12px] font-semibold text-background disabled:opacity-40"
               >
-                {sending ? "Sending…" : isSent ? "Sent" : "Send"}
+                {/* Fixed-width label stack: the text swaps by crossfade so the
+                    button never resizes mid-send. */}
+                <span className="pointer-events-none grid">
+                  {(["Send", "Sending…", "Sent"] as const).map((label, i) => {
+                    const state = sending ? 1 : isSent || justSent ? 2 : 0;
+                    return (
+                      <span
+                        key={label}
+                        className="col-start-1 row-start-1 transition-opacity duration-200"
+                        style={{ opacity: state === i ? 1 : 0 }}
+                      >
+                        {label}
+                      </span>
+                    );
+                  })}
+                </span>
               </button>
             </div>
           </div>
