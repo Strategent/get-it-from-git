@@ -160,22 +160,23 @@ function Home() {
       <DashboardShell
         rail={
           <BentoGridStack
-            key={setupDone ? "rail-v5-done" : "rail-v5-setup"}
+            key="rail-v8"
             items={railItems}
             column={1}
-            storageKey={setupDone ? "hs-rail-layout-v5-done" : "hs-rail-layout-v5"}
+            storageKey="hs-rail-layout-v8"
             resizeHandles="s"
             className="-mx-2.5"
           />
         }
       >
         <BentoGridStack
-          key={setupDone ? "main-v7-done" : "main-v7-setup"}
+          key="main-v8"
           items={mainItems}
           column={12}
-          storageKey={setupDone ? "hs-main-layout-v7-done" : "hs-main-layout-v7"}
+          storageKey="hs-main-layout-v8"
           className="-mx-2.5"
         />
+
       </DashboardShell>
     </PageShell>
   );
