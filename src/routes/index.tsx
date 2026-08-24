@@ -111,8 +111,7 @@ function Home() {
   // Row heights: visible card height ≈ h·76(cellHeight) − 2·10(margin).
   // hero h=3 → ~208px (target ~210) · inbox/bulletin h=6 → ~436px (target
   // ~420) · calls/calendar h=5 → ~360px (closest integer rows to ~390).
-  const heroH = setupDone ? 4 : 3;
-  const rowShift = heroH - 4;
+  const heroH = 3;
   const mainItems = useMemo<BentoItem[]>(
     () => [
       {
@@ -133,51 +132,24 @@ function Home() {
           </div>
         ),
       },
-      { id: "inbox", x: 0, y: 4 + rowShift, w: 8, h: 5, minW: 5, minH: 4, maxH: 8, node: <InboxCard /> },
-      { id: "calls", x: 8, y: 4 + rowShift, w: 4, h: 5, minW: 3, minH: 4, maxW: 8, maxH: 8, node: <CallsCard /> },
-      { id: "workload", x: 0, y: 9 + rowShift, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <WorkloadCard /> },
-      { id: "channels", x: 4, y: 9 + rowShift, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <ChannelsCard /> },
-      { id: "planner", x: 8, y: 9 + rowShift, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <PlannerCard /> },
+      { id: "bulletin", x: 0, y: 3, w: 4, h: 6, minW: 3, minH: 4, maxH: 10, node: <BulletinCard /> },
+      { id: "inbox", x: 4, y: 3, w: 8, h: 6, minW: 5, minH: 4, maxH: 10, node: <InboxCard /> },
+      { id: "planner", x: 0, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <PlannerCard /> },
+      { id: "channels", x: 4, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <ChannelsCard /> },
+      { id: "workload", x: 8, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <WorkloadCard /> },
     ],
-    [heroH, rowShift],
+    [heroH],
   );
 
   const railItems = useMemo<BentoItem[]>(
-    () => {
-      const onboarding: BentoItem = {
-        id: "onboarding",
-        x: 0,
-        y: 0,
-        w: 1,
-        h: 4,
-        minH: 3,
-        node: (
-          <div className="h-full w-full [&>section]:h-full">
-            <GradientFeatureCard
-              label="Get started"
-              title="Make the most of Syra"
-              description="Connect your inbox, calendar and phone line to unlock automated drafting and call handling."
-              progress={99}
-              cta={
-                <PillButton variant="primary" onClick={finishSetup}>
-                  Finish setup
-                </PillButton>
-              }
-              onDismiss={finishSetup}
-            />
-          </div>
-        ),
-      };
-      const offset = setupDone ? 0 : 4;
-      const rest: BentoItem[] = [
-        { id: "calendar", x: 0, y: offset, w: 1, h: 6, minH: 4, maxH: 10, node: <CalendarCard /> },
-        { id: "team", x: 0, y: offset + 6, w: 1, h: 4, minH: 3, maxH: 8, node: <TeamCard /> },
-        { id: "bulletin", x: 0, y: offset + 10, w: 1, h: 5, minH: 3, maxH: 10, node: <BulletinCard /> },
-      ];
-      return setupDone ? rest : [onboarding, ...rest];
-    },
-    [setupDone],
+    () => [
+      { id: "calendar", x: 0, y: 0, w: 1, h: 6, minH: 4, maxH: 10, node: <CalendarCard /> },
+      { id: "calls", x: 0, y: 6, w: 1, h: 6, minH: 4, maxH: 10, node: <CallsCard /> },
+      { id: "team", x: 0, y: 12, w: 1, h: 5, minH: 3, maxH: 8, node: <TeamCard /> },
+    ],
+    [],
   );
+
 
   if (isMobile) {
     return <MobileHome setupDone={setupDone} finishSetup={finishSetup} />;
