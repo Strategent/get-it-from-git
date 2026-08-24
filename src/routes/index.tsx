@@ -8,8 +8,6 @@ import { InboxCard } from "@/components/dashboard/inbox/inbox-card";
 import { CalendarCard } from "@/components/dashboard/calendar/calendar-card";
 import { CallsCard } from "@/components/dashboard/calls/calls-card";
 import { BulletinCard } from "@/components/dashboard/bulletin/bulletin-card";
-import { GradientFeatureCard } from "@/components/ui/gradient-feature-card";
-import { PillButton } from "@/components/ui/pill-button";
 import {
   WorkloadCard,
   MobileWorkloadCard,
