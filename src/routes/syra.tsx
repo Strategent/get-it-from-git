@@ -101,7 +101,7 @@ function SyraPage() {
   return (
     <div className="relative h-full min-h-0 w-full overflow-hidden">
       <style>{`
-        .font-radley { font-family: 'Radley', Georgia, serif; }
+        .font-radley { font-family: var(--font-serif); }
         @keyframes syraRibbon {
           0%   { transform: translate3d(-12%, 0, 0) scaleY(1) rotate(-1.2deg); }
           50%  { transform: translate3d(12%, 3%, 0) scaleY(1.25) rotate(1.4deg); }
