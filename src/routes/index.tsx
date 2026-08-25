@@ -157,14 +157,16 @@ function Home() {
     <PageShell>
       <DashboardShell
         rail={
-          <BentoGridStack
-            key="rail-v8"
-            items={railItems}
-            column={1}
-            storageKey="hs-rail-layout-v8"
-            resizeHandles="s"
-            className="-mx-2.5"
-          />
+          <div className="rounded-[28px] border border-border/60 bg-card/30 p-2.5">
+            <BentoGridStack
+              key="rail-v8"
+              items={railItems}
+              column={1}
+              storageKey="hs-rail-layout-v8"
+              resizeHandles="s"
+              className="-mx-2.5"
+            />
+          </div>
         }
       >
         <div className="rounded-[28px] border border-border/60 bg-card/30 p-2.5">
