@@ -43,7 +43,7 @@ export const Route = createFileRoute("/")({
 function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetup: () => void }) {
   return (
     <PageShell>
-      <div className="flex flex-col gap-3 rounded-[28px] border border-border/60 bg-card/30 p-2.5 pb-3 mb-6">
+      <div className="flex flex-col gap-3 rounded-[28px] bg-card/30 p-2.5 pb-3 mb-6">
         {/* 1. Hero full-width up top */}
         <MobileDailyBriefCard />
 
@@ -157,7 +157,7 @@ function Home() {
     <PageShell>
       <DashboardShell
         rail={
-          <div className="rounded-[28px] border border-border/60 bg-card/30 p-2.5">
+          <div className="rounded-[28px] bg-card/30 p-2.5">
             <BentoGridStack
               key="rail-v8"
               items={railItems}
@@ -169,7 +169,7 @@ function Home() {
           </div>
         }
       >
-        <div className="rounded-[28px] border border-border/60 bg-card/30 p-2.5">
+        <div className="rounded-[28px] bg-card/30 p-2.5">
           <BentoGridStack
             key="main-v8"
             items={mainItems}
