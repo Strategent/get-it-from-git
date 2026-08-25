@@ -13,7 +13,7 @@
   /* ---- Typography ---- */
   /* Serif for big display headlines (hero greeting, feature-card titles). */
   --font-serif:
-    "Newsreader", "Iowan Old Style", "Apple Garamond", Georgia, "Times New Roman", serif;
+    "DM Sans", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
   /* Condensed mono for the signature ALL-CAPS › section labels. */
   --font-label:
     ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", Menlo, Consolas, "Liberation Mono",
