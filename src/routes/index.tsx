@@ -43,7 +43,7 @@ export const Route = createFileRoute("/")({
 function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetup: () => void }) {
   return (
     <PageShell>
-      <div className="flex flex-col gap-3 pb-6">
+      <div className="flex flex-col gap-3 rounded-[28px] border border-border/60 bg-card/30 p-2.5 pb-3 mb-6">
         {/* 1. Hero full-width up top */}
         <MobileDailyBriefCard />
 
@@ -157,23 +157,28 @@ function Home() {
     <PageShell>
       <DashboardShell
         rail={
-          <BentoGridStack
-            key="rail-v8"
-            items={railItems}
-            column={1}
-            storageKey="hs-rail-layout-v8"
-            resizeHandles="s"
-            className="-mx-2.5"
-          />
+          <div className="rounded-[28px] border border-border/60 bg-card/30 p-2.5">
+            <BentoGridStack
+              key="rail-v8"
+              items={railItems}
+              column={1}
+              storageKey="hs-rail-layout-v8"
+              resizeHandles="s"
+              className="-mx-2.5"
+            />
+          </div>
         }
       >
-        <BentoGridStack
-          key="main-v8"
-          items={mainItems}
-          column={12}
-          storageKey="hs-main-layout-v8"
-          className="-mx-2.5"
-        />
+        <div className="rounded-[28px] border border-border/60 bg-card/30 p-2.5">
+          <BentoGridStack
+            key="main-v8"
+            items={mainItems}
+            column={12}
+            storageKey="hs-main-layout-v8"
+            className="-mx-2.5"
+          />
+        </div>
+
 
       </DashboardShell>
     </PageShell>
