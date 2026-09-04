@@ -56,7 +56,7 @@ import { SyraMark } from "@/components/syra-mark";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
 
 
