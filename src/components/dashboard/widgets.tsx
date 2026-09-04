@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Plus, Paperclip, TrendingUp } from "lucide-react";
-import { Checkbox } from "@/components/ui/checkbox";
+
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import heroScenery from "@/assets/daily-brief-hero.jpg";
