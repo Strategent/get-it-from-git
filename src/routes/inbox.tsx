@@ -1603,11 +1603,64 @@ function InboxPage() {
         >
           {/* list header — "6 Todo" + Filter / Sort */}
           <div className="flex h-[46px] shrink-0 items-center gap-2 px-4">
-            <button className="inline-flex items-center gap-1.5 text-[14px] font-semibold tracking-tight text-foreground">
-              <span className="tabular-nums">{visibleThreads.length}</span>
-              <span>{activeFolder}</span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="inline-flex items-center gap-1.5 text-[14px] font-semibold tracking-tight text-foreground">
+                  <span className="tabular-nums">{visibleThreads.length}</span>
+                  <span>{activeFolder}</span>
+                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[270px] rounded-2xl p-2">
+                <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
+                  <span
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[13px] font-bold text-foreground"
+                    style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
+                  >
+                    H
+                  </span>
+                  <span className="text-[15px] font-semibold tracking-tight text-foreground">
+                    Harwick &amp; Sterne
+                  </span>
+                </div>
+                <DropdownMenuSeparator />
+                {folderMeta.map((f) => {
+                  const Icon = f.icon;
+                  const active = f.name === activeFolder;
+                  return (
+                    <DropdownMenuItem
+                      key={f.name}
+                      onClick={() => setActiveFolder(f.name)}
+                      className={`flex items-center gap-3 px-3 h-10 rounded-xl text-[13.5px] ${
+                        active ? "bg-foreground/[0.09] font-medium text-foreground" : ""
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 opacity-80" strokeWidth={1.75} />
+                      <span className="flex-1">{f.name}</span>
+                      {folderCounts[f.name] > 0 && (
+                        <span className="text-[12px] text-muted-foreground tabular-nums">
+                          {folderCounts[f.name]}
+                        </span>
+                      )}
+                    </DropdownMenuItem>
+                  );
+                })}
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="px-3 pb-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/70">
+                  Labels
+                </DropdownMenuLabel>
+                {mailLabels.map((l) => (
+                  <DropdownMenuItem
+                    key={l.name}
+                    onClick={() => setQuery(l.query)}
+                    className="flex items-center gap-3 px-3 h-9 rounded-xl text-[13px]"
+                  >
+                    <span className={`h-2.5 w-2.5 rounded-full border-2 ${l.dot}`} />
+                    <span className="flex-1">{l.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <div className="flex-1" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
