@@ -253,13 +253,13 @@ export function ThreadBrief({
                 {cell.label}
               </div>
               <div
-                className="mt-1 flex items-center gap-1 text-[12.5px] leading-snug text-foreground"
+                className="mt-1 flex items-start gap-1 text-[12.5px] leading-snug text-foreground"
                 style={
                   cell.stale || cell.goal ? { color: "var(--trend-down)" } : undefined
                 }
               >
-                {cell.goal && <Target className="h-3 w-3 shrink-0" />}
-                <span className="truncate">{cell.value}</span>
+                {cell.goal && <Target className="mt-[3px] h-3 w-3 shrink-0" />}
+                <span>{cell.value}</span>
               </div>
             </div>
           ))}
