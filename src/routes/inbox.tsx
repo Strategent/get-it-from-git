@@ -340,25 +340,6 @@ const extraThreads: Thread[] = [
 
 baseThreads.push(...extraThreads);
 
-function threadSummary(t: Thread) {
-  switch (t.tag) {
-    case "Hot lead":
-      return `${t.from.split(" ")[0]} is engaged and moving — the ask is specific and time-boxed. Clearing it this week keeps the deal on its current track.`;
-    case "Sales":
-      return `${t.from.split(" ")[0]} needs concrete answers before the next step. Nothing here is blocked on approval — only on a reply with the details attached.`;
-    case "Renewal":
-      return `Renewal thread with commercial exposure. Procurement is driving the timeline, so numbers matter more than narrative.`;
-    case "Billing":
-      return `Finance-side item. No decision required beyond confirming terms and letting the transaction proceed.`;
-    case "Legal":
-      return `Contract and compliance thread. A written, on-the-record answer moves this to signature faster than a call.`;
-    case "Intro":
-      return `Relationship thread — low effort, high signal. A quick, warm reply keeps momentum with the new contact.`;
-    default:
-      return `Automated notification. No reply expected; noted for awareness and filed under ${t.company}.`;
-  }
-}
-
 interface ThreadInsights {
   bullets: string[];
   actions: string[];
@@ -971,20 +952,6 @@ function InboxPage() {
     // Thread reading view
     if (mobileReading) {
       const s = selected;
-      const summary =
-        s.tag === "Hot lead"
-          ? "Sarah greenlit the proposal with two edits: lock tier 2 at the proposed annual rate and target kickoff the week of June 10."
-          : s.tag === "Sales"
-            ? "Marcus needs SOC2 status, data residency, and the implementation owner before legal can countersign."
-            : s.tag === "Renewal"
-              ? "Helios renewal lands in 14 days. Procurement wants a seat-count review before the invoice cuts."
-              : s.tag === "Billing"
-                ? "Meridian asked to move invoice 4471 to net-45 terms. Confirm before it's scheduled."
-                : s.tag === "Legal"
-                  ? "Northwind MSA fully executed. Countersigned PDF attached."
-                  : s.tag === "Intro"
-                    ? "Warm intro to Priya, revenue ops at Bridgewater. Priya is on this thread."
-                    : "Amara needs the updated retention curve on slide 6 before Thursday's committee.";
       const nextAction =
         s.tag === "Hot lead"
           ? "Send updated SOW with June 10 kickoff"
