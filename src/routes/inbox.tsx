@@ -1883,52 +1883,47 @@ function InboxPage() {
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
-              {/* Smart summary — plain inline strip aligned to message card */}
+              {/* Smart summary — compact inline strip with subtle accent */}
               {(() => {
                 const insights = threadInsights(selected);
                 return (
-                  <div className="mb-6 px-4 sm:px-5 py-2">
+                  <div className="mb-5 px-4 sm:px-5 py-2 border-l-2 border-l-[var(--sparkle)]/25">
                     <div className="flex items-center gap-2">
-                      <SyraMark className="h-3.5 w-3.5 text-foreground/45" />
-                      <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground/75">
+                      <SyraMark className="h-3.5 w-3.5 text-[var(--sparkle)]" />
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
                         Smart summary
                       </span>
                     </div>
-                    <ul className="mt-3 space-y-1.5">
+                    <ul className="mt-2 space-y-1">
                       {insights.bullets.map((point) => (
-                        <li key={point} className="flex gap-2.5 text-[14px] leading-[1.55] text-foreground/85">
-                          <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-foreground/35" />
+                        <li key={point} className="flex gap-2 text-[13px] leading-[1.45] text-foreground/85">
+                          <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[var(--sparkle)]/60" />
                           <span>{point}</span>
                         </li>
                       ))}
                     </ul>
-                    <div className="mt-4 flex flex-wrap items-center gap-2">
-                      <span className="mr-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/65">
-                        Suggested
-                      </span>
+                    <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
                       {insights.actions.map((action) => (
                         <button
                           key={action}
                           onClick={() => selected.needsReply && openComposer("reply")}
-                          className="inline-flex items-center rounded-full border border-border/60 bg-transparent px-3 py-1 text-[12px] font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.04] hover:text-foreground"
+                          className="inline-flex items-center rounded-full border border-border/50 bg-background/40 px-2.5 py-0.5 text-[11.5px] font-medium text-foreground/75 transition-colors hover:border-border/70 hover:bg-foreground/[0.04] hover:text-foreground"
                         >
                           {action}
                         </button>
                       ))}
                     </div>
                     {insights.todos.length > 0 && (
-                      <div className="mt-4 border-t border-border/40 pt-3">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/65">
-                          To-dos extracted
-                        </div>
-                        <ul className="mt-2 space-y-1.5">
-                          {insights.todos.map((todo) => (
-                            <li key={todo} className="flex items-center gap-2.5 text-[13px] text-foreground/75">
-                              <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/70" />
-                              <span>{todo}</span>
-                            </li>
-                          ))}
-                        </ul>
+                      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/55">
+                          To-dos
+                        </span>
+                        {insights.todos.map((todo) => (
+                          <span key={todo} className="inline-flex items-center gap-1.5 text-[11.5px] text-foreground/65">
+                            <span aria-hidden className="h-3 w-3 rounded-[3px] border border-border/60" />
+                            {todo}
+                          </span>
+                        ))}
                       </div>
                     )}
                   </div>
