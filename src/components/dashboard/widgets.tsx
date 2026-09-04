@@ -236,8 +236,161 @@ export function MobileChannelsCard() {
   );
 }
 
-/** PlannerCard — open task list with checkboxes and a quick add (item + date). */
+/** PlannerCard — Notion-style task list: progress glance, grouped rows, inline add. */
 export function PlannerCard() {
+  const [items, setItems] = useState(planner);
+  const [adding, setAdding] = useState(false);
+  const [label, setLabel] = useState("");
+  const [date, setDate] = useState("");
+
+  const open = items.filter((p) => !p.done).length;
+  const done = items.length - open;
+  const pct = items.length ? Math.round((done / items.length) * 100) : 0;
+
+  const today = new Date().toLocaleDateString("en-US", { day: "numeric", month: "short" });
+  const openItems = items.filter((p) => !p.done);
+  const doneItems = items.filter((p) => p.done);
+
+  // "2026-01-16" (or empty → today) → "16 Jan", matching the existing rows.
+  const fmtDate = (v: string) => {
+    let d: Date;
+    if (v) {
+      const [y, m, dd] = v.split("-").map(Number);
+      d = new Date(y, m - 1, dd);
+    } else {
+      d = new Date();
+    }
+    return d.toLocaleDateString("en-US", { day: "numeric", month: "short" });
+  };
+
+  const add = () => {
+    const text = label.trim();
+    if (!text) return;
+    setItems((prev) => [{ label: text, date: fmtDate(date), done: false }, ...prev]);
+    setLabel("");
+    setDate("");
+  };
+
+  const toggle = (t: (typeof planner)[number]) =>
+    setItems((prev) => prev.map((p) => (p === t ? { ...p, done: !p.done } : p)));
+
+  return (
+    <Panel
+      label="Planner"
+      to="/tasks"
+      action={
+        <button
+          onClick={() => setAdding((v) => !v)}
+          aria-label={adding ? "Close add task" : "Add task"}
+          aria-expanded={adding}
+          className={`grid h-7 w-7 place-items-center rounded-full border transition-colors ${
+            adding
+              ? "border-foreground/40 bg-foreground/[0.1] text-foreground"
+              : "border-border bg-foreground/[0.06] text-foreground/80 hover:bg-foreground/[0.12]"
+          }`}
+        >
+          <Plus className={`h-3.5 w-3.5 transition-transform ${adding ? "rotate-45" : ""}`} />
+        </button>
+      }
+    >
+      {/* Progress glance */}
+      <div className="mb-4 shrink-0">
+        <div className="flex items-baseline gap-1.5">
+          <span className="text-[28px] font-semibold leading-none tracking-[-0.02em] tabular-nums">{open}</span>
+          <span className="text-[13px] text-muted-foreground">to do · {done} done</span>
+        </div>
+        <div className="mt-3 h-1 w-full overflow-hidden rounded-full bg-foreground/[0.08]">
+          <div
+            className="h-full rounded-full bg-foreground/70 transition-[width] duration-500 ease-out"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
+      </div>
+
+      {adding && (
+        <div className="mb-3 flex shrink-0 items-center gap-1.5 rounded-xl border border-border/70 bg-foreground/[0.03] p-1.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+          <input
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") add();
+              if (e.key === "Escape") setAdding(false);
+            }}
+            placeholder="New task…"
+            autoFocus={autoFocusUnlessTouch()}
+            className="h-8 min-w-0 flex-1 rounded-lg bg-transparent px-2 text-[13px] outline-none placeholder:text-muted-foreground/60"
+          />
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && add()}
+            aria-label="Due date"
+            className="h-8 shrink-0 rounded-lg bg-transparent px-1.5 text-[12px] text-muted-foreground outline-none"
+          />
+          <button
+            onClick={add}
+            disabled={!label.trim()}
+            className="h-8 shrink-0 rounded-lg bg-foreground px-3 text-[12px] font-semibold text-background transition-opacity disabled:opacity-40"
+          >
+            Add
+          </button>
+        </div>
+      )}
+
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        <div className="px-1 pb-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/40">
+          Up next
+        </div>
+        {openItems.slice(0, 4).map((t) => (
+          <button
+            key={t.label}
+            onClick={() => toggle(t)}
+            className="group flex items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-foreground/[0.04] active:bg-foreground/[0.06]"
+          >
+            <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full border-[1.5px] border-foreground/30 transition-colors group-hover:border-foreground/60" />
+            <span className="min-w-0 flex-1 truncate text-[13.5px] font-medium leading-snug text-foreground/95">
+              {t.label}
+            </span>
+            <span
+              className={`shrink-0 rounded-md px-1.5 py-0.5 text-[10.5px] font-medium tabular-nums ${
+                t.date === today
+                  ? "bg-foreground/[0.08] text-foreground/80"
+                  : "text-muted-foreground"
+              }`}
+            >
+              {t.date === today ? "Today" : t.date}
+            </span>
+          </button>
+        ))}
+
+        {doneItems.length > 0 && (
+          <>
+            <div className="px-1 pb-1 pt-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-foreground/40">
+              Completed
+            </div>
+            {doneItems.slice(0, 2).map((t) => (
+              <button
+                key={t.label}
+                onClick={() => toggle(t)}
+                className="group flex items-center gap-3 rounded-lg px-2 py-2 text-left transition-colors hover:bg-foreground/[0.04]"
+              >
+                <span className="grid h-4 w-4 shrink-0 place-items-center rounded-full bg-foreground/80">
+                  <svg viewBox="0 0 10 8" className="h-2 w-2 text-background" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 4l2.5 2.5L9 1" />
+                  </svg>
+                </span>
+                <span className="min-w-0 flex-1 truncate text-[13.5px] leading-snug text-muted-foreground line-through decoration-muted-foreground/50">
+                  {t.label}
+                </span>
+              </button>
+            ))}
+          </>
+        )}
+      </div>
+    </Panel>
+  );
+}
   const [items, setItems] = useState(planner);
   const [adding, setAdding] = useState(false);
   const [label, setLabel] = useState("");
