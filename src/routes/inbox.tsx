@@ -54,6 +54,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
+import { ThreadBrief, threadBrief } from "@/components/inbox/thread-brief";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -1078,69 +1079,16 @@ function InboxPage() {
                 </div>
               </div>
 
-              {/* Syra Smart Summary — Linear-style agent strip */}
+              {/* Agent briefing above the thread */}
               <div className="px-4 py-1">
-                <div className="flex items-center gap-2">
-                  <SyraMark className="h-3.5 w-3.5 text-foreground/50" />
-                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
-                    Smart summary
-                  </span>
-                </div>
-                <ul className="mt-2 space-y-1">
-                  {threadInsights(s).bullets.map((point) => (
-                    <li key={point} className="flex gap-2 text-[13px] leading-[1.45] text-foreground/85">
-                      <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-foreground/30" />
-                      <span>{point}</span>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                  {threadInsights(s).actions.map((action) => (
-                    <button
-                      key={action}
-                      onClick={() => canAction && openComposer("reply")}
-                      disabled={!canAction}
-                      className={`inline-flex items-center rounded-full border border-border/70 bg-foreground/[0.04] px-2.5 py-0.5 text-[11px] font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.08] active:scale-[0.98] ${canAction ? "" : "opacity-50"}`}
-                    >
-                      {action}
-                    </button>
-                  ))}
-                </div>
-                {threadInsights(s).todos.length > 0 && (
-                  <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                    <span className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/55">
-                      To-dos
-                    </span>
-                    {threadInsights(s).todos.map((todo) => (
-                      <span key={todo} className="inline-flex items-center gap-1.5 text-[11px] text-foreground/65">
-                        <span aria-hidden className="box-border h-3 w-3 rounded-[3px] border border-border/60 bg-foreground/[0.04]" />
-                        {todo}
-                      </span>
-                    ))}
-                  </div>
-                )}
-                <button
-                  onClick={() => canAction && openComposer("reply")}
-                  disabled={!canAction}
-                  className={`mt-3 flex w-full items-center justify-between gap-2 rounded-lg border border-border/60 px-3 py-2 text-left transition-colors ${
-                    canAction
-                      ? "hover:bg-foreground/[0.04] active:bg-foreground/[0.06]"
-                      : "opacity-70"
-                  }`}
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">
-                      Next action
-                    </div>
-                    <div className="text-[12.5px] font-medium text-foreground truncate">
-                      {nextAction}
-                    </div>
-                  </div>
-                  {canAction && (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/60 shrink-0" />
-                  )}
-                </button>
+                <ThreadBrief
+                  key={s.id}
+                  data={threadBrief(s)}
+                  compact
+                  onAction={() => canAction && openComposer("reply")}
+                />
               </div>
+
 
               {/* Inline mobile compose — sits above the message it replies to */}
               {selectedDraft.status === "open" && (
@@ -1887,53 +1835,15 @@ function InboxPage() {
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
-              {/* Smart summary — Linear-style agent strip */}
-              {(() => {
-                const insights = threadInsights(selected);
-                return (
-                  <div className="mb-5 px-4 sm:px-5 py-2">
-                    <div className="flex items-center gap-2">
-                      <SyraMark className="h-3.5 w-3.5 text-foreground/50" />
-                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
-                        Smart summary
-                      </span>
-                    </div>
-                    <ul className="mt-2 space-y-1">
-                      {insights.bullets.map((point) => (
-                        <li key={point} className="flex gap-2 text-[13px] leading-[1.45] text-foreground/85">
-                          <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-foreground/30" />
-                          <span>{point}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                      {insights.actions.map((action) => (
-                        <button
-                          key={action}
-                          onClick={() => selected.needsReply && openComposer("reply")}
-                          disabled={!selected.needsReply}
-                          className={`inline-flex items-center rounded-full border border-border/70 bg-foreground/[0.04] px-2.5 py-0.5 text-[11.5px] font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.08] active:scale-[0.98] ${selected.needsReply ? "" : "opacity-50"}`}
-                        >
-                          {action}
-                        </button>
-                      ))}
-                    </div>
-                    {insights.todos.length > 0 && (
-                      <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/55">
-                          To-dos
-                        </span>
-                        {insights.todos.map((todo) => (
-                          <span key={todo} className="inline-flex items-center gap-1.5 text-[11.5px] text-foreground/65">
-                            <span aria-hidden className="box-border h-3 w-3 rounded-[3px] border border-border/60 bg-foreground/[0.04]" />
-                            {todo}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                );
-              })()}
+              {/* Agent briefing above the thread */}
+              <div className="mb-5 px-4 sm:px-5">
+                <ThreadBrief
+                  key={selected.id}
+                  data={threadBrief(selected)}
+                  onAction={() => selected.needsReply && openComposer("reply")}
+                />
+              </div>
+
 
               {selectedDraft.status !== "closed" && (
                 <div className="pb-6">
