@@ -1130,8 +1130,30 @@ function InboxPage() {
                     </div>
                     <span className="text-[10px] text-muted-foreground/80 tabular-nums">just now</span>
                   </div>
-                  <div className="px-4 pb-3.5 text-[13.5px] leading-[1.55] text-foreground/90">
-                    {summary}
+                  <div className="px-4 pb-3.5">
+                    <ul className="space-y-1.5">
+                      {threadInsights(s).bullets.map((point) => (
+                        <li key={point} className="flex gap-2.5 text-[13.5px] leading-[1.5] text-foreground/90">
+                          <span aria-hidden className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-foreground/45" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {threadInsights(s).todos.length > 0 && (
+                      <div className="mt-3 border-t border-border/50 pt-2.5">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+                          To-dos extracted
+                        </div>
+                        <ul className="mt-1.5 space-y-1">
+                          {threadInsights(s).todos.map((todo) => (
+                            <li key={todo} className="flex items-center gap-2 text-[12.5px] text-foreground/75">
+                              <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/80" />
+                              <span>{todo}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => canAction && openComposer("reply")}
