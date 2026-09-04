@@ -1867,16 +1867,22 @@ function InboxPage() {
                 </div>
               )}
 
-              <article className="border-t border-border/50 pt-6">
+              <article
+                className="mt-6 overflow-hidden rounded-xl border border-border/60 bg-card px-4 pb-5 sm:px-5"
+                style={{
+                  boxShadow:
+                    "0 1px 0 rgba(255,255,255,0.03) inset, 0 6px 20px -12px rgba(0,0,0,0.35)",
+                }}
+              >
                 {/* sender / header row */}
                 <MessageHeaderBlock thread={selected} />
 
-                <div className="whitespace-pre-line pl-0 pr-2 pt-4 text-[14px] leading-[1.65] text-foreground/90 sm:pl-[46px]">
+                <div className="whitespace-pre-line pt-4 text-[14px] leading-[1.65] text-foreground/90">
                   {selected.body}
                 </div>
 
                 {selected.hasAttachment && (
-                  <div className="pl-0 pt-5 sm:pl-[46px]">
+                  <div className="pt-5">
                     <button className="inline-flex items-center gap-2 rounded-lg border border-border/70 px-3.5 py-2.5 text-[13px] text-foreground/85 hover:bg-foreground/[0.05] transition-colors">
                       <Paperclip className="h-4 w-4" />
                       {selected.tag === "Legal"
@@ -1888,6 +1894,7 @@ function InboxPage() {
                   </div>
                 )}
               </article>
+
 
               {selectedDraft.status === "closed" && (
                 <div className="flex items-center gap-2 pl-0 pt-7 sm:pl-[46px]">
