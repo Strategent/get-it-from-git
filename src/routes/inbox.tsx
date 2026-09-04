@@ -1891,13 +1891,13 @@ function InboxPage() {
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
-              {/* Smart summary — compact inline strip with subtle accent */}
+              {/* Smart summary — Linear-style agent strip */}
               {(() => {
                 const insights = threadInsights(selected);
                 return (
-                  <div className="mb-5 px-4 sm:px-5 py-2 border-l-2 border-l-[var(--sparkle)]/25">
+                  <div className="mb-5 px-4 sm:px-5 py-2">
                     <div className="flex items-center gap-2">
-                      <SyraMark className="h-3.5 w-3.5 text-[var(--sparkle)]" />
+                      <SyraMark className="h-3.5 w-3.5 text-foreground/50" />
                       <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
                         Smart summary
                       </span>
@@ -1905,7 +1905,7 @@ function InboxPage() {
                     <ul className="mt-2 space-y-1">
                       {insights.bullets.map((point) => (
                         <li key={point} className="flex gap-2 text-[13px] leading-[1.45] text-foreground/85">
-                          <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[var(--sparkle)]/60" />
+                          <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-foreground/30" />
                           <span>{point}</span>
                         </li>
                       ))}
@@ -1915,7 +1915,7 @@ function InboxPage() {
                         <button
                           key={action}
                           onClick={() => selected.needsReply && openComposer("reply")}
-                          className="inline-flex items-center rounded-full border border-border/50 bg-background/40 px-2.5 py-0.5 text-[11.5px] font-medium text-foreground/75 transition-colors hover:border-border/70 hover:bg-foreground/[0.04] hover:text-foreground"
+                          className="inline-flex items-center rounded-md border border-border/40 bg-muted/50 px-2.5 py-0.5 text-[11.5px] font-medium text-foreground/80 transition-colors hover:bg-muted/70 hover:text-foreground"
                         >
                           {action}
                         </button>
