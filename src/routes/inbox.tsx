@@ -1918,22 +1918,16 @@ function InboxPage() {
                       ))}
                     </ul>
                     <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                      {insights.actions.map((action, i) => {
-                        const chip = ["chip-1", "chip-2", "chip-3", "chip-4"][i % 4];
-                        return (
-                          <button
-                            key={action}
-                            onClick={() => selected.needsReply && openComposer("reply")}
-                            className={`group inline-flex items-center rounded-full p-[1px] transition-transform active:scale-[0.98] ${chip}`}
-                          >
-                            <span className="rounded-full bg-background px-2.5 py-0.5 text-[11.5px] font-medium transition-colors group-hover:bg-[var(--surface-raised-hover)]">
-                              <span className={`${chip} bg-clip-text text-transparent`}>
-                                {action}
-                              </span>
-                            </span>
-                          </button>
-                        );
-                      })}
+                      {insights.actions.map((action) => (
+                        <button
+                          key={action}
+                          onClick={() => selected.needsReply && openComposer("reply")}
+                          disabled={!selected.needsReply}
+                          className={`inline-flex items-center rounded-full border border-border/70 bg-foreground/[0.04] px-2.5 py-0.5 text-[11.5px] font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.08] active:scale-[0.98] ${selected.needsReply ? "" : "opacity-50"}`}
+                        >
+                          {action}
+                        </button>
+                      ))}
                     </div>
                     {insights.todos.length > 0 && (
                       <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
