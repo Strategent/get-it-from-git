@@ -1080,7 +1080,7 @@ function InboxPage() {
               </div>
 
               {/* Agent briefing above the thread */}
-              <div className="px-4 py-1">
+              <div className="px-4 py-2">
                 <ThreadBrief
                   key={s.id}
                   data={threadBrief(s)}
