@@ -676,17 +676,12 @@ function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
   const [mobileReading, setMobileReading] = useState(false);
-  // iOS-style transient skeleton while a thread pushes in / pops out.
-  const [threadLoading, setThreadLoading] = useState(false);
-  const threadLoadTimer = useRef<number | null>(null);
-  const beginThreadLoad = (ms: number) => {
-    if (threadLoadTimer.current) window.clearTimeout(threadLoadTimer.current);
-    setThreadLoading(true);
-    threadLoadTimer.current = window.setTimeout(() => setThreadLoading(false), ms);
+  // Threads are local data — they render instantly, so no artificial skeleton.
+  const [threadLoading] = useState(false);
+  const beginThreadLoad = (_ms: number) => {
+    /* intentionally a no-op: content is already in memory */
   };
-  useEffect(() => () => {
-    if (threadLoadTimer.current) window.clearTimeout(threadLoadTimer.current);
-  }, []);
+
   const [mobileClosing, setMobileClosing] = useState(false);
   const isMobile = useIsMobile();
   const [activeFolder, setActiveFolder] = useState<FolderName>("Inbox");
