@@ -1836,7 +1836,7 @@ function InboxPage() {
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
               {/* Agent briefing above the thread */}
-              <div className="mb-5 px-4 sm:px-5">
+              <div className="mb-5">
                 <ThreadBrief
                   key={selected.id}
                   data={threadBrief(selected)}
