@@ -54,6 +54,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
+import { ThreadBrief, threadBrief } from "@/components/inbox/thread-brief";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
