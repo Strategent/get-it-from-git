@@ -559,7 +559,7 @@ function buildSummary(e: EmailShape): string {
   if (s.includes("agenda")) return "Agenda for tomorrow's rebalance call — alts sleeve + 2026 tax focus.";
   if (s.includes("private credit")) return "Following up on private credit proposal; open to revised terms.";
   if (s.includes("slat")) return "Wants 30 min to align on SLAT timeline ahead of the 2026 sunset.";
-  if (s.includes("payout")) return "Stripe payout of $12,840 scheduled for May 30. No action required.";
+  if (s.includes("net-45") || s.includes("invoice")) return "Meridian asked to move invoice 4471 to net-45 terms. Confirm before it's scheduled.";
   return `${e.sender.split(" ")[0]} is asking for a response on ${e.subject.toLowerCase()}.`;
 }
 

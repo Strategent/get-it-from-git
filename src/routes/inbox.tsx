@@ -1220,7 +1220,7 @@ function InboxPage() {
                       {s.tag === "Legal"
                         ? "Completed_MSA.pdf"
                         : s.tag === "Billing"
-                          ? "Stripe_reconciliation.csv"
+                          ? "Invoice_4471.pdf"
                           : "Security_questionnaire.pdf"}
                     </button>
                   )}
@@ -1869,7 +1869,7 @@ function InboxPage() {
                       {selected.tag === "Legal"
                         ? "Completed_MSA.pdf"
                         : selected.tag === "Billing"
-                          ? "Stripe_reconciliation.csv"
+                          ? "Invoice_4471.pdf"
                           : "Security_questionnaire.pdf"}
                     </button>
                   </div>
