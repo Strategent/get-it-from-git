@@ -1078,75 +1078,64 @@ function InboxPage() {
                 </div>
               </div>
 
-              {/* Syra Smart Summary — linear.app style card */}
-              <div className="px-4">
-                <div
-                  className="relative overflow-hidden rounded-xl border border-border/70 bg-card"
-                  style={{
-                    boxShadow:
-                      "0 1px 0 rgba(255,255,255,0.04) inset, 0 8px 24px -12px rgba(0,0,0,0.35), 0 2px 6px -3px rgba(0,0,0,0.18)",
-                  }}
-                >
-                  <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-foreground/25 to-transparent" />
-                  <div className="flex items-center justify-between gap-2 px-4 pt-3 pb-2">
-                    <div className="flex items-center gap-2">
-                      <SyraMark className="h-3.5 w-3.5" />
-                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-foreground/75">
-                        Smart summary
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-muted-foreground/80 tabular-nums">just now</span>
+              {/* Syra Smart Summary — plain inline strip */}
+              <div className="px-4 py-1">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <SyraMark className="h-3.5 w-3.5 text-foreground/45" />
+                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/75">
+                      Smart summary
+                    </span>
                   </div>
-                  <div className="px-4 pb-3.5">
-                    <ul className="space-y-1.5">
-                      {threadInsights(s).bullets.map((point) => (
-                        <li key={point} className="flex gap-2.5 text-[13.5px] leading-[1.5] text-foreground/90">
-                          <span aria-hidden className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-foreground/45" />
-                          <span>{point}</span>
+                  <span className="text-[10px] text-muted-foreground/60 tabular-nums">just now</span>
+                </div>
+                <ul className="mt-2.5 space-y-1.5">
+                  {threadInsights(s).bullets.map((point) => (
+                    <li key={point} className="flex gap-2.5 text-[13.5px] leading-[1.5] text-foreground/85">
+                      <span aria-hidden className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-foreground/35" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                {threadInsights(s).todos.length > 0 && (
+                  <div className="mt-3 border-t border-border/40 pt-2.5">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/65">
+                      To-dos extracted
+                    </div>
+                    <ul className="mt-1.5 space-y-1">
+                      {threadInsights(s).todos.map((todo) => (
+                        <li key={todo} className="flex items-center gap-2 text-[12.5px] text-foreground/75">
+                          <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/70" />
+                          <span>{todo}</span>
                         </li>
                       ))}
                     </ul>
-                    {threadInsights(s).todos.length > 0 && (
-                      <div className="mt-3 border-t border-border/50 pt-2.5">
-                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
-                          To-dos extracted
-                        </div>
-                        <ul className="mt-1.5 space-y-1">
-                          {threadInsights(s).todos.map((todo) => (
-                            <li key={todo} className="flex items-center gap-2 text-[12.5px] text-foreground/75">
-                              <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/80" />
-                              <span>{todo}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
                   </div>
-                  <button
-                    onClick={() => canAction && openComposer("reply")}
-                    disabled={!canAction}
-                    className={`w-full flex items-center gap-2.5 px-4 py-3 border-t border-border/60 text-left transition-colors ${
-                      canAction
-                        ? "hover:bg-foreground/[0.04] active:bg-foreground/[0.06]"
-                        : "opacity-70"
-                    }`}
-                  >
-                    <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-foreground text-background">
-                      <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
-                    </span>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                        Next action
-                      </div>
-                      <div className="text-[13px] font-medium text-foreground truncate">
-                        {nextAction}
-                      </div>
+                )}
+                <button
+                  onClick={() => canAction && openComposer("reply")}
+                  disabled={!canAction}
+                  className={`mt-3 flex w-full items-center gap-2.5 rounded-lg border border-border/60 px-3 py-2.5 text-left transition-colors ${
+                    canAction
+                      ? "hover:bg-foreground/[0.04] active:bg-foreground/[0.06]"
+                      : "opacity-70"
+                  }`}
+                >
+                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-foreground text-background">
+                    <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+                      Next action
                     </div>
-                    {canAction && (
-                      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-                    )}
-                  </button>
-                </div>
+                    <div className="text-[13px] font-medium text-foreground truncate">
+                      {nextAction}
+                    </div>
+                  </div>
+                  {canAction && (
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/70 shrink-0" />
+                  )}
+                </button>
               </div>
 
               {/* Inline mobile compose — sits above the message it replies to */}
