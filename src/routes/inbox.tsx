@@ -359,6 +359,84 @@ function threadSummary(t: Thread) {
   }
 }
 
+interface ThreadInsights {
+  bullets: string[];
+  actions: string[];
+  todos: string[];
+}
+
+function threadInsights(t: Thread): ThreadInsights {
+  const first = t.from.split(" ")[0];
+  switch (t.tag) {
+    case "Hot lead":
+      return {
+        bullets: [
+          `${first} approved the proposal with two edits — pricing and kickoff timing`,
+          "Tier 2 should stay at the proposed annual rate",
+          "Kickoff targeted for the week of June 10",
+        ],
+        actions: ["Send updated SOW", "Lock June 10 kickoff", "Book 30-min walkthrough"],
+        todos: ["Revise SOW with tier 2 pricing", "Send calendar hold for kickoff week", "Schedule walkthrough invite"],
+      };
+    case "Sales":
+      return {
+        bullets: [
+          `${first} is blocked on three items before legal can countersign`,
+          "Needs SOC2 status, data residency, and implementation owner",
+          "Nothing requires approval — just a reply with details",
+        ],
+        actions: ["Send SOC2 pack", "Name implementation owner"],
+        todos: ["Attach SOC2 report", "Confirm data residency answer", "Assign implementation owner"],
+      };
+    case "Renewal":
+      return {
+        bullets: [
+          "Renewal lands in 14 days with commercial exposure",
+          "Procurement is driving the timeline — numbers over narrative",
+          "Seat-count review requested before the invoice cuts",
+        ],
+        actions: ["Propose seat-count review call", "Share updated pricing"],
+        todos: ["Pull current seat usage", "Draft renewal pricing", "Book procurement call"],
+      };
+    case "Billing":
+      return {
+        bullets: [
+          `${t.company} asked to move invoice 4471 to net-45 terms`,
+          "Finance-side only — no decision beyond confirming terms",
+        ],
+        actions: ["Confirm terms with finance"],
+        todos: ["Verify net-45 against policy", "Update invoice schedule"],
+      };
+    case "Legal":
+      return {
+        bullets: [
+          "Contract and compliance thread — written answer beats a call",
+          "A documented, on-the-record reply moves this to signature",
+        ],
+        actions: ["Send written response to review"],
+        todos: ["Draft on-record response", "Route to counsel for sign-off"],
+      };
+    case "Intro":
+      return {
+        bullets: [
+          `Warm intro — ${first} is on this thread and engaged`,
+          "Low effort, high signal: a quick reply keeps momentum",
+        ],
+        actions: ["Acknowledge and propose a time"],
+        todos: ["Reply-all to loop everyone in", "Offer two meeting windows"],
+      };
+    default:
+      return {
+        bullets: [
+          "Automated notification — no reply expected",
+          `Filed under ${t.company} for awareness`,
+        ],
+        actions: ["Archive thread"],
+        todos: [],
+      };
+  }
+}
+
 function threadNextAction(t: Thread) {
   switch (t.tag) {
     case "Hot lead":
