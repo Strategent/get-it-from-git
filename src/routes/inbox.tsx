@@ -154,24 +154,6 @@ const baseThreads: Thread[] = [
     needsReply: true,
   },
   {
-    id: 3,
-    from: "Stripe",
-    company: "Payouts",
-    email: "payouts@stripe.com",
-    subject: "Payout $12,840 scheduled",
-    preview: "Your payout of $12,840.00 will arrive on May 30...",
-    body: "Your payout of $12,840.00 will arrive on May 30. The attached reconciliation report includes the daily deposit detail and processing fees.",
-    time: "1h",
-    tag: "Billing",
-    folder: "Inbox",
-    unread: false,
-    starred: false,
-    flagged: false,
-    vip: false,
-    hasAttachment: true,
-    needsReply: false,
-  },
-  {
     id: 4,
     from: "Jenna Park",
     company: "Helios",
@@ -190,24 +172,6 @@ const baseThreads: Thread[] = [
     needsReply: true,
   },
   {
-    id: 5,
-    from: "Linear",
-    company: "Notifications",
-    email: "notifications@linear.app",
-    subject: "3 issues assigned to Syra",
-    preview: "OPS-128, OPS-129, OPS-131 are now in Syra's queue...",
-    body: "OPS-128, OPS-129, and OPS-131 are now in Syra's queue. Priority was set to high because the items block the client onboarding timeline.",
-    time: "6h",
-    tag: "System",
-    folder: "Inbox",
-    unread: false,
-    starred: false,
-    flagged: false,
-    vip: false,
-    hasAttachment: false,
-    needsReply: false,
-  },
-  {
     id: 6,
     from: "Olivia Chen",
     company: "Bridgewater",
@@ -224,24 +188,6 @@ const baseThreads: Thread[] = [
     vip: false,
     hasAttachment: false,
     needsReply: true,
-  },
-  {
-    id: 7,
-    from: "DocuSign",
-    company: "Agreements",
-    email: "completed@docusign.net",
-    subject: "Signed: MSA - Northwind",
-    preview: "All parties have completed the document. View completed envelope...",
-    body: "All parties have completed the document. The completed Northwind MSA is attached and available in your DocuSign account.",
-    time: "Yesterday",
-    tag: "Legal",
-    folder: "Inbox",
-    unread: false,
-    starred: false,
-    flagged: false,
-    vip: false,
-    hasAttachment: true,
-    needsReply: false,
   },
 ];
 
@@ -299,24 +245,6 @@ const extraThreads: Thread[] = [
     vip: false,
     hasAttachment: false,
     needsReply: true,
-  },
-  {
-    id: 11,
-    from: "Notion",
-    company: "Workspace",
-    email: "team@makenotion.com",
-    subject: "Weekly digest — 12 pages updated",
-    preview: "Your team edited 12 pages this week across Client Ops and Playbooks...",
-    body: "Your team edited 12 pages this week across Client Ops and Playbooks. Most active: Onboarding Checklist v3, Q3 Pipeline Review, and Escalation Matrix.",
-    time: "4h",
-    tag: "System",
-    folder: "Inbox",
-    unread: false,
-    starred: false,
-    flagged: false,
-    vip: false,
-    hasAttachment: false,
-    needsReply: false,
   },
   {
     id: 12,
@@ -960,12 +888,12 @@ function InboxPage() {
             : s.tag === "Renewal"
               ? "Helios renewal lands in 14 days. Procurement wants a seat-count review before the invoice cuts."
               : s.tag === "Billing"
-                ? "Stripe payout of $12,840 arrives May 30. Reconciliation report attached."
+                ? "Meridian asked to move invoice 4471 to net-45 terms. Confirm before it's scheduled."
                 : s.tag === "Legal"
                   ? "Northwind MSA fully executed. Countersigned PDF attached."
                   : s.tag === "Intro"
                     ? "Warm intro to Priya, revenue ops at Bridgewater. Priya is on this thread."
-                    : "Linear queued OPS-128, 129, 131 to Syra at high priority — blocking onboarding.";
+                    : "Amara needs the updated retention curve on slide 6 before Thursday's committee.";
       const nextAction =
         s.tag === "Hot lead"
           ? "Send updated SOW with June 10 kickoff"
@@ -1292,7 +1220,7 @@ function InboxPage() {
                       {s.tag === "Legal"
                         ? "Completed_MSA.pdf"
                         : s.tag === "Billing"
-                          ? "Stripe_reconciliation.csv"
+                          ? "Invoice_4471.pdf"
                           : "Security_questionnaire.pdf"}
                     </button>
                   )}
@@ -1941,7 +1869,7 @@ function InboxPage() {
                       {selected.tag === "Legal"
                         ? "Completed_MSA.pdf"
                         : selected.tag === "Billing"
-                          ? "Stripe_reconciliation.csv"
+                          ? "Invoice_4471.pdf"
                           : "Security_questionnaire.pdf"}
                     </button>
                   </div>

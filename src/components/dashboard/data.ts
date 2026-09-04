@@ -135,14 +135,14 @@ export const emails = [
       "Counsel suggested we revisit the SLAT structure ahead of the 2026 sunset. Could we schedule 30 minutes to align on a timeline?",
   },
   {
-    sender: "Stripe",
-    title: "Billing notification",
-    subject: "Payout $12,840 scheduled",
+    sender: "Tom Whitaker",
+    title: "CFO, Meridian Group",
+    subject: "Invoice 4471 — payment terms",
     time: "Mon",
     chips: [],
     tasks: 0,
     preview:
-      "Your payout of $12,840.00 will arrive on May 30. No action required — this is an automated notification.",
+      "Accounting asked whether we can move to net-45 for the remainder of the term. Invoice 4471 is queued either way — just want to confirm.",
   },
 ];
 
