@@ -231,9 +231,13 @@ export function ThreadBrief({
   );
 
   return (
-    <div className={`grid gap-3 ${compact ? "" : "lg:grid-cols-[1.4fr_1fr]"}`}>
+    <div
+      className={`overflow-hidden rounded-xl border border-border/60 bg-card ${
+        compact ? "" : "lg:grid lg:grid-cols-[1.4fr_1fr]"
+      }`}
+    >
       {/* ---- Left: context + reasoning ---- */}
-      <div className="overflow-hidden rounded-xl border border-border/70 bg-card">
+      <div>
         <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
           <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-foreground">
             Client context
@@ -313,13 +317,16 @@ export function ThreadBrief({
       </div>
 
       {/* ---- Right: recommendation + suggested actions ---- */}
-      <div className="space-y-3">
+      <div
+        className={`flex flex-col ${
+          compact ? "border-t border-border/60" : "lg:border-l lg:border-border/60"
+        }`}
+      >
         <div
-          className="rounded-xl border px-4 py-3"
+          className="px-4 py-3"
           style={{
-            borderColor: "var(--sparkle-border)",
             background:
-              "linear-gradient(135deg, var(--sparkle-soft) 0%, transparent 70%), var(--card)",
+              "linear-gradient(135deg, var(--sparkle-soft) 0%, transparent 70%)",
           }}
         >
           <div className="flex items-center gap-2">
@@ -335,7 +342,7 @@ export function ThreadBrief({
           </p>
         </div>
 
-        <div className="rounded-xl border border-border/70 bg-card px-4 py-3">
+        <div className="flex-1 border-t border-border/60 px-4 py-3">
           <div className="text-[12px] font-semibold text-foreground">Suggested actions</div>
           <ul className="mt-2 space-y-1.5">
             {data.actions.map((a) => {
