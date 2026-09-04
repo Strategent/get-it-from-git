@@ -2355,8 +2355,9 @@ function ComposeWindow({
           <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
             Drafted by Syra
           </span>
+          <span aria-hidden className="h-3 w-px shrink-0 bg-border/60 hidden sm:block" />
           <span className="hidden sm:inline truncate text-[11.5px] text-muted-foreground/70">
-            · review and send as John
+            Review and send as John
           </span>
           <button
             onClick={onRegenerate}
