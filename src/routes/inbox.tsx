@@ -1078,10 +1078,10 @@ function InboxPage() {
                 </div>
               </div>
 
-              {/* Syra Smart Summary — compact inline strip with subtle accent */}
+              {/* Syra Smart Summary — Linear-style agent strip */}
               <div className="px-4 py-1">
                 <div className="flex items-center gap-2">
-                  <SyraMark className="h-3.5 w-3.5 text-[var(--sparkle)]" />
+                  <SyraMark className="h-3.5 w-3.5 text-foreground/50" />
                   <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
                     Smart summary
                   </span>
@@ -1089,7 +1089,7 @@ function InboxPage() {
                 <ul className="mt-2 space-y-1">
                   {threadInsights(s).bullets.map((point) => (
                     <li key={point} className="flex gap-2 text-[13px] leading-[1.45] text-foreground/85">
-                      <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[var(--sparkle)]/60" />
+                      <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-foreground/30" />
                       <span>{point}</span>
                     </li>
                   ))}
@@ -1100,9 +1100,9 @@ function InboxPage() {
                       key={action}
                       onClick={() => canAction && openComposer("reply")}
                       disabled={!canAction}
-                      className={`inline-flex items-center rounded-full border border-border/50 bg-background/40 px-2.5 py-0.5 text-[11px] font-medium transition-colors ${
+                      className={`inline-flex items-center rounded-md border border-border/40 bg-muted/50 px-2.5 py-0.5 text-[11px] font-medium transition-colors ${
                         canAction
-                          ? "text-foreground/75 hover:border-border/70 hover:bg-foreground/[0.04] hover:text-foreground"
+                          ? "text-foreground/80 hover:bg-muted/70 hover:text-foreground"
                           : "text-foreground/50"
                       }`}
                     >
