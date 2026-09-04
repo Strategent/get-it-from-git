@@ -19,44 +19,38 @@ type SmartAvatarProps = {
 };
 
 /**
- * Avatar image with a shimmer placeholder while the photo loads and an
- * initials fallback if it fails. Prevents blank/pop-in profile pictures.
+ * Avatar image with an instant initials fallback. Images are local assets, so
+ * they paint immediately — no shimmer/loading state (cached images never fire
+ * `onLoad` after hydration, which used to leave the placeholder stuck forever).
  */
 export function SmartAvatar({ name, size = 96, className = "", alt }: SmartAvatarProps) {
-  const [state, setState] = useState<"loading" | "loaded" | "error">("loading");
+  const [failed, setFailed] = useState(false);
   // Guard against callers that pass only a request `size` and no box classes —
   // without an explicit box the <img> would render at its natural size.
   const hasBox = /(^|\s)(h-|size-)/.test(className);
 
   return (
     <span
-      className={`relative inline-block shrink-0 overflow-hidden rounded-full ${className}`}
+      className={`relative inline-block shrink-0 overflow-hidden rounded-full bg-muted ${className}`}
       style={hasBox ? undefined : { height: 36, width: 36 }}
     >
-      {state !== "loaded" && (
-        <span
-          aria-hidden
-          className="absolute inset-0 rounded-full bg-muted"
-        >
-          {state === "loading" ? (
-            <span className="avatar-shimmer absolute inset-0 rounded-full" />
-          ) : (
-            <span className="absolute inset-0 grid place-items-center text-[0.7em] font-semibold text-muted-foreground">
-              {initialsOf(name)}
-            </span>
-          )}
-        </span>
+      <span
+        aria-hidden
+        className="absolute inset-0 grid place-items-center text-[0.7em] font-semibold text-muted-foreground"
+      >
+        {initialsOf(name)}
+      </span>
+      {!failed && (
+        <img
+          src={avatarUrl(name, size)}
+          alt={alt ?? ""}
+          decoding="sync"
+          loading="eager"
+          onError={() => setFailed(true)}
+          className="relative h-full w-full rounded-full object-cover"
+        />
       )}
-      <img
-        src={avatarUrl(name, size)}
-        alt={alt ?? ""}
-        decoding="async"
-        onLoad={() => setState("loaded")}
-        onError={() => setState("error")}
-        className={`h-full w-full rounded-full object-cover transition-opacity duration-300 ${
-          state === "loaded" ? "opacity-100" : "opacity-0"
-        }`}
-      />
     </span>
   );
 }
+
