@@ -888,12 +888,12 @@ function InboxPage() {
             : s.tag === "Renewal"
               ? "Helios renewal lands in 14 days. Procurement wants a seat-count review before the invoice cuts."
               : s.tag === "Billing"
-                ? "Stripe payout of $12,840 arrives May 30. Reconciliation report attached."
+                ? "Meridian asked to move invoice 4471 to net-45 terms. Confirm before it's scheduled."
                 : s.tag === "Legal"
                   ? "Northwind MSA fully executed. Countersigned PDF attached."
                   : s.tag === "Intro"
                     ? "Warm intro to Priya, revenue ops at Bridgewater. Priya is on this thread."
-                    : "Linear queued OPS-128, 129, 131 to Syra at high priority — blocking onboarding.";
+                    : "Amara needs the updated retention curve on slide 6 before Thursday's committee.";
       const nextAction =
         s.tag === "Hot lead"
           ? "Send updated SOW with June 10 kickoff"
