@@ -1936,9 +1936,7 @@ function InboxPage() {
                         </span>
                         {insights.todos.map((todo) => (
                           <span key={todo} className="inline-flex items-center gap-1.5 text-[11.5px] text-foreground/65">
-                            <span aria-hidden className="hairline-blue-lavender h-3 w-3 rounded-[3px] p-[1px]">
-                              <span className="block h-full w-full rounded-[2px] bg-background" />
-                            </span>
+                            <span aria-hidden className="box-border h-3 w-3 rounded-[3px] border border-border/60 bg-foreground/[0.04]" />
                             {todo}
                           </span>
                         ))}
