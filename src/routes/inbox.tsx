@@ -40,7 +40,6 @@ import {
   RefreshCw,
   FileText,
   User as UserIcon,
-  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -58,14 +57,7 @@ import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import {
-  ArrowUpDown,
-  SlidersHorizontal,
-  Bot,
-  BookOpen,
-  Settings2,
-  UserSquare2,
-} from "lucide-react";
+import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
 
 
 export const Route = createFileRoute("/inbox")({
