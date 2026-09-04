@@ -1095,25 +1095,16 @@ function InboxPage() {
                   ))}
                 </ul>
                 <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                  {threadInsights(s).actions.map((action, i) => {
-                    const chip = ["chip-1", "chip-2", "chip-3", "chip-4"][i % 4];
-                    return (
-                      <button
-                        key={action}
-                        onClick={() => canAction && openComposer("reply")}
-                        disabled={!canAction}
-                        className={`group inline-flex items-center rounded-full p-[1px] transition-transform active:scale-[0.98] ${chip} ${
-                          canAction ? "" : "opacity-50"
-                        }`}
-                      >
-                        <span className="rounded-full bg-background px-2.5 py-0.5 text-[11px] font-medium transition-colors group-hover:bg-[var(--surface-raised-hover)]">
-                          <span className={`${chip} bg-clip-text text-transparent`}>
-                            {action}
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
+                  {threadInsights(s).actions.map((action) => (
+                    <button
+                      key={action}
+                      onClick={() => canAction && openComposer("reply")}
+                      disabled={!canAction}
+                      className={`inline-flex items-center rounded-full border border-border/70 bg-foreground/[0.04] px-2.5 py-0.5 text-[11px] font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.08] active:scale-[0.98] ${canAction ? "" : "opacity-50"}`}
+                    >
+                      {action}
+                    </button>
+                  ))}
                 </div>
                 {threadInsights(s).todos.length > 0 && (
                   <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
@@ -1122,9 +1113,7 @@ function InboxPage() {
                     </span>
                     {threadInsights(s).todos.map((todo) => (
                       <span key={todo} className="inline-flex items-center gap-1.5 text-[11px] text-foreground/65">
-                        <span aria-hidden className="hairline-blue-lavender h-3 w-3 rounded-[3px] p-[1px]">
-                          <span className="block h-full w-full rounded-[2px] bg-background" />
-                        </span>
+                        <span aria-hidden className="box-border h-3 w-3 rounded-[3px] border border-border/60 bg-foreground/[0.04]" />
                         {todo}
                       </span>
                     ))}
@@ -1918,22 +1907,16 @@ function InboxPage() {
                       ))}
                     </ul>
                     <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
-                      {insights.actions.map((action, i) => {
-                        const chip = ["chip-1", "chip-2", "chip-3", "chip-4"][i % 4];
-                        return (
-                          <button
-                            key={action}
-                            onClick={() => selected.needsReply && openComposer("reply")}
-                            className={`group inline-flex items-center rounded-full p-[1px] transition-transform active:scale-[0.98] ${chip}`}
-                          >
-                            <span className="rounded-full bg-background px-2.5 py-0.5 text-[11.5px] font-medium transition-colors group-hover:bg-[var(--surface-raised-hover)]">
-                              <span className={`${chip} bg-clip-text text-transparent`}>
-                                {action}
-                              </span>
-                            </span>
-                          </button>
-                        );
-                      })}
+                      {insights.actions.map((action) => (
+                        <button
+                          key={action}
+                          onClick={() => selected.needsReply && openComposer("reply")}
+                          disabled={!selected.needsReply}
+                          className={`inline-flex items-center rounded-full border border-border/70 bg-foreground/[0.04] px-2.5 py-0.5 text-[11.5px] font-medium text-foreground/80 transition-colors hover:bg-foreground/[0.08] active:scale-[0.98] ${selected.needsReply ? "" : "opacity-50"}`}
+                        >
+                          {action}
+                        </button>
+                      ))}
                     </div>
                     {insights.todos.length > 0 && (
                       <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1">
@@ -1942,9 +1925,7 @@ function InboxPage() {
                         </span>
                         {insights.todos.map((todo) => (
                           <span key={todo} className="inline-flex items-center gap-1.5 text-[11.5px] text-foreground/65">
-                            <span aria-hidden className="hairline-blue-lavender h-3 w-3 rounded-[3px] p-[1px]">
-                              <span className="block h-full w-full rounded-[2px] bg-background" />
-                            </span>
+                            <span aria-hidden className="box-border h-3 w-3 rounded-[3px] border border-border/60 bg-foreground/[0.04]" />
                             {todo}
                           </span>
                         ))}
