@@ -1377,40 +1377,89 @@ function InboxPage() {
             <div className="relative" ref={popoverRef}>
               <button
                 onClick={() => setFoldersOpen((v) => !v)}
-                className="inline-flex items-center gap-1 h-10 px-3 rounded-full border border-border/50 bg-card text-foreground/85 text-[12.5px] font-medium"
+                className="inline-flex items-center gap-1.5 h-10 px-3 rounded-full border border-border/50 bg-card text-foreground/85 text-[12.5px] font-medium"
               >
                 <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <span>{activeFolder}</span>
+                <span className="text-[11px] tabular-nums text-muted-foreground">
+                  {folderCounts[activeFolder]}
+                </span>
                 <ChevronDown className="h-3 w-3 opacity-70" />
               </button>
               {foldersOpen && (
                 <div
-                  className="absolute right-0 top-12 z-30 w-56 p-1.5 rounded-xl border border-border/70 bg-popover"
-                  style={{ boxShadow: "0 20px 40px -18px rgba(0,0,0,0.5)" }}
+                  className="absolute right-0 top-12 z-30 w-[270px] rounded-2xl border border-border/60 bg-popover/95 backdrop-blur-xl p-2"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 8px 24px -12px rgba(0,0,0,0.4)",
+                  }}
                 >
-                  {folderMeta.map((f) => {
-                    const Icon = f.icon;
-                    const active = f.name === activeFolder;
-                    return (
+                  {/* workspace header */}
+                  <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
+                    <span
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[13px] font-bold text-foreground"
+                      style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
+                    >
+                      H
+                    </span>
+                    <span className="text-[15px] font-semibold tracking-tight text-foreground">
+                      Harwick &amp; Sterne
+                    </span>
+                  </div>
+
+                  <div className="mx-2 mb-1.5 h-px bg-border/60" />
+
+                  {/* folders */}
+                  <div className="space-y-0.5">
+                    {folderMeta.map((f) => {
+                      const Icon = f.icon;
+                      const active = f.name === activeFolder;
+                      return (
+                        <button
+                          key={f.name}
+                          onClick={() => {
+                            setActiveFolder(f.name);
+                            setFoldersOpen(false);
+                          }}
+                          className={`ios-tap w-full flex items-center gap-3 px-3 h-11 rounded-xl text-[14px] ${
+                            active
+                              ? "bg-foreground/[0.09] text-foreground font-medium"
+                              : "text-foreground/85 active:bg-foreground/[0.06]"
+                          }`}
+                        >
+                          <Icon className="h-[17px] w-[17px] opacity-80" strokeWidth={1.75} />
+                          <span className="flex-1 text-left">{f.name}</span>
+                          {folderCounts[f.name] > 0 && (
+                            <span className="text-[12px] text-muted-foreground tabular-nums">
+                              {folderCounts[f.name]}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mx-2 mt-1.5 mb-2 h-px bg-border/60" />
+
+                  {/* labels */}
+                  <div className="px-3 pb-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/70">
+                    Labels
+                  </div>
+                  <div className="space-y-0.5">
+                    {mailLabels.map((l) => (
                       <button
-                        key={f.name}
+                        key={l.name}
                         onClick={() => {
-                          setActiveFolder(f.name);
+                          setQuery(l.query);
                           setFoldersOpen(false);
                         }}
-                        className={`ios-tap w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] ${
-                          active
-                            ? "bg-foreground/[0.08] text-foreground font-medium"
-                            : "text-foreground/85 active:bg-foreground/[0.06]"
-                        }`}
+                        className="ios-tap w-full flex items-center gap-3 px-3 h-10 rounded-xl text-[13.5px] text-foreground/85 active:bg-foreground/[0.06]"
                       >
-                        <Icon className="h-4 w-4" strokeWidth={1.75} />
-                        <span className="flex-1 text-left">{f.name}</span>
-                        <span className="text-[11px] text-muted-foreground tabular-nums">
-                          {folderCounts[f.name]}
-                        </span>
+                        <span className={`h-2.5 w-2.5 rounded-full border-2 ${l.dot}`} />
+                        <span className="flex-1 text-left">{l.name}</span>
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
