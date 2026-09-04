@@ -1078,62 +1078,70 @@ function InboxPage() {
                 </div>
               </div>
 
-              {/* Syra Smart Summary — plain inline strip */}
+              {/* Syra Smart Summary — compact inline strip with subtle accent */}
               <div className="px-4 py-1">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <SyraMark className="h-3.5 w-3.5 text-foreground/45" />
-                    <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/75">
-                      Smart summary
-                    </span>
-                  </div>
-                  <span className="text-[10px] text-muted-foreground/60 tabular-nums">just now</span>
+                <div className="flex items-center gap-2">
+                  <SyraMark className="h-3.5 w-3.5 text-[var(--sparkle)]" />
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground/70">
+                    Smart summary
+                  </span>
                 </div>
-                <ul className="mt-2.5 space-y-1.5">
+                <ul className="mt-2 space-y-1">
                   {threadInsights(s).bullets.map((point) => (
-                    <li key={point} className="flex gap-2.5 text-[13.5px] leading-[1.5] text-foreground/85">
-                      <span aria-hidden className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-foreground/35" />
+                    <li key={point} className="flex gap-2 text-[13px] leading-[1.45] text-foreground/85">
+                      <span aria-hidden className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-[var(--sparkle)]/60" />
                       <span>{point}</span>
                     </li>
                   ))}
                 </ul>
+                <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+                  {threadInsights(s).actions.map((action) => (
+                    <button
+                      key={action}
+                      onClick={() => canAction && openComposer("reply")}
+                      disabled={!canAction}
+                      className={`inline-flex items-center rounded-full border border-border/50 bg-background/40 px-2.5 py-0.5 text-[11px] font-medium transition-colors ${
+                        canAction
+                          ? "text-foreground/75 hover:border-border/70 hover:bg-foreground/[0.04] hover:text-foreground"
+                          : "text-foreground/50"
+                      }`}
+                    >
+                      {action}
+                    </button>
+                  ))}
+                </div>
                 {threadInsights(s).todos.length > 0 && (
-                  <div className="mt-3 border-t border-border/40 pt-2.5">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/65">
-                      To-dos extracted
-                    </div>
-                    <ul className="mt-1.5 space-y-1">
-                      {threadInsights(s).todos.map((todo) => (
-                        <li key={todo} className="flex items-center gap-2 text-[12.5px] text-foreground/75">
-                          <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/70" />
-                          <span>{todo}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="mt-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                    <span className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/55">
+                      To-dos
+                    </span>
+                    {threadInsights(s).todos.map((todo) => (
+                      <span key={todo} className="inline-flex items-center gap-1.5 text-[11px] text-foreground/65">
+                        <span aria-hidden className="h-3 w-3 rounded-[3px] border border-border/60" />
+                        {todo}
+                      </span>
+                    ))}
                   </div>
                 )}
                 <button
                   onClick={() => canAction && openComposer("reply")}
                   disabled={!canAction}
-                  className={`mt-3 flex w-full items-center gap-2.5 rounded-lg border border-border/60 px-3 py-2.5 text-left transition-colors ${
+                  className={`mt-3 flex w-full items-center justify-between gap-2 rounded-lg border border-border/60 px-3 py-2 text-left transition-colors ${
                     canAction
                       ? "hover:bg-foreground/[0.04] active:bg-foreground/[0.06]"
                       : "opacity-70"
                   }`}
                 >
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-foreground text-background">
-                    <ArrowRight className="h-3.5 w-3.5" strokeWidth={2.25} />
-                  </span>
                   <div className="min-w-0 flex-1">
-                    <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+                    <div className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/70">
                       Next action
                     </div>
-                    <div className="text-[13px] font-medium text-foreground truncate">
+                    <div className="text-[12.5px] font-medium text-foreground truncate">
                       {nextAction}
                     </div>
                   </div>
                   {canAction && (
-                    <ChevronRight className="h-4 w-4 text-muted-foreground/70 shrink-0" />
+                    <ChevronRight className="h-4 w-4 text-muted-foreground/60 shrink-0" />
                   )}
                 </button>
               </div>
