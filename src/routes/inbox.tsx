@@ -340,22 +340,81 @@ const extraThreads: Thread[] = [
 
 baseThreads.push(...extraThreads);
 
-function threadSummary(t: Thread) {
+interface ThreadInsights {
+  bullets: string[];
+  actions: string[];
+  todos: string[];
+}
+
+function threadInsights(t: Thread): ThreadInsights {
+  const first = t.from.split(" ")[0];
   switch (t.tag) {
     case "Hot lead":
-      return `${t.from.split(" ")[0]} is engaged and moving — the ask is specific and time-boxed. Clearing it this week keeps the deal on its current track.`;
+      return {
+        bullets: [
+          `${first} approved the proposal with two edits — pricing and kickoff timing`,
+          "Tier 2 should stay at the proposed annual rate",
+          "Kickoff targeted for the week of June 10",
+        ],
+        actions: ["Send updated SOW", "Lock June 10 kickoff", "Book 30-min walkthrough"],
+        todos: ["Revise SOW with tier 2 pricing", "Send calendar hold for kickoff week", "Schedule walkthrough invite"],
+      };
     case "Sales":
-      return `${t.from.split(" ")[0]} needs concrete answers before the next step. Nothing here is blocked on approval — only on a reply with the details attached.`;
+      return {
+        bullets: [
+          `${first} is blocked on three items before legal can countersign`,
+          "Needs SOC2 status, data residency, and implementation owner",
+          "Nothing requires approval — just a reply with details",
+        ],
+        actions: ["Send SOC2 pack", "Name implementation owner"],
+        todos: ["Attach SOC2 report", "Confirm data residency answer", "Assign implementation owner"],
+      };
     case "Renewal":
-      return `Renewal thread with commercial exposure. Procurement is driving the timeline, so numbers matter more than narrative.`;
+      return {
+        bullets: [
+          "Renewal lands in 14 days with commercial exposure",
+          "Procurement is driving the timeline — numbers over narrative",
+          "Seat-count review requested before the invoice cuts",
+        ],
+        actions: ["Propose seat-count review call", "Share updated pricing"],
+        todos: ["Pull current seat usage", "Draft renewal pricing", "Book procurement call"],
+      };
     case "Billing":
-      return `Finance-side item. No decision required beyond confirming terms and letting the transaction proceed.`;
+      return {
+        bullets: [
+          `${t.company} asked to move invoice 4471 to net-45 terms`,
+          "Finance-side only — no decision beyond confirming terms",
+        ],
+        actions: ["Confirm terms with finance"],
+        todos: ["Verify net-45 against policy", "Update invoice schedule"],
+      };
     case "Legal":
-      return `Contract and compliance thread. A written, on-the-record answer moves this to signature faster than a call.`;
+      return {
+        bullets: [
+          "Contract and compliance thread — written answer beats a call",
+          "A documented, on-the-record reply moves this to signature",
+        ],
+        actions: ["Send written response to review"],
+        todos: ["Draft on-record response", "Route to counsel for sign-off"],
+      };
     case "Intro":
-      return `Relationship thread — low effort, high signal. A quick, warm reply keeps momentum with the new contact.`;
+      return {
+        bullets: [
+          `Warm intro — ${first} is on this thread and engaged`,
+          "Low effort, high signal: a quick reply keeps momentum",
+        ],
+        actions: ["Acknowledge and propose a time"],
+        todos: ["Reply-all to loop everyone in", "Offer two meeting windows"],
+      };
     default:
-      return `Automated notification. No reply expected; noted for awareness and filed under ${t.company}.`;
+      return {
+        bullets: [
+          "Automated notification — no reply expected",
+          `Filed under ${t.company} for awareness`,
+        ],
+        actions: ["Archive thread"],
+        todos: [],
+      };
   }
 }
 
@@ -893,20 +952,6 @@ function InboxPage() {
     // Thread reading view
     if (mobileReading) {
       const s = selected;
-      const summary =
-        s.tag === "Hot lead"
-          ? "Sarah greenlit the proposal with two edits: lock tier 2 at the proposed annual rate and target kickoff the week of June 10."
-          : s.tag === "Sales"
-            ? "Marcus needs SOC2 status, data residency, and the implementation owner before legal can countersign."
-            : s.tag === "Renewal"
-              ? "Helios renewal lands in 14 days. Procurement wants a seat-count review before the invoice cuts."
-              : s.tag === "Billing"
-                ? "Meridian asked to move invoice 4471 to net-45 terms. Confirm before it's scheduled."
-                : s.tag === "Legal"
-                  ? "Northwind MSA fully executed. Countersigned PDF attached."
-                  : s.tag === "Intro"
-                    ? "Warm intro to Priya, revenue ops at Bridgewater. Priya is on this thread."
-                    : "Amara needs the updated retention curve on slide 6 before Thursday's committee.";
       const nextAction =
         s.tag === "Hot lead"
           ? "Send updated SOW with June 10 kickoff"
@@ -1052,8 +1097,30 @@ function InboxPage() {
                     </div>
                     <span className="text-[10px] text-muted-foreground/80 tabular-nums">just now</span>
                   </div>
-                  <div className="px-4 pb-3.5 text-[13.5px] leading-[1.55] text-foreground/90">
-                    {summary}
+                  <div className="px-4 pb-3.5">
+                    <ul className="space-y-1.5">
+                      {threadInsights(s).bullets.map((point) => (
+                        <li key={point} className="flex gap-2.5 text-[13.5px] leading-[1.5] text-foreground/90">
+                          <span aria-hidden className="mt-[8px] h-1 w-1 shrink-0 rounded-full bg-foreground/45" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    {threadInsights(s).todos.length > 0 && (
+                      <div className="mt-3 border-t border-border/50 pt-2.5">
+                        <div className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground/80">
+                          To-dos extracted
+                        </div>
+                        <ul className="mt-1.5 space-y-1">
+                          {threadInsights(s).todos.map((todo) => (
+                            <li key={todo} className="flex items-center gap-2 text-[12.5px] text-foreground/75">
+                              <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/80" />
+                              <span>{todo}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                   <button
                     onClick={() => canAction && openComposer("reply")}
@@ -1828,6 +1895,9 @@ function InboxPage() {
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
               {/* Smart summary — quiet inline strip, not a floating card */}
+              {(() => {
+                const insights = threadInsights(selected);
+                return (
               <div className="mb-6 rounded-xl bg-foreground/[0.035] px-5 py-4">
                 <div className="flex items-center gap-2">
                   <SyraMark className="h-4 w-4" />
@@ -1835,13 +1905,46 @@ function InboxPage() {
                     Smart summary
                   </span>
                 </div>
-                <p className="mt-2 text-[14px] leading-[1.65] text-foreground/85">
-                  {threadSummary(selected)}
-                </p>
-                <p className="mt-2 text-[13px] text-muted-foreground">
-                  Next · {threadNextAction(selected)}
-                </p>
+                <ul className="mt-2.5 space-y-1.5">
+                  {insights.bullets.map((point) => (
+                    <li key={point} className="flex gap-2.5 text-[14px] leading-[1.55] text-foreground/85">
+                      <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-foreground/45" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
+                  <span className="mr-1 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+                    Suggested
+                  </span>
+                  {insights.actions.map((action) => (
+                    <button
+                      key={action}
+                      onClick={() => selected.needsReply && openComposer("reply")}
+                      className="inline-flex items-center rounded-full border border-border/70 bg-card px-2.5 py-1 text-[12px] font-medium text-foreground/85 transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+                    >
+                      {action}
+                    </button>
+                  ))}
+                </div>
+                {insights.todos.length > 0 && (
+                  <div className="mt-3.5 border-t border-border/50 pt-3">
+                    <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+                      To-dos extracted
+                    </div>
+                    <ul className="mt-2 space-y-1.5">
+                      {insights.todos.map((todo) => (
+                        <li key={todo} className="flex items-center gap-2.5 text-[13px] text-foreground/75">
+                          <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/80" />
+                          <span>{todo}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
+                );
+              })()}
 
               {selectedDraft.status !== "closed" && (
                 <div className="pb-6">
