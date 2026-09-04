@@ -231,28 +231,23 @@ export function ThreadBrief({
   );
 
   return (
-    <div
-      className={`overflow-hidden rounded-xl border border-border/60 bg-card ${
-        compact ? "" : "lg:grid lg:grid-cols-[1.4fr_1fr]"
-      }`}
-    >
+    <div className={compact ? "" : "lg:grid lg:grid-cols-[1.4fr_1fr] lg:gap-8"}>
       {/* ---- Left: context + reasoning ---- */}
       <div>
-        <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
+        <div className="flex items-baseline gap-2.5">
           <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-foreground">
-            Client context
+            Context
           </span>
-          <span aria-hidden className="h-1 w-1 rounded-full bg-foreground/25" />
           <span className="truncate text-[12px] text-muted-foreground">{data.headline}</span>
         </div>
 
-        <div className="grid grid-cols-3 divide-x divide-border/60 border-b border-border/60">
+        <div className="mt-3 grid grid-cols-3 gap-4 border-t border-border/50 pt-3">
           {[
             { label: "Last contact", value: data.lastContact, stale: data.lastContactStale },
             { label: "Reason", value: data.reason },
             { label: "Goal of this email", value: data.goal, goal: true },
           ].map((cell) => (
-            <div key={cell.label} className="px-4 py-2.5">
+            <div key={cell.label}>
               <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                 {cell.label}
               </div>
@@ -269,7 +264,7 @@ export function ThreadBrief({
           ))}
         </div>
 
-        <div className="flex items-start gap-4 bg-foreground/[0.02] px-4 py-3">
+        <div className="mt-3 flex items-start gap-4 border-t border-border/50 pt-3">
           <ConfidenceDial value={data.confidence} />
           <div className="min-w-0 flex-1 space-y-2.5">
             <div className="grid gap-2.5 sm:grid-cols-2">
@@ -310,7 +305,7 @@ export function ThreadBrief({
           </div>
         </div>
 
-        <div className="flex items-start gap-2 border-t border-border/60 px-4 py-2.5">
+        <div className="mt-3 flex items-start gap-2 border-t border-border/50 pt-3">
           <Info className="mt-[1px] h-3.5 w-3.5 shrink-0 text-muted-foreground" />
           <p className="text-[12px] leading-snug text-muted-foreground">{data.caution}</p>
         </div>
@@ -319,16 +314,10 @@ export function ThreadBrief({
       {/* ---- Right: recommendation + suggested actions ---- */}
       <div
         className={`flex flex-col ${
-          compact ? "border-t border-border/60" : "lg:border-l lg:border-border/60"
+          compact ? "mt-4 border-t border-border/50 pt-4" : "mt-4 border-t border-border/50 pt-4 lg:mt-0 lg:border-l lg:border-t-0 lg:pt-0 lg:pl-8"
         }`}
       >
-        <div
-          className="px-4 py-3"
-          style={{
-            background:
-              "linear-gradient(135deg, var(--sparkle-soft) 0%, transparent 70%)",
-          }}
-        >
+        <div>
           <div className="flex items-center gap-2">
             <span style={{ color: "var(--sparkle)" }}>
               <SyraMark className="h-4 w-4" />
@@ -342,7 +331,7 @@ export function ThreadBrief({
           </p>
         </div>
 
-        <div className="flex-1 border-t border-border/60 px-4 py-3">
+        <div className="mt-3 flex-1 border-t border-border/50 pt-3">
           <div className="text-[12px] font-semibold text-foreground">Suggested actions</div>
           <ul className="mt-2 space-y-1.5">
             {data.actions.map((a) => {
