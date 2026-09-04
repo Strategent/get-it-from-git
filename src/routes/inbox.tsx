@@ -1906,6 +1906,9 @@ function InboxPage() {
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
               {/* Smart summary — quiet inline strip, not a floating card */}
+              {(() => {
+                const insights = threadInsights(selected);
+                return (
               <div className="mb-6 rounded-xl bg-foreground/[0.035] px-5 py-4">
                 <div className="flex items-center gap-2">
                   <SyraMark className="h-4 w-4" />
@@ -1913,13 +1916,46 @@ function InboxPage() {
                     Smart summary
                   </span>
                 </div>
-                <p className="mt-2 text-[14px] leading-[1.65] text-foreground/85">
-                  {threadSummary(selected)}
-                </p>
-                <p className="mt-2 text-[13px] text-muted-foreground">
-                  Next · {threadNextAction(selected)}
-                </p>
+                <ul className="mt-2.5 space-y-1.5">
+                  {insights.bullets.map((point) => (
+                    <li key={point} className="flex gap-2.5 text-[14px] leading-[1.55] text-foreground/85">
+                      <span aria-hidden className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-foreground/45" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
+                  <span className="mr-1 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+                    Suggested
+                  </span>
+                  {insights.actions.map((action) => (
+                    <button
+                      key={action}
+                      onClick={() => selected.needsReply && openComposer("reply")}
+                      className="inline-flex items-center rounded-full border border-border/70 bg-card px-2.5 py-1 text-[12px] font-medium text-foreground/85 transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+                    >
+                      {action}
+                    </button>
+                  ))}
+                </div>
+                {insights.todos.length > 0 && (
+                  <div className="mt-3.5 border-t border-border/50 pt-3">
+                    <div className="text-[10.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground/80">
+                      To-dos extracted
+                    </div>
+                    <ul className="mt-2 space-y-1.5">
+                      {insights.todos.map((todo) => (
+                        <li key={todo} className="flex items-center gap-2.5 text-[13px] text-foreground/75">
+                          <span aria-hidden className="grid h-3.5 w-3.5 shrink-0 place-items-center rounded-[4px] border border-border/80" />
+                          <span>{todo}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
+                );
+              })()}
 
               {selectedDraft.status !== "closed" && (
                 <div className="pb-6">
