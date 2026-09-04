@@ -77,7 +77,36 @@
     #5a6ce8 100%
   );
 
+  /* ---- Colorful action chip gradients ---- */
+  --chip-1: linear-gradient(135deg, #3b82f6, #6366f1);
+  --chip-2: linear-gradient(135deg, #06b6d4, #3b82f6);
+  --chip-3: linear-gradient(135deg, #6366f1, #a855f7);
+  --chip-4: linear-gradient(135deg, #8b5cf6, #d946ef);
+
+  /* ---- Blue-lavender hairline gradient for todo checkboxes ---- */
+  --hairline-blue-lavender: linear-gradient(135deg, #3b82f6 0%, #7c3aed 55%, #c084fc 100%);
+
   /* ---- Layout metrics ---- */
   --rail-w: 340px;
   --shell-gap: 20px;
+}
+
+@utility chip-1 {
+  background-image: var(--chip-1);
+}
+
+@utility chip-2 {
+  background-image: var(--chip-2);
+}
+
+@utility chip-3 {
+  background-image: var(--chip-3);
+}
+
+@utility chip-4 {
+  background-image: var(--chip-4);
+}
+
+@utility hairline-blue-lavender {
+  background-image: var(--hairline-blue-lavender);
 }
