@@ -479,50 +479,63 @@ function SignatureBlock({ compact = false }: { compact?: boolean }) {
 const ME_NAME = "John Harwick";
 const ME_EMAIL = "john.harwick@harwicksterne.com";
 
-/** Real email header block: sender, address, recipients, date, expandable details. */
+/** Real email header skeleton: labelled From / To / Cc / Subject rows. */
+function HeaderRow({
+  label,
+  children,
+  last,
+}: {
+  label: string;
+  children: React.ReactNode;
+  last?: boolean;
+}) {
+  return (
+    <div
+      className={`flex items-center gap-3 px-4 py-2.5 sm:px-5 ${
+        last ? "" : "border-b border-border/45"
+      }`}
+    >
+      <span className="w-[54px] shrink-0 text-[13px] text-muted-foreground sm:w-[64px]">
+        {label}
+      </span>
+      <div className="min-w-0 flex-1 text-[13.5px] text-foreground/90">{children}</div>
+    </div>
+  );
+}
+
 function MessageHeaderBlock({ thread }: { thread: Thread }) {
   const when = thread.sentAt ?? `${thread.time} ago`;
-  const domain = thread.email.split("@")[1] ?? "example.com";
   const cc = threadCc(thread);
   return (
-    <div className="border-b border-border/60 pb-3">
-      <div className="flex items-start gap-3">
-        <LemniAvatar name={thread.from} size={34} />
-        <div className="min-w-0 flex-1">
-          <div className="flex min-w-0 flex-wrap items-baseline gap-x-1.5">
-            <span className="text-[13.5px] font-semibold tracking-tight text-foreground">
-              {thread.from}
-            </span>
-            <span className="min-w-0 truncate text-[12.5px] text-muted-foreground">
-              &lt;{thread.email}&gt;
-            </span>
-          </div>
-          <div className="mt-1 space-y-[2px] text-[12px] leading-[1.45]">
-            <div className="flex min-w-0 gap-1.5">
-              <span className="w-[42px] shrink-0 text-muted-foreground">To</span>
-              <span className="min-w-0 truncate text-foreground/80">
-                {ME_NAME} &lt;{ME_EMAIL}&gt;
-              </span>
-            </div>
-            {cc.length > 0 && (
-              <div className="flex min-w-0 gap-1.5">
-                <span className="w-[42px] shrink-0 text-muted-foreground">Cc</span>
-                <span className="min-w-0 truncate text-foreground/80">{cc.join(", ")}</span>
-              </div>
-            )}
-            <div className="flex min-w-0 gap-1.5">
-              <span className="w-[42px] shrink-0 text-muted-foreground">Subject</span>
-              <span className="min-w-0 truncate text-foreground/80">{thread.subject}</span>
-            </div>
-          </div>
-        </div>
-        <span className="shrink-0 pt-0.5 text-[12px] tabular-nums text-muted-foreground">
-          {when}
+    <div className="-mx-4 border-b border-border/45 sm:-mx-5">
+      <div className="flex items-center gap-3 border-b border-border/45 px-4 py-2.5 sm:px-5">
+        <span className="w-[54px] shrink-0 text-[13px] text-muted-foreground sm:w-[64px]">
+          From
         </span>
+        <div className="flex min-w-0 flex-1 items-center gap-2.5">
+          <LemniAvatar name={thread.from} size={26} />
+          <span className="shrink-0 text-[13.5px] font-semibold tracking-tight text-foreground">
+            {thread.from}
+          </span>
+          <span className="min-w-0 truncate text-[13px] text-muted-foreground">
+            &lt;{thread.email}&gt;
+          </span>
+        </div>
+        <span className="shrink-0 text-[12.5px] tabular-nums text-muted-foreground">{when}</span>
       </div>
-      <div className="mt-2 pl-0 text-[11.5px] text-muted-foreground sm:pl-[46px]">
-        mailed-by {domain} · signed-by {domain}
-      </div>
+      <HeaderRow label="To">
+        <span className="block truncate">
+          {ME_NAME} &lt;{ME_EMAIL}&gt;
+        </span>
+      </HeaderRow>
+      {cc.length > 0 && (
+        <HeaderRow label="Cc">
+          <span className="block truncate">{cc.join(", ")}</span>
+        </HeaderRow>
+      )}
+      <HeaderRow label="Subject" last>
+        <span className="block truncate font-medium text-foreground">{thread.subject}</span>
+      </HeaderRow>
     </div>
   );
 }
