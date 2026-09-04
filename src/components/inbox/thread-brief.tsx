@@ -323,7 +323,9 @@ export function ThreadBrief({
           }}
         >
           <div className="flex items-center gap-2">
-            <SyraMark className="h-4 w-4" style={{ color: "var(--sparkle)" }} />
+            <span style={{ color: "var(--sparkle)" }}>
+              <SyraMark className="h-4 w-4" />
+            </span>
             <span className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               Syra recommendation
             </span>
