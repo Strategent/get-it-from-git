@@ -40,7 +40,6 @@ import {
   RefreshCw,
   FileText,
   User as UserIcon,
-  Plus,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -58,14 +57,7 @@ import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
-import {
-  ArrowUpDown,
-  SlidersHorizontal,
-  Bot,
-  BookOpen,
-  Settings2,
-  UserSquare2,
-} from "lucide-react";
+import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
 
 
 export const Route = createFileRoute("/inbox")({
@@ -1377,40 +1369,89 @@ function InboxPage() {
             <div className="relative" ref={popoverRef}>
               <button
                 onClick={() => setFoldersOpen((v) => !v)}
-                className="inline-flex items-center gap-1 h-10 px-3 rounded-full border border-border/50 bg-card text-foreground/85 text-[12.5px] font-medium"
+                className="inline-flex items-center gap-1.5 h-10 px-3 rounded-full border border-border/50 bg-card text-foreground/85 text-[12.5px] font-medium"
               >
                 <ActiveIcon className="h-3.5 w-3.5" strokeWidth={1.75} />
+                <span>{activeFolder}</span>
+                <span className="text-[11px] tabular-nums text-muted-foreground">
+                  {folderCounts[activeFolder]}
+                </span>
                 <ChevronDown className="h-3 w-3 opacity-70" />
               </button>
               {foldersOpen && (
                 <div
-                  className="absolute right-0 top-12 z-30 w-56 p-1.5 rounded-xl border border-border/70 bg-popover"
-                  style={{ boxShadow: "0 20px 40px -18px rgba(0,0,0,0.5)" }}
+                  className="absolute right-0 top-12 z-30 w-[270px] rounded-2xl border border-border/60 bg-popover/95 backdrop-blur-xl p-2"
+                  style={{
+                    boxShadow:
+                      "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 8px 24px -12px rgba(0,0,0,0.4)",
+                  }}
                 >
-                  {folderMeta.map((f) => {
-                    const Icon = f.icon;
-                    const active = f.name === activeFolder;
-                    return (
+                  {/* workspace header */}
+                  <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
+                    <span
+                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[13px] font-bold text-foreground"
+                      style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
+                    >
+                      H
+                    </span>
+                    <span className="text-[15px] font-semibold tracking-tight text-foreground">
+                      Harwick &amp; Sterne
+                    </span>
+                  </div>
+
+                  <div className="mx-2 mb-1.5 h-px bg-border/60" />
+
+                  {/* folders */}
+                  <div className="space-y-0.5">
+                    {folderMeta.map((f) => {
+                      const Icon = f.icon;
+                      const active = f.name === activeFolder;
+                      return (
+                        <button
+                          key={f.name}
+                          onClick={() => {
+                            setActiveFolder(f.name);
+                            setFoldersOpen(false);
+                          }}
+                          className={`ios-tap w-full flex items-center gap-3 px-3 h-11 rounded-xl text-[14px] ${
+                            active
+                              ? "bg-foreground/[0.09] text-foreground font-medium"
+                              : "text-foreground/85 active:bg-foreground/[0.06]"
+                          }`}
+                        >
+                          <Icon className="h-[17px] w-[17px] opacity-80" strokeWidth={1.75} />
+                          <span className="flex-1 text-left">{f.name}</span>
+                          {folderCounts[f.name] > 0 && (
+                            <span className="text-[12px] text-muted-foreground tabular-nums">
+                              {folderCounts[f.name]}
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="mx-2 mt-1.5 mb-2 h-px bg-border/60" />
+
+                  {/* labels */}
+                  <div className="px-3 pb-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/70">
+                    Labels
+                  </div>
+                  <div className="space-y-0.5">
+                    {mailLabels.map((l) => (
                       <button
-                        key={f.name}
+                        key={l.name}
                         onClick={() => {
-                          setActiveFolder(f.name);
+                          setQuery(l.query);
                           setFoldersOpen(false);
                         }}
-                        className={`ios-tap w-full flex items-center gap-2.5 px-3 h-10 rounded-md text-[13.5px] ${
-                          active
-                            ? "bg-foreground/[0.08] text-foreground font-medium"
-                            : "text-foreground/85 active:bg-foreground/[0.06]"
-                        }`}
+                        className="ios-tap w-full flex items-center gap-3 px-3 h-10 rounded-xl text-[13.5px] text-foreground/85 active:bg-foreground/[0.06]"
                       >
-                        <Icon className="h-4 w-4" strokeWidth={1.75} />
-                        <span className="flex-1 text-left">{f.name}</span>
-                        <span className="text-[11px] text-muted-foreground tabular-nums">
-                          {folderCounts[f.name]}
-                        </span>
+                        <span className={`h-2.5 w-2.5 rounded-full border-2 ${l.dot}`} />
+                        <span className="flex-1 text-left">{l.name}</span>
                       </button>
-                    );
-                  })}
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
@@ -1547,103 +1588,6 @@ function InboxPage() {
           }}
         />
 
-        {/* ── Nav rail ───────────────────────────────────────────── */}
-        <aside className="relative z-10 hidden xl:flex w-[212px] shrink-0 flex-col border-r border-border/50 bg-card/30">
-          {/* workspace switcher */}
-          <button className="mx-2 mt-3 mb-1 flex items-center gap-2.5 rounded-lg px-2 py-2 text-left transition-colors hover:bg-foreground/[0.04]">
-            <span
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[11px] font-bold text-foreground"
-              style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
-            >
-              H
-            </span>
-            <span className="min-w-0 flex-1 truncate text-[14px] font-semibold tracking-tight text-foreground">
-              Harwick &amp; Sterne
-            </span>
-            <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          </button>
-
-          <div className="mx-3 my-2 h-px bg-border/60" />
-
-          {/* primary */}
-          <nav className="px-2 space-y-0.5">
-            {folderMeta.slice(0, 6).map((f) => {
-              const Icon = f.icon;
-              const active = f.name === activeFolder;
-              return (
-                <button
-                  key={f.name}
-                  onClick={() => setActiveFolder(f.name)}
-                  className={`w-full flex items-center gap-2.5 h-8 px-2 rounded-lg text-[13px] transition-colors ${
-                    active
-                      ? "bg-foreground/[0.07] text-foreground font-medium"
-                      : "text-foreground/65 hover:bg-foreground/[0.04] hover:text-foreground"
-                  }`}
-                >
-                  <Icon className="h-[15px] w-[15px] shrink-0 opacity-80" strokeWidth={1.8} />
-                  <span className="flex-1 text-left truncate">{f.name}</span>
-                  {folderCounts[f.name] > 0 && (
-                    <span className="text-[11px] tabular-nums text-muted-foreground">
-                      {folderCounts[f.name]}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </nav>
-
-          {/* manage */}
-          <div className="px-4 pt-5 pb-1.5 text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
-            Manage
-          </div>
-          <nav className="px-2 space-y-0.5">
-            {[
-              { name: "Agents", icon: Bot },
-              { name: "Knowledge", icon: BookOpen },
-              { name: "Behavior", icon: Settings2 },
-              { name: "Contacts", icon: UserSquare2 },
-            ].map((m) => (
-              <button
-                key={m.name}
-                onClick={() => toast.message(`${m.name} — coming soon`)}
-                className="w-full flex items-center gap-2.5 h-8 px-2 rounded-lg text-[13px] text-foreground/65 hover:bg-foreground/[0.04] hover:text-foreground transition-colors"
-              >
-                <m.icon className="h-[15px] w-[15px] shrink-0 opacity-80" strokeWidth={1.8} />
-                <span className="flex-1 text-left truncate">{m.name}</span>
-              </button>
-            ))}
-          </nav>
-
-          {/* labels */}
-          <div className="px-4 pt-5 pb-1.5 text-[10.5px] font-medium uppercase tracking-[0.14em] text-muted-foreground/70">
-            Labels
-          </div>
-          <div className="px-2 space-y-0.5">
-            {mailLabels.map((l) => (
-              <button
-                key={l.name}
-                onClick={() => setQuery(l.query)}
-                className="w-full flex items-center gap-2.5 h-8 px-2 rounded-lg text-[12.5px] text-foreground/65 hover:bg-foreground/[0.04] hover:text-foreground transition-colors"
-              >
-                <span className={`h-2 w-2 rounded-full border-2 ${l.dot}`} />
-                <span className="truncate">{l.name}</span>
-              </button>
-            ))}
-          </div>
-
-          <div className="flex-1" />
-
-          <div className="p-2">
-            <button
-              onClick={() => openComposer("reply")}
-              className="w-full inline-flex items-center justify-center gap-2 h-9 rounded-lg bg-foreground/[0.06] text-[13px] font-medium text-foreground transition-colors hover:bg-foreground/[0.1]"
-              style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 9%, transparent)" }}
-            >
-              <Plus className="h-4 w-4" strokeWidth={2.2} />
-              New mail
-            </button>
-          </div>
-        </aside>
 
         {/* ── Thread list ─────────────────────────────────────────── */}
         <section
@@ -1651,11 +1595,64 @@ function InboxPage() {
         >
           {/* list header — "6 Todo" + Filter / Sort */}
           <div className="flex h-[46px] shrink-0 items-center gap-2 px-4">
-            <button className="inline-flex items-center gap-1.5 text-[14px] font-semibold tracking-tight text-foreground">
-              <span className="tabular-nums">{visibleThreads.length}</span>
-              <span>{activeFolder}</span>
-              <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
-            </button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="inline-flex items-center gap-1.5 text-[14px] font-semibold tracking-tight text-foreground">
+                  <span className="tabular-nums">{visibleThreads.length}</span>
+                  <span>{activeFolder}</span>
+                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="w-[270px] rounded-2xl p-2">
+                <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
+                  <span
+                    className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[13px] font-bold text-foreground"
+                    style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
+                  >
+                    H
+                  </span>
+                  <span className="text-[15px] font-semibold tracking-tight text-foreground">
+                    Harwick &amp; Sterne
+                  </span>
+                </div>
+                <DropdownMenuSeparator />
+                {folderMeta.map((f) => {
+                  const Icon = f.icon;
+                  const active = f.name === activeFolder;
+                  return (
+                    <DropdownMenuItem
+                      key={f.name}
+                      onClick={() => setActiveFolder(f.name)}
+                      className={`flex items-center gap-3 px-3 h-10 rounded-xl text-[13.5px] ${
+                        active ? "bg-foreground/[0.09] font-medium text-foreground" : ""
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 opacity-80" strokeWidth={1.75} />
+                      <span className="flex-1">{f.name}</span>
+                      {folderCounts[f.name] > 0 && (
+                        <span className="text-[12px] text-muted-foreground tabular-nums">
+                          {folderCounts[f.name]}
+                        </span>
+                      )}
+                    </DropdownMenuItem>
+                  );
+                })}
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="px-3 pb-1.5 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/70">
+                  Labels
+                </DropdownMenuLabel>
+                {mailLabels.map((l) => (
+                  <DropdownMenuItem
+                    key={l.name}
+                    onClick={() => setQuery(l.query)}
+                    className="flex items-center gap-3 px-3 h-9 rounded-xl text-[13px]"
+                  >
+                    <span className={`h-2.5 w-2.5 rounded-full border-2 ${l.dot}`} />
+                    <span className="flex-1">{l.name}</span>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
             <div className="flex-1" />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
