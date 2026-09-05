@@ -1925,6 +1925,110 @@ function InboxPage() {
   );
 }
 
+function ThreadChatDropdown({ subject, from }: { subject: string; from: string }) {
+  const [open, setOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [msgs, setMsgs] = useState<{ role: "user" | "syra"; text: string }[]>([]);
+
+  const send = (value?: string) => {
+    const text = (value ?? input).trim();
+    if (!text) return;
+    const lower = text.toLowerCase();
+    const reply = lower.includes("need")
+      ? `${from.split(" ")[0]} needs a confirmed next step and a date — everything else in "${subject}" is already agreed.`
+      : lower.includes("draft") || lower.includes("reply")
+        ? "I put a concise reply in the composer below — confirm the terms, then name the date."
+        : lower.includes("risk") || lower.includes("unclear")
+          ? "Unclear: who signs off on their side, and whether the timeline survives a week of legal review."
+          : "Here's the short version: confirm, commit to a date, and keep it to three sentences.";
+    setMsgs((m) => [...m, { role: "user", text }, { role: "syra", text: reply }]);
+    setInput("");
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-background px-3 h-8 text-[12px] font-medium text-foreground/85 transition-colors hover:bg-foreground/[0.05]"
+        >
+          <span style={{ color: "var(--sparkle)" }}>
+            <SyraMark size={14} />
+          </span>
+          Ask AI
+          <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent
+        align="end"
+        sideOffset={8}
+        className="w-[380px] rounded-2xl border-border/60 bg-popover/95 p-0 backdrop-blur-xl shadow-[0_24px_60px_-24px_rgba(0,0,0,0.6)]"
+      >
+        <div className="flex items-center gap-2 border-b border-border/50 px-4 py-3">
+          <span style={{ color: "var(--sparkle)" }}>
+            <SyraMark size={15} />
+          </span>
+          <span className="text-[13px] font-semibold tracking-tight">Ask about this thread</span>
+        </div>
+
+        <div className="max-h-[260px] overflow-y-auto no-scrollbar px-4 py-3 space-y-3">
+          {msgs.length === 0 ? (
+            <div className="space-y-1.5">
+              {[
+                "What does the client actually need?",
+                "What's unclear in this thread?",
+                "Draft a short reply",
+              ].map((q) => (
+                <button
+                  key={q}
+                  onClick={() => send(q)}
+                  className="block w-full rounded-lg px-2.5 py-2 text-left text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
+                >
+                  {q}
+                </button>
+              ))}
+            </div>
+          ) : (
+            msgs.map((m, i) => (
+              <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+                <div
+                  className={`max-w-[85%] text-[12.5px] leading-snug ${
+                    m.role === "user"
+                      ? "rounded-2xl bg-foreground/[0.07] px-3 py-2 text-foreground"
+                      : "text-foreground/90"
+                  }`}
+                >
+                  {m.text}
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="border-t border-border/50 p-2.5">
+          <div className="flex items-center gap-2 rounded-full border border-border/70 bg-background px-3 h-9">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && send()}
+              placeholder="Ask Syra about this email…"
+              className="flex-1 bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground/70"
+            />
+            <button
+              onClick={() => send()}
+              aria-label="Send"
+              className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-background"
+              style={{ background: "var(--foreground)" }}
+            >
+              <Send className="h-3 w-3" />
+            </button>
+          </div>
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function ToolbarBtn({
   icon: Icon,
   label,
