@@ -1084,7 +1084,7 @@ function InboxPage() {
 
 
 
-              <div className="px-4 pb-1">
+              <div className="px-3 pb-1">
                 <SmartSummary
                   key={s.id}
                   thread={s}
