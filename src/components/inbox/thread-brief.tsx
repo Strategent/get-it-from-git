@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, BarChart3, Info, Target, Check } from "lucide-react";
+import { ChevronDown, Info, Target, Check } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
 
 /**
@@ -184,36 +184,6 @@ export function threadBrief(t: {
         actions: ["Archive thread"],
       };
   }
-}
-
-function ConfidenceDial({ value }: { value: number }) {
-  const r = 22;
-  const c = 2 * Math.PI * r;
-  return (
-    <div className="flex shrink-0 flex-col items-center gap-1.5">
-      <div className="relative h-[54px] w-[54px]">
-        <svg viewBox="0 0 54 54" className="h-full w-full -rotate-90">
-          <circle cx="27" cy="27" r={r} fill="none" strokeWidth="5" className="stroke-foreground/10" />
-          <circle
-            cx="27"
-            cy="27"
-            r={r}
-            fill="none"
-            strokeWidth="5"
-            strokeLinecap="round"
-            stroke="var(--trend-up)"
-            strokeDasharray={`${(c * value) / 100} ${c}`}
-          />
-        </svg>
-        <span className="absolute inset-0 grid place-items-center text-[12.5px] font-semibold tabular-nums text-foreground">
-          {value}%
-        </span>
-      </div>
-      <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        Confidence
-      </span>
-    </div>
-  );
 }
 
 export function ThreadBrief({
