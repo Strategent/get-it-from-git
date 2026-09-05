@@ -2529,8 +2529,8 @@ function ComposeWindow({
         <div className="flex items-center gap-3 px-5 min-h-10 pt-2.5">
           <span className="text-muted-foreground w-12 shrink-0">From</span>
           <span className="inline-flex items-center gap-1.5 h-7 pl-0.5 pr-2.5 rounded-full bg-foreground/[0.04] border border-border/60 text-[12px]">
-            <SmartAvatar name={from} size={40} className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60" />
-            <span className="text-foreground/85">{from}</span>
+            <SmartAvatar name="John Harwick" size={40} className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60" />
+            <span className="text-foreground/85">John Harwick</span>
             <Check className="h-2.5 w-2.5" style={{ color: "var(--trend-up)" }} strokeWidth={3} />
           </span>
         </div>
