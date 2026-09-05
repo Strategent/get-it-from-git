@@ -1222,9 +1222,9 @@ function InboxPage() {
               )}
 
               {/* Message card — the email being replied to */}
-              <div className="px-4 pt-4">
+              <div className="px-3 pt-3">
                 <div
-                  className="rounded-xl border border-border/60 bg-card px-4 pb-4 pt-3.5"
+                  className="rounded-xl border border-border/60 bg-card px-3 pb-3 pt-3"
                   style={{
                     boxShadow:
                       "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
