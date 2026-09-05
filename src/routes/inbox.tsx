@@ -2524,7 +2524,7 @@ function ComposeWindow({
           onMouseUp={() => saveSelection()}
           onBlur={() => saveSelection()}
           dangerouslySetInnerHTML={{ __html: draft.body }}
-          className="block w-full min-h-[180px] bg-transparent px-4 py-4 text-[13.5px] leading-relaxed text-foreground/90 outline-none empty:before:content-['Write_a_reply...'] empty:before:text-muted-foreground/60 [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
+          className="block w-full min-h-[180px] bg-transparent px-5 py-4 text-[14px] leading-[1.7] text-foreground/90 outline-none empty:before:content-['Write_a_reply...'] empty:before:text-muted-foreground/60 [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
         />
         {fontSelectionRects.length > 0 && (
           <div className="pointer-events-none absolute inset-0 z-10">
