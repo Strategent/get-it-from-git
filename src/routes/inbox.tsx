@@ -1253,7 +1253,7 @@ function InboxPage() {
             {/* Floating reply bar */}
             {selectedDraft.status !== "open" && (
               <div
-                className="absolute inset-x-0 bottom-0 px-4 pt-3 border-t border-border/50 bg-background/95 backdrop-blur-xl"
+                className="absolute inset-x-0 bottom-0 px-3 pt-3 border-t border-border/50 bg-background/95 backdrop-blur-xl"
                 style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)" }}
               >
                 <div className="flex items-center gap-2">
