@@ -1059,17 +1059,17 @@ function InboxPage() {
               ) : (
               <div className="ios-skeleton-fade">
               {/* Editorial subject */}
-              <div className="px-5 pt-5 pb-4">
+              <div className="px-4 pt-4 pb-3">
                 <div className="flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/80">
                   <span className="rounded-sm border border-border/60 bg-muted/50 px-1.5 py-[2px] text-[9.5px] tracking-[0.14em]">
                     {s.tag}
                   </span>
                   <span className="tabular-nums">{s.sentAt ?? s.time}</span>
                 </div>
-                <h1 className="font-serif-display mt-2.5 text-[26px] leading-[1.15] tracking-[-0.015em] text-foreground">
+                <h1 className="font-serif-display mt-2 text-[26px] leading-[1.15] tracking-[-0.015em] text-foreground">
                   {s.subject}
                 </h1>
-                <div className="mt-3 flex items-center gap-2.5">
+                <div className="mt-2.5 flex items-center gap-2.5">
                   <SmartAvatar name={s.from} className="h-7 w-7 rounded-full object-cover grayscale-[0.15]" />
                   <div className="min-w-0 flex-1">
                     <div className="text-[12.5px] font-medium text-foreground/95 truncate">
@@ -1084,7 +1084,7 @@ function InboxPage() {
 
 
 
-              <div className="px-4 pb-1">
+              <div className="px-3 pb-1">
                 <SmartSummary
                   key={s.id}
                   thread={s}
@@ -1094,7 +1094,7 @@ function InboxPage() {
 
               {/* Inline mobile compose — sits above the message it replies to */}
               {selectedDraft.status === "open" && (
-                <div className="px-4 pt-4">
+                <div className="px-3 pt-3">
                   <div
                     className="rounded-xl border border-border/70 bg-card overflow-hidden"
                     style={{
@@ -1222,9 +1222,9 @@ function InboxPage() {
               )}
 
               {/* Message card — the email being replied to */}
-              <div className="px-4 pt-4">
+              <div className="px-3 pt-3">
                 <div
-                  className="rounded-xl border border-border/60 bg-card px-4 pb-4 pt-3.5"
+                  className="rounded-xl border border-border/60 bg-card px-3 pb-3 pt-3"
                   style={{
                     boxShadow:
                       "0 1px 0 rgba(255,255,255,0.03) inset, 0 4px 14px -8px rgba(0,0,0,0.25)",
@@ -1253,7 +1253,7 @@ function InboxPage() {
             {/* Floating reply bar */}
             {selectedDraft.status !== "open" && (
               <div
-                className="absolute inset-x-0 bottom-0 px-4 pt-3 border-t border-border/50 bg-background/95 backdrop-blur-xl"
+                className="absolute inset-x-0 bottom-0 px-3 pt-3 border-t border-border/50 bg-background/95 backdrop-blur-xl"
                 style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 12px)" }}
               >
                 <div className="flex items-center gap-2">
@@ -1282,9 +1282,9 @@ function InboxPage() {
     // List view
     return (
       <>
-        <div className="flex min-h-[calc(100dvh-80px)] w-full flex-col bg-background pb-32">
+        <div className="flex min-h-dvh w-full flex-col bg-background pb-20">
           {/* Editorial header */}
-          <div className="px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
+          <div className="px-4 pb-2 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)]">
             <h1 className="text-[22px] font-medium tracking-[-0.01em] text-foreground">
               {activeFolder} ({visibleThreads.length})
             </h1>
@@ -1294,7 +1294,7 @@ function InboxPage() {
           </div>
 
           {/* Search + folder pill */}
-          <div className="px-4 pb-2.5 flex items-center gap-2">
+          <div className="px-3 pb-2 flex items-center gap-2">
             <div className="flex items-center gap-2 flex-1 h-10 px-3 rounded-full bg-muted/60 border border-border/50">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <input
@@ -1324,21 +1324,6 @@ function InboxPage() {
                       "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 8px 24px -12px rgba(0,0,0,0.4)",
                   }}
                 >
-                  {/* workspace header */}
-                  <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
-                    <span
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[13px] font-bold text-foreground"
-                      style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
-                    >
-                      H
-                    </span>
-                    <span className="text-[15px] font-semibold tracking-tight text-foreground">
-                      Harwick &amp; Sterne
-                    </span>
-                  </div>
-
-                  <div className="mx-2 mb-1.5 h-px bg-border/60" />
-
                   {/* folders */}
                   <div className="space-y-0.5">
                     {folderMeta.map((f) => {
@@ -1444,7 +1429,7 @@ function InboxPage() {
                     <li key={thread.id} className={idx > 0 ? "border-t border-border/30" : ""}>
                       <button
                         onClick={() => selectThread(thread)}
-                        className="ios-tap w-full text-left px-4 py-3.5 flex items-start gap-3 active:bg-foreground/[0.05]"
+                        className="ios-tap w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05]"
                       >
                         <div className="relative shrink-0">
                           <SmartAvatar name={thread.from} className="h-10 w-10 rounded-full object-cover grayscale-[0.2]" />
