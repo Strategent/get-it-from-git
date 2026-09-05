@@ -2346,20 +2346,14 @@ function ComposeWindow({
 
   return (
     <div className="relative mt-8 max-w-2xl">
-    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_16px_40px_-16px_rgba(0,0,0,0.5),0_4px_12px_-4px_rgba(0,0,0,0.25)]">
+    <div className="bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_24px_60px_-24px_rgba(0,0,0,0.55),0_6px_16px_-8px_rgba(0,0,0,0.28)]">
       {draft.mode !== "forward" && (
-        <div className="flex items-center gap-2.5 border-b border-border/60 px-3.5 py-2">
-          <span
-            aria-hidden
-            className="h-4 w-[2px] shrink-0 rounded-full"
-            style={{ background: "var(--sparkle, #7c6cff)" }}
-          />
-          <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Drafted by Syra
+        <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
+          <span style={{ color: "var(--sparkle, #7c6cff)" }} className="shrink-0">
+            <SyraMark size={16} />
           </span>
-          <span aria-hidden className="h-3 w-px shrink-0 bg-border/60 hidden sm:block" />
-          <span className="hidden sm:inline truncate text-[11.5px] text-muted-foreground/70">
-            Review and send as John
+          <span className="text-[15px] font-semibold tracking-tight text-foreground">
+            Compose email
           </span>
           <button
             onClick={onRegenerate}
@@ -2427,7 +2421,16 @@ function ComposeWindow({
 
       <div className="text-[13px]">
 
-        <div className="flex items-center gap-3 px-4 min-h-9 border-b border-border/50 py-1.5">
+        <div className="flex items-center gap-3 px-5 min-h-10 pt-2.5">
+          <span className="text-muted-foreground w-12 shrink-0">From</span>
+          <span className="inline-flex items-center gap-1.5 h-7 pl-0.5 pr-2.5 rounded-full bg-foreground/[0.04] border border-border/60 text-[12px]">
+            <SmartAvatar name={from} size={40} className="h-5 w-5 rounded-full object-cover ring-1 ring-border/60" />
+            <span className="text-foreground/85">{from}</span>
+            <Check className="h-2.5 w-2.5" style={{ color: "var(--trend-up)" }} strokeWidth={3} />
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 px-5 min-h-10 border-b border-border/50 py-2">
           <span className="text-muted-foreground w-12 shrink-0">To</span>
           <div className="flex flex-1 flex-wrap items-center gap-1.5">
             {draft.to.map((email) => {
@@ -2498,12 +2501,12 @@ function ComposeWindow({
             }
           />
         )}
-        <div className="flex items-center gap-3 px-4 h-9 border-b border-border/50">
-          <span className="text-muted-foreground w-12 shrink-0">Subject</span>
+        <div className="px-5 pt-5">
           <input
             value={draft.subject}
             onChange={(e) => onUpdate({ subject: e.target.value })}
-            className="flex-1 bg-transparent text-[13px] outline-none"
+            placeholder="Subject"
+            className="w-full bg-transparent text-[19px] font-semibold tracking-tight text-foreground outline-none placeholder:text-muted-foreground/60"
           />
         </div>
       </div>
@@ -2521,7 +2524,7 @@ function ComposeWindow({
           onMouseUp={() => saveSelection()}
           onBlur={() => saveSelection()}
           dangerouslySetInnerHTML={{ __html: draft.body }}
-          className="block w-full min-h-[180px] bg-transparent px-4 py-4 text-[13.5px] leading-relaxed text-foreground/90 outline-none empty:before:content-['Write_a_reply...'] empty:before:text-muted-foreground/60 [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
+          className="block w-full min-h-[180px] bg-transparent px-5 py-4 text-[14px] leading-[1.7] text-foreground/90 outline-none empty:before:content-['Write_a_reply...'] empty:before:text-muted-foreground/60 [&_a]:text-primary [&_a]:underline [&_ol]:list-decimal [&_ol]:pl-5 [&_ul]:list-disc [&_ul]:pl-5"
         />
         {fontSelectionRects.length > 0 && (
           <div className="pointer-events-none absolute inset-0 z-10">
@@ -2633,7 +2636,7 @@ function ComposeWindow({
 
       <div
         onPointerDownCapture={() => saveSelection(false)}
-        className="px-3 py-2 border-t border-border/60 bg-card flex items-center justify-between gap-2"
+        className="px-4 py-3 border-t border-border/50 bg-foreground/[0.015] dark:bg-white/[0.02] flex items-center justify-between gap-2"
       >
         <input
           ref={attachmentInputRef}
@@ -2753,18 +2756,13 @@ function ComposeWindow({
             onClick={() => toast.message("Contacts")}
           />
           <span className="mx-1 h-5 w-px bg-border/70" />
-          <IconOnlyBtn
-            icon={Clock}
-            label="Schedule send"
-            onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-          />
           <IconOnlyBtn icon={Trash2} label="Discard" onClick={onDiscard} />
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={onRegenerate}
             disabled={regenerating}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-border/70 bg-background text-[12px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
+            className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
           >
             {regenerating ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -2774,9 +2772,20 @@ function ComposeWindow({
             Ask AI
           </button>
           <button
+            onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
+            className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04]"
+          >
+            <Clock className="h-3.5 w-3.5" strokeWidth={1.85} /> Schedule
+          </button>
+          <button
             onClick={onSend}
             disabled={sending}
-            className="inline-flex items-center gap-1.5 h-8 px-4 rounded-md bg-foreground text-background text-[12.5px] font-medium hover:bg-foreground/90 disabled:opacity-70"
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-background text-[12.5px] font-semibold transition-opacity hover:opacity-90 disabled:opacity-70"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 28%, var(--foreground)) 0%, var(--foreground) 70%)",
+              boxShadow: "0 6px 18px -8px color-mix(in oklab, var(--sparkle) 55%, transparent)",
+            }}
           >
             {sending ? (
               <>

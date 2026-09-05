@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, BarChart3, Info, Target, Check } from "lucide-react";
+import { ChevronDown, Info, Target, Check } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
 
 /**
@@ -186,36 +186,6 @@ export function threadBrief(t: {
   }
 }
 
-function ConfidenceDial({ value }: { value: number }) {
-  const r = 22;
-  const c = 2 * Math.PI * r;
-  return (
-    <div className="flex shrink-0 flex-col items-center gap-1.5">
-      <div className="relative h-[54px] w-[54px]">
-        <svg viewBox="0 0 54 54" className="h-full w-full -rotate-90">
-          <circle cx="27" cy="27" r={r} fill="none" strokeWidth="5" className="stroke-foreground/10" />
-          <circle
-            cx="27"
-            cy="27"
-            r={r}
-            fill="none"
-            strokeWidth="5"
-            strokeLinecap="round"
-            stroke="var(--trend-up)"
-            strokeDasharray={`${(c * value) / 100} ${c}`}
-          />
-        </svg>
-        <span className="absolute inset-0 grid place-items-center text-[12.5px] font-semibold tabular-nums text-foreground">
-          {value}%
-        </span>
-      </div>
-      <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-        Confidence
-      </span>
-    </div>
-  );
-}
-
 export function ThreadBrief({
   data,
   compact = false,
@@ -230,145 +200,107 @@ export function ThreadBrief({
     data.actions.length > 1 ? { [data.actions[0]]: true } : {},
   );
 
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className={compact ? "" : "lg:grid lg:grid-cols-[1.4fr_1fr] lg:gap-8"}>
-      {/* ---- Left: context + reasoning ---- */}
-      <div>
-        <div className="flex items-baseline gap-2.5">
-          <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-foreground">
-            Context
-          </span>
-          <span className="truncate text-[12px] text-muted-foreground">{data.headline}</span>
-        </div>
+    <div>
+      {/* ---- One-line summary ---- */}
+      <div className="flex items-start gap-2.5">
+        <span style={{ color: "var(--sparkle)" }} className="mt-[2px] shrink-0">
+          <SyraMark className="h-4 w-4" />
+        </span>
+        <p className="min-w-0 flex-1 text-[13px] leading-snug text-foreground">
+          {data.recommendation}
+        </p>
+        <button
+          onClick={() => setOpen((v) => !v)}
+          className="shrink-0 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11.5px] font-medium text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
+        >
+          {open ? "Less" : "Details"}
+          <ChevronDown className={`h-3.5 w-3.5 transition-transform ${open ? "rotate-180" : ""}`} />
+        </button>
+      </div>
 
-        <div className="mt-3 grid grid-cols-3 gap-4 border-t border-border/50 pt-3">
-          {[
-            { label: "Last contact", value: data.lastContact, stale: data.lastContactStale },
-            { label: "Reason", value: data.reason },
-            { label: "Goal of this email", value: data.goal, goal: true },
-          ].map((cell) => (
-            <div key={cell.label}>
-              <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                {cell.label}
-              </div>
-              <div
-                className="mt-1 flex items-start gap-1 text-[12.5px] leading-snug text-foreground"
-                style={
-                  cell.stale || cell.goal ? { color: "var(--trend-down)" } : undefined
-                }
-              >
-                {cell.goal && <Target className="mt-[3px] h-3 w-3 shrink-0" />}
-                <span>{cell.value}</span>
-              </div>
-            </div>
-          ))}
-        </div>
+      <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 pl-[26px] text-[11.5px] text-muted-foreground">
+        <span className="tabular-nums">{data.confidence}% confidence</span>
+        <span aria-hidden className="h-3 w-px bg-border/70" />
+        <span>{data.tone}</span>
+        <span aria-hidden className="h-3 w-px bg-border/70" />
+        <span style={data.lastContactStale ? { color: "var(--trend-down)" } : undefined}>
+          Last contact {data.lastContact}
+        </span>
+      </div>
 
-        <div className="mt-3 flex items-start gap-4 border-t border-border/50 pt-3">
-          <ConfidenceDial value={data.confidence} />
-          <div className="min-w-0 flex-1 space-y-2.5">
-            <div className="grid gap-2.5 sm:grid-cols-2">
-              <div>
+      {/* ---- Expanded detail ---- */}
+      {open && (
+        <div className="animate-fade-in mt-3 border-t border-border/50 pt-3">
+          <div className={`grid gap-4 ${compact ? "grid-cols-1" : "sm:grid-cols-3"}`}>
+            {[
+              { label: "Reason", value: data.reason },
+              { label: "Goal of this email", value: data.goal, goal: true },
+              { label: "Strategy", value: data.strategy },
+            ].map((cell) => (
+              <div key={cell.label}>
                 <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  Tone
+                  {cell.label}
                 </div>
-                <div className="mt-0.5 text-[12.5px] text-foreground">{data.tone}</div>
-              </div>
-              <div>
-                <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-                  Strategy
-                </div>
-                <div className="mt-0.5 text-[12.5px] leading-snug text-foreground">
-                  {data.strategy}
+                <div
+                  className="mt-1 flex items-start gap-1 text-[12.5px] leading-snug text-foreground"
+                  style={cell.goal ? { color: "var(--trend-down)" } : undefined}
+                >
+                  {cell.goal && <Target className="mt-[3px] h-3 w-3 shrink-0" />}
+                  <span>{cell.value}</span>
                 </div>
               </div>
+            ))}
+          </div>
+
+          <div className="mt-3 border-t border-border/50 pt-3">
+            <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+              Suggested actions
             </div>
-            <button
-              onClick={() => setShowSignals((v) => !v)}
-              className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-foreground/70 transition-colors hover:text-foreground"
-            >
-              <BarChart3 className="h-3.5 w-3.5" />
-              Show {data.signals.length} signals used
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${showSignals ? "rotate-180" : ""}`}
-              />
-            </button>
-            {showSignals && (
-              <ul className="animate-fade-in space-y-1 border-l border-border/70 pl-3">
-                {data.signals.map((s) => (
-                  <li key={s} className="text-[12px] leading-snug text-muted-foreground">
-                    {s}
+            <ul className="mt-2 space-y-1.5">
+              {data.actions.map((a) => {
+                const checked = !!done[a];
+                return (
+                  <li key={a}>
+                    <button
+                      onClick={() => {
+                        setDone((d) => ({ ...d, [a]: !d[a] }));
+                        onAction?.();
+                      }}
+                      className="flex w-full items-start gap-2 text-left"
+                    >
+                      <span
+                        aria-hidden
+                        className={`mt-[2px] grid h-[15px] w-[15px] shrink-0 place-items-center rounded-[4px] border transition-colors ${
+                          checked
+                            ? "border-transparent bg-foreground text-background"
+                            : "border-border bg-transparent"
+                        }`}
+                      >
+                        {checked && <Check className="h-2.5 w-2.5" strokeWidth={3.5} />}
+                      </span>
+                      <span
+                        className={`text-[12.5px] leading-snug ${
+                          checked ? "text-muted-foreground line-through" : "text-foreground"
+                        }`}
+                      >
+                        {a}
+                      </span>
+                    </button>
                   </li>
-                ))}
-              </ul>
-            )}
+                );
+              })}
+            </ul>
+          </div>
+
+          <div className="mt-3 flex items-start gap-2 border-t border-border/50 pt-3">
+            <Info className="mt-[1px] h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+            <p className="text-[12px] leading-snug text-muted-foreground">{data.caution}</p>
           </div>
         </div>
-
-        <div className="mt-3 flex items-start gap-2 border-t border-border/50 pt-3">
-          <Info className="mt-[1px] h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-          <p className="text-[12px] leading-snug text-muted-foreground">{data.caution}</p>
-        </div>
-      </div>
-
-      {/* ---- Right: recommendation + suggested actions ---- */}
-      <div
-        className={`flex flex-col ${
-          compact ? "mt-4 border-t border-border/50 pt-4" : "mt-4 border-t border-border/50 pt-4 lg:mt-0 lg:border-l lg:border-t-0 lg:pt-0 lg:pl-8"
-        }`}
-      >
-        <div>
-          <div className="flex items-center gap-2">
-            <span style={{ color: "var(--sparkle)" }}>
-              <SyraMark className="h-4 w-4" />
-            </span>
-            <span className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-              Syra recommendation
-            </span>
-          </div>
-          <p className="mt-2 text-[13.5px] font-medium leading-snug text-foreground">
-            {data.recommendation}
-          </p>
-        </div>
-
-        <div className="mt-3 flex-1 border-t border-border/50 pt-3">
-          <div className="text-[12px] font-semibold text-foreground">Suggested actions</div>
-          <ul className="mt-2 space-y-1.5">
-            {data.actions.map((a) => {
-              const checked = !!done[a];
-              return (
-                <li key={a}>
-                  <button
-                    onClick={() => {
-                      setDone((d) => ({ ...d, [a]: !d[a] }));
-                      onAction?.();
-                    }}
-                    className="flex w-full items-start gap-2 text-left"
-                  >
-                    <span
-                      aria-hidden
-                      className={`mt-[2px] grid h-[15px] w-[15px] shrink-0 place-items-center rounded-[4px] border transition-colors ${
-                        checked
-                          ? "border-transparent bg-foreground text-background"
-                          : "border-border bg-transparent"
-                      }`}
-                    >
-                      {checked && <Check className="h-2.5 w-2.5" strokeWidth={3.5} />}
-                    </span>
-                    <span
-                      className={`text-[12.5px] leading-snug ${
-                        checked ? "text-muted-foreground line-through" : "text-foreground"
-                      }`}
-                    >
-                      {a}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </div>
+      )}
     </div>
   );
 }
