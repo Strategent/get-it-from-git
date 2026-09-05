@@ -1103,12 +1103,9 @@ function InboxPage() {
                     }}
                   >
                     <div className="flex items-center justify-between gap-2 px-4 h-10 border-b border-border/60 bg-muted/30">
-                      <div className="flex items-center gap-2">
-                        <SyraMark className="h-3.5 w-3.5" />
-                        <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
-                          Drafted by Syra
-                        </span>
-                      </div>
+                      <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
+                        Drafted by Syra
+                      </span>
                       <button
                         onClick={regenerateDraft}
                         disabled={regeneratingId === s.id}
@@ -1499,8 +1496,7 @@ function InboxPage() {
                               {thread.tag}
                             </span>
                             {thread.needsReply && (
-                              <span className="inline-flex items-center gap-1 h-[18px] px-1.5 rounded-sm text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
-                                <SyraMark className="h-2.5 w-2.5" />
+                              <span className="inline-flex items-center h-[18px] px-1.5 rounded-sm text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
                                 Draft ready
                               </span>
                             )}
@@ -1698,9 +1694,6 @@ function InboxPage() {
                         <Paperclip
                           className={`h-3 w-3 shrink-0 ${active ? "text-selected-foreground/70" : "text-muted-foreground/70"}`}
                         />
-                      )}
-                      {thread.needsReply && (
-                        <SyraMark className="h-3 w-3 shrink-0 opacity-70" />
                       )}
                       <span
                         className={`ml-auto shrink-0 text-[11.5px] tabular-nums ${
