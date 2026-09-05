@@ -2756,18 +2756,13 @@ function ComposeWindow({
             onClick={() => toast.message("Contacts")}
           />
           <span className="mx-1 h-5 w-px bg-border/70" />
-          <IconOnlyBtn
-            icon={Clock}
-            label="Schedule send"
-            onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-          />
           <IconOnlyBtn icon={Trash2} label="Discard" onClick={onDiscard} />
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={onRegenerate}
             disabled={regenerating}
-            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-full border border-border/70 bg-background text-[12px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
+            className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
           >
             {regenerating ? (
               <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -2777,9 +2772,20 @@ function ComposeWindow({
             Ask AI
           </button>
           <button
+            onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
+            className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04]"
+          >
+            <Clock className="h-3.5 w-3.5" strokeWidth={1.85} /> Schedule
+          </button>
+          <button
             onClick={onSend}
             disabled={sending}
-            className="inline-flex items-center gap-1.5 h-8 px-4 rounded-md bg-foreground text-background text-[12.5px] font-medium hover:bg-foreground/90 disabled:opacity-70"
+            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-background text-[12.5px] font-semibold transition-opacity hover:opacity-90 disabled:opacity-70"
+            style={{
+              background:
+                "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 28%, var(--foreground)) 0%, var(--foreground) 70%)",
+              boxShadow: "0 6px 18px -8px color-mix(in oklab, var(--sparkle) 55%, transparent)",
+            }}
           >
             {sending ? (
               <>
