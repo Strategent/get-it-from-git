@@ -1282,9 +1282,9 @@ function InboxPage() {
     // List view
     return (
       <>
-        <div className="flex min-h-[calc(100dvh-80px)] w-full flex-col bg-background pb-32">
+        <div className="flex min-h-dvh w-full flex-col bg-background pb-20">
           {/* Editorial header */}
-          <div className="px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
+          <div className="px-4 pb-2 pt-[calc(env(safe-area-inset-top,0px)+0.75rem)]">
             <h1 className="text-[22px] font-medium tracking-[-0.01em] text-foreground">
               {activeFolder} ({visibleThreads.length})
             </h1>
