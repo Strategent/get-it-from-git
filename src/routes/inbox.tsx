@@ -1094,7 +1094,7 @@ function InboxPage() {
 
               {/* Inline mobile compose — sits above the message it replies to */}
               {selectedDraft.status === "open" && (
-                <div className="px-4 pt-4">
+                <div className="px-3 pt-3">
                   <div
                     className="rounded-xl border border-border/70 bg-card overflow-hidden"
                     style={{
