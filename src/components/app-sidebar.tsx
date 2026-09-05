@@ -134,15 +134,6 @@ export function AppSidebar() {
       className="border-r border-border/60 bg-sidebar"
     >
       <SidebarHeader className="p-4">
-        {!collapsed && (
-          <div className="flex flex-col items-start gap-1.5 px-1 pb-3">
-            <span className="font-sans text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground/55">
-              Powered by
-            </span>
-            <span className="font-sans text-[23px] font-light leading-none text-neutral-400/80">strategent</span>
-          </div>
-        )}
-
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-border bg-foreground/[0.06]">
             <img
