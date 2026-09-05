@@ -1431,28 +1431,20 @@ function InboxPage() {
           </div>
 
           {/* Thread list */}
-          <div className="px-3">
+          <div>
             {visibleThreads.length === 0 ? (
               <div className="px-4 py-16 text-center text-[13px] text-muted-foreground">
                 No messages match this view.
               </div>
             ) : (
-              <ul
-                className="rounded-2xl border border-border/50 bg-card overflow-hidden"
-                style={{
-                  boxShadow:
-                    "0 1px 0 rgba(255,255,255,0.03) inset, 0 6px 20px -14px rgba(0,0,0,0.35)",
-                }}
-              >
+              <ul>
                 {visibleThreads.map((thread, idx) => {
                   const draft = drafts[thread.id];
                   return (
-                    <li key={thread.id}>
+                    <li key={thread.id} className={idx > 0 ? "border-t border-border/30" : ""}>
                       <button
                         onClick={() => selectThread(thread)}
-                        className={`ios-tap w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05] ${
-                          idx > 0 ? "border-t border-border/40" : ""
-                        }`}
+                        className="ios-tap w-full text-left px-4 py-3.5 flex items-start gap-3 active:bg-foreground/[0.05]"
                       >
                         <div className="relative shrink-0">
                           <SmartAvatar name={thread.from} className="h-10 w-10 rounded-full object-cover grayscale-[0.2]" />
