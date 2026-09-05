@@ -54,7 +54,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
-import { ThreadBrief, threadBrief } from "@/components/inbox/thread-brief";
+
 import { SmartAvatar } from "@/components/smart-avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -1079,15 +1079,6 @@ function InboxPage() {
                 </div>
               </div>
 
-              {/* Agent briefing above the thread */}
-              <div className="px-4 py-2">
-                <ThreadBrief
-                  key={s.id}
-                  data={threadBrief(s)}
-                  compact
-                  onAction={() => canAction && openComposer("reply")}
-                />
-              </div>
 
 
               {/* Inline mobile compose — sits above the message it replies to */}
@@ -1836,14 +1827,6 @@ function InboxPage() {
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
-              {/* Agent briefing above the thread */}
-              <div className="mb-5">
-                <ThreadBrief
-                  key={selected.id}
-                  data={threadBrief(selected)}
-                  onAction={() => selected.needsReply && openComposer("reply")}
-                />
-              </div>
 
 
               {selectedDraft.status !== "closed" && (
@@ -1952,12 +1935,10 @@ function ThreadChatDropdown({ subject, from }: { subject: string; from: string }
           type="button"
           className="ml-2 inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border/70 bg-background px-3 h-8 text-[12px] font-medium text-foreground/85 transition-colors hover:bg-foreground/[0.05]"
         >
-          <span style={{ color: "var(--sparkle)" }}>
-            <SyraMark size={14} />
-          </span>
-          Ask AI
+          Ask Syra
           <ChevronDown className={`h-3.5 w-3.5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`} />
         </button>
+
       </PopoverTrigger>
       <PopoverContent
         align="end"
