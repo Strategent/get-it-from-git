@@ -2435,12 +2435,10 @@ function ComposeWindow({
     <div className="bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_24px_60px_-24px_rgba(0,0,0,0.55),0_6px_16px_-8px_rgba(0,0,0,0.28)]">
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
-          <span style={{ color: "var(--sparkle, #7c6cff)" }} className="shrink-0">
-            <SyraMark size={16} />
-          </span>
           <span className="text-[15px] font-semibold tracking-tight text-foreground">
             Compose email
           </span>
+
           <button
             onClick={onRegenerate}
             disabled={regenerating}
