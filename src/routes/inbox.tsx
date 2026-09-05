@@ -2346,20 +2346,14 @@ function ComposeWindow({
 
   return (
     <div className="relative mt-8 max-w-2xl">
-    <div className="bg-card border border-border/70 dark:border-white/[0.08] rounded-sm overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.03)_inset,0_16px_40px_-16px_rgba(0,0,0,0.5),0_4px_12px_-4px_rgba(0,0,0,0.25)]">
+    <div className="bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_24px_60px_-24px_rgba(0,0,0,0.55),0_6px_16px_-8px_rgba(0,0,0,0.28)]">
       {draft.mode !== "forward" && (
-        <div className="flex items-center gap-2.5 border-b border-border/60 px-3.5 py-2">
-          <span
-            aria-hidden
-            className="h-4 w-[2px] shrink-0 rounded-full"
-            style={{ background: "var(--sparkle, #7c6cff)" }}
-          />
-          <span className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-            Drafted by Syra
+        <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
+          <span style={{ color: "var(--sparkle, #7c6cff)" }} className="shrink-0">
+            <SyraMark size={16} />
           </span>
-          <span aria-hidden className="h-3 w-px shrink-0 bg-border/60 hidden sm:block" />
-          <span className="hidden sm:inline truncate text-[11.5px] text-muted-foreground/70">
-            Review and send as John
+          <span className="text-[15px] font-semibold tracking-tight text-foreground">
+            Compose email
           </span>
           <button
             onClick={onRegenerate}
