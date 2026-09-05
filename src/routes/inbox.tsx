@@ -1059,17 +1059,17 @@ function InboxPage() {
               ) : (
               <div className="ios-skeleton-fade">
               {/* Editorial subject */}
-              <div className="px-5 pt-5 pb-4">
+              <div className="px-4 pt-4 pb-3">
                 <div className="flex items-center gap-2 text-[10.5px] font-medium uppercase tracking-[0.16em] text-muted-foreground/80">
                   <span className="rounded-sm border border-border/60 bg-muted/50 px-1.5 py-[2px] text-[9.5px] tracking-[0.14em]">
                     {s.tag}
                   </span>
                   <span className="tabular-nums">{s.sentAt ?? s.time}</span>
                 </div>
-                <h1 className="font-serif-display mt-2.5 text-[26px] leading-[1.15] tracking-[-0.015em] text-foreground">
+                <h1 className="font-serif-display mt-2 text-[26px] leading-[1.15] tracking-[-0.015em] text-foreground">
                   {s.subject}
                 </h1>
-                <div className="mt-3 flex items-center gap-2.5">
+                <div className="mt-2.5 flex items-center gap-2.5">
                   <SmartAvatar name={s.from} className="h-7 w-7 rounded-full object-cover grayscale-[0.15]" />
                   <div className="min-w-0 flex-1">
                     <div className="text-[12.5px] font-medium text-foreground/95 truncate">
