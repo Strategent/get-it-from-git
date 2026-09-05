@@ -1401,6 +1401,13 @@ function InboxPage() {
                 </div>
               )}
             </div>
+            <button
+              onClick={() => openComposer("reply")}
+              aria-label="Compose"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-card text-foreground/85 transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
+            >
+              <Feather className="h-[17px] w-[17px]" strokeWidth={1.75} />
+            </button>
           </div>
 
           {/* Segmented filter */}
