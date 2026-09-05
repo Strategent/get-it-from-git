@@ -1285,16 +1285,11 @@ function InboxPage() {
         <div className="flex min-h-[calc(100dvh-80px)] w-full flex-col bg-background pb-32">
           {/* Editorial header */}
           <div className="px-5 pb-3 pt-[calc(env(safe-area-inset-top,0px)+1.5rem)]">
-            <div className="flex items-baseline justify-between gap-2">
-              <h1 className="font-serif-display text-[30px] leading-none tracking-[-0.02em] text-foreground">
-                {activeFolder}
-              </h1>
-              <span className="text-[11.5px] font-medium tabular-nums text-muted-foreground">
-                {visibleThreads.length} · {unreadCount} unread
-              </span>
-            </div>
-            <div className="mt-1.5 text-[11.5px] text-muted-foreground">
-              {needsReplyCount} threads need a reply · Syra drafted {Object.values(drafts).filter((d) => d.status === "open").length}
+            <h1 className="text-[22px] font-medium tracking-[-0.01em] text-foreground">
+              {activeFolder} ({visibleThreads.length})
+            </h1>
+            <div className="mt-1 text-[11.5px] text-muted-foreground">
+              {unreadCount} unread · {needsReplyCount} need a reply · Syra drafted {Object.values(drafts).filter((d) => d.status === "open").length}
             </div>
           </div>
 
