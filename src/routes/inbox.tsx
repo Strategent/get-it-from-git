@@ -53,6 +53,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
+import { SmartSummary } from "@/components/inbox/smart-summary";
+import { answerAboutThread, askSyraSuggestions } from "@/lib/thread-briefing";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 
 import { SmartAvatar } from "@/components/smart-avatar";
@@ -1081,6 +1083,14 @@ function InboxPage() {
 
 
 
+              <div className="px-4 pb-1">
+                <SmartSummary
+                  key={s.id}
+                  thread={s}
+                  onAction={() => s.needsReply && openComposer("reply")}
+                />
+              </div>
+
               {/* Inline mobile compose — sits above the message it replies to */}
               {selectedDraft.status === "open" && (
                 <div className="px-4 pt-4">
@@ -1799,7 +1809,7 @@ function InboxPage() {
               <span className="ml-auto shrink-0 text-[11.5px] tabular-nums text-muted-foreground">
                 {selected.sentAt ?? `${selected.time} ago`}
               </span>
-              <ThreadChatDropdown key={selected.id} subject={selected.subject} from={selected.from} />
+              <ThreadChatDropdown key={selected.id} thread={selected} />
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -1827,7 +1837,13 @@ function InboxPage() {
           <div className="relative flex-1 overflow-y-auto no-scrollbar px-8 pb-12">
             {threadLoading && <ThreadSkeleton />}
             <div className={`mx-auto max-w-[820px] ${threadLoading ? "hidden" : "ios-skeleton-fade"}`}>
-
+              <div className="pt-5">
+                <SmartSummary
+                  key={selected.id}
+                  thread={selected}
+                  onAction={() => selected.needsReply && openComposer("reply")}
+                />
+              </div>
 
               {selectedDraft.status !== "closed" && (
                 <div className="pb-6">
@@ -1908,7 +1924,7 @@ function InboxPage() {
   );
 }
 
-function ThreadChatDropdown({ subject, from }: { subject: string; from: string }) {
+function ThreadChatDropdown({ thread }: { thread: Thread }) {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<{ role: "user" | "syra"; text: string }[]>([]);
@@ -1916,14 +1932,7 @@ function ThreadChatDropdown({ subject, from }: { subject: string; from: string }
   const send = (value?: string) => {
     const text = (value ?? input).trim();
     if (!text) return;
-    const lower = text.toLowerCase();
-    const reply = lower.includes("need")
-      ? `${from.split(" ")[0]} needs a confirmed next step and a date — everything else in "${subject}" is already agreed.`
-      : lower.includes("draft") || lower.includes("reply")
-        ? "I put a concise reply in the composer below — confirm the terms, then name the date."
-        : lower.includes("risk") || lower.includes("unclear")
-          ? "Unclear: who signs off on their side, and whether the timeline survives a week of legal review."
-          : "Here's the short version: confirm, commit to a date, and keep it to three sentences.";
+    const reply = answerAboutThread(thread, text);
     setMsgs((m) => [...m, { role: "user", text }, { role: "syra", text: reply }]);
     setInput("");
   };
@@ -1955,11 +1964,7 @@ function ThreadChatDropdown({ subject, from }: { subject: string; from: string }
         <div className="max-h-[260px] overflow-y-auto no-scrollbar px-4 py-3 space-y-3">
           {msgs.length === 0 ? (
             <div className="space-y-1.5">
-              {[
-                "What does the client actually need?",
-                "What's unclear in this thread?",
-                "Draft a short reply",
-              ].map((q) => (
+              {askSyraSuggestions.map((q) => (
                 <button
                   key={q}
                   onClick={() => send(q)}
