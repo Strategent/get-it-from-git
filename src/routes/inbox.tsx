@@ -1808,6 +1808,7 @@ function InboxPage() {
               <span className="ml-auto shrink-0 text-[11.5px] tabular-nums text-muted-foreground">
                 {selected.sentAt ?? `${selected.time} ago`}
               </span>
+              <ThreadChatDropdown key={selected.id} subject={selected.subject} from={selected.from} />
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
