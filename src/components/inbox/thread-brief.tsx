@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { ChevronDown, Info, Target, Check } from "lucide-react";
+import { ChevronDown, BarChart3, Info, Target, Check } from "lucide-react";
 import { SyraMark } from "@/components/syra-mark";
 
 /**
  * ThreadBrief — the agent briefing that sits above an email thread.
  *
- * Architectural business-summary layout: one clean card with a strong header,
- * a 3-column metadata band, tone/strategy chips, an expandable signals list,
- * a caution note, and a tinted Syra recommendation panel.
+ * Left: client context grid + confidence / tone / strategy band + caution note.
+ * Right: Syra recommendation panel + suggested actions checklist.
  * All colors come from semantic tokens so light and dark both hold up.
  */
 
@@ -188,24 +187,31 @@ export function threadBrief(t: {
 }
 
 function ConfidenceDial({ value }: { value: number }) {
-  const r = 16;
+  const r = 22;
   const c = 2 * Math.PI * r;
   return (
-    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
-      <svg viewBox="0 0 36 36" className="h-full w-full -rotate-90">
-        <circle cx="18" cy="18" r={r} fill="none" strokeWidth="3" className="stroke-foreground/10" />
-        <circle
-          cx="18"
-          cy="18"
-          r={r}
-          fill="none"
-          strokeWidth="3"
-          strokeLinecap="round"
-          className="stroke-[var(--sparkle)]"
-          strokeDasharray={`${(c * value) / 100} ${c}`}
-        />
-      </svg>
-      <span className="absolute text-[10px] font-bold tabular-nums text-foreground">{value}%</span>
+    <div className="flex shrink-0 flex-col items-center gap-1.5">
+      <div className="relative h-[54px] w-[54px]">
+        <svg viewBox="0 0 54 54" className="h-full w-full -rotate-90">
+          <circle cx="27" cy="27" r={r} fill="none" strokeWidth="5" className="stroke-foreground/10" />
+          <circle
+            cx="27"
+            cy="27"
+            r={r}
+            fill="none"
+            strokeWidth="5"
+            strokeLinecap="round"
+            stroke="var(--trend-up)"
+            strokeDasharray={`${(c * value) / 100} ${c}`}
+          />
+        </svg>
+        <span className="absolute inset-0 grid place-items-center text-[12.5px] font-semibold tabular-nums text-foreground">
+          {value}%
+        </span>
+      </div>
+      <span className="text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        Confidence
+      </span>
     </div>
   );
 }
@@ -225,161 +231,142 @@ export function ThreadBrief({
   );
 
   return (
-    <div
-      className={`overflow-hidden rounded-xl border border-border/60 bg-card shadow-sm ${
-        compact ? "" : ""
-      }`}
-    >
-      {/* ---- Header: Context label + headline + confidence dial ---- */}
-      <div className="flex items-start justify-between gap-4 border-b border-border/50 p-4">
-        <div className="min-w-0 flex-1 space-y-1">
-          <span className="block text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+    <div className={compact ? "" : "lg:grid lg:grid-cols-[1.4fr_1fr] lg:gap-8"}>
+      {/* ---- Left: context + reasoning ---- */}
+      <div>
+        <div className="flex items-baseline gap-2.5">
+          <span className="text-[10.5px] font-semibold uppercase tracking-[0.14em] text-foreground">
             Context
           </span>
-          <h3 className="text-[17px] font-semibold leading-tight tracking-tight text-foreground">
-            {data.headline}
-          </h3>
+          <span className="truncate text-[12px] text-muted-foreground">{data.headline}</span>
         </div>
-        <ConfidenceDial value={data.confidence} />
-      </div>
 
-      {/* ---- Metadata band ---- */}
-      <div className="grid grid-cols-3 divide-x divide-border/50 border-b border-border/50">
-        {[
-          { label: "Last contact", value: data.lastContact, stale: data.lastContactStale },
-          { label: "Reason", value: data.reason },
-          { label: "Goal of this email", value: data.goal, goal: true },
-        ].map((cell) => (
-          <div key={cell.label} className="p-3 text-center">
-            <div className="text-[9px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-              {cell.label}
+        <div className="mt-3 grid grid-cols-3 gap-4 border-t border-border/50 pt-3">
+          {[
+            { label: "Last contact", value: data.lastContact, stale: data.lastContactStale },
+            { label: "Reason", value: data.reason },
+            { label: "Goal of this email", value: data.goal, goal: true },
+          ].map((cell) => (
+            <div key={cell.label}>
+              <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                {cell.label}
+              </div>
+              <div
+                className="mt-1 flex items-start gap-1 text-[12.5px] leading-snug text-foreground"
+                style={
+                  cell.stale || cell.goal ? { color: "var(--trend-down)" } : undefined
+                }
+              >
+                {cell.goal && <Target className="mt-[3px] h-3 w-3 shrink-0" />}
+                <span>{cell.value}</span>
+              </div>
             </div>
-            <div
-              className="mt-1 text-[12.5px] font-medium leading-snug"
-              style={cell.stale || cell.goal ? { color: "var(--trend-down)" } : undefined}
+          ))}
+        </div>
+
+        <div className="mt-3 flex items-start gap-4 border-t border-border/50 pt-3">
+          <ConfidenceDial value={data.confidence} />
+          <div className="min-w-0 flex-1 space-y-2.5">
+            <div className="grid gap-2.5 sm:grid-cols-2">
+              <div>
+                <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Tone
+                </div>
+                <div className="mt-0.5 text-[12.5px] text-foreground">{data.tone}</div>
+              </div>
+              <div>
+                <div className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                  Strategy
+                </div>
+                <div className="mt-0.5 text-[12.5px] leading-snug text-foreground">
+                  {data.strategy}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowSignals((v) => !v)}
+              className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-foreground/70 transition-colors hover:text-foreground"
             >
-              {cell.value}
-            </div>
+              <BarChart3 className="h-3.5 w-3.5" />
+              Show {data.signals.length} signals used
+              <ChevronDown
+                className={`h-3.5 w-3.5 transition-transform ${showSignals ? "rotate-180" : ""}`}
+              />
+            </button>
+            {showSignals && (
+              <ul className="animate-fade-in space-y-1 border-l border-border/70 pl-3">
+                {data.signals.map((s) => (
+                  <li key={s} className="text-[12px] leading-snug text-muted-foreground">
+                    {s}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
-        ))}
-      </div>
-
-      {/* ---- Tone & Strategy chips ---- */}
-      <div className="flex flex-wrap gap-2 border-b border-border/50 px-4 py-3">
-        <div className="inline-flex items-center gap-1.5 rounded bg-muted px-2 py-1 text-[10.5px] font-medium text-muted-foreground">
-          <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-          TONE: {data.tone.toUpperCase()}
         </div>
-        <div
-          className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-[10.5px] font-medium"
-          style={{ backgroundColor: "var(--sparkle-soft)", color: "var(--sparkle)" }}
-        >
-          <span className="h-1 w-1 rounded-full bg-current" />
-          STRATEGY: {data.strategy.toUpperCase()}
+
+        <div className="mt-3 flex items-start gap-2 border-t border-border/50 pt-3">
+          <Info className="mt-[1px] h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+          <p className="text-[12px] leading-snug text-muted-foreground">{data.caution}</p>
         </div>
       </div>
 
-      {/* ---- Signals ---- */}
-      <div className="border-b border-border/50 bg-muted/30 px-4 py-3">
-        <button
-          onClick={() => setShowSignals((v) => !v)}
-          className="group flex w-full items-center justify-between text-left"
-        >
-          <span className="text-[9.5px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            Show {data.signals.length} signals used
-          </span>
-          <ChevronDown
-            className={`h-3.5 w-3.5 text-muted-foreground transition-transform group-hover:text-foreground ${
-              showSignals ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-        {showSignals && (
-          <ul className="mt-2.5 space-y-1.5 animate-fade-in">
-            {data.signals.map((s) => (
-              <li key={s} className="flex items-start gap-2 text-[12px] leading-snug text-muted-foreground">
-                <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50" />
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* ---- Caution ---- */}
+      {/* ---- Right: recommendation + suggested actions ---- */}
       <div
-        className="m-3 flex items-start gap-2.5 rounded-lg border p-3"
-        style={{
-          backgroundColor: "var(--trend-down-soft)",
-          borderColor: "var(--trend-down-soft)",
-          color: "var(--trend-down)",
-        }}
+        className={`flex flex-col ${
+          compact ? "mt-4 border-t border-border/50 pt-4" : "mt-4 border-t border-border/50 pt-4 lg:mt-0 lg:border-l lg:border-t-0 lg:pt-0 lg:pl-8"
+        }`}
       >
-        <Info className="mt-0.5 h-4 w-4 shrink-0" />
-        <p className="text-[12px] leading-snug">{data.caution}</p>
-      </div>
-
-      {/* ---- Syra recommendation + actions ---- */}
-      <div className="px-4 pb-4">
-        <div
-          className="rounded-xl border p-4"
-          style={{
-            backgroundColor: "var(--sparkle-soft)",
-            borderColor: "var(--sparkle-border)",
-          }}
-        >
+        <div>
           <div className="flex items-center gap-2">
             <span style={{ color: "var(--sparkle)" }}>
               <SyraMark className="h-4 w-4" />
             </span>
-            <span
-              className="text-[9.5px] font-semibold uppercase tracking-[0.14em]"
-              style={{ color: "var(--sparkle)" }}
-            >
+            <span className="text-[9.5px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               Syra recommendation
             </span>
           </div>
-          <p className="mt-2 text-[13px] font-medium leading-snug text-foreground">
+          <p className="mt-2 text-[13.5px] font-medium leading-snug text-foreground">
             {data.recommendation}
           </p>
+        </div>
 
-          <div className="mt-3 space-y-1.5 border-t border-border/40 pt-3">
-            <div className="text-[12px] font-semibold text-foreground">Suggested actions</div>
-            <ul className="mt-1.5 space-y-1.5">
-              {data.actions.map((a) => {
-                const checked = !!done[a];
-                return (
-                  <li key={a}>
-                    <button
-                      onClick={() => {
-                        setDone((d) => ({ ...d, [a]: !d[a] }));
-                        onAction?.();
-                      }}
-                      className="flex w-full items-start gap-2 text-left"
+        <div className="mt-3 flex-1 border-t border-border/50 pt-3">
+          <div className="text-[12px] font-semibold text-foreground">Suggested actions</div>
+          <ul className="mt-2 space-y-1.5">
+            {data.actions.map((a) => {
+              const checked = !!done[a];
+              return (
+                <li key={a}>
+                  <button
+                    onClick={() => {
+                      setDone((d) => ({ ...d, [a]: !d[a] }));
+                      onAction?.();
+                    }}
+                    className="flex w-full items-start gap-2 text-left"
+                  >
+                    <span
+                      aria-hidden
+                      className={`mt-[2px] grid h-[15px] w-[15px] shrink-0 place-items-center rounded-[4px] border transition-colors ${
+                        checked
+                          ? "border-transparent bg-foreground text-background"
+                          : "border-border bg-transparent"
+                      }`}
                     >
-                      <span
-                        aria-hidden
-                        className={`mt-[3px] grid h-4 w-4 shrink-0 place-items-center rounded border transition-colors ${
-                          checked
-                            ? "border-transparent bg-[var(--sparkle)] text-white"
-                            : "border-border bg-transparent"
-                        }`}
-                      >
-                        {checked && <Check className="h-2.5 w-2.5" strokeWidth={3.5} />}
-                      </span>
-                      <span
-                        className={`text-[12.5px] leading-snug ${
-                          checked ? "text-muted-foreground line-through" : "text-foreground"
-                        }`}
-                      >
-                        {a}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+                      {checked && <Check className="h-2.5 w-2.5" strokeWidth={3.5} />}
+                    </span>
+                    <span
+                      className={`text-[12.5px] leading-snug ${
+                        checked ? "text-muted-foreground line-through" : "text-foreground"
+                      }`}
+                    >
+                      {a}
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </div>
