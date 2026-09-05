@@ -2501,12 +2501,12 @@ function ComposeWindow({
             }
           />
         )}
-        <div className="flex items-center gap-3 px-4 h-9 border-b border-border/50">
-          <span className="text-muted-foreground w-12 shrink-0">Subject</span>
+        <div className="px-5 pt-5">
           <input
             value={draft.subject}
             onChange={(e) => onUpdate({ subject: e.target.value })}
-            className="flex-1 bg-transparent text-[13px] outline-none"
+            placeholder="Subject"
+            className="w-full bg-transparent text-[19px] font-semibold tracking-tight text-foreground outline-none placeholder:text-muted-foreground/60"
           />
         </div>
       </div>
