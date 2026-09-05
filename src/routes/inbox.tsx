@@ -1083,6 +1083,14 @@ function InboxPage() {
 
 
 
+              <div className="px-4 pb-1">
+                <SmartSummary
+                  key={s.id}
+                  thread={s}
+                  onAction={() => s.needsReply && openComposer("reply")}
+                />
+              </div>
+
               {/* Inline mobile compose — sits above the message it replies to */}
               {selectedDraft.status === "open" && (
                 <div className="px-4 pt-4">
