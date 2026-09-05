@@ -1429,7 +1429,7 @@ function InboxPage() {
                     <li key={thread.id} className={idx > 0 ? "border-t border-border/30" : ""}>
                       <button
                         onClick={() => selectThread(thread)}
-                        className="ios-tap w-full text-left px-4 py-3.5 flex items-start gap-3 active:bg-foreground/[0.05]"
+                        className="ios-tap w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05]"
                       >
                         <div className="relative shrink-0">
                           <SmartAvatar name={thread.from} className="h-10 w-10 rounded-full object-cover grayscale-[0.2]" />
