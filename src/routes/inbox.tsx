@@ -1294,7 +1294,7 @@ function InboxPage() {
           </div>
 
           {/* Search + folder pill */}
-          <div className="px-4 pb-2.5 flex items-center gap-2">
+          <div className="px-3 pb-2 flex items-center gap-2">
             <div className="flex items-center gap-2 flex-1 h-10 px-3 rounded-full bg-muted/60 border border-border/50">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <input
