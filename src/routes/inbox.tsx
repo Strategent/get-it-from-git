@@ -1324,21 +1324,6 @@ function InboxPage() {
                       "0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 60px -20px rgba(0,0,0,0.65), 0 8px 24px -12px rgba(0,0,0,0.4)",
                   }}
                 >
-                  {/* workspace header */}
-                  <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
-                    <span
-                      className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-foreground/[0.08] text-[13px] font-bold text-foreground"
-                      style={{ boxShadow: "0 0 0 1px color-mix(in oklab, var(--foreground) 10%, transparent)" }}
-                    >
-                      H
-                    </span>
-                    <span className="text-[15px] font-semibold tracking-tight text-foreground">
-                      Harwick &amp; Sterne
-                    </span>
-                  </div>
-
-                  <div className="mx-2 mb-1.5 h-px bg-border/60" />
-
                   {/* folders */}
                   <div className="space-y-0.5">
                     {folderMeta.map((f) => {
