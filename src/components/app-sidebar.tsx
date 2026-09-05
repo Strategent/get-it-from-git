@@ -22,7 +22,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarHeader,
-  SidebarFooter,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -136,10 +135,14 @@ export function AppSidebar() {
     >
       <SidebarHeader className="p-4">
         {!collapsed && (
-          <div className="px-1 pb-3 font-sans text-[11px] uppercase tracking-[0.04em] text-muted-foreground/80">
-            Harwick & Sterne
+          <div className="flex flex-col items-start gap-1.5 px-1 pb-3">
+            <span className="font-sans text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground/55">
+              Powered by
+            </span>
+            <span className="font-sans text-[23px] font-light leading-none text-neutral-400/80">strategent</span>
           </div>
         )}
+
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 shrink-0 overflow-hidden rounded-xl border border-border bg-foreground/[0.06]">
             <img
@@ -163,23 +166,6 @@ export function AppSidebar() {
         {renderGroup("Collaboration", collaboration)}
         {renderGroup("Operations", operations)}
       </SidebarContent>
-      <SidebarFooter className="px-5 pb-7 pt-3 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:pb-7 group-data-[collapsible=icon]:pt-3">
-        {!collapsed ? (
-          <div className="flex flex-col items-start gap-1.5">
-            <span className="font-sans text-[10.5px] uppercase tracking-[0.04em] text-muted-foreground/55">
-              Powered by
-            </span>
-            <span className="font-sans text-[23px] font-light leading-none text-neutral-400/80">strategent</span>
-          </div>
-        ) : (
-          <div className="flex w-full flex-col items-start gap-0.5 pl-[7px]">
-            <span className="font-sans text-[3px] uppercase leading-none tracking-[0.02em] text-muted-foreground/55">
-              Powered by
-            </span>
-            <span className="font-sans text-[7px] font-light leading-none text-neutral-400/80">strategent</span>
-          </div>
-        )}
-      </SidebarFooter>
     </Sidebar>
   );
 }
