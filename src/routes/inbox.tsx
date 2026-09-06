@@ -55,6 +55,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
 import { SmartSummary } from "@/components/inbox/smart-summary";
+import { ComposeLauncher } from "@/components/inbox/compose-launcher";
 import { answerAboutThread, askSyraSuggestions } from "@/lib/thread-briefing";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 
