@@ -40,7 +40,6 @@ import {
   RefreshCw,
   FileText,
   User as UserIcon,
-  Feather,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -55,6 +54,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { SyraMark } from "@/components/syra-mark";
 import { SmartSummary } from "@/components/inbox/smart-summary";
+import { ComposeLauncher } from "@/components/inbox/compose-launcher";
 import { answerAboutThread, askSyraSuggestions } from "@/lib/thread-briefing";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 
@@ -1378,13 +1378,7 @@ function InboxPage() {
                 </div>
               )}
             </div>
-            <button
-              onClick={() => openComposer("reply")}
-              aria-label="Compose"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-card text-foreground/85 transition-colors hover:bg-foreground/[0.06] hover:text-foreground"
-            >
-              <Feather className="h-[17px] w-[17px]" strokeWidth={1.75} />
-            </button>
+            <ComposeLauncher />
           </div>
 
           {/* Segmented filter */}
