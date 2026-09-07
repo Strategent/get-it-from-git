@@ -2812,7 +2812,7 @@ function ComposeWindow({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen((v) => !v)}
-            className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border text-[12.5px] font-medium transition-colors ${
+            className={`inline-flex shrink-0 items-center gap-1.5 h-9 whitespace-nowrap rounded-full border px-3.5 text-[12.5px] font-medium transition-colors ${
               chatOpen
                 ? "border-transparent text-foreground"
                 : "border-border/70 bg-background text-foreground/85 hover:bg-foreground/[0.04]"
