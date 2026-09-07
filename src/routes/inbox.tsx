@@ -659,18 +659,34 @@ function tintFor(name: string) {
 }
 
 function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
+  const [imgFailed, setImgFailed] = useState(false);
+  const parts = name.trim().split(/\s+/);
+  const monogram =
+    parts.length > 1
+      ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+      : name.trim().slice(0, 2).toUpperCase();
   return (
     <span
-      className="grid shrink-0 place-items-center rounded-full font-semibold text-white"
+      className="relative grid shrink-0 place-items-center overflow-hidden rounded-full font-semibold text-white"
       style={{
         width: size,
         height: size,
-        fontSize: size * 0.42,
+        fontSize: size * 0.38,
         background: tintFor(name),
         boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset",
       }}
     >
-      {name.trim().charAt(0).toUpperCase()}
+      {!imgFailed && (
+        <img
+          src={avatarUrl(name)}
+          alt=""
+          aria-hidden
+          loading="lazy"
+          onError={() => setImgFailed(true)}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      )}
+      {monogram}
     </span>
   );
 }
