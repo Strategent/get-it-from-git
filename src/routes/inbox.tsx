@@ -58,7 +58,7 @@ import { answerAboutThread, askSyraSuggestions } from "@/lib/thread-briefing";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 
 import { SmartAvatar } from "@/components/smart-avatar";
-import { avatarUrl } from "@/lib/avatar";
+import { avatarUrl, hasAvatar } from "@/lib/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
@@ -660,6 +660,7 @@ function tintFor(name: string) {
 }
 
 function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
+  const known = hasAvatar(name);
   const [imgFailed, setImgFailed] = useState(false);
   const parts = name.trim().split(/\s+/);
   const monogram =
