@@ -36,7 +36,6 @@ import {
   Check,
   Clock,
   Loader2,
-  Sparkles,
   RefreshCw,
   FileText,
   User as UserIcon,
