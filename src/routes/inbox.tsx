@@ -2081,6 +2081,7 @@ function ComposeWindow({
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [fontOpen, setFontOpen] = useState(false);
   const [selRect, setSelRect] = useState<{ left: number; top: number } | null>(null);
+  const [chatOpen, setChatOpen] = useState(false);
 
   useEffect(() => {
     const updateFloatingToolbar = () => {
@@ -2402,8 +2403,8 @@ function ComposeWindow({
   }
 
   return (
-    <div className="relative mt-8">
-    <div className="bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden">
+    <div className={`relative mt-8 ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start" : ""}`}>
+    <div className={`bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden ${chatOpen ? "min-w-0 flex-1" : ""}`}>
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
           <span className="text-[13px] font-medium text-muted-foreground">
