@@ -36,7 +36,6 @@ import {
   Check,
   Clock,
   Loader2,
-  Sparkles,
   RefreshCw,
   FileText,
   User as UserIcon,
@@ -1509,8 +1508,10 @@ function InboxPage() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="inline-flex items-center gap-1.5 text-[14px] font-semibold tracking-tight text-foreground">
-                  <span className="tabular-nums">{visibleThreads.length}</span>
                   <span>{activeFolder}</span>
+                  <span className="tabular-nums font-normal text-muted-foreground">
+                    ({visibleThreads.length})
+                  </span>
                   <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
@@ -1565,6 +1566,7 @@ function InboxPage() {
               </DropdownMenuContent>
             </DropdownMenu>
             <div className="flex-1" />
+            <ComposeLauncher />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -1713,13 +1715,6 @@ function InboxPage() {
                 <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
               </button>
               <div className="flex items-center gap-0.5">
-                  <ToolbarBtn
-                    icon={Sparkles}
-                    label="Summarize"
-                    active={selected.vip}
-                    onClick={() => toast.success("Syra summarized this thread")}
-                  />
-                  <span className="mx-1 h-5 w-px bg-border/70" />
                   <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
                   <ToolbarBtn
                     icon={ReplyAll}
@@ -2817,7 +2812,7 @@ function ComposeWindow({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setChatOpen((v) => !v)}
-            className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border text-[12.5px] font-medium transition-colors ${
+            className={`inline-flex shrink-0 items-center gap-1.5 h-9 whitespace-nowrap rounded-full border px-3.5 text-[12.5px] font-medium transition-colors ${
               chatOpen
                 ? "border-transparent text-foreground"
                 : "border-border/70 bg-background text-foreground/85 hover:bg-foreground/[0.04]"
