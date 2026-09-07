@@ -2407,7 +2407,7 @@ function ComposeWindow({
     <div className={`bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden ${chatOpen ? "min-w-0 flex-1" : ""}`}>
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
-          <span className="text-[13px] font-medium text-muted-foreground">
+          <span className="shrink-0 whitespace-nowrap text-[13px] font-medium text-muted-foreground">
             Auto-draft
           </span>
 
