@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -65,6 +63,18 @@ const calls: CallItem[] = [
 function CallsPage() {
   const isMobile = useIsMobile();
   if (isMobile) return <MobileCallsPage />;
+  return <DesktopCallsPage />;
+}
+
+const callStats = [
+  { label: "Handled today", value: "42" },
+  { label: "AI deflected", value: "68%" },
+  { label: "Avg duration", value: "3m 12s" },
+  { label: "Escalations", value: "5" },
+];
+
+function DesktopCallsPage() {
+  const [open, setOpen] = useState<number | null>(0);
   return (
     <PageShell>
       <PageHeader
@@ -73,58 +83,111 @@ function CallsPage() {
         description="Inbound and outbound calls handled by your team and the Syra voice agent."
         actions={<PlaceCallDialog />}
       />
-      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-border/50 divide-x divide-border/50 -mx-4 sm:-mx-6 md:-mx-8">
-        {[
-          { label: "Handled today", value: "42" },
-          { label: "AI deflected", value: "68%" },
-          { label: "Avg duration", value: "3m 12s" },
-          { label: "Escalations", value: "5" },
-        ].map((s) => (
-          <div key={s.label} className="px-6 py-5">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
-            <div className="mt-1.5 text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
-          </div>
-        ))}
-      </div>
-      <Card className="bento p-2">
-        {calls.map((c, i) => (
-          <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-foreground/[0.03]">
-            <div className="h-9 w-9 rounded-full grid place-items-center border border-border/60 bg-foreground/[0.03] text-foreground/70">
-              {c.dir === "in" ? (
-                <PhoneIncoming className="h-4 w-4" strokeWidth={1.75} />
-              ) : (
-                <PhoneOutgoing className="h-4 w-4" strokeWidth={1.75} />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-medium">{c.contact} <span className="text-muted-foreground font-normal">· {c.company}</span></div>
-              <div className="text-xs text-muted-foreground">{c.outcome}</div>
-            </div>
-            {c.ai && (
-              <Badge variant="outline" className="border-border/60 text-muted-foreground gap-1">
-                <Bot className="h-3 w-3" /> Syra
-              </Badge>
-            )}
-            <div className="text-xs text-muted-foreground w-16 text-right tabular-nums">{c.duration}</div>
-            <div className="text-xs text-muted-foreground w-14 text-right tabular-nums">{c.time}</div>
-            <Button variant="ghost" size="icon"><Play className="h-4 w-4" /></Button>
-          </div>
-        ))}
-      </Card>
 
-      {/* Contacts — every client and team member, ready to reach. */}
-      <Card className="bento p-0">
-        <div className="px-5 py-3 border-b border-border/60 flex items-center justify-between">
-          <div className="text-sm font-semibold">Contacts</div>
-          <div className="text-[11px] text-muted-foreground">
-            {seedClients.length + team.length} total
+      {/* Stats — plain typographic row, no boxes or rules */}
+      <dl className="flex flex-wrap gap-x-12 gap-y-5">
+        {callStats.map((s) => (
+          <div key={s.label}>
+            <dd className="text-[26px] font-semibold tracking-tight tabular-nums leading-none">
+              {s.value}
+            </dd>
+            <dt className="mt-1.5 text-[11.5px] text-muted-foreground">{s.label}</dt>
+          </div>
+        ))}
+      </dl>
+
+      {/* Call log — a single ruled list; click a row for summary + recording */}
+      <section>
+        <div className="flex items-baseline justify-between">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            Today
+          </h2>
+          <span className="text-[11.5px] text-muted-foreground">
+            {calls.length} calls · {calls.filter((c) => c.ai).length} handled by Syra
+          </span>
+        </div>
+        <div className="mt-3 border-t border-border/50">
+          {calls.map((c, i) => (
+            <CallRow
+              key={`${c.contact}-${i}`}
+              call={c}
+              open={open === i}
+              onToggle={() => setOpen(open === i ? null : i)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Contacts — two flat columns, no card chrome */}
+      <section className="grid gap-x-14 gap-y-10 md:grid-cols-2">
+        <ContactGroup label="Clients" contacts={clientContacts} />
+        <ContactGroup label="Team" contacts={teamContacts} />
+      </section>
+    </PageShell>
+  );
+}
+
+function CallRow({
+  call: c,
+  open,
+  onToggle,
+}: {
+  call: CallItem;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="border-b border-border/50">
+      <button
+        onClick={onToggle}
+        className="group flex w-full items-center gap-4 px-1 py-3.5 text-left transition-colors hover:bg-foreground/[0.02]"
+      >
+        <span className="grid h-8 w-8 shrink-0 place-items-center text-muted-foreground">
+          {c.dir === "in" ? (
+            <PhoneIncoming className="h-4 w-4" strokeWidth={1.75} />
+          ) : (
+            <PhoneOutgoing className="h-4 w-4" strokeWidth={1.75} />
+          )}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13.5px] font-medium">
+            {c.contact}
+            <span className="font-normal text-muted-foreground"> · {c.company}</span>
+          </span>
+          <span className="mt-0.5 block truncate text-[12px] text-muted-foreground">
+            {c.outcome}
+          </span>
+        </span>
+        {c.ai && (
+          <span className="hidden shrink-0 items-center gap-1 text-[11px] text-muted-foreground sm:inline-flex">
+            <Bot className="h-3 w-3" /> Syra
+          </span>
+        )}
+        <span className="w-16 shrink-0 text-right text-[12px] tabular-nums text-muted-foreground">
+          {c.duration}
+        </span>
+        <span className="w-12 shrink-0 text-right text-[12px] tabular-nums text-muted-foreground">
+          {c.time}
+        </span>
+        <ChevronRight
+          className={cn(
+            "h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform",
+            open && "rotate-90",
+          )}
+        />
+      </button>
+
+      {open && (
+        <div className="animate-fade-in px-1 pb-5 pl-13">
+          <p className="max-w-2xl text-[13px] leading-relaxed text-foreground/85">
+            {c.summary}
+          </p>
+          <div className="mt-3 max-w-xl">
+            <RecordingPlayer />
           </div>
         </div>
-        <ContactGroup label="Clients" contacts={clientContacts} />
-        <div className="border-t border-border/60" />
-        <ContactGroup label="Team" contacts={teamContacts} />
-      </Card>
-    </PageShell>
+      )}
+    </div>
   );
 }
 
@@ -377,10 +440,13 @@ const teamContacts: Contact[] = team.map((m) => ({
 function ContactGroup({ label, contacts }: { label: string; contacts: Contact[] }) {
   return (
     <div>
-      <div className="px-5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        {label} · {contacts.length}
+      <div className="flex items-baseline justify-between">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          {label}
+        </h2>
+        <span className="text-[11.5px] text-muted-foreground">{contacts.length}</span>
       </div>
-      <div>
+      <div className="mt-3 border-t border-border/50">
         {contacts.map((c) => (
           <ContactRow key={`${c.variant}-${c.name}`} contact={c} />
         ))}
@@ -392,26 +458,9 @@ function ContactGroup({ label, contacts }: { label: string; contacts: Contact[] 
 function ContactRow({ contact: c }: { contact: Contact }) {
   const digits = c.phone?.replace(/\D/g, "") ?? "";
   return (
-    <div className="flex items-center gap-3 px-5 py-2.5 hover:bg-white/[0.03]">
+    <div className="group flex items-center gap-3 border-b border-border/50 px-1 py-2.5 transition-colors hover:bg-foreground/[0.02]">
       <div className="relative shrink-0">
-        <div
-          className={`h-9 w-9 rounded-full grid place-items-center text-[11px] font-medium tracking-[0.04em] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(0,0,0,0.35)] ${
-            c.variant === "client"
-              ? "text-white"
-              : "text-foreground/85"
-          }`}
-          style={
-            c.variant === "client"
-              ? {
-                  backgroundImage:
-                    "radial-gradient(120% 120% at 50% 0%, color-mix(in oklab, var(--gradient-primary) 100%, white 18%), var(--gradient-primary))",
-                }
-              : {
-                  backgroundImage:
-                    "linear-gradient(180deg, color-mix(in oklab, var(--muted) 70%, white 14%), color-mix(in oklab, var(--muted) 88%, black 8%))",
-                }
-          }
-        >
+        <div className="grid h-9 w-9 place-items-center rounded-full bg-foreground/[0.07] text-[11px] font-semibold tracking-[0.04em] text-foreground/80">
           {c.initials}
         </div>
         {c.status && (
@@ -426,7 +475,7 @@ function ContactRow({ contact: c }: { contact: Contact }) {
         <div className="text-[13px] font-medium truncate">{c.name}</div>
         <div className="text-[11px] text-muted-foreground truncate">{c.sub}</div>
       </div>
-      <div className="flex items-center gap-1 text-muted-foreground">
+      <div className="flex items-center gap-1 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
         {c.phone && (
           <ContactAction href={`tel:${c.phone.trim()}`} label={`Call ${c.name}`} icon={Phone} tone="call" />
         )}
@@ -549,8 +598,21 @@ function PlaceCallDialog() {
 
         <div className="space-y-4 py-1">
           <div className="space-y-1.5">
+            <Label htmlFor="pc-number">Phone number</Label>
+            <Input
+              id="pc-number"
+              type="tel"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && call()}
+              placeholder="+1 (415) 555-0148"
+              autoComplete="off"
+              autoFocus
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label htmlFor="pc-name">
-              Name <span className="text-muted-foreground">(optional)</span>
+              Name <span className="font-normal text-muted-foreground">— optional</span>
             </Label>
             <Input
               id="pc-name"
@@ -560,43 +622,29 @@ function PlaceCallDialog() {
               autoComplete="off"
             />
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="pc-number">
-              Phone number <span className="text-muted-foreground">*</span>
-            </Label>
-            <Input
-              id="pc-number"
-              type="tel"
-              value={number}
-              onChange={(e) => setNumber(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && call()}
-              placeholder="+1 (415) 555-0148"
-              autoComplete="off"
-            />
-          </div>
-
-          {/* iMessage / WhatsApp passthroughs */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => passthrough("imessage")}
-              disabled={!hasNumber}
-            >
-              <MessageSquare className="h-4 w-4 mr-2" /> iMessage
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => passthrough("whatsapp")}
-              disabled={!hasNumber}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" /> WhatsApp
-            </Button>
-          </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-2">
+          <div className="mr-auto flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
+              onClick={() => passthrough("imessage")}
+              disabled={!hasNumber}
+            >
+              <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> iMessage
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
+              onClick={() => passthrough("whatsapp")}
+              disabled={!hasNumber}
+            >
+              <MessageCircle className="h-3.5 w-3.5 mr-1.5" /> WhatsApp
+            </Button>
+          </div>
           <Button variant="outline" onClick={() => { setOpen(false); reset(); }}>
             Cancel
           </Button>
