@@ -1097,10 +1097,6 @@ function InboxPage() {
                 <div className="px-3 pt-3">
                   <div
                     className="rounded-xl border border-border/70 bg-card overflow-hidden"
-                    style={{
-                      boxShadow:
-                        "0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 28px -14px rgba(0,0,0,0.45)",
-                    }}
                   >
                     <div className="flex items-center justify-between gap-2 px-4 h-10 border-b border-border/60 bg-muted/30">
                       <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
@@ -2394,7 +2390,7 @@ function ComposeWindow({
     return (
       <button
         onClick={onRestore}
-        className="mt-8 flex w-full max-w-2xl items-center justify-between rounded-xl border border-border/70 bg-card px-4 py-3 text-left text-[12.5px] hover:bg-foreground/[0.03]"
+        className="mt-8 flex w-full items-center justify-between rounded-xl border border-border/70 bg-card px-4 py-3 text-left text-[12.5px] hover:bg-foreground/[0.03]"
       >
         <span className="font-medium">Draft to {draft.to[0] ?? firstName}</span>
         <span className="text-muted-foreground">Click to restore</span>
@@ -2403,8 +2399,8 @@ function ComposeWindow({
   }
 
   return (
-    <div className="relative mt-8 max-w-2xl">
-    <div className="bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_24px_60px_-24px_rgba(0,0,0,0.55),0_6px_16px_-8px_rgba(0,0,0,0.28)]">
+    <div className="relative mt-8">
+    <div className="bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden">
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
           <span className="text-[13px] font-medium text-muted-foreground">
