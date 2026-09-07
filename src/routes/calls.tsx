@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-// (desktop layout: flat ruled sections, no cards)
 import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
