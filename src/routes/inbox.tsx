@@ -1813,6 +1813,7 @@ function InboxPage() {
                   <ComposeWindow
                     draft={selectedDraft}
                     from={selected.from}
+                    thread={selected}
                     sending={sendingId === selected.id}
                     regenerating={regeneratingId === selected.id}
                     justSent={lastSentId === selected.id && selected.folder === "Sent"}
