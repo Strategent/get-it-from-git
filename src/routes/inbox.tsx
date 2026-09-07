@@ -678,7 +678,7 @@ function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
         boxShadow: "0 1px 0 rgba(255,255,255,0.18) inset",
       }}
     >
-      {!imgFailed && (
+      {known && !imgFailed && (
         <img
           src={avatarUrl(name)}
           alt=""
