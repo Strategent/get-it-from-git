@@ -2041,6 +2041,7 @@ function FmtDivider() {
 function ComposeWindow({
   draft,
   from,
+  thread,
   sending,
   regenerating,
   justSent,
@@ -2053,6 +2054,7 @@ function ComposeWindow({
 }: {
   draft: Draft;
   from: string;
+  thread: Thread;
   sending: boolean;
   regenerating: boolean;
   justSent: boolean;
