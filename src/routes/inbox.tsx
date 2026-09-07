@@ -2410,6 +2410,8 @@ function ComposeWindow({
             Auto-draft
           </span>
 
+          <ThreadChatDropdown thread={thread} />
+
           <button
             onClick={onRegenerate}
             disabled={regenerating}
