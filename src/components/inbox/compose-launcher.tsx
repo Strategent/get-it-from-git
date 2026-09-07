@@ -101,9 +101,9 @@ export function ComposeLauncher({ className = "" }: { className?: string }) {
         <DropdownMenuTrigger asChild>
           <button
             aria-label="Compose"
-            className={`inline-flex h-10 w-10 items-center justify-center rounded-full border border-border/50 bg-card text-foreground/85 transition-colors hover:bg-foreground/[0.06] hover:text-foreground ${className}`}
+            className={`inline-flex items-center justify-center text-foreground/70 transition-colors hover:text-foreground ${className}`}
           >
-            <Feather className="h-[17px] w-[17px]" strokeWidth={1.75} />
+            <Feather className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52 rounded-2xl p-1.5">
