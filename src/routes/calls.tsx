@@ -65,6 +65,18 @@ const calls: CallItem[] = [
 function CallsPage() {
   const isMobile = useIsMobile();
   if (isMobile) return <MobileCallsPage />;
+  return <DesktopCallsPage />;
+}
+
+const callStats = [
+  { label: "Handled today", value: "42" },
+  { label: "AI deflected", value: "68%" },
+  { label: "Avg duration", value: "3m 12s" },
+  { label: "Escalations", value: "5" },
+];
+
+function DesktopCallsPage() {
+  const [open, setOpen] = useState<number | null>(0);
   return (
     <PageShell>
       <PageHeader
@@ -73,58 +85,111 @@ function CallsPage() {
         description="Inbound and outbound calls handled by your team and the Syra voice agent."
         actions={<PlaceCallDialog />}
       />
-      <div className="grid grid-cols-2 md:grid-cols-4 border-y border-border/50 divide-x divide-border/50 -mx-4 sm:-mx-6 md:-mx-8">
-        {[
-          { label: "Handled today", value: "42" },
-          { label: "AI deflected", value: "68%" },
-          { label: "Avg duration", value: "3m 12s" },
-          { label: "Escalations", value: "5" },
-        ].map((s) => (
-          <div key={s.label} className="px-6 py-5">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{s.label}</div>
-            <div className="mt-1.5 text-[22px] font-semibold tracking-tight tabular-nums">{s.value}</div>
-          </div>
-        ))}
-      </div>
-      <Card className="bento p-2">
-        {calls.map((c, i) => (
-          <div key={i} className="flex items-center gap-4 p-3 rounded-lg hover:bg-foreground/[0.03]">
-            <div className="h-9 w-9 rounded-full grid place-items-center border border-border/60 bg-foreground/[0.03] text-foreground/70">
-              {c.dir === "in" ? (
-                <PhoneIncoming className="h-4 w-4" strokeWidth={1.75} />
-              ) : (
-                <PhoneOutgoing className="h-4 w-4" strokeWidth={1.75} />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="text-[13px] font-medium">{c.contact} <span className="text-muted-foreground font-normal">· {c.company}</span></div>
-              <div className="text-xs text-muted-foreground">{c.outcome}</div>
-            </div>
-            {c.ai && (
-              <Badge variant="outline" className="border-border/60 text-muted-foreground gap-1">
-                <Bot className="h-3 w-3" /> Syra
-              </Badge>
-            )}
-            <div className="text-xs text-muted-foreground w-16 text-right tabular-nums">{c.duration}</div>
-            <div className="text-xs text-muted-foreground w-14 text-right tabular-nums">{c.time}</div>
-            <Button variant="ghost" size="icon"><Play className="h-4 w-4" /></Button>
-          </div>
-        ))}
-      </Card>
 
-      {/* Contacts — every client and team member, ready to reach. */}
-      <Card className="bento p-0">
-        <div className="px-5 py-3 border-b border-border/60 flex items-center justify-between">
-          <div className="text-sm font-semibold">Contacts</div>
-          <div className="text-[11px] text-muted-foreground">
-            {seedClients.length + team.length} total
+      {/* Stats — plain typographic row, no boxes or rules */}
+      <dl className="flex flex-wrap gap-x-12 gap-y-5">
+        {callStats.map((s) => (
+          <div key={s.label}>
+            <dd className="text-[26px] font-semibold tracking-tight tabular-nums leading-none">
+              {s.value}
+            </dd>
+            <dt className="mt-1.5 text-[11.5px] text-muted-foreground">{s.label}</dt>
+          </div>
+        ))}
+      </dl>
+
+      {/* Call log — a single ruled list; click a row for summary + recording */}
+      <section>
+        <div className="flex items-baseline justify-between">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+            Today
+          </h2>
+          <span className="text-[11.5px] text-muted-foreground">
+            {calls.length} calls · {calls.filter((c) => c.ai).length} handled by Syra
+          </span>
+        </div>
+        <div className="mt-3 border-t border-border/50">
+          {calls.map((c, i) => (
+            <CallRow
+              key={`${c.contact}-${i}`}
+              call={c}
+              open={open === i}
+              onToggle={() => setOpen(open === i ? null : i)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Contacts — two flat columns, no card chrome */}
+      <section className="grid gap-x-14 gap-y-10 md:grid-cols-2">
+        <ContactGroup label="Clients" contacts={clientContacts} />
+        <ContactGroup label="Team" contacts={teamContacts} />
+      </section>
+    </PageShell>
+  );
+}
+
+function CallRow({
+  call: c,
+  open,
+  onToggle,
+}: {
+  call: CallItem;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  return (
+    <div className="border-b border-border/50">
+      <button
+        onClick={onToggle}
+        className="group flex w-full items-center gap-4 px-1 py-3.5 text-left transition-colors hover:bg-foreground/[0.02]"
+      >
+        <span className="grid h-8 w-8 shrink-0 place-items-center text-muted-foreground">
+          {c.dir === "in" ? (
+            <PhoneIncoming className="h-4 w-4" strokeWidth={1.75} />
+          ) : (
+            <PhoneOutgoing className="h-4 w-4" strokeWidth={1.75} />
+          )}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-[13.5px] font-medium">
+            {c.contact}
+            <span className="font-normal text-muted-foreground"> · {c.company}</span>
+          </span>
+          <span className="mt-0.5 block truncate text-[12px] text-muted-foreground">
+            {c.outcome}
+          </span>
+        </span>
+        {c.ai && (
+          <span className="hidden shrink-0 items-center gap-1 text-[11px] text-muted-foreground sm:inline-flex">
+            <Bot className="h-3 w-3" /> Syra
+          </span>
+        )}
+        <span className="w-16 shrink-0 text-right text-[12px] tabular-nums text-muted-foreground">
+          {c.duration}
+        </span>
+        <span className="w-12 shrink-0 text-right text-[12px] tabular-nums text-muted-foreground">
+          {c.time}
+        </span>
+        <ChevronRight
+          className={cn(
+            "h-4 w-4 shrink-0 text-muted-foreground/60 transition-transform",
+            open && "rotate-90",
+          )}
+        />
+      </button>
+
+      {open && (
+        <div className="animate-fade-in px-1 pb-5 pl-13">
+          <p className="max-w-2xl text-[13px] leading-relaxed text-foreground/85">
+            {c.summary}
+          </p>
+          <div className="mt-3 max-w-xl">
+            <RecordingPlayer />
           </div>
         </div>
-        <ContactGroup label="Clients" contacts={clientContacts} />
-        <div className="border-t border-border/60" />
-        <ContactGroup label="Team" contacts={teamContacts} />
-      </Card>
-    </PageShell>
+      )}
+    </div>
   );
 }
 
