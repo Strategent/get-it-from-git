@@ -460,26 +460,9 @@ function ContactGroup({ label, contacts }: { label: string; contacts: Contact[] 
 function ContactRow({ contact: c }: { contact: Contact }) {
   const digits = c.phone?.replace(/\D/g, "") ?? "";
   return (
-    <div className="flex items-center gap-3 px-5 py-2.5 hover:bg-white/[0.03]">
+    <div className="group flex items-center gap-3 border-b border-border/50 px-1 py-2.5 transition-colors hover:bg-foreground/[0.02]">
       <div className="relative shrink-0">
-        <div
-          className={`h-9 w-9 rounded-full grid place-items-center text-[11px] font-medium tracking-[0.04em] shadow-[inset_0_1px_0_rgba(255,255,255,0.22),0_1px_2px_rgba(0,0,0,0.35)] ${
-            c.variant === "client"
-              ? "text-white"
-              : "text-foreground/85"
-          }`}
-          style={
-            c.variant === "client"
-              ? {
-                  backgroundImage:
-                    "radial-gradient(120% 120% at 50% 0%, color-mix(in oklab, var(--gradient-primary) 100%, white 18%), var(--gradient-primary))",
-                }
-              : {
-                  backgroundImage:
-                    "linear-gradient(180deg, color-mix(in oklab, var(--muted) 70%, white 14%), color-mix(in oklab, var(--muted) 88%, black 8%))",
-                }
-          }
-        >
+        <div className="grid h-9 w-9 place-items-center rounded-full bg-foreground/[0.07] text-[11px] font-semibold tracking-[0.04em] text-foreground/80">
           {c.initials}
         </div>
         {c.status && (
@@ -494,7 +477,7 @@ function ContactRow({ contact: c }: { contact: Contact }) {
         <div className="text-[13px] font-medium truncate">{c.name}</div>
         <div className="text-[11px] text-muted-foreground truncate">{c.sub}</div>
       </div>
-      <div className="flex items-center gap-1 text-muted-foreground">
+      <div className="flex items-center gap-1 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
         {c.phone && (
           <ContactAction href={`tel:${c.phone.trim()}`} label={`Call ${c.name}`} icon={Phone} tone="call" />
         )}
