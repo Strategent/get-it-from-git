@@ -1097,10 +1097,6 @@ function InboxPage() {
                 <div className="px-3 pt-3">
                   <div
                     className="rounded-xl border border-border/70 bg-card overflow-hidden"
-                    style={{
-                      boxShadow:
-                        "0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 28px -14px rgba(0,0,0,0.45)",
-                    }}
                   >
                     <div className="flex items-center justify-between gap-2 px-4 h-10 border-b border-border/60 bg-muted/30">
                       <span className="text-[10.5px] font-semibold uppercase tracking-[0.16em] text-foreground/80">
