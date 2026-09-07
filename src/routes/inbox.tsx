@@ -2817,18 +2817,6 @@ function ComposeWindow({
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={onRegenerate}
-            disabled={regenerating}
-            className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
-          >
-            {regenerating ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <SyraMark size={14} />
-            )}
-            Ask AI
-          </button>
-          <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
             className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04]"
           >
