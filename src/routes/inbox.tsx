@@ -58,6 +58,7 @@ import { answerAboutThread, askSyraSuggestions } from "@/lib/thread-briefing";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 
 import { SmartAvatar } from "@/components/smart-avatar";
+import { avatarUrl } from "@/lib/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
