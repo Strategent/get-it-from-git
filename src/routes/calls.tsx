@@ -442,10 +442,13 @@ const teamContacts: Contact[] = team.map((m) => ({
 function ContactGroup({ label, contacts }: { label: string; contacts: Contact[] }) {
   return (
     <div>
-      <div className="px-5 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        {label} · {contacts.length}
+      <div className="flex items-baseline justify-between">
+        <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+          {label}
+        </h2>
+        <span className="text-[11.5px] text-muted-foreground">{contacts.length}</span>
       </div>
-      <div>
+      <div className="mt-3 border-t border-border/50">
         {contacts.map((c) => (
           <ContactRow key={`${c.variant}-${c.name}`} contact={c} />
         ))}
