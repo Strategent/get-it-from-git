@@ -598,8 +598,21 @@ function PlaceCallDialog() {
 
         <div className="space-y-4 py-1">
           <div className="space-y-1.5">
+            <Label htmlFor="pc-number">Phone number</Label>
+            <Input
+              id="pc-number"
+              type="tel"
+              value={number}
+              onChange={(e) => setNumber(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && call()}
+              placeholder="+1 (415) 555-0148"
+              autoComplete="off"
+              autoFocus
+            />
+          </div>
+          <div className="space-y-1.5">
             <Label htmlFor="pc-name">
-              Name <span className="text-muted-foreground">(optional)</span>
+              Name <span className="font-normal text-muted-foreground">— optional</span>
             </Label>
             <Input
               id="pc-name"
@@ -609,43 +622,29 @@ function PlaceCallDialog() {
               autoComplete="off"
             />
           </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="pc-number">
-              Phone number <span className="text-muted-foreground">*</span>
-            </Label>
-            <Input
-              id="pc-number"
-              type="tel"
-              value={number}
-              onChange={(e) => setNumber(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && call()}
-              placeholder="+1 (415) 555-0148"
-              autoComplete="off"
-            />
-          </div>
-
-          {/* iMessage / WhatsApp passthroughs */}
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => passthrough("imessage")}
-              disabled={!hasNumber}
-            >
-              <MessageSquare className="h-4 w-4 mr-2" /> iMessage
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={() => passthrough("whatsapp")}
-              disabled={!hasNumber}
-            >
-              <MessageCircle className="h-4 w-4 mr-2" /> WhatsApp
-            </Button>
-          </div>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-2">
+          <div className="mr-auto flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
+              onClick={() => passthrough("imessage")}
+              disabled={!hasNumber}
+            >
+              <MessageSquare className="h-3.5 w-3.5 mr-1.5" /> iMessage
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground"
+              onClick={() => passthrough("whatsapp")}
+              disabled={!hasNumber}
+            >
+              <MessageCircle className="h-3.5 w-3.5 mr-1.5" /> WhatsApp
+            </Button>
+          </div>
           <Button variant="outline" onClick={() => { setOpen(false); reset(); }}>
             Cancel
           </Button>
