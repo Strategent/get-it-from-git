@@ -1509,8 +1509,10 @@ function InboxPage() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="inline-flex items-center gap-1.5 text-[14px] font-semibold tracking-tight text-foreground">
-                  <span className="tabular-nums">{visibleThreads.length}</span>
                   <span>{activeFolder}</span>
+                  <span className="tabular-nums font-normal text-muted-foreground">
+                    ({visibleThreads.length})
+                  </span>
                   <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
                 </button>
               </DropdownMenuTrigger>
@@ -1565,6 +1567,7 @@ function InboxPage() {
               </DropdownMenuContent>
             </DropdownMenu>
             <div className="flex-1" />
+            <ComposeLauncher />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
@@ -1713,13 +1716,6 @@ function InboxPage() {
                 <CornerUpLeft className="h-4 w-4" strokeWidth={1.75} />
               </button>
               <div className="flex items-center gap-0.5">
-                  <ToolbarBtn
-                    icon={Sparkles}
-                    label="Summarize"
-                    active={selected.vip}
-                    onClick={() => toast.success("Syra summarized this thread")}
-                  />
-                  <span className="mx-1 h-5 w-px bg-border/70" />
                   <ToolbarBtn icon={Reply} label="Reply" onClick={() => openComposer("reply")} />
                   <ToolbarBtn
                     icon={ReplyAll}
