@@ -2856,10 +2856,94 @@ function ComposeWindow({
         </div>
       </div>
     </div>
+    {chatOpen && <ThreadChatPanel thread={thread} onClose={() => setChatOpen(false)} />}
     </div>
   );
 }
 
+function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => void }) {
+  const [input, setInput] = useState("");
+  const [msgs, setMsgs] = useState<{ role: "user" | "syra"; text: string }[]>([]);
+
+  const send = (value?: string) => {
+    const text = (value ?? input).trim();
+    if (!text) return;
+    const reply = answerAboutThread(thread, text);
+    setMsgs((m) => [...m, { role: "user", text }, { role: "syra", text: reply }]);
+    setInput("");
+  };
+
+  return (
+    <aside
+      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/60 bg-card/70 backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.045] lg:w-[320px]"
+      style={{ boxShadow: "0 24px 60px -32px rgba(0,0,0,0.35)" }}
+    >
+      <div className="flex items-center gap-2 border-b border-border/50 px-4 py-3">
+        <span style={{ color: "var(--sparkle)" }}>
+          <SyraMark size={15} />
+        </span>
+        <span className="text-[13px] font-semibold tracking-tight">Ask about this email</span>
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="ml-auto grid h-6 w-6 place-items-center rounded text-muted-foreground hover:bg-foreground/[0.06] hover:text-foreground"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      <div className="max-h-[320px] space-y-3 overflow-y-auto px-4 py-3 no-scrollbar">
+        {msgs.length === 0 ? (
+          <div className="space-y-1.5">
+            {askSyraSuggestions.map((q) => (
+              <button
+                key={q}
+                onClick={() => send(q)}
+                className="block w-full rounded-lg px-2.5 py-2 text-left text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
+              >
+                {q}
+              </button>
+            ))}
+          </div>
+        ) : (
+          msgs.map((m, i) => (
+            <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+              <div
+                className={`max-w-[85%] text-[12.5px] leading-snug ${
+                  m.role === "user"
+                    ? "rounded-2xl bg-foreground/[0.07] px-3 py-2 text-foreground"
+                    : "text-foreground/90"
+                }`}
+              >
+                {m.text}
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      <div className="border-t border-border/50 p-2.5">
+        <div className="flex h-9 items-center gap-2 rounded-full border border-border/70 bg-background px-3">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && send()}
+            placeholder="Ask Syra about this email…"
+            className="flex-1 bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground/70"
+          />
+          <button
+            onClick={() => send()}
+            aria-label="Send"
+            className="grid h-6 w-6 shrink-0 place-items-center rounded-full text-background"
+            style={{ background: "var(--foreground)" }}
+          >
+            <Send className="h-3 w-3" />
+          </button>
+        </div>
+      </div>
+    </aside>
+  );
+}
 
 function AddressLine({
   label,
