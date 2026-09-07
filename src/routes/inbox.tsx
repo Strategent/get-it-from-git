@@ -1813,6 +1813,7 @@ function InboxPage() {
                   <ComposeWindow
                     draft={selectedDraft}
                     from={selected.from}
+                    thread={selected}
                     sending={sendingId === selected.id}
                     regenerating={regeneratingId === selected.id}
                     justSent={lastSentId === selected.id && selected.folder === "Sent"}
@@ -2041,6 +2042,7 @@ function FmtDivider() {
 function ComposeWindow({
   draft,
   from,
+  thread,
   sending,
   regenerating,
   justSent,
@@ -2053,6 +2055,7 @@ function ComposeWindow({
 }: {
   draft: Draft;
   from: string;
+  thread: Thread;
   sending: boolean;
   regenerating: boolean;
   justSent: boolean;
@@ -2406,6 +2409,8 @@ function ComposeWindow({
           <span className="text-[13px] font-medium text-muted-foreground">
             Auto-draft
           </span>
+
+          <ThreadChatDropdown thread={thread} />
 
           <button
             onClick={onRegenerate}
@@ -2811,18 +2816,6 @@ function ComposeWindow({
           <IconOnlyBtn icon={Trash2} label="Discard" onClick={onDiscard} />
         </div>
         <div className="flex items-center gap-2">
-          <button
-            onClick={onRegenerate}
-            disabled={regenerating}
-            className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] disabled:opacity-70"
-          >
-            {regenerating ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            ) : (
-              <SyraMark size={14} />
-            )}
-            Ask AI
-          </button>
           <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
             className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04]"
