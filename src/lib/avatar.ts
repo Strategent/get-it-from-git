@@ -38,6 +38,11 @@ const senderEmails: Record<string, string> = {
   Stripe: "notifications@stripe.com",
 };
 
+/** True only when this exact name has a real profile photo (no pool fallback). */
+export function hasAvatar(name: string): boolean {
+  return name in senderImages;
+}
+
 /**
  * Always resolves to one of the provided PNG assets — never an external avatar.
  */
