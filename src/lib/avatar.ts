@@ -11,16 +11,16 @@ const senderImages: Record<string, string> = {
   Stripe: "/email-stripe-logo.webp",
   // Inbox thread contacts
   "Sarah Lin": "/email-elena-smith.webp",
-  "Marcus Reed": "/email-emma-reeves.webp",
-  "Jenna Park": "/email-adrian-engman.webp",
+  "Marcus Reed": "/email-adrian-engman.webp",
+  "Jenna Park": "/email-emma-reeves.webp",
   "Olivia Chen": "/email-claire-bennett.webp",
-  "Priya Shah": "/email-daniel-brooks.webp",
-  "Diego Alvarez": "/email-lena-foster.webp",
+  "Priya Shah": "/email-lena-foster.webp",
+  "Diego Alvarez": "/email-daniel-brooks.webp",
   "Amara Osei": "/email-maya-lopez.webp",
-  "Tom Whitaker": "/email-nina-mercer.webp",
-  "Hannah Blake": "/email-elena-smith.webp",
-  "Ravi Menon": "/email-emma-reeves.webp",
-  "Elena Sokolova": "/email-adrian-engman.webp",
+  "Tom Whitaker": "/email-adrian-engman.webp",
+  "Hannah Blake": "/email-nina-mercer.webp",
+  "Ravi Menon": "/email-daniel-brooks.webp",
+  "Elena Sokolova": "/email-elena-smith.webp",
 };
 
 // Only the provided WebP assets are ever used. Unknown names map
