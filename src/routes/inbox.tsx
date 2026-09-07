@@ -2816,6 +2816,17 @@ function ComposeWindow({
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setChatOpen((v) => !v)}
+            className={`inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border text-[12.5px] font-medium transition-colors ${
+              chatOpen
+                ? "border-transparent text-foreground"
+                : "border-border/70 bg-background text-foreground/85 hover:bg-foreground/[0.04]"
+            }`}
+            style={chatOpen ? { background: "var(--sparkle-soft)", borderColor: "var(--sparkle-border)" } : undefined}
+          >
+            Ask Syra
+          </button>
+          <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
             className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04]"
           >
