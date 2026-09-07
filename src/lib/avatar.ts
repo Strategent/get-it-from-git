@@ -9,6 +9,18 @@ const senderImages: Record<string, string> = {
   "Maya Lopez": "/email-maya-lopez.webp",
   "Nina Mercer": "/email-nina-mercer.webp",
   Stripe: "/email-stripe-logo.webp",
+  // Inbox thread contacts
+  "Sarah Lin": "/email-elena-smith.webp",
+  "Marcus Reed": "/email-adrian-engman.webp",
+  "Jenna Park": "/email-emma-reeves.webp",
+  "Olivia Chen": "/email-claire-bennett.webp",
+  "Priya Shah": "/email-lena-foster.webp",
+  "Diego Alvarez": "/email-daniel-brooks.webp",
+  "Amara Osei": "/email-maya-lopez.webp",
+  "Tom Whitaker": "/email-adrian-engman.webp",
+  "Hannah Blake": "/email-nina-mercer.webp",
+  "Ravi Menon": "/email-daniel-brooks.webp",
+  "Elena Sokolova": "/email-elena-smith.webp",
 };
 
 // Only the provided WebP assets are ever used. Unknown names map
@@ -36,6 +48,17 @@ const senderEmails: Record<string, string> = {
   "Maya Lopez": "maya@castellanosholdings.com",
   "Nina Mercer": "nina@merceradvisory.com",
   Stripe: "notifications@stripe.com",
+  "Sarah Lin": "sarah@acme.com",
+  "Marcus Reed": "marcus@northwind.example",
+  "Jenna Park": "jenna@helios.example",
+  "Olivia Chen": "olivia@bridgewater.example",
+  "Priya Shah": "priya@lumencap.example",
+  "Diego Alvarez": "diego@vertexhealth.example",
+  "Amara Osei": "amara@kestrel.example",
+  "Tom Whitaker": "tom@meridiangroup.example",
+  "Hannah Blake": "hannah@cobalt.example",
+  "Ravi Menon": "ravi@atlasfreight.example",
+  "Elena Sokolova": "elena@harborline.example",
 };
 
 /** True only when this exact name has a real profile photo (no pool fallback). */
