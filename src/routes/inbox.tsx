@@ -2909,11 +2909,6 @@ function ComposeWindow({
                 : "inset 0 1px 0 color-mix(in oklab, white 12%, transparent)",
             }}
           >
-            <img
-              src={syraSidebarIcon}
-              alt=""
-              className="h-[15px] w-[15px] object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
-            />
             Email Agent
           </button>
           <button
@@ -3017,11 +3012,6 @@ function ThreadChatPanel({
       } as CSSProperties}
     >
       <div className="flex items-center gap-2.5 border-b border-border/50 px-4 py-3.5">
-        <img
-          src={syraSidebarIcon}
-          alt=""
-          className="h-[22px] w-[22px] object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
-        />
         <span className="font-dm-sans text-[14px] font-medium text-foreground">Email Agent</span>
         <button
           onClick={onClose}
