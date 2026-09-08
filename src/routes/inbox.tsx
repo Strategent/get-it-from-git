@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import {
   Inbox as InboxIcon,
   Star,
@@ -2024,6 +2025,22 @@ function ComposeWindow({
   const [fontOpen, setFontOpen] = useState(false);
   const [selRect, setSelRect] = useState<{ left: number; top: number } | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const composeLayoutRef = useRef<HTMLDivElement | null>(null);
+  const agentResizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
+  const [agentWidth, setAgentWidth] = useState(292);
+
+  const resizeAgent = (clientX: number) => {
+    const drag = agentResizeRef.current;
+    const layoutWidth = composeLayoutRef.current?.getBoundingClientRect().width ?? 960;
+    if (!drag) return;
+    const maxWidth = Math.max(292, Math.min(520, layoutWidth - 430));
+    setAgentWidth(Math.min(maxWidth, Math.max(260, drag.startWidth + drag.startX - clientX)));
+  };
+
+  const startAgentResize = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    agentResizeRef.current = { startX: event.clientX, startWidth: agentWidth };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
 
   useEffect(() => {
     const updateFloatingToolbar = () => {
@@ -2345,7 +2362,10 @@ function ComposeWindow({
   }
 
   return (
-    <div className={`relative mt-8 max-w-full ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start" : ""}`}>
+    <div
+      ref={composeLayoutRef}
+      className={`relative mt-8 max-w-full ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-0" : ""}`}
+    >
     <div className={`min-w-0 bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden ${chatOpen ? "flex-1" : ""}`}>
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
@@ -2809,12 +2829,50 @@ function ComposeWindow({
         </div>
       </div>
     </div>
-    {chatOpen && <ThreadChatPanel thread={thread} onClose={() => setChatOpen(false)} />}
+    {chatOpen && (
+      <>
+        <button
+          type="button"
+          role="separator"
+          aria-label="Resize Email Agent pane"
+          aria-orientation="vertical"
+          aria-valuemin={260}
+          aria-valuemax={520}
+          aria-valuenow={agentWidth}
+          onPointerDown={startAgentResize}
+          onPointerMove={(event) => resizeAgent(event.clientX)}
+          onPointerUp={(event) => {
+            agentResizeRef.current = null;
+            event.currentTarget.releasePointerCapture(event.pointerId);
+          }}
+          onPointerCancel={() => {
+            agentResizeRef.current = null;
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            setAgentWidth((width) => Math.min(520, Math.max(260, width + (event.key === "ArrowLeft" ? 16 : -16))));
+          }}
+          className="group relative hidden w-4 shrink-0 touch-none cursor-col-resize items-stretch justify-center focus-visible:outline-none lg:flex"
+        >
+          <span className="my-5 w-px rounded-full bg-border/60 transition-all group-hover:w-0.5 group-hover:bg-foreground/25 group-focus-visible:w-0.5 group-focus-visible:bg-foreground/30" />
+        </button>
+        <ThreadChatPanel thread={thread} onClose={() => setChatOpen(false)} width={agentWidth} />
+      </>
+    )}
     </div>
   );
 }
 
-function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => void }) {
+function ThreadChatPanel({
+  thread,
+  onClose,
+  width,
+}: {
+  thread: Thread;
+  onClose: () => void;
+  width: number;
+}) {
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<{ role: "user" | "syra"; text: string }[]>([]);
 
@@ -2842,8 +2900,11 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
 
   return (
     <aside
-      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/70 bg-card/80 backdrop-blur-2xl dark:border-white/[0.09] dark:bg-white/[0.055] lg:w-[292px]"
-      style={{ boxShadow: "0 24px 64px -34px color-mix(in oklab, var(--foreground) 34%, transparent), inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent)" }}
+      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/70 bg-card/80 backdrop-blur-2xl dark:border-white/[0.09] dark:bg-white/[0.055] lg:w-[var(--email-agent-width)]"
+      style={{
+        "--email-agent-width": `${width}px`,
+        boxShadow: "0 24px 64px -34px color-mix(in oklab, var(--foreground) 34%, transparent), inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent)",
+      } as CSSProperties}
     >
       <div className="flex items-center gap-2.5 border-b border-border/50 px-4 py-3.5">
         <img
