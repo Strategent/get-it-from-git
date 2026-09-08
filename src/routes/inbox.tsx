@@ -1534,52 +1534,56 @@ function InboxPage() {
                 {visibleThreads.map((thread, idx) => {
                   const draft = drafts[thread.id];
                   return (
-                    <li key={thread.id} className={idx > 0 ? "border-t border-border/30" : ""}>
+                    <li key={thread.id}>
+                      {idx > 0 && (
+                        // Apple-style inset separator — aligns with the text column, not the avatar
+                        <div aria-hidden className="ml-[72px] mr-4 h-px bg-border/30" />
+                      )}
                       <button
                         onClick={() => selectThread(thread)}
-                        className="ios-tap w-full text-left px-3.5 py-3 flex items-start gap-3 active:bg-foreground/[0.05]"
+                        className="ios-tap w-full text-left px-4 py-3.5 flex items-start gap-3.5 active:bg-foreground/[0.05]"
                       >
-                        <div className="relative shrink-0">
-                          <SmartAvatar name={thread.from} className="h-10 w-10 rounded-full object-cover grayscale-[0.2]" />
+                        <div className="relative shrink-0 pt-0.5">
+                          <SmartAvatar name={thread.from} className="h-11 w-11 rounded-full object-cover grayscale-[0.2]" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-baseline gap-2">
                             {thread.unread && (
-                              <span className="h-1.5 w-1.5 rounded-full bg-foreground shrink-0" />
+                              <span className="h-2 w-2 rounded-full bg-primary shrink-0 self-center" />
                             )}
                             <div
-                              className={`text-[14px] truncate ${
+                              className={`text-[15px] leading-[1.25] tracking-[-0.01em] truncate ${
                                 thread.unread ? "font-semibold text-foreground" : "font-medium text-foreground/90"
                               }`}
                             >
                               {thread.from}
                             </div>
-                            <div className="ml-auto text-[11px] text-muted-foreground shrink-0 tabular-nums">
+                            <div className="ml-auto text-[12px] leading-none text-muted-foreground shrink-0 tabular-nums">
                               {thread.sentAt ?? thread.time}
                             </div>
                           </div>
                           <div
-                            className={`text-[13px] truncate mt-0.5 ${
-                              thread.unread ? "text-foreground" : "text-foreground/80"
+                            className={`text-[14px] leading-[1.3] truncate mt-[3px] ${
+                              thread.unread ? "font-medium text-foreground" : "text-foreground/80"
                             }`}
                           >
                             {draft && draft.status !== "closed" && (
-                              <span className="text-muted-foreground">Draft · </span>
+                              <span className="text-muted-foreground font-normal">Draft · </span>
                             )}
                             {thread.subject}
                           </div>
-                          <div className="text-[12px] text-muted-foreground line-clamp-1 mt-0.5 leading-snug">
+                          <div className="text-[13px] text-muted-foreground line-clamp-2 mt-[2px] leading-[1.38]">
                             {thread.preview}
                           </div>
-                          <div className="mt-1.5 flex items-center gap-1.5">
+                          <div className="mt-2 flex items-center gap-1.5">
                             <span
-                              className="inline-flex items-center rounded-full px-2 py-[3px] text-[10.5px] font-medium leading-none tracking-[-0.005em]"
+                              className="inline-flex items-center rounded-full px-2 py-[3px] text-[11px] font-medium leading-none"
                               style={tagTint(thread.tag)}
                             >
                               {thread.tag}
                             </span>
                             {thread.needsReply && (
-                              <span className="inline-flex h-[19px] items-center rounded-[5px] px-1.5 text-[11px] font-medium leading-none text-muted-foreground">
+                              <span className="inline-flex items-center rounded-full border border-border/60 px-2 py-[3px] text-[11px] font-medium leading-none text-muted-foreground">
                                 Draft ready
                               </span>
                             )}
@@ -1591,7 +1595,6 @@ function InboxPage() {
                             )}
                           </div>
                         </div>
-                        <ChevronRight className="h-4 w-4 text-muted-foreground/60 shrink-0 mt-1" />
                       </button>
                     </li>
                   );
