@@ -1056,7 +1056,8 @@ function InboxPage() {
   const regenerateDraft = () => {
     setRegeneratingId(selected.id);
     window.setTimeout(() => {
-      const next = regenerateOptions[Math.floor(Math.random() * regenerateOptions.length)];
+      const options = draftVariantsFor(selected);
+      const next = options[Math.floor(Math.random() * options.length)];
       updateDraft({
         body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}`),
         status: "open",
