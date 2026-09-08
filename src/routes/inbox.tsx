@@ -580,7 +580,7 @@ function HeaderRow({
 }
 
 function MessageHeaderBlock({ thread }: { thread: Thread }) {
-  const when = thread.sentAt ?? `${thread.time} ago`;
+  const when = thread.sentAt ?? formatTimeAgo(thread.time);
   const cc = threadCc(thread);
   return (
     <div className="-mx-4 border-b border-border/45 sm:-mx-5">
@@ -1799,7 +1799,7 @@ function InboxPage() {
                   </DropdownMenu>
               </div>
               <span className="ml-auto shrink-0 text-[11.5px] tabular-nums text-muted-foreground">
-                {selected.sentAt ?? `${selected.time} ago`}
+                {selected.sentAt ?? formatTimeAgo(selected.time)}
               </span>
               
             </div>
