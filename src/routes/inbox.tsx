@@ -39,6 +39,8 @@ import {
   RefreshCw,
   FileText,
   User as UserIcon,
+  CalendarCheck,
+  ListTodo,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -51,10 +53,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { SyraMark } from "@/components/syra-mark";
 import { SmartSummary } from "@/components/inbox/smart-summary";
 import { ComposeLauncher } from "@/components/inbox/compose-launcher";
-import { answerAboutThread, askSyraSuggestions } from "@/lib/thread-briefing";
+import { answerAboutThread } from "@/lib/thread-briefing";
 import { ThreadSkeleton } from "@/components/inbox/thread-skeleton";
 
 import { SmartAvatar } from "@/components/smart-avatar";
@@ -62,6 +63,7 @@ import { avatarUrl, hasAvatar } from "@/lib/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
+import syraSidebarIcon from "@/assets/sidebar-icon.png";
 
 
 export const Route = createFileRoute("/inbox")({
@@ -2308,8 +2310,8 @@ function ComposeWindow({
   }
 
   return (
-    <div className={`relative mt-8 ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start" : ""}`}>
-    <div className={`bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden ${chatOpen ? "min-w-0 flex-1" : ""}`}>
+    <div className={`relative mt-8 max-w-full ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start" : ""}`}>
+    <div className={`min-w-0 bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden ${chatOpen ? "flex-1" : ""}`}>
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
           <span className="shrink-0 whitespace-nowrap text-[13px] font-medium text-muted-foreground">
@@ -2597,7 +2599,7 @@ function ComposeWindow({
 
       <div
         onPointerDownCapture={() => saveSelection(false)}
-        className="px-4 py-3 border-t border-border/50 bg-foreground/[0.015] dark:bg-white/[0.02] flex items-center justify-between gap-2"
+        className="flex flex-wrap items-center justify-between gap-2 border-t border-border/50 bg-foreground/[0.015] px-4 py-3 dark:bg-white/[0.02]"
       >
         <input
           ref={attachmentInputRef}
@@ -2620,7 +2622,7 @@ function ComposeWindow({
             e.currentTarget.value = "";
           }}
         />
-        <div className="flex items-center gap-0.5">
+        <div className="flex min-w-0 items-center gap-0.5 overflow-hidden">
           <IconOnlyBtn
             icon={Paperclip}
             label="Attach files"
@@ -2719,7 +2721,7 @@ function ComposeWindow({
           <span className="mx-1 h-5 w-px bg-border/70" />
           <IconOnlyBtn icon={Trash2} label="Discard" onClick={onDiscard} />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-2">
           <button
             onClick={() => setChatOpen((v) => !v)}
             className={`inline-flex shrink-0 items-center gap-1.5 h-9 whitespace-nowrap rounded-full border px-3.5 text-[12.5px] font-medium transition-colors ${
@@ -2729,7 +2731,7 @@ function ComposeWindow({
             }`}
             style={chatOpen ? { background: "var(--sparkle-soft)", borderColor: "var(--sparkle-border)" } : undefined}
           >
-            Ask Syra
+            Email Agent
           </button>
           <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
@@ -2773,21 +2775,36 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
   const send = (value?: string) => {
     const text = (value ?? input).trim();
     if (!text) return;
-    const reply = answerAboutThread(thread, text);
+    const normalized = text.toLowerCase();
+    const reply = normalized.includes("formal tone")
+      ? `I’d make this more formal and concise: “Dear ${thread.from.split(" ")[0]}, thank you for confirming. I’ll incorporate the requested changes and send the updated materials with the next steps shortly.”`
+      : normalized.includes("calendar")
+        ? "I found an open 30-minute window on June 10 at 10:30 AM. I can add that time to the draft and prepare the calendar hold."
+        : normalized.includes("task")
+          ? `Follow-up task prepared: Send ${thread.from.split(" ")[0]} the updated materials and confirm the next step. Due tomorrow at 9:00 AM.`
+          : answerAboutThread(thread, text);
     setMsgs((m) => [...m, { role: "user", text }, { role: "syra", text: reply }]);
     setInput("");
   };
 
+  const commands = [
+    { label: "Redraft with a more formal tone", icon: FileEdit },
+    { label: "Check my calendar for the proposed date", icon: CalendarCheck },
+    { label: `Create a follow-up task for ${thread.from.split(" ")[0]}`, icon: ListTodo },
+  ];
+
   return (
     <aside
-      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/60 bg-card/70 backdrop-blur-xl dark:border-white/[0.08] dark:bg-white/[0.045] lg:w-[320px]"
-      style={{ boxShadow: "0 24px 60px -32px rgba(0,0,0,0.35)" }}
+      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/70 bg-card/80 backdrop-blur-2xl dark:border-white/[0.09] dark:bg-white/[0.055] lg:w-[292px]"
+      style={{ boxShadow: "0 24px 64px -34px color-mix(in oklab, var(--foreground) 34%, transparent), inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent)" }}
     >
-      <div className="flex items-center gap-2 border-b border-border/50 px-4 py-3">
-        <span style={{ color: "var(--sparkle)" }}>
-          <SyraMark size={15} />
-        </span>
-        <span className="text-[13px] font-semibold tracking-tight">Ask about this email</span>
+      <div className="flex items-center gap-2.5 border-b border-border/50 px-4 py-3.5">
+        <img
+          src={syraSidebarIcon}
+          alt=""
+          className="h-[22px] w-[22px] object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
+        />
+        <span className="font-dm-sans text-[14px] font-medium text-foreground">Email Agent</span>
         <button
           onClick={onClose}
           aria-label="Close"
@@ -2800,13 +2817,14 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
       <div className="max-h-[320px] space-y-3 overflow-y-auto px-4 py-3 no-scrollbar">
         {msgs.length === 0 ? (
           <div className="space-y-1.5">
-            {askSyraSuggestions.map((q) => (
+            {commands.map(({ label, icon: Icon }) => (
               <button
-                key={q}
-                onClick={() => send(q)}
-                className="block w-full rounded-lg px-2.5 py-2 text-left text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.05] hover:text-foreground"
+                key={label}
+                onClick={() => send(label)}
+                className="flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.055] hover:text-foreground"
               >
-                {q}
+                <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
+                <span>{label}</span>
               </button>
             ))}
           </div>
@@ -2833,7 +2851,7 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && send()}
-            placeholder="Ask Syra about this email…"
+            placeholder="Give Syra a command…"
             className="flex-1 bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground/70"
           />
           <button
