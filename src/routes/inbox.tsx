@@ -123,6 +123,11 @@ type Thread = {
   sentAt?: string;
 };
 
+function formatTimeAgo(time: string) {
+  if (time === "1 day") return "1 day";
+  return `${time} ago`;
+}
+
 const baseThreads: Thread[] = [
   {
     id: 1,
@@ -186,7 +191,7 @@ const baseThreads: Thread[] = [
     subject: "Quick intro to our ops lead",
     preview: "Wanted to connect you with Priya who runs revenue ops at Bridgewater...",
     body: "Wanted to connect you with Priya, who runs revenue ops at Bridgewater. Priya is copied here and can share the implementation notes from our side.\n\nOlivia",
-    time: "Yesterday",
+    time: "1 day",
     tag: "Intro",
     folder: "Inbox",
     unread: false,
@@ -297,7 +302,7 @@ const extraThreads: Thread[] = [
     subject: "Pilot results — 3 week readout",
     preview: "We cut manual triage time by 38% in the pilot. Full readout attached...",
     body: "We cut manual triage time by 38% over the three week pilot. Full readout is attached. Our exec team wants to discuss expanding to the claims desk next quarter.\n\nRavi",
-    time: "Yesterday",
+    time: "1 day",
     tag: "Hot lead",
     folder: "Inbox",
     unread: false,
@@ -315,7 +320,7 @@ const extraThreads: Thread[] = [
     subject: "Renewal terms — seat true-up",
     preview: "We added 22 seats since January. Can you reflect that in the renewal quote...",
     body: "We added 22 seats since January. Can you reflect that in the renewal quote and let me know if the volume tier changes? Procurement wants numbers by the 20th.\n\nElena",
-    time: "Yesterday",
+    time: "1 day",
     tag: "Renewal",
     folder: "Inbox",
     unread: false,
@@ -575,7 +580,7 @@ function HeaderRow({
 }
 
 function MessageHeaderBlock({ thread }: { thread: Thread }) {
-  const when = thread.sentAt ?? `${thread.time} ago`;
+  const when = thread.sentAt ?? formatTimeAgo(thread.time);
   const cc = threadCc(thread);
   return (
     <div className="-mx-4 border-b border-border/45 sm:-mx-5">
@@ -1794,7 +1799,7 @@ function InboxPage() {
                   </DropdownMenu>
               </div>
               <span className="ml-auto shrink-0 text-[11.5px] tabular-nums text-muted-foreground">
-                {selected.sentAt ?? `${selected.time} ago`}
+                {selected.sentAt ?? formatTimeAgo(selected.time)}
               </span>
               
             </div>
