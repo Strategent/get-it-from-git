@@ -472,11 +472,78 @@ const mailLabels = [
   { name: "Billing", dot: "border-sky-400", query: "invoice" },
 ];
 
-const regenerateOptions = [
-  "Thanks for the notes. I can confirm tier 2 pricing as proposed and hold kickoff for the week of Oct 15. I'll send the updated SOW and a 30-minute walkthrough invite shortly.",
-  "Appreciate the quick review. We'll keep tier 2 at the annual rate discussed and target a Oct 15 kickoff. I'll follow up with the revised SOW and calendar hold today.",
-  "That works on our side. I'll adjust tier 2 pricing, lock the Oct 15 kickoff window, and send the updated SOW with a short walkthrough invite.",
+/**
+ * Per-thread reply variants so every auto-draft answers its own subject
+ * instead of reusing one generic pricing reply.
+ */
+const draftVariantsByThread: Record<number, string[]> = {
+  1: [
+    "Thanks for the notes. I can confirm tier 2 at the proposed annual rate and hold kickoff for the week of Oct 15. I'll send the updated SOW and a 30-minute walkthrough invite shortly.",
+    "Appreciate the quick review. We'll keep tier 2 as quoted and target an Oct 15 kickoff — revised SOW and a calendar hold are coming today.",
+    "That works on our side. I'll adjust tier 2 pricing, lock the Oct 15 kickoff window, and send the updated SOW with a short walkthrough invite.",
+  ],
+  2: [
+    "Happy to close these out: we're SOC 2 Type II certified (report attached on request), data is stored in-region with no cross-border replication, and our implementation lead owns the checklist end to end. I can walk your legal team through all three on a 20-minute call.",
+    "Yes to all three — SOC 2 Type II is current, residency stays in your chosen region, and we own the implementation checklist with a named lead from day one. I'll send the security packet so legal can review in parallel.",
+    "Short version: SOC 2 Type II in place, in-region data residency, and implementation checklist owned by our onboarding lead. Full documentation is ready to share whenever your legal team is.",
+  ],
+  4: [
+    "Glad the value is landing. I've asked our team to pull the current seat usage so we can right-size before the renewal invoice goes out — I'll have that summary to you and procurement within two business days.",
+    "Absolutely — we can review seat count before the invoice is issued. I'll send a usage breakdown by license type so procurement can decide on adjustments ahead of the renewal date.",
+    "Happy to look at seats first. I'll pause the renewal invoice until we've reviewed usage together, then reissue with the agreed count.",
+  ],
+  6: [
+    "Thanks for making the introduction. Priya — great to meet you. I'd love 20 minutes to hear how revenue ops runs on your side and to share the implementation notes we've collected. Would later this week work?",
+    "Appreciate the intro. Priya, moving you to the top of my list — I'll send a couple of times this week and the implementation notes ahead of the call.",
+    "Thank you for connecting us. Priya, happy to work around your calendar; I'll share our implementation notes in advance so the first call is useful rather than introductory.",
+  ],
+  8: [
+    "Yes — I'll have the formal quote with the 3-year projection to you by Thursday so you have a day of buffer before the board packet closes. I'll include the volume tiers and the assumptions behind year two and three.",
+    "You'll have the quote by Friday morning at the latest, with the 3-year view broken out by year and a one-page summary you can drop straight into the board packet.",
+    "Working on it now. Expect the formal quote and 3-year projection by Thursday, plus a short note on what changes if the seat count moves.",
+  ],
+  9: [
+    "Understood — I'll get you a written response on EU data residency for section 4 this week. In short, EU customer data stays in our Frankfurt region with no US replication, and I can have our security lead join a call to walk your infosec team through the controls.",
+    "Thanks for flagging it. A formal written answer to section 4 is being prepared now; the summary is EU-only storage and processing, with subprocessors listed in the appendix. Happy to set up the call with our security lead in parallel.",
+    "We can close this gap. I'll send the written residency response for section 4, along with our data flow diagram, and offer a few times for your infosec team and our security lead to meet.",
+  ],
+  10: [
+    "Good catch — I'll swap slide 6 for the September cohort retention curve and send the revised deck Wednesday so you have a day before the committee.",
+    "Thanks for the read. Updating slide 6 with the September cohort curve now; the revised version will be with you well ahead of Thursday.",
+    "Will do. Slide 6 gets the September retention curve, and I'll flag the change in the email so the committee knows what moved.",
+  ],
+  12: [
+    "Net-45 works for the remainder of the term — I'll have our finance team update the terms on file. Invoice 4471 can proceed on the new schedule; no need to hold it.",
+    "We can accommodate net-45 through the end of the term. I'll confirm once finance has updated the record, and 4471 will go out reflecting the change.",
+    "Yes to net-45 for the balance of the term. I'll get the terms amended and make sure invoice 4471 is scheduled accordingly.",
+  ],
+  13: [
+    "No problem at all — Friday at 9:30 works well on our side. I'll move the invite and keep the same agenda so we don't lose momentum.",
+    "Friday 11:00 suits us better if that's still open; otherwise 9:30 is fine. I'll resend the invite as soon as you confirm.",
+    "Happy to push to Friday. I'll take 9:30 and send an updated invite with the working notes attached.",
+  ],
+  14: [
+    "38% off manual triage in three weeks is a strong result — thank you for running it so carefully. I'd like to put together a claims desk expansion plan with scope, timeline and pricing for your exec discussion. Would a working session in the next two weeks help?",
+    "Excellent readout. I'll draft an expansion outline for the claims desk based on the pilot metrics so your exec team has something concrete to react to next quarter.",
+    "Great numbers. Let's build on them — I'll prepare a short claims desk proposal referencing the pilot's triage savings and send it ahead of your exec review.",
+  ],
+  15: [
+    "Thanks for the heads up on the 22 added seats. I'll reflect them in the renewal quote and confirm whether the volume tier shifts — you'll have the numbers before Oct 20.",
+    "Noted on the true-up. The renewal quote will include all 22 seats and I'll call out the tier threshold clearly so procurement can see the break point.",
+    "I'll rerun the quote with the updated seat count and send it well ahead of Oct 20, including what the volume tier change means annually.",
+  ],
+};
+
+const genericDraftVariants = [
+  "Thanks for the note — I've picked this up and will come back to you with specifics shortly.",
+  "Appreciate you flagging this. I'll confirm the details on our side and follow up with next steps.",
+  "Got it. I'll review and send you a clear answer, along with anything you need to move forward.",
 ];
+
+function draftVariantsFor(thread: Thread) {
+  return draftVariantsByThread[thread.id] ?? genericDraftVariants;
+}
+
 
 const emojiChoices = ["🙂", "👍", "🎯", "📎", "✅", "🙏", "💬", "🚀", "📅", "✨", "🤝", "💼"];
 
@@ -648,7 +715,7 @@ function buildDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
     body: textToHtml(
       mode === "forward"
         ? `\n\n---------- Forwarded message ---------\nFrom: ${thread.from} <${thread.email}>\nSubject: ${thread.subject}\n\n${thread.body}`
-        : `Hi ${firstName},\n\n${regenerateOptions[0]}`,
+        : `Hi ${firstName},\n\n${draftVariantsFor(thread)[0]}`,
     ),
     attachments: [],
     links: [],
@@ -989,7 +1056,8 @@ function InboxPage() {
   const regenerateDraft = () => {
     setRegeneratingId(selected.id);
     window.setTimeout(() => {
-      const next = regenerateOptions[Math.floor(Math.random() * regenerateOptions.length)];
+      const options = draftVariantsFor(selected);
+      const next = options[Math.floor(Math.random() * options.length)];
       updateDraft({
         body: textToHtml(`Hi ${selected.from.split(" ")[0]},\n\n${next}`),
         status: "open",
