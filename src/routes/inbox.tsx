@@ -1810,7 +1810,10 @@ function InboxPage() {
                 {selected.subject}
               </h2>
               {selected.tag && (
-                <span className="inline-flex items-center rounded-[4px] bg-foreground/[0.07] px-2 py-0.5 text-[12px] font-medium text-muted-foreground">
+                <span
+                  className="inline-flex h-[22px] translate-y-[1px] items-center rounded-[6px] px-2 text-[12px] font-medium leading-none"
+                  style={tagTint(selected.tag)}
+                >
                   {selected.tag}
                 </span>
               )}
