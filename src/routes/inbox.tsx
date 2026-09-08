@@ -2073,7 +2073,7 @@ function ComposeWindow({
     const startX = event.clientX;
     const startWidth = agentWidth;
     const layoutWidth = composeLayoutRef.current?.getBoundingClientRect().width ?? 960;
-    const maxWidth = Math.max(292, Math.min(520, layoutWidth - 380));
+    const maxWidth = Math.max(260, Math.min(520, layoutWidth - 260));
     const onMove = (moveEvent: PointerEvent) => {
       setAgentWidth(Math.min(maxWidth, Math.max(260, startWidth + startX - moveEvent.clientX)));
     };
