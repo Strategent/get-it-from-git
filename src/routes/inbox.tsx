@@ -1478,11 +1478,14 @@ function InboxPage() {
                             {thread.preview}
                           </div>
                           <div className="mt-1.5 flex items-center gap-1.5">
-                            <span className="inline-flex items-center h-[18px] px-1.5 rounded-sm border border-border/60 bg-muted/40 text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
+                            <span
+                              className="inline-flex h-[19px] items-center rounded-[5px] px-1.5 text-[11px] font-medium leading-none"
+                              style={tagTint(thread.tag)}
+                            >
                               {thread.tag}
                             </span>
                             {thread.needsReply && (
-                              <span className="inline-flex items-center h-[18px] px-1.5 rounded-sm text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
+                              <span className="inline-flex h-[19px] items-center rounded-[5px] px-1.5 text-[11px] font-medium leading-none text-muted-foreground">
                                 Draft ready
                               </span>
                             )}
