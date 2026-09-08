@@ -715,7 +715,7 @@ function buildDraft(thread: Thread, mode: ComposerMode = "reply"): Draft {
     body: textToHtml(
       mode === "forward"
         ? `\n\n---------- Forwarded message ---------\nFrom: ${thread.from} <${thread.email}>\nSubject: ${thread.subject}\n\n${thread.body}`
-        : `Hi ${firstName},\n\n${regenerateOptions[0]}`,
+        : `Hi ${firstName},\n\n${draftVariantsFor(thread)[0]}`,
     ),
     attachments: [],
     links: [],
