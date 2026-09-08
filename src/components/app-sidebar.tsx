@@ -27,23 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import syraSidebarIcon from "@/assets/sidebar-icon.png";
 const johnHarwickAvatar = { url: "/john-harwick.webp" };
-const syraSIcon = { url: syraSidebarIcon };
-
-const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
-  <span aria-hidden className={`relative inline-grid place-items-center ${className ?? ""}`}>
-    <span
-      aria-hidden
-      className="pointer-events-none absolute inset-[-35%] rounded-full bg-[radial-gradient(circle,hsl(var(--primary)/0.22)_0%,transparent_70%)] opacity-0 mix-blend-screen blur-md duration-700 ease-in-out animate-syra-glow"
-    />
-    <img
-      src={syraSIcon.url}
-      alt=""
-      className="relative h-full w-full object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
-    />
-  </span>
-);
 
 const workspace = [
   { title: "Home", url: "/", icon: HomeIcon },
@@ -62,7 +46,7 @@ const collaboration = [
 ];
 
 const operations = [
-  { title: "Syra", url: "/syra", icon: SyraIcon as never, accent: true },
+  { title: "Syra", url: "/syra", accent: true },
   { title: "Billing", url: "/billing", icon: CreditCard },
   { title: "Support", url: "/support", icon: LifeBuoy },
   { title: "Settings", url: "/settings", icon: Settings },
@@ -77,7 +61,7 @@ export function AppSidebar() {
 
   const renderGroup = (
     label: string,
-    items: { title: string; url: string; icon: typeof HomeIcon; accent?: boolean }[],
+    items: { title: string; url: string; icon?: typeof HomeIcon; accent?: boolean }[],
   ) => (
     <SidebarGroup>
       {!collapsed && (
@@ -107,10 +91,14 @@ export function AppSidebar() {
                     to={item.url}
                     className={`flex items-center ${collapsed ? "justify-center w-full" : "gap-2.5"}`}
                   >
-                    <item.icon
-                      strokeWidth={active ? 1.9 : 1.5}
-                      className={`shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"} ${item.title === "Syra" ? "h-[22px] w-[22px] lg:h-[24px] lg:w-[24px]" : "h-[18px] w-[18px]"}`}
-                    />
+                    {item.icon ? (
+                      <item.icon
+                        strokeWidth={active ? 1.9 : 1.5}
+                        className={`h-[18px] w-[18px] shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"}`}
+                      />
+                    ) : (
+                      !collapsed && <span aria-hidden className="w-[18px] shrink-0" />
+                    )}
                     {!collapsed && (
                       <span
                         className={`text-[13px] tracking-tight ${active ? "font-semibold" : "font-medium"}`}
