@@ -61,7 +61,7 @@ export function AppSidebar() {
 
   const renderGroup = (
     label: string,
-    items: { title: string; url: string; icon: typeof HomeIcon; accent?: boolean }[],
+    items: { title: string; url: string; icon?: typeof HomeIcon; accent?: boolean }[],
   ) => (
     <SidebarGroup>
       {!collapsed && (
