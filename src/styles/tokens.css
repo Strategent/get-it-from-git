@@ -81,3 +81,11 @@
   --rail-w: 340px;
   --shell-gap: 20px;
 }
+
+:root {
+  /* Lightness used by subtle tag tints (see tagTint in inbox). */
+  --tag-l: 0.52;
+}
+.dark {
+  --tag-l: 0.8;
+}

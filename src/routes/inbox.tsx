@@ -41,6 +41,7 @@ import {
   User as UserIcon,
   CalendarCheck,
   ListTodo,
+  Sparkle,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -423,6 +424,29 @@ function threadNextAction(t: Thread) {
     default:
       return "No action needed — archive";
   }
+}
+
+/** Subtle, Apple-style tint per tag — hue only, low saturation. */
+const TAG_HUE: Record<string, number> = {
+  "Hot lead": 25,
+  Sales: 250,
+  Renewal: 155,
+  Billing: 45,
+  Legal: 285,
+  Intro: 200,
+};
+
+export function tagTint(tag: string) {
+  const h = TAG_HUE[tag];
+  if (h === undefined)
+    return {
+      color: "color-mix(in oklab, var(--foreground) 55%, transparent)",
+      background: "color-mix(in oklab, var(--foreground) 6%, transparent)",
+    };
+  return {
+    color: `oklch(var(--tag-l) 0.105 ${h})`,
+    background: `oklch(var(--tag-l) 0.105 ${h} / 0.12)`,
+  };
 }
 
 const folderMeta = [
@@ -1455,11 +1479,14 @@ function InboxPage() {
                             {thread.preview}
                           </div>
                           <div className="mt-1.5 flex items-center gap-1.5">
-                            <span className="inline-flex items-center h-[18px] px-1.5 rounded-sm border border-border/60 bg-muted/40 text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
+                            <span
+                              className="inline-flex h-[19px] items-center rounded-[5px] px-1.5 text-[11px] font-medium leading-none"
+                              style={tagTint(thread.tag)}
+                            >
                               {thread.tag}
                             </span>
                             {thread.needsReply && (
-                              <span className="inline-flex items-center h-[18px] px-1.5 rounded-sm text-[9.5px] font-medium uppercase tracking-[0.12em] text-foreground/70">
+                              <span className="inline-flex h-[19px] items-center rounded-[5px] px-1.5 text-[11px] font-medium leading-none text-muted-foreground">
                                 Draft ready
                               </span>
                             )}
@@ -1784,7 +1811,10 @@ function InboxPage() {
                 {selected.subject}
               </h2>
               {selected.tag && (
-                <span className="inline-flex items-center rounded-[4px] bg-foreground/[0.07] px-2 py-0.5 text-[12px] font-medium text-muted-foreground">
+                <span
+                  className="inline-flex h-[22px] translate-y-[1px] items-center rounded-[6px] px-2 text-[12px] font-medium leading-none"
+                  style={tagTint(selected.tag)}
+                >
                   {selected.tag}
                 </span>
               )}
@@ -2724,44 +2754,50 @@ function ComposeWindow({
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <button
             onClick={() => setChatOpen((v) => !v)}
-            className={`inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-[11px] border px-3.5 text-[12.5px] font-medium transition-colors ${
-              chatOpen
-                ? "border-transparent text-foreground"
-                : "border-border bg-background text-foreground hover:bg-foreground/[0.04]"
-            }`}
-            style={chatOpen ? { background: "var(--sparkle-soft)", borderColor: "var(--sparkle-border)" } : undefined}
+            className="inline-flex h-10 min-w-[124px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-4 text-[13px] font-medium transition-all"
+            style={{
+              borderColor: chatOpen ? "var(--sparkle)" : "var(--sparkle-border)",
+              background: chatOpen
+                ? "color-mix(in oklab, var(--sparkle) 16%, transparent)"
+                : "color-mix(in oklab, var(--sparkle) 7%, transparent)",
+              color: "color-mix(in oklab, var(--sparkle) 62%, var(--foreground))",
+              boxShadow: chatOpen
+                ? "0 0 0 3px color-mix(in oklab, var(--sparkle) 14%, transparent)"
+                : "inset 0 1px 0 color-mix(in oklab, white 12%, transparent)",
+            }}
           >
             <img
               src={syraSidebarIcon}
               alt=""
-              className="h-4 w-4 object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
+              className="h-[15px] w-[15px] object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
             />
-            Ask Syra
+            Email Agent
           </button>
           <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-            className="hidden h-9 items-center gap-1.5 rounded-[11px] border border-border bg-background px-3.5 text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] sm:inline-flex"
+            className="hidden h-10 min-w-[124px] items-center justify-center gap-1.5 rounded-full border border-border/70 bg-foreground/[0.035] px-4 text-[13px] font-medium text-foreground/85 transition-colors hover:bg-foreground/[0.07] sm:inline-flex dark:bg-white/[0.05]"
           >
-            <Clock className="h-3.5 w-3.5" strokeWidth={1.85} /> Schedule
+            <Clock className="h-4 w-4" strokeWidth={1.85} /> Schedule
           </button>
           <button
             onClick={onSend}
             disabled={sending}
-            className="inline-flex h-9 items-center gap-1.5 rounded-[11px] px-3.5 text-[12.5px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-70"
+            className="inline-flex h-10 min-w-[124px] items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-70"
             style={{
               background:
-                "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 28%, var(--foreground)) 0%, var(--foreground) 70%)",
-              boxShadow: "0 6px 18px -8px color-mix(in oklab, var(--sparkle) 55%, transparent)",
+                "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 26%, var(--foreground)) 0%, var(--foreground) 72%)",
+              boxShadow:
+                "0 8px 22px -10px color-mix(in oklab, var(--sparkle) 60%, transparent), inset 0 1px 0 color-mix(in oklab, white 18%, transparent)",
             }}
           >
             {sending ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Sending...
+                <Loader2 className="h-4 w-4 animate-spin" /> Sending...
               </>
             ) : (
               <>
                 Send
-                <Send className="h-3.5 w-3.5" strokeWidth={2} />
+                <Send className="h-4 w-4" strokeWidth={2} />
               </>
             )}
           </button>
@@ -2793,6 +2829,7 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
   };
 
   const commands = [
+    { label: "Recommend a strategy for this reply", icon: Sparkle, primary: true },
     { label: "Redraft with a more formal tone", icon: FileEdit },
     { label: "Check my calendar for the proposed date", icon: CalendarCheck },
     { label: `Create a follow-up task for ${thread.from.split(" ")[0]}`, icon: ListTodo },
@@ -2822,11 +2859,26 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
       <div className="max-h-[320px] space-y-3 overflow-y-auto px-4 py-3 no-scrollbar">
         {msgs.length === 0 ? (
           <div className="space-y-1.5">
-            {commands.map(({ label, icon: Icon }) => (
+            {commands.map(({ label, icon: Icon, primary }) => (
               <button
                 key={label}
                 onClick={() => send(label)}
-                className="flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.055] hover:text-foreground"
+                className={`flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left text-[12.5px] transition-colors ${
+                  primary
+                    ? "border font-medium"
+                    : "text-muted-foreground hover:bg-foreground/[0.055] hover:text-foreground"
+                }`}
+                style={
+                  primary
+                    ? {
+                        borderColor: "var(--sparkle-border)",
+                        background:
+                          "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 12%, transparent) 0%, transparent 72%)",
+                        color: "color-mix(in oklab, var(--sparkle) 58%, var(--foreground))",
+                        boxShadow: "0 0 22px -12px color-mix(in oklab, var(--sparkle) 70%, transparent)",
+                      }
+                    : undefined
+                }
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
                 <span>{label}</span>
