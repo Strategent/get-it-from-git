@@ -117,7 +117,7 @@ export function ComposeLauncher({ className = "" }: { className?: string }) {
           }}
         >
           <div
-            className="pointer-events-none absolute -bottom-1.5 right-4 h-3 w-3 rotate-45 border-b border-r border-border/50 bg-popover/88"
+            className="pointer-events-none absolute -top-1.5 right-4 h-3 w-3 rotate-45 border-l border-t border-border/50 bg-popover/88"
             aria-hidden="true"
           />
           <DropdownMenuItem
