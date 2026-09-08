@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Feather, Mic, Square, X, Sparkles } from "lucide-react";
+import { Feather, Mic, Square, X, Sparkles, PenLine, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
