@@ -443,8 +443,8 @@ export function tagTint(tag: string) {
       background: "color-mix(in oklab, var(--foreground) 6%, transparent)",
     };
   return {
-    color: `oklch(0.52 0.11 ${h})`,
-    background: `oklch(0.52 0.11 ${h} / 0.10)`,
+    color: `oklch(var(--tag-l) 0.105 ${h})`,
+    background: `oklch(var(--tag-l) 0.105 ${h} / 0.12)`,
   };
 }
 
