@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Feather, Mic, Square, X, Sparkles } from "lucide-react";
+import { Feather, Mic, Square, X, Sparkles, PenLine, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -106,25 +106,40 @@ export function ComposeLauncher({ className = "" }: { className?: string }) {
             <Feather className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-52 rounded-2xl p-1.5">
+        <DropdownMenuContent
+          align="start"
+          side="right"
+          sideOffset={8}
+          className="relative w-52 rounded-[18px] border border-border/50 bg-popover/88 p-1.5 shadow-2xl backdrop-blur-2xl"
+          style={{
+            boxShadow:
+              "0 1px 0 rgba(255,255,255,0.06) inset, 0 24px 60px -20px rgba(0,0,0,0.55), 0 8px 24px -12px rgba(0,0,0,0.35)",
+          }}
+        >
+          <div
+            className="pointer-events-none absolute -left-1.5 top-3.5 h-3 w-3 rotate-45 border-b border-l border-border/50 bg-popover/88"
+            aria-hidden="true"
+          />
           <DropdownMenuItem
             onClick={() => {
               reset();
               setMode("manual");
             }}
-            className="rounded-xl px-3 py-2.5 text-[14px]"
+            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[14px]"
           >
-            Manual
+            <PenLine className="h-4 w-4 text-muted-foreground" strokeWidth={1.75} />
+            <span className="flex-1">Manual</span>
           </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => {
               reset();
               setMode("auto");
             }}
-            className="rounded-xl px-3 py-2.5 text-[14px]"
+            className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-[14px]"
           >
+            <Wand2 className="h-4 w-4 text-primary/80" strokeWidth={1.75} />
             <span className="flex-1">Auto-draft</span>
-            <span className="rounded-full border border-border/60 px-1.5 py-px text-[10px] uppercase tracking-[0.08em] text-muted-foreground">
+            <span className="rounded-full bg-foreground/[0.06] px-2 py-px text-[10px] font-medium uppercase tracking-[0.06em] text-muted-foreground">
               Beta
             </span>
           </DropdownMenuItem>
