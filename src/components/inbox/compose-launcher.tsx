@@ -107,17 +107,17 @@ export function ComposeLauncher({ className = "" }: { className?: string }) {
           </button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          align="end"
-          side="bottom"
-          sideOffset={6}
-          className="relative w-56 rounded-[18px] border border-border/50 bg-popover/88 p-1.5 shadow-2xl backdrop-blur-2xl"
+          align="start"
+          side="right"
+          sideOffset={8}
+          className="relative w-52 rounded-[18px] border border-border/50 bg-popover/88 p-1.5 shadow-2xl backdrop-blur-2xl"
           style={{
             boxShadow:
               "0 1px 0 rgba(255,255,255,0.06) inset, 0 24px 60px -20px rgba(0,0,0,0.55), 0 8px 24px -12px rgba(0,0,0,0.35)",
           }}
         >
           <div
-            className="pointer-events-none absolute -top-1.5 right-4 h-3 w-3 rotate-45 border-l border-t border-border/50 bg-popover/88"
+            className="pointer-events-none absolute -left-1.5 top-3.5 h-3 w-3 rotate-45 border-b border-l border-border/50 bg-popover/88"
             aria-hidden="true"
           />
           <DropdownMenuItem
