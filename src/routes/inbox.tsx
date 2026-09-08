@@ -65,7 +65,7 @@ import { avatarUrl, hasAvatar } from "@/lib/avatar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { ArrowUpDown, SlidersHorizontal } from "lucide-react";
-import syraSidebarIcon from "@/assets/sidebar-icon.png";
+
 
 
 export const Route = createFileRoute("/inbox")({
