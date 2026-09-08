@@ -2753,44 +2753,50 @@ function ComposeWindow({
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <button
             onClick={() => setChatOpen((v) => !v)}
-            className={`inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-[11px] border px-3.5 text-[12.5px] font-medium transition-colors ${
-              chatOpen
-                ? "border-transparent text-foreground"
-                : "border-border bg-background text-foreground hover:bg-foreground/[0.04]"
-            }`}
-            style={chatOpen ? { background: "var(--sparkle-soft)", borderColor: "var(--sparkle-border)" } : undefined}
+            className="inline-flex h-10 min-w-[124px] shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full border px-4 text-[13px] font-medium transition-all"
+            style={{
+              borderColor: chatOpen ? "var(--sparkle)" : "var(--sparkle-border)",
+              background: chatOpen
+                ? "color-mix(in oklab, var(--sparkle) 16%, transparent)"
+                : "color-mix(in oklab, var(--sparkle) 7%, transparent)",
+              color: "color-mix(in oklab, var(--sparkle) 62%, var(--foreground))",
+              boxShadow: chatOpen
+                ? "0 0 0 3px color-mix(in oklab, var(--sparkle) 14%, transparent)"
+                : "inset 0 1px 0 color-mix(in oklab, white 12%, transparent)",
+            }}
           >
             <img
               src={syraSidebarIcon}
               alt=""
-              className="h-4 w-4 object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
+              className="h-[15px] w-[15px] object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
             />
-            Ask Syra
+            Email Agent
           </button>
           <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-            className="hidden h-9 items-center gap-1.5 rounded-[11px] border border-border bg-background px-3.5 text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] sm:inline-flex"
+            className="hidden h-10 min-w-[124px] items-center justify-center gap-1.5 rounded-full border border-border/70 bg-foreground/[0.035] px-4 text-[13px] font-medium text-foreground/85 transition-colors hover:bg-foreground/[0.07] sm:inline-flex dark:bg-white/[0.05]"
           >
-            <Clock className="h-3.5 w-3.5" strokeWidth={1.85} /> Schedule
+            <Clock className="h-4 w-4" strokeWidth={1.85} /> Schedule
           </button>
           <button
             onClick={onSend}
             disabled={sending}
-            className="inline-flex h-9 items-center gap-1.5 rounded-[11px] px-3.5 text-[12.5px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-70"
+            className="inline-flex h-10 min-w-[124px] items-center justify-center gap-1.5 rounded-full px-4 text-[13px] font-semibold text-background transition-opacity hover:opacity-90 disabled:opacity-70"
             style={{
               background:
-                "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 28%, var(--foreground)) 0%, var(--foreground) 70%)",
-              boxShadow: "0 6px 18px -8px color-mix(in oklab, var(--sparkle) 55%, transparent)",
+                "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 26%, var(--foreground)) 0%, var(--foreground) 72%)",
+              boxShadow:
+                "0 8px 22px -10px color-mix(in oklab, var(--sparkle) 60%, transparent), inset 0 1px 0 color-mix(in oklab, white 18%, transparent)",
             }}
           >
             {sending ? (
               <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Sending...
+                <Loader2 className="h-4 w-4 animate-spin" /> Sending...
               </>
             ) : (
               <>
                 Send
-                <Send className="h-3.5 w-3.5" strokeWidth={2} />
+                <Send className="h-4 w-4" strokeWidth={2} />
               </>
             )}
           </button>
