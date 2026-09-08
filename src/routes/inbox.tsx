@@ -2828,6 +2828,7 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
   };
 
   const commands = [
+    { label: "Recommend a strategy for this reply", icon: Sparkle, primary: true },
     { label: "Redraft with a more formal tone", icon: FileEdit },
     { label: "Check my calendar for the proposed date", icon: CalendarCheck },
     { label: `Create a follow-up task for ${thread.from.split(" ")[0]}`, icon: ListTodo },
