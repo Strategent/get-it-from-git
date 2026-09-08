@@ -26,11 +26,11 @@ export const Route = createFileRoute("/billing")({
 type Invoice = { id: string; client: string; amount: string; status: string; date: string };
 
 const seedInvoices: Invoice[] = [
-  { id: "INV-1042", client: "Acme Corp", amount: "$12,000", status: "Paid", date: "May 12" },
-  { id: "INV-1041", client: "Northwind", amount: "$4,800", status: "Paid", date: "May 09" },
-  { id: "INV-1040", client: "Helios Solar", amount: "$3,200", status: "Pending", date: "May 04" },
-  { id: "INV-1039", client: "Lumen Health", amount: "$6,400", status: "Overdue", date: "Apr 28" },
-  { id: "INV-1038", client: "Pulse Media", amount: "$9,200", status: "Paid", date: "Apr 22" },
+  { id: "INV-1042", client: "Acme Corp", amount: "$12,000", status: "Paid", date: "Oct 12" },
+  { id: "INV-1041", client: "Northwind", amount: "$4,800", status: "Paid", date: "Oct 09" },
+  { id: "INV-1040", client: "Helios Solar", amount: "$3,200", status: "Pending", date: "Oct 04" },
+  { id: "INV-1039", client: "Lumen Health", amount: "$6,400", status: "Overdue", date: "Sep 28" },
+  { id: "INV-1038", client: "Pulse Media", amount: "$9,200", status: "Paid", date: "Sep 22" },
 ];
 
 const statusClass = (status: string) =>
@@ -103,7 +103,7 @@ function BillingPage() {
         {[
           { label: "MRR", value: "$128,400" },
           { label: "Outstanding", value: "$8,210", accent: true },
-          { label: "Next payout", value: "May 30" },
+          { label: "Next payout", value: "Oct 30" },
           { label: "Churn (30d)", value: "0.9%" },
         ].map((s) => (
           <Card key={s.label} className="bento p-4 md:p-5">
@@ -300,7 +300,7 @@ function NewInvoiceDialog({ nextId, onCreate }: { nextId: string; onCreate: (inv
                     <Input
                       value={item.description}
                       onChange={(e) => updateItem(item.id, { description: e.target.value })}
-                      placeholder="Advisory retainer — May"
+                      placeholder="Advisory retainer — Oct"
                       autoComplete="off"
                       className="h-8"
                     />

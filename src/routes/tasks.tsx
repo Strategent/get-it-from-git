@@ -67,26 +67,26 @@ const seedGroups: Group[] = [
     name: "Today",
     accent: "bg-muted-foreground/70",
     items: [
-      { id: 1, code: "HS-01", title: "Review Q2 onboarding playbook", assignees: [A("Avery")], priority: "High", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 10, 2026", subtasks: 3 },
-      { id: 2, code: "HS-02", title: "Finalize Acme proposal v2", assignees: [assigneeFor("Syra")], priority: "High", status: "open", company: "Acme Holdings, Inc.", due: "Jul 10, 2026", subtasks: 4 },
-      { id: 3, code: "HS-03", title: "Approve Stripe payout", assignees: [A("Avery")], priority: "Med", status: "done", company: "Stripe, Inc.", due: "Jul 9, 2026", subtasks: 1 },
+      { id: 1, code: "HS-01", title: "Review Q2 onboarding playbook", assignees: [A("Avery")], priority: "High", status: "open", company: "Harwick & Sterne, LLC.", due: "Sep 8, 2026", subtasks: 3 },
+      { id: 2, code: "HS-02", title: "Finalize Acme proposal v2", assignees: [assigneeFor("Syra")], priority: "High", status: "open", company: "Acme Holdings, Inc.", due: "Sep 8, 2026", subtasks: 4 },
+      { id: 3, code: "HS-03", title: "Approve Stripe payout", assignees: [A("Avery")], priority: "Med", status: "done", company: "Stripe, Inc.", due: "Sep 7, 2026", subtasks: 1 },
     ],
   },
   {
     name: "This week",
     accent: "bg-foreground/60",
     items: [
-      { id: 4, code: "HS-04", title: "Migrate CRM custom fields", assignees: [assigneeFor("Marcus Lee")], priority: "Med", status: "open", company: "Northwind Capital, LLC.", due: "Jul 13, 2026", subtasks: 5 },
-      { id: 5, code: "HS-05", title: "Record agent training data", assignees: [assigneeFor("Syra")], priority: "Low", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 14, 2026", subtasks: 2 },
-      { id: 6, code: "HS-06", title: "QA new voice prompt set", assignees: [A("Jenna")], priority: "Med", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 15, 2026", subtasks: 3 },
+      { id: 4, code: "HS-04", title: "Migrate CRM custom fields", assignees: [assigneeFor("Marcus Lee")], priority: "Med", status: "open", company: "Northwind Capital, LLC.", due: "Sep 11, 2026", subtasks: 5 },
+      { id: 5, code: "HS-05", title: "Record agent training data", assignees: [assigneeFor("Syra")], priority: "Low", status: "open", company: "Harwick & Sterne, LLC.", due: "Sep 12, 2026", subtasks: 2 },
+      { id: 6, code: "HS-06", title: "QA new voice prompt set", assignees: [A("Jenna")], priority: "Med", status: "open", company: "Harwick & Sterne, LLC.", due: "Sep 13, 2026", subtasks: 3 },
     ],
   },
   {
     name: "This month",
     accent: "bg-foreground/40",
     items: [
-      { id: 7, code: "HS-07", title: "Plan Q3 advisor offsite", assignees: [assigneeFor("David Mensah")], priority: "Low", status: "open", company: "Harwick & Sterne, LLC.", due: "Jul 24, 2026", subtasks: 4 },
-      { id: 8, code: "HS-08", title: "Annual KYC refresh — top accounts", assignees: [assigneeFor("Rina Cho")], priority: "Med", status: "open", company: "Meridian Trust Co.", due: "Jul 28, 2026", subtasks: 6 },
+      { id: 7, code: "HS-07", title: "Plan Q3 advisor offsite", assignees: [assigneeFor("David Mensah")], priority: "Low", status: "open", company: "Harwick & Sterne, LLC.", due: "Sep 22, 2026", subtasks: 4 },
+      { id: 8, code: "HS-08", title: "Annual KYC refresh — top accounts", assignees: [assigneeFor("Rina Cho")], priority: "Med", status: "open", company: "Meridian Trust Co.", due: "Sep 26, 2026", subtasks: 6 },
     ],
   },
 ];

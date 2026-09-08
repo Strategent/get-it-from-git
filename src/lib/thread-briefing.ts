@@ -24,8 +24,8 @@ export function buildBriefing(t: BriefThread): Briefing {
   switch (t.tag) {
     case "Hot lead":
       return {
-        gist: `${first} approved the proposal with two edits — tier 2 pricing and a kickoff the week of June 10.`,
-        nextAction: "Send the updated SOW and lock June 10",
+        gist: `${first} approved the proposal with two edits — tier 2 pricing and a kickoff the week of Oct 15.`,
+        nextAction: "Send the updated SOW and lock Oct 15",
         context: `${t.company} has moved from evaluation to commitment. ${first} is the economic buyer and is aligning finance today, so the only thing left is paperwork that matches what was verbally agreed.`,
         strategy:
           "Confirm both edits in writing, attach the revised SOW, and name the date rather than asking for one. Momentum is the asset here — don't reopen scope.",

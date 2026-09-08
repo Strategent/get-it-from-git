@@ -19,7 +19,7 @@ export interface DailyBriefData {
 }
 
 export const MOCK_DAILY_BRIEF: DailyBriefData = {
-  date: "MONDAY · JUNE 9, 2026",
+  date: "MONDAY · SEPTEMBER 7, 2026",
   workspace: "HARWICK & STERNE",
   greeting: "Good morning, John.",
   summary:

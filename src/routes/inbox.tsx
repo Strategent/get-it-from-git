@@ -137,7 +137,7 @@ const baseThreads: Thread[] = [
     email: "sarah@acme.com",
     subject: "Re: Proposal v2 - minor tweaks",
     preview: "Looks great overall. Two small notes on pricing tier 2 and timing for kickoff...",
-    body: "Hi team,\n\nLooks great overall. Two small notes on pricing tier 2 and timing for kickoff. If we can lock tier 2 at the proposed annual rate and start the week of June 10, I can get finance aligned today.\n\nLooking forward to your thoughts. Let me know if a 30-minute sync this week works.\n\nBest,\nSarah",
+    body: "Hi team,\n\nLooks great overall. Two small notes on pricing tier 2 and timing for kickoff. If we can lock tier 2 at the proposed annual rate and start the week of Oct 15, I can get finance aligned today.\n\nLooking forward to your thoughts. Let me know if a 30-minute sync next week works.\n\nBest,\nSarah",
     time: "2m",
     tag: "Hot lead",
     folder: "Inbox",
@@ -248,7 +248,7 @@ const extraThreads: Thread[] = [
     email: "amara@kestrel.example",
     subject: "Deck feedback before Thursday",
     preview: "Slide 6 needs the updated retention curve. Everything else reads well...",
-    body: "Slide 6 needs the updated retention curve — the one from the April cohort analysis. Everything else reads well. Can you send a revised version before Thursday's committee?\n\nAmara",
+    body: "Slide 6 needs the updated retention curve — the one from the September cohort analysis. Everything else reads well. Can you send a revised version before Thursday's committee?\n\nAmara",
     time: "2h",
     tag: "Hot lead",
     folder: "Inbox",
@@ -319,8 +319,8 @@ const extraThreads: Thread[] = [
     company: "Harborline",
     email: "elena@harborline.example",
     subject: "Renewal terms — seat true-up",
-    preview: "We added 22 seats since January. Can you reflect that in the renewal quote...",
-    body: "We added 22 seats since January. Can you reflect that in the renewal quote and let me know if the volume tier changes? Procurement wants numbers by the 20th.\n\nElena",
+    preview: "We added 22 seats since August. Can you reflect that in the renewal quote...",
+    body: "We added 22 seats since August. Can you reflect that in the renewal quote and let me know if the volume tier changes? Procurement wants numbers by Oct 20.\n\nElena",
     time: "1 day",
     tag: "Renewal",
     folder: "Inbox",
@@ -349,9 +349,9 @@ function threadInsights(t: Thread): ThreadInsights {
         bullets: [
           `${first} approved the proposal with two edits — pricing and kickoff timing`,
           "Tier 2 should stay at the proposed annual rate",
-          "Kickoff targeted for the week of June 10",
+          "Kickoff targeted for the week of Oct 15",
         ],
-        actions: ["Send updated SOW", "Lock June 10 kickoff", "Book 30-min walkthrough"],
+        actions: ["Send updated SOW", "Lock Oct 15 kickoff", "Book 30-min walkthrough"],
         todos: ["Revise SOW with tier 2 pricing", "Send calendar hold for kickoff week", "Schedule walkthrough invite"],
       };
     case "Sales":
@@ -473,9 +473,9 @@ const mailLabels = [
 ];
 
 const regenerateOptions = [
-  "Thanks for the notes. I can confirm tier 2 pricing as proposed and hold kickoff for the week of June 10. I'll send the updated SOW and a 30-minute walkthrough invite shortly.",
-  "Appreciate the quick review. We'll keep tier 2 at the annual rate discussed and target a June 10 kickoff. I'll follow up with the revised SOW and calendar hold today.",
-  "That works on our side. I'll adjust tier 2 pricing, lock the June 10 kickoff window, and send the updated SOW with a short walkthrough invite.",
+  "Thanks for the notes. I can confirm tier 2 pricing as proposed and hold kickoff for the week of Oct 15. I'll send the updated SOW and a 30-minute walkthrough invite shortly.",
+  "Appreciate the quick review. We'll keep tier 2 at the annual rate discussed and target a Oct 15 kickoff. I'll follow up with the revised SOW and calendar hold today.",
+  "That works on our side. I'll adjust tier 2 pricing, lock the Oct 15 kickoff window, and send the updated SOW with a short walkthrough invite.",
 ];
 
 const emojiChoices = ["🙂", "👍", "🎯", "📎", "✅", "🙏", "💬", "🚀", "📅", "✨", "🤝", "💼"];
@@ -1008,7 +1008,7 @@ function InboxPage() {
       const s = selected;
       const nextAction =
         s.tag === "Hot lead"
-          ? "Send updated SOW with June 10 kickoff"
+          ? "Send updated SOW with Oct 15 kickoff"
           : s.tag === "Sales"
             ? "Reply with SOC2 pack + owner"
             : s.tag === "Renewal"
@@ -2922,7 +2922,7 @@ function ThreadChatPanel({
     const reply = normalized.includes("formal tone")
       ? `I’d make this more formal and concise: “Dear ${thread.from.split(" ")[0]}, thank you for confirming. I’ll incorporate the requested changes and send the updated materials with the next steps shortly.”`
       : normalized.includes("calendar")
-        ? "I found an open 30-minute window on June 10 at 10:30 AM. I can add that time to the draft and prepare the calendar hold."
+        ? "I found an open 30-minute window on Oct 15 at 10:30 AM. I can add that time to the draft and prepare the calendar hold."
         : normalized.includes("task")
           ? `Follow-up task prepared: Send ${thread.from.split(" ")[0]} the updated materials and confirm the next step. Due tomorrow at 9:00 AM.`
           : answerAboutThread(thread, text);
