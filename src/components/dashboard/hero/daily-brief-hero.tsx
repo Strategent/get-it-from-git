@@ -104,9 +104,10 @@ export function DailyBriefHero({
           }}
         >
           <h1
-            className="font-serif-display font-normal tracking-[-0.015em] text-white text-[30px] leading-[1.15]"
+            className="font-dm-sans text-[30px] font-normal tracking-normal text-white leading-[1.12] antialiased"
             style={{
-              fontSize: "clamp(20px, 17cqh, 42px)",
+              fontSize: "clamp(24px, 15cqh, 40px)",
+              letterSpacing: "0",
               textShadow: "0 1px 6px rgba(0,0,0,0.3)",
             }}
           >
@@ -114,10 +115,11 @@ export function DailyBriefHero({
           </h1>
 
           <p
-            className="mt-3 max-w-[30rem] text-[13.5px] font-medium leading-[1.5] text-white/[0.88]"
+            className="font-dm-sans mt-3 max-w-[31rem] text-[14px] font-normal tracking-normal leading-[1.55] text-white/[0.88] antialiased"
             style={{
-              marginTop: "clamp(0.375rem, 3cqh, 1.25rem)",
-              fontSize: "clamp(11px, 6.5cqh, 14px)",
+              marginTop: "clamp(0.5rem, 3.5cqh, 1.125rem)",
+              fontSize: "clamp(12px, 6.5cqh, 15px)",
+              letterSpacing: "0",
               textShadow: "0 1px 5px rgba(0,0,0,0.4)",
             }}
           >
@@ -127,14 +129,15 @@ export function DailyBriefHero({
           <button
             type="button"
             onClick={handleClick}
-            className="mt-4 w-fit rounded-full border border-white/70 bg-white/[0.08] px-7 py-2 text-[13.5px] font-medium text-white backdrop-blur-md transition-all hover:bg-white/[0.18]"
+            className="font-dm-sans mt-4 w-fit rounded-full border border-white/70 bg-white/[0.08] px-7 py-2 text-[13px] font-normal tracking-normal text-white antialiased backdrop-blur-md transition-all hover:bg-white/[0.18]"
             style={{
               marginTop: "clamp(0.5rem, 4cqh, 1.75rem)",
               paddingLeft: "clamp(1rem, 3.5cqw, 1.75rem)",
               paddingRight: "clamp(1rem, 3.5cqw, 1.75rem)",
               paddingTop: "clamp(0.3rem, 2cqh, 0.625rem)",
               paddingBottom: "clamp(0.3rem, 2cqh, 0.625rem)",
-              fontSize: "clamp(11px, 6cqh, 13.5px)",
+              fontSize: "clamp(11px, 6cqh, 13px)",
+              letterSpacing: "0",
             }}
           >
             Read daily brief
