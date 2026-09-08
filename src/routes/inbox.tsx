@@ -710,6 +710,7 @@ function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
 function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
+  const [threadListWidth, setThreadListWidth] = useState(340);
   const [mobileReading, setMobileReading] = useState(false);
   // Threads are local data — they render instantly, so no artificial skeleton.
   const [threadLoading] = useState(false);
@@ -730,6 +731,24 @@ function InboxPage() {
   const [regeneratingId, setRegeneratingId] = useState<number | null>(null);
   const [lastSentId, setLastSentId] = useState<number | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
+
+  const startThreadListResize = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const startX = event.clientX;
+    const startWidth = threadListWidth;
+    const onMove = (moveEvent: PointerEvent) => {
+      setThreadListWidth(Math.min(480, Math.max(260, startWidth + moveEvent.clientX - startX)));
+    };
+    const onEnd = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onEnd);
+      document.body.style.removeProperty("cursor");
+      document.body.style.removeProperty("user-select");
+    };
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onEnd, { once: true });
+  };
 
   // ---- Draft autosave (survives navigation away + full refresh) ----
   const draftsHydrated = useRef(false);
@@ -1536,7 +1555,8 @@ function InboxPage() {
 
         {/* ── Thread list ─────────────────────────────────────────── */}
         <section
-          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[300px] lg:w-[340px] shrink-0 flex-col border-r border-border/50 bg-background min-w-0`}
+          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full shrink-0 flex-col bg-background min-w-0 md:w-[var(--thread-list-width)]`}
+          style={{ "--thread-list-width": `${threadListWidth}px` } as CSSProperties}
         >
           {/* list header — "6 Todo" + Filter / Sort */}
           <div className="flex h-[46px] shrink-0 items-center gap-2 px-4">
@@ -1733,6 +1753,27 @@ function InboxPage() {
             )}
           </div>
         </section>
+
+        <button
+          type="button"
+          role="separator"
+          aria-label="Resize inbox thread pane"
+          aria-orientation="vertical"
+          aria-valuemin={260}
+          aria-valuemax={480}
+          aria-valuenow={threadListWidth}
+          onPointerDown={startThreadListResize}
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            setThreadListWidth((width) =>
+              Math.min(480, Math.max(260, width + (event.key === "ArrowRight" ? 16 : -16))),
+            );
+          }}
+          className={`${mobileReading ? "hidden md:flex" : "hidden md:flex"} group relative z-20 w-2 shrink-0 touch-none cursor-col-resize items-stretch justify-center bg-background focus-visible:outline-none`}
+        >
+          <span className="w-px bg-border/50 transition-all group-hover:w-0.5 group-hover:bg-foreground/25 group-focus-visible:w-0.5 group-focus-visible:bg-foreground/30" />
+        </button>
 
         {/* ── Reading pane ────────────────────────────────────────── */}
         <main
@@ -2026,20 +2067,26 @@ function ComposeWindow({
   const [selRect, setSelRect] = useState<{ left: number; top: number } | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
   const composeLayoutRef = useRef<HTMLDivElement | null>(null);
-  const agentResizeRef = useRef<{ startX: number; startWidth: number } | null>(null);
   const [agentWidth, setAgentWidth] = useState(292);
 
-  const resizeAgent = (clientX: number) => {
-    const drag = agentResizeRef.current;
-    const layoutWidth = composeLayoutRef.current?.getBoundingClientRect().width ?? 960;
-    if (!drag) return;
-    const maxWidth = Math.max(292, Math.min(520, layoutWidth - 430));
-    setAgentWidth(Math.min(maxWidth, Math.max(260, drag.startWidth + drag.startX - clientX)));
-  };
-
   const startAgentResize = (event: ReactPointerEvent<HTMLButtonElement>) => {
-    agentResizeRef.current = { startX: event.clientX, startWidth: agentWidth };
-    event.currentTarget.setPointerCapture(event.pointerId);
+    const startX = event.clientX;
+    const startWidth = agentWidth;
+    const layoutWidth = composeLayoutRef.current?.getBoundingClientRect().width ?? 960;
+    const maxWidth = Math.max(292, Math.min(520, layoutWidth - 380));
+    const onMove = (moveEvent: PointerEvent) => {
+      setAgentWidth(Math.min(maxWidth, Math.max(260, startWidth + startX - moveEvent.clientX)));
+    };
+    const onEnd = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onEnd);
+      document.body.style.removeProperty("cursor");
+      document.body.style.removeProperty("user-select");
+    };
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onEnd, { once: true });
   };
 
   useEffect(() => {
@@ -2840,14 +2887,6 @@ function ComposeWindow({
           aria-valuemax={520}
           aria-valuenow={agentWidth}
           onPointerDown={startAgentResize}
-          onPointerMove={(event) => resizeAgent(event.clientX)}
-          onPointerUp={(event) => {
-            agentResizeRef.current = null;
-            event.currentTarget.releasePointerCapture(event.pointerId);
-          }}
-          onPointerCancel={() => {
-            agentResizeRef.current = null;
-          }}
           onKeyDown={(event) => {
             if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
             event.preventDefault();
