@@ -123,6 +123,11 @@ type Thread = {
   sentAt?: string;
 };
 
+function formatTimeAgo(time: string) {
+  if (time === "1 day") return "1 day";
+  return `${time} ago`;
+}
+
 const baseThreads: Thread[] = [
   {
     id: 1,
