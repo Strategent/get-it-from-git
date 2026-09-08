@@ -425,6 +425,29 @@ function threadNextAction(t: Thread) {
   }
 }
 
+/** Subtle, Apple-style tint per tag — hue only, low saturation. */
+const TAG_HUE: Record<string, number> = {
+  "Hot lead": 25,
+  Sales: 250,
+  Renewal: 155,
+  Billing: 45,
+  Legal: 285,
+  Intro: 200,
+};
+
+export function tagTint(tag: string) {
+  const h = TAG_HUE[tag];
+  if (h === undefined)
+    return {
+      color: "color-mix(in oklab, var(--foreground) 55%, transparent)",
+      background: "color-mix(in oklab, var(--foreground) 6%, transparent)",
+    };
+  return {
+    color: `oklch(0.52 0.11 ${h})`,
+    background: `oklch(0.52 0.11 ${h} / 0.10)`,
+  };
+}
+
 const folderMeta = [
   { name: "Inbox" as const, icon: InboxIcon },
   { name: "VIPs" as const, icon: Star },
