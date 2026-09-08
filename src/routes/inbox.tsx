@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import type { CSSProperties, PointerEvent as ReactPointerEvent } from "react";
 import {
   Inbox as InboxIcon,
   Star,
@@ -709,6 +710,7 @@ function LemniAvatar({ name, size = 30 }: { name: string; size?: number }) {
 function InboxPage() {
   const [threads, setThreads] = useState(baseThreads);
   const [selectedId, setSelectedId] = useState(baseThreads[0].id);
+  const [threadListWidth, setThreadListWidth] = useState(340);
   const [mobileReading, setMobileReading] = useState(false);
   // Threads are local data — they render instantly, so no artificial skeleton.
   const [threadLoading] = useState(false);
@@ -729,6 +731,24 @@ function InboxPage() {
   const [regeneratingId, setRegeneratingId] = useState<number | null>(null);
   const [lastSentId, setLastSentId] = useState<number | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
+
+  const startThreadListResize = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const startX = event.clientX;
+    const startWidth = threadListWidth;
+    const onMove = (moveEvent: PointerEvent) => {
+      setThreadListWidth(Math.min(480, Math.max(260, startWidth + moveEvent.clientX - startX)));
+    };
+    const onEnd = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onEnd);
+      document.body.style.removeProperty("cursor");
+      document.body.style.removeProperty("user-select");
+    };
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onEnd, { once: true });
+  };
 
   // ---- Draft autosave (survives navigation away + full refresh) ----
   const draftsHydrated = useRef(false);
@@ -1535,7 +1555,8 @@ function InboxPage() {
 
         {/* ── Thread list ─────────────────────────────────────────── */}
         <section
-          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full md:w-[300px] lg:w-[340px] shrink-0 flex-col border-r border-border/50 bg-background min-w-0`}
+          className={`${mobileReading ? "hidden md:flex" : "flex"} relative z-10 w-full shrink-0 flex-col bg-background min-w-0 md:w-[var(--thread-list-width)]`}
+          style={{ "--thread-list-width": `${threadListWidth}px` } as CSSProperties}
         >
           {/* list header — "6 Todo" + Filter / Sort */}
           <div className="flex h-[46px] shrink-0 items-center gap-2 px-4">
@@ -1732,6 +1753,27 @@ function InboxPage() {
             )}
           </div>
         </section>
+
+        <button
+          type="button"
+          role="separator"
+          aria-label="Resize inbox thread pane"
+          aria-orientation="vertical"
+          aria-valuemin={260}
+          aria-valuemax={480}
+          aria-valuenow={threadListWidth}
+          onPointerDown={startThreadListResize}
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            setThreadListWidth((width) =>
+              Math.min(480, Math.max(260, width + (event.key === "ArrowRight" ? 16 : -16))),
+            );
+          }}
+          className={`${mobileReading ? "hidden md:flex" : "hidden md:flex"} group relative z-20 w-2 shrink-0 touch-none cursor-col-resize items-stretch justify-center bg-background focus-visible:outline-none`}
+        >
+          <span className="w-px bg-border/50 transition-all group-hover:w-0.5 group-hover:bg-foreground/25 group-focus-visible:w-0.5 group-focus-visible:bg-foreground/30" />
+        </button>
 
         {/* ── Reading pane ────────────────────────────────────────── */}
         <main
@@ -2024,6 +2066,28 @@ function ComposeWindow({
   const [fontOpen, setFontOpen] = useState(false);
   const [selRect, setSelRect] = useState<{ left: number; top: number } | null>(null);
   const [chatOpen, setChatOpen] = useState(false);
+  const composeLayoutRef = useRef<HTMLDivElement | null>(null);
+  const [agentWidth, setAgentWidth] = useState(292);
+
+  const startAgentResize = (event: ReactPointerEvent<HTMLButtonElement>) => {
+    const startX = event.clientX;
+    const startWidth = agentWidth;
+    const layoutWidth = composeLayoutRef.current?.getBoundingClientRect().width ?? 960;
+    const maxWidth = Math.max(260, Math.min(520, layoutWidth - 260));
+    const onMove = (moveEvent: PointerEvent) => {
+      setAgentWidth(Math.min(maxWidth, Math.max(260, startWidth + startX - moveEvent.clientX)));
+    };
+    const onEnd = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onEnd);
+      document.body.style.removeProperty("cursor");
+      document.body.style.removeProperty("user-select");
+    };
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onEnd, { once: true });
+  };
 
   useEffect(() => {
     const updateFloatingToolbar = () => {
@@ -2345,7 +2409,10 @@ function ComposeWindow({
   }
 
   return (
-    <div className={`relative mt-8 max-w-full ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start" : ""}`}>
+    <div
+      ref={composeLayoutRef}
+      className={`relative mt-8 max-w-full ${chatOpen ? "flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-0" : ""}`}
+    >
     <div className={`min-w-0 bg-card border border-border/60 dark:border-white/[0.07] rounded-[20px] overflow-hidden ${chatOpen ? "flex-1" : ""}`}>
       {draft.mode !== "forward" && (
         <div className="flex items-center gap-2.5 border-b border-border/50 px-5 py-3.5">
@@ -2809,12 +2876,42 @@ function ComposeWindow({
         </div>
       </div>
     </div>
-    {chatOpen && <ThreadChatPanel thread={thread} onClose={() => setChatOpen(false)} />}
+    {chatOpen && (
+      <>
+        <button
+          type="button"
+          role="separator"
+          aria-label="Resize Email Agent pane"
+          aria-orientation="vertical"
+          aria-valuemin={260}
+          aria-valuemax={520}
+          aria-valuenow={agentWidth}
+          onPointerDown={startAgentResize}
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+            event.preventDefault();
+            setAgentWidth((width) => Math.min(520, Math.max(260, width + (event.key === "ArrowLeft" ? 16 : -16))));
+          }}
+          className="group relative hidden w-4 shrink-0 touch-none cursor-col-resize items-stretch justify-center focus-visible:outline-none lg:flex"
+        >
+          <span className="my-5 w-px rounded-full bg-border/60 transition-all group-hover:w-0.5 group-hover:bg-foreground/25 group-focus-visible:w-0.5 group-focus-visible:bg-foreground/30" />
+        </button>
+        <ThreadChatPanel thread={thread} onClose={() => setChatOpen(false)} width={agentWidth} />
+      </>
+    )}
     </div>
   );
 }
 
-function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => void }) {
+function ThreadChatPanel({
+  thread,
+  onClose,
+  width,
+}: {
+  thread: Thread;
+  onClose: () => void;
+  width: number;
+}) {
   const [input, setInput] = useState("");
   const [msgs, setMsgs] = useState<{ role: "user" | "syra"; text: string }[]>([]);
 
@@ -2842,8 +2939,11 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
 
   return (
     <aside
-      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/70 bg-card/80 backdrop-blur-2xl dark:border-white/[0.09] dark:bg-white/[0.055] lg:w-[292px]"
-      style={{ boxShadow: "0 24px 64px -34px color-mix(in oklab, var(--foreground) 34%, transparent), inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent)" }}
+      className="animate-fade-in w-full shrink-0 overflow-hidden rounded-[20px] border border-border/70 bg-card/80 backdrop-blur-2xl dark:border-white/[0.09] dark:bg-white/[0.055] lg:w-[var(--email-agent-width)]"
+      style={{
+        "--email-agent-width": `${width}px`,
+        boxShadow: "0 24px 64px -34px color-mix(in oklab, var(--foreground) 34%, transparent), inset 0 1px 0 color-mix(in oklab, var(--foreground) 6%, transparent)",
+      } as CSSProperties}
     >
       <div className="flex items-center gap-2.5 border-b border-border/50 px-4 py-3.5">
         <img
