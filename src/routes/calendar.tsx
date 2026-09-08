@@ -87,9 +87,9 @@ const kindColor: Record<string, keyof typeof IOS> = {
 const colorFor = (kind: string): Ios => IOS[kindColor[kind] ?? "blue"];
 
 function CalendarPage() {
-  const today = new Date(2026, 0, 16);
+  const today = new Date(2026, 8, 7);
   const [viewMonth, setViewMonth] = useState(new Date(today.getFullYear(), today.getMonth(), 1));
-  const [selectedDay, setSelectedDay] = useState<number>(16);
+  const [selectedDay, setSelectedDay] = useState<number>(7);
 
   const monthLabel = viewMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" });
 
