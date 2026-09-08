@@ -397,6 +397,9 @@
     font-weight: 400;
     letter-spacing: -0.005em;
   }
+  .font-dm-sans {
+    font-family: var(--font-serif);
+  }
   /* Mono caps utility (labels outside SectionLabel). */
   .font-label {
     font-family: var(--font-label);

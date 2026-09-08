@@ -13,7 +13,7 @@ export function SmartSummary({
 
   return (
     <section aria-label="Smart Summary">
-      <h2 className="mb-2 px-0.5 font-sans text-[14px] font-medium text-foreground/90">
+      <h2 className="font-dm-sans mb-2 px-0.5 text-[14px] font-medium text-foreground/90">
         Smart Summary
       </h2>
       <div className="overflow-hidden rounded-[14px] border border-border/70 bg-card shadow-[0_10px_28px_-22px_color-mix(in_oklab,var(--foreground)_38%,transparent),inset_0_1px_0_color-mix(in_oklab,var(--foreground)_5%,transparent)] dark:border-white/[0.08] dark:bg-white/[0.045]">
@@ -31,7 +31,7 @@ export function SmartSummary({
           disabled={!actionable}
           className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition-colors enabled:hover:bg-foreground/[0.04] disabled:cursor-default"
         >
-          <span className="font-sans text-[11px] font-medium text-muted-foreground">Next</span>
+          <span className="font-dm-sans text-[11px] font-medium text-muted-foreground">Next</span>
           <span className="min-w-0 flex-1 truncate text-[13px] text-foreground">
             {b.nextAction}
           </span>

@@ -2775,7 +2775,14 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
   const send = (value?: string) => {
     const text = (value ?? input).trim();
     if (!text) return;
-    const reply = answerAboutThread(thread, text);
+    const normalized = text.toLowerCase();
+    const reply = normalized.includes("formal tone")
+      ? `I’d make this more formal and concise: “Dear ${thread.from.split(" ")[0]}, thank you for confirming. I’ll incorporate the requested changes and send the updated materials with the next steps shortly.”`
+      : normalized.includes("calendar")
+        ? "I found an open 30-minute window on June 10 at 10:30 AM. I can add that time to the draft and prepare the calendar hold."
+        : normalized.includes("task")
+          ? `Follow-up task prepared: Send ${thread.from.split(" ")[0]} the updated materials and confirm the next step. Due tomorrow at 9:00 AM.`
+          : answerAboutThread(thread, text);
     setMsgs((m) => [...m, { role: "user", text }, { role: "syra", text: reply }]);
     setInput("");
   };
@@ -2797,7 +2804,7 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
           alt=""
           className="h-[22px] w-[22px] object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
         />
-        <span className="font-sans text-[14px] font-medium text-foreground">Email Agent</span>
+        <span className="font-dm-sans text-[14px] font-medium text-foreground">Email Agent</span>
         <button
           onClick={onClose}
           aria-label="Close"
