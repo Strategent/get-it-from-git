@@ -2724,25 +2724,30 @@ function ComposeWindow({
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <button
             onClick={() => setChatOpen((v) => !v)}
-            className={`inline-flex shrink-0 items-center gap-1.5 h-9 whitespace-nowrap rounded-full border px-3.5 text-[12.5px] font-medium transition-colors ${
+            className={`inline-flex h-9 shrink-0 items-center gap-2 whitespace-nowrap rounded-[11px] border px-3.5 text-[12.5px] font-medium transition-colors ${
               chatOpen
                 ? "border-transparent text-foreground"
-                : "border-border/70 bg-background text-foreground/85 hover:bg-foreground/[0.04]"
+                : "border-border bg-background text-foreground hover:bg-foreground/[0.04]"
             }`}
             style={chatOpen ? { background: "var(--sparkle-soft)", borderColor: "var(--sparkle-border)" } : undefined}
           >
-            Email Agent
+            <img
+              src={syraSidebarIcon}
+              alt=""
+              className="h-4 w-4 object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
+            />
+            Ask Syra
           </button>
           <button
             onClick={() => toast.success("Scheduled for tomorrow at 8:00 AM")}
-            className="hidden sm:inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full border border-border/70 bg-background text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04]"
+            className="hidden h-9 items-center gap-1.5 rounded-[11px] border border-border bg-background px-3.5 text-[12.5px] font-medium text-foreground/85 hover:bg-foreground/[0.04] sm:inline-flex"
           >
             <Clock className="h-3.5 w-3.5" strokeWidth={1.85} /> Schedule
           </button>
           <button
             onClick={onSend}
             disabled={sending}
-            className="inline-flex items-center gap-1.5 h-9 px-4 rounded-full text-background text-[12.5px] font-semibold transition-opacity hover:opacity-90 disabled:opacity-70"
+            className="inline-flex h-9 items-center gap-1.5 rounded-[11px] px-3.5 text-[12.5px] font-medium text-background transition-opacity hover:opacity-90 disabled:opacity-70"
             style={{
               background:
                 "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 28%, var(--foreground)) 0%, var(--foreground) 70%)",
