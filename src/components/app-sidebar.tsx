@@ -27,23 +27,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import syraSidebarIcon from "@/assets/sidebar-icon.png";
 const johnHarwickAvatar = { url: "/john-harwick.webp" };
-const syraSIcon = { url: syraSidebarIcon };
-
-const SyraIcon = ({ className }: { className?: string; strokeWidth?: number }) => (
-  <span aria-hidden className={`relative inline-grid place-items-center ${className ?? ""}`}>
-    <span
-      aria-hidden
-      className="pointer-events-none absolute inset-[-35%] rounded-full bg-[radial-gradient(circle,hsl(var(--primary)/0.22)_0%,transparent_70%)] opacity-0 mix-blend-screen blur-md duration-700 ease-in-out animate-syra-glow"
-    />
-    <img
-      src={syraSIcon.url}
-      alt=""
-      className="relative h-full w-full object-contain [filter:brightness(0)] dark:[filter:brightness(0)_invert(1)]"
-    />
-  </span>
-);
 
 const workspace = [
   { title: "Home", url: "/", icon: HomeIcon },
