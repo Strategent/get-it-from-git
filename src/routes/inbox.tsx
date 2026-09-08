@@ -2859,11 +2859,26 @@ function ThreadChatPanel({ thread, onClose }: { thread: Thread; onClose: () => v
       <div className="max-h-[320px] space-y-3 overflow-y-auto px-4 py-3 no-scrollbar">
         {msgs.length === 0 ? (
           <div className="space-y-1.5">
-            {commands.map(({ label, icon: Icon }) => (
+            {commands.map(({ label, icon: Icon, primary }) => (
               <button
                 key={label}
                 onClick={() => send(label)}
-                className="flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left text-[12.5px] text-muted-foreground transition-colors hover:bg-foreground/[0.055] hover:text-foreground"
+                className={`flex w-full items-center gap-2.5 rounded-[10px] px-2.5 py-2.5 text-left text-[12.5px] transition-colors ${
+                  primary
+                    ? "border font-medium"
+                    : "text-muted-foreground hover:bg-foreground/[0.055] hover:text-foreground"
+                }`}
+                style={
+                  primary
+                    ? {
+                        borderColor: "var(--sparkle-border)",
+                        background:
+                          "linear-gradient(135deg, color-mix(in oklab, var(--sparkle) 12%, transparent) 0%, transparent 72%)",
+                        color: "color-mix(in oklab, var(--sparkle) 58%, var(--foreground))",
+                        boxShadow: "0 0 22px -12px color-mix(in oklab, var(--sparkle) 70%, transparent)",
+                      }
+                    : undefined
+                }
               >
                 <Icon className="h-3.5 w-3.5 shrink-0" strokeWidth={1.7} />
                 <span>{label}</span>
