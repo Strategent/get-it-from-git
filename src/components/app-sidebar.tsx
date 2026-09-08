@@ -91,10 +91,14 @@ export function AppSidebar() {
                     to={item.url}
                     className={`flex items-center ${collapsed ? "justify-center w-full" : "gap-2.5"}`}
                   >
-                    <item.icon
-                      strokeWidth={active ? 1.9 : 1.5}
-                      className={`shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"} ${item.title === "Syra" ? "h-[22px] w-[22px] lg:h-[24px] lg:w-[24px]" : "h-[18px] w-[18px]"}`}
-                    />
+                    {item.icon ? (
+                      <item.icon
+                        strokeWidth={active ? 1.9 : 1.5}
+                        className={`h-[18px] w-[18px] shrink-0 transition-opacity ${active ? "opacity-100" : "opacity-80"}`}
+                      />
+                    ) : (
+                      !collapsed && <span aria-hidden className="w-[18px] shrink-0" />
+                    )}
                     {!collapsed && (
                       <span
                         className={`text-[13px] tracking-tight ${active ? "font-semibold" : "font-medium"}`}
