@@ -107,6 +107,7 @@ export function DailyBriefHero({
             className="font-dm-sans text-[30px] font-normal tracking-normal text-white leading-[1.12] antialiased"
             style={{
               fontSize: "clamp(24px, 15cqh, 40px)",
+              letterSpacing: "0",
               textShadow: "0 1px 6px rgba(0,0,0,0.3)",
             }}
           >
@@ -118,6 +119,7 @@ export function DailyBriefHero({
             style={{
               marginTop: "clamp(0.5rem, 3.5cqh, 1.125rem)",
               fontSize: "clamp(12px, 6.5cqh, 15px)",
+              letterSpacing: "0",
               textShadow: "0 1px 5px rgba(0,0,0,0.4)",
             }}
           >
@@ -135,6 +137,7 @@ export function DailyBriefHero({
               paddingTop: "clamp(0.3rem, 2cqh, 0.625rem)",
               paddingBottom: "clamp(0.3rem, 2cqh, 0.625rem)",
               fontSize: "clamp(11px, 6cqh, 13px)",
+              letterSpacing: "0",
             }}
           >
             Read daily brief
