@@ -41,6 +41,7 @@ import {
   User as UserIcon,
   CalendarCheck,
   ListTodo,
+  Sparkle,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
