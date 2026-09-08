@@ -450,8 +450,8 @@ export function tagTint(tag: string) {
       background: "color-mix(in oklab, var(--foreground) 6%, transparent)",
     };
   return {
-    color: `oklch(var(--tag-l) 0.105 ${h})`,
-    background: `oklch(var(--tag-l) 0.105 ${h} / 0.12)`,
+    color: `oklch(var(--tag-l) 0.11 ${h})`,
+    background: `oklch(var(--tag-l) 0.11 ${h} / 0.10)`,
   };
 }
 
@@ -1505,7 +1505,7 @@ function InboxPage() {
                           </div>
                           <div className="mt-1.5 flex items-center gap-1.5">
                             <span
-                              className="inline-flex h-[19px] items-center rounded-[5px] px-1.5 text-[11px] font-medium leading-none"
+                              className="inline-flex items-center rounded-full px-2 py-[3px] text-[10.5px] font-medium leading-none tracking-[-0.005em]"
                               style={tagTint(thread.tag)}
                             >
                               {thread.tag}
@@ -1856,15 +1856,15 @@ function InboxPage() {
               <>
               <h2 className="ios-skeleton-fade text-[26px] font-normal leading-[1.25] tracking-[-0.01em] text-foreground">
                 {selected.subject}
+                {selected.tag && (
+                  <span
+                    className="ml-2.5 inline-flex translate-y-[-2px] items-center rounded-full px-2.5 py-[3.5px] align-middle text-[11.5px] font-medium leading-none tracking-[-0.005em]"
+                    style={tagTint(selected.tag)}
+                  >
+                    {selected.tag}
+                  </span>
+                )}
               </h2>
-              {selected.tag && (
-                <span
-                  className="inline-flex h-[22px] translate-y-[1px] items-center rounded-[6px] px-2 text-[12px] font-medium leading-none"
-                  style={tagTint(selected.tag)}
-                >
-                  {selected.tag}
-                </span>
-              )}
               </>
               )}
             </div>
