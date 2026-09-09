@@ -17,6 +17,7 @@ import {
   Search,
   Mic,
   ChevronDown,
+  ChevronUp,
   Plus,
   MoreHorizontal,
   Folder,
@@ -25,6 +26,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -33,6 +35,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SmartAvatar } from "@/components/smart-avatar";
 
 const nav = [
   { title: "Home", url: "/", icon: HomeIcon },
