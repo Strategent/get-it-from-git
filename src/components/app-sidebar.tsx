@@ -198,39 +198,39 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="px-2 pb-3 pt-1">
+      <SidebarFooter className="border-t border-border/50 px-2 pb-3 pt-3">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             {collapsed ? (
               <button
                 type="button"
-                className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-border/70 bg-foreground/[0.03] hover:bg-foreground/[0.06] transition-colors"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-border/60 bg-card/70 transition-colors hover:border-border hover:bg-accent/35"
                 aria-label="John Harwick account menu"
               >
-                <SmartAvatar name="John Harwick" className="h-9 w-9" alt="John Harwick" />
+                <SmartAvatar name="John Harwick" className="h-8 w-8" alt="John Harwick" />
               </button>
             ) : (
               <button
                 type="button"
-                className="group flex w-full items-center gap-3 rounded-[12px] border border-border/70 bg-foreground/[0.03] px-3 py-2.5 text-left hover:bg-foreground/[0.06] transition-colors"
+                className="group flex w-full items-center gap-2.5 rounded-lg border border-border/60 bg-card/70 px-2.5 py-2 text-left shadow-sm transition-colors hover:border-border hover:bg-accent/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
               >
-                <SmartAvatar name="John Harwick" className="h-9 w-9" alt="John Harwick" />
+                <SmartAvatar name="John Harwick" className="h-8 w-8" alt="John Harwick" />
                 <div className="min-w-0 flex-1">
-                  <div className="font-dm-sans text-[14px] font-medium tracking-tight text-foreground truncate">
+                  <div className="font-dm-sans text-[13px] font-medium text-foreground truncate">
                     John Harwick
                   </div>
-                  <div className="font-dm-sans text-[13px] tracking-tight text-muted-foreground/70 truncate">
+                  <div className="mt-0.5 font-dm-sans text-[11px] text-muted-foreground/65 truncate">
                     Workspace owner
                   </div>
                 </div>
                 <ChevronUp
-                  className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-muted-foreground"
+                  className="h-3.5 w-3.5 shrink-0 text-muted-foreground/45 transition-colors group-hover:text-muted-foreground"
                   strokeWidth={1.7}
                 />
               </button>
             )}
           </DropdownMenuTrigger>
-          <DropdownMenuContent side="top" align="start" className="w-56">
+          <DropdownMenuContent side="top" align="start" sideOffset={8} className="w-56 rounded-lg border-border/70 bg-popover/95 p-1.5 shadow-lg backdrop-blur-xl">
             <DropdownMenuItem asChild>
               <Link to="/settings" className="flex items-center gap-2 font-dm-sans text-[14px] tracking-tight">
                 <Settings className="h-4 w-4" strokeWidth={1.7} />
