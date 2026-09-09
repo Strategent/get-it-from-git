@@ -17,6 +17,7 @@ import {
   Search,
   Mic,
   ChevronDown,
+  ChevronUp,
   Plus,
   MoreHorizontal,
   Folder,
@@ -25,6 +26,7 @@ import {
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -33,6 +35,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { SmartAvatar } from "@/components/smart-avatar";
 
 const nav = [
   { title: "Home", url: "/", icon: HomeIcon },
@@ -187,6 +197,61 @@ export function AppSidebar() {
           <SidebarGroupContent>{renderItems(secondary)}</SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter className="px-2 pb-3 pt-1">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            {collapsed ? (
+              <button
+                type="button"
+                className="flex h-10 w-10 items-center justify-center rounded-[12px] border border-border/70 bg-foreground/[0.03] hover:bg-foreground/[0.06] transition-colors"
+                aria-label="John Harwick account menu"
+              >
+                <SmartAvatar name="John Harwick" className="h-9 w-9" alt="John Harwick" />
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="group flex w-full items-center gap-3 rounded-[12px] border border-border/70 bg-foreground/[0.03] px-3 py-2.5 text-left hover:bg-foreground/[0.06] transition-colors"
+              >
+                <SmartAvatar name="John Harwick" className="h-9 w-9" alt="John Harwick" />
+                <div className="min-w-0 flex-1">
+                  <div className="font-dm-sans text-[14px] font-medium tracking-tight text-foreground truncate">
+                    John Harwick
+                  </div>
+                  <div className="font-dm-sans text-[13px] tracking-tight text-muted-foreground/70 truncate">
+                    Workspace owner
+                  </div>
+                </div>
+                <ChevronUp
+                  className="h-4 w-4 shrink-0 text-muted-foreground/60 transition-colors group-hover:text-muted-foreground"
+                  strokeWidth={1.7}
+                />
+              </button>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align="start" className="w-56">
+            <DropdownMenuItem asChild>
+              <Link to="/settings" className="flex items-center gap-2 font-dm-sans text-[14px] tracking-tight">
+                <Settings className="h-4 w-4" strokeWidth={1.7} />
+                Settings
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/billing" className="flex items-center gap-2 font-dm-sans text-[14px] tracking-tight">
+                <CreditCard className="h-4 w-4" strokeWidth={1.7} />
+                Billing
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/team" className="flex items-center gap-2 font-dm-sans text-[14px] tracking-tight">
+                <Users className="h-4 w-4" strokeWidth={1.7} />
+                User management
+              </Link>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </SidebarFooter>
     </Sidebar>
   );
 }
