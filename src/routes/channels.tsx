@@ -136,8 +136,8 @@ function ChannelsPage() {
   const toggleSaved = () => setSaved((current) => current.includes(key) ? current.filter((entry) => entry !== key) : [...current, key]);
 
   return (
-    <div className="flex min-h-0 h-[calc(100dvh-53px)] bg-background text-foreground md:p-4 md:pt-4 md:gap-0">
-      <aside className={`${mobileView === "list" ? "flex" : "hidden"} md:flex w-full md:w-[290px] lg:w-[320px] shrink-0 flex-col border-r border-border/70 bg-sidebar md:rounded-l-lg md:border md:border-r-0 overflow-hidden`}>
+    <div className="flex min-h-0 h-dvh bg-background text-foreground md:h-[calc(100dvh-53px)] md:p-4 md:pt-4 md:gap-0">
+      <aside className={`${mobileView === "list" ? "flex" : "hidden"} md:flex w-full md:w-[290px] lg:w-[320px] shrink-0 flex-col border-r border-border/70 bg-sidebar md:rounded-l-lg md:border md:border-r-0 overflow-hidden pb-20 md:pb-0`}>
         <div className="px-5 pt-[max(1.25rem,env(safe-area-inset-top))] pb-4 md:pt-5">
           <div className="flex items-center justify-between">
             <div>
@@ -176,7 +176,7 @@ function ChannelsPage() {
         </div>
       </aside>
 
-      <main className={`${mobileView === "chat" ? "flex" : "hidden"} md:flex min-w-0 flex-1 flex-col bg-card md:rounded-r-lg md:border border-border/70`}>
+      <main className={`${mobileView === "chat" ? "flex" : "hidden"} md:flex min-w-0 flex-1 flex-col bg-card md:rounded-r-lg md:border border-border/70 pb-20 md:pb-0`}>
         <header className="flex min-h-[68px] items-center gap-3 border-b border-border/70 px-4 pt-[env(safe-area-inset-top)] md:px-6 md:pt-0">
           <Button variant="ghost" size="icon" onClick={() => setMobileView("list")} aria-label="Back to channels" className="md:hidden h-9 w-9 shrink-0"><ArrowLeft className="h-5 w-5" /></Button>
           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-md bg-muted text-muted-foreground">
