@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { DailyBriefStack } from "./daily-brief-stack";
-import heroScenery from "@/assets/daily-brief-hero.jpg";
+import briefArtwork from "@/assets/daily-brief-orbs.jpeg.asset.json";
+import { Button } from "@/components/ui/button";
 
 export interface BriefPriority {
   status: "urgent" | "this-week" | "closed";
@@ -74,19 +75,14 @@ export function DailyBriefHero({
   return (
     <>
       <section
-        className="relative h-full w-full overflow-hidden"
-        style={{ borderRadius: "var(--radius)", containerType: "size" }}
+        className="relative h-full w-full overflow-hidden rounded-lg border border-border/70"
+        style={{ containerType: "size" }}
       >
         <div
           aria-hidden
-          className="absolute inset-0 overflow-hidden"
+          className="absolute inset-0 overflow-hidden bg-center bg-cover"
           style={{
-            borderRadius: "var(--radius)",
-            backgroundColor: "#1a1a1d",
-            backgroundImage: `linear-gradient(100deg, rgba(0,0,0,0.62) 0%, rgba(0,0,0,0.44) 38%, rgba(0,0,0,0.2) 70%, rgba(0,0,0,0.06) 100%), linear-gradient(to top, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 55%), url("${heroScenery}")`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
+            backgroundImage: `linear-gradient(90deg, var(--brief-scrim) 0%, var(--brief-scrim-soft) 52%, transparent 100%), url("${briefArtwork.url}")`,
           }}
         />
 
@@ -95,7 +91,7 @@ export function DailyBriefHero({
             level. Plain px values act as the fallback where cq units are
             unsupported. */}
         <div
-          className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-6"
+          className="relative z-10 flex h-full flex-col justify-center pl-10 pr-8 py-6 text-brief-foreground"
           style={{
             paddingLeft: "clamp(1.25rem, 5cqw, 5rem)",
             paddingRight: "clamp(1rem, 4cqw, 4rem)",
@@ -104,32 +100,31 @@ export function DailyBriefHero({
           }}
         >
           <h1
-            className="font-dm-sans text-[30px] font-normal tracking-normal text-white leading-[1.12] antialiased"
+            className="font-dm-sans text-[30px] font-normal leading-[1.12] antialiased"
             style={{
               fontSize: "clamp(24px, 15cqh, 40px)",
               letterSpacing: "0",
-              textShadow: "0 1px 6px rgba(0,0,0,0.3)",
             }}
           >
             Welcome back, John.
           </h1>
 
           <p
-            className="font-dm-sans mt-3 max-w-[31rem] text-[14px] font-normal tracking-normal leading-[1.55] text-white/[0.88] antialiased"
+            className="font-dm-sans mt-3 max-w-[31rem] text-[14px] font-normal leading-[1.55] text-brief-foreground/85 antialiased"
             style={{
               marginTop: "clamp(0.5rem, 3.5cqh, 1.125rem)",
               fontSize: "clamp(12px, 6.5cqh, 15px)",
               letterSpacing: "0",
-              textShadow: "0 1px 5px rgba(0,0,0,0.4)",
             }}
           >
             {summary}
           </p>
 
-          <button
+          <Button
+            variant="outline"
             type="button"
             onClick={handleClick}
-            className="font-dm-sans mt-4 w-fit rounded-full border border-white/70 bg-white/[0.08] px-7 py-2 text-[13px] font-normal tracking-normal text-white antialiased backdrop-blur-md transition-all hover:bg-white/[0.18]"
+            className="font-dm-sans mt-4 h-auto w-fit rounded-full border-brief-foreground/35 bg-brief-glass/60 px-7 py-2 text-[13px] font-normal text-brief-foreground antialiased backdrop-blur-md transition-colors hover:bg-brief-glass/85 hover:text-brief-foreground"
             style={{
               marginTop: "clamp(0.5rem, 4cqh, 1.75rem)",
               paddingLeft: "clamp(1rem, 3.5cqw, 1.75rem)",
@@ -141,7 +136,7 @@ export function DailyBriefHero({
             }}
           >
             Read daily brief
-          </button>
+          </Button>
         </div>
       </section>
 

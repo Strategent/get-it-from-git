@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { PageShell } from "@/components/page-shell";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { BentoGridStack, type BentoItem } from "@/components/layout/bento-grid-stack";
@@ -32,6 +32,8 @@ export const Route = createFileRoute("/")({
         content: "Private wealth dashboard: workload, planner and upcoming client meetings.",
       },
       { property: "og:title", content: "strategent — Dashboard" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Private wealth dashboard: workload, planner and upcoming client meetings.",
@@ -40,42 +42,39 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function MobileHome({ setupDone, finishSetup }: { setupDone: boolean; finishSetup: () => void }) {
+function MobileHome() {
   return (
     <PageShell>
-      <div className="flex flex-col gap-3 rounded-[28px] p-2.5 pb-3 mb-6">
+      <div className="flex flex-col gap-3 pb-3 mb-6">
         {/* 1. Hero full-width up top */}
         <MobileDailyBriefCard />
 
-        {/* 2. Markets full width */}
-        <MobileRecapCard />
-
-        {/* 3. Workload + Team squares */}
-        <div className="grid grid-cols-2 gap-3">
-          <MobileWorkloadCard />
-          <MobileTeamCard />
-        </div>
-
-        {/* 4. Inbox — fixed height sized to exactly 4 threads + header, so
+        {/* Inbox — fixed height sized to exactly 4 threads + header, so
              tapping a thread doesn't morph the card and there's no blank space. */}
         <div className="h-[420px]">
           <InboxCard />
         </div>
 
-        {/* 5. Calendar */}
+        {/* Calendar */}
         <CalendarCard />
 
-        {/* 6. Bulletin */}
+        {/* Bulletin */}
         <BulletinCard />
 
-        {/* 7. Planner + Channels — condensed side by side */}
-        <div className="grid grid-cols-2 gap-3">
+        {/* Planner + Channels */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <MobilePlannerCard />
           <MobileChannelsCard />
         </div>
 
-        {/* 8. Calls */}
+        {/* Calls */}
         <CallsCard />
+
+        <div className="grid grid-cols-2 gap-3">
+          <MobileWorkloadCard />
+          <MobileTeamCard />
+        </div>
+        <MobileRecapCard />
       </div>
     </PageShell>
   );
@@ -86,22 +85,6 @@ function Home() {
   // is removed from the rail and the hero in the main grid extends downward
   // to reclaim the visual weight.
   const isMobile = useIsMobile();
-  const [setupDone, setSetupDone] = useState(false);
-  useEffect(() => {
-    try {
-      if (localStorage.getItem("hs-setup-done") === "1") setSetupDone(true);
-    } catch {
-      /* ignore */
-    }
-  }, []);
-  const finishSetup = () => {
-    setSetupDone(true);
-    try {
-      localStorage.setItem("hs-setup-done", "1");
-    } catch {
-      /* ignore */
-    }
-  };
 
   // Stable item arrays — built once. The bento grids init gridstack against
   // these DOM nodes, so the lists must not change identity on re-render.
@@ -130,8 +113,8 @@ function Home() {
           </div>
         ),
       },
-      { id: "bulletin", x: 0, y: 3, w: 4, h: 6, minW: 3, minH: 4, maxH: 10, node: <BulletinCard /> },
-      { id: "inbox", x: 4, y: 3, w: 8, h: 6, minW: 5, minH: 4, maxH: 10, node: <InboxCard /> },
+       { id: "inbox", x: 0, y: 3, w: 8, h: 6, minW: 5, minH: 4, maxH: 10, node: <InboxCard /> },
+       { id: "bulletin", x: 8, y: 3, w: 4, h: 6, minW: 3, minH: 4, maxH: 10, node: <BulletinCard /> },
       { id: "planner", x: 0, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <PlannerCard /> },
       { id: "channels", x: 4, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <ChannelsCard /> },
       { id: "workload", x: 8, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <WorkloadCard /> },
@@ -150,31 +133,31 @@ function Home() {
 
 
   if (isMobile) {
-    return <MobileHome setupDone={setupDone} finishSetup={finishSetup} />;
+    return <MobileHome />;
   }
 
   return (
     <PageShell>
       <DashboardShell
         rail={
-          <div className="rounded-[28px] p-2.5">
+          <div className="p-2.5">
             <BentoGridStack
-              key="rail-v8"
+              key="rail-v9"
               items={railItems}
               column={1}
-              storageKey="hs-rail-layout-v8"
+              storageKey="hs-rail-layout-v9"
               resizeHandles="s"
               className="-mx-2.5"
             />
           </div>
         }
       >
-        <div className="rounded-[28px] p-2.5">
+        <div className="p-2.5">
           <BentoGridStack
-            key="main-v8"
+            key="main-v9"
             items={mainItems}
             column={12}
-            storageKey="hs-main-layout-v8"
+            storageKey="hs-main-layout-v9"
             className="-mx-2.5"
           />
         </div>
