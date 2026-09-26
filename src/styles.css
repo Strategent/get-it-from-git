@@ -61,6 +61,8 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-brief-foreground: var(--brief-foreground);
+  --color-brief-glass: var(--brief-glass);
 }
 
 @theme inline {
@@ -115,6 +117,10 @@
   --sidebar-accent-foreground: oklch(0.24 0.004 95);
   --sidebar-border: oklch(0.24 0.004 95 / 8%);
   --sidebar-ring: oklch(0.53 0.115 272 / 55%);
+  --brief-foreground: oklch(0.99 0 0);
+  --brief-glass: oklch(0.12 0 0 / 55%);
+  --brief-scrim: oklch(0.08 0 0 / 87%);
+  --brief-scrim-soft: oklch(0.08 0 0 / 48%);
 }
 
 .dark {
@@ -162,6 +168,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.62 0 0);
+  --brief-foreground: oklch(0.99 0 0);
+  --brief-glass: oklch(0.12 0 0 / 55%);
+  --brief-scrim: oklch(0.08 0 0 / 87%);
+  --brief-scrim-soft: oklch(0.08 0 0 / 48%);
 }
 
 
@@ -189,7 +199,7 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     font-feature-settings: "ss01", "cv11";
-    letter-spacing: -0.011em;
+     letter-spacing: 0;
     /* Ensure body fills the visual viewport including the safe-area strip on
        iPhone (notch, dynamic island). Without this, rubber-band scroll on iOS
        Safari can expose a white strip at the top of the page. */
@@ -356,6 +366,10 @@
   }
   .dark .origin-card {
     box-shadow: none;
+  }
+  .dark .origin-card,
+  .dark .bento {
+    border-color: color-mix(in oklab, var(--foreground) 12%, transparent);
   }
   /* Raised sub-surface inside a card (draft blocks, stat tiles, queue rows). */
   .origin-raised {
@@ -577,7 +591,7 @@
   margin-top: 0;
   font-size: clamp(23px, 3.85cqw, 56px) !important;
   line-height: 1.04;
-  letter-spacing: -0.018em;
+   letter-spacing: 0;
 }
 [data-density="compact"] > section > div > p {
   margin-top: clamp(10px, 2.4cqw, 34px);

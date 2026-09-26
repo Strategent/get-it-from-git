@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { PageShell } from "@/components/page-shell";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
 import { BentoGridStack, type BentoItem } from "@/components/layout/bento-grid-stack";
