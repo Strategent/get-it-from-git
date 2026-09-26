@@ -1,0 +1,3 @@
+- [x] Match desktop dashboard arrangement and Daily Brief artwork to the supplied reference.
+- [x] Elevate the mobile dashboard with the same Daily Brief treatment.
+- [x] Restyle Channels with a clean conversation list and usable mobile message flow.
