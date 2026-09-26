@@ -4,7 +4,8 @@ import { Plus, Paperclip, TrendingUp } from "lucide-react";
 
 import { Panel } from "@/components/ui/panel";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
-import heroScenery from "@/assets/daily-brief-hero.jpg";
+import briefArtwork from "@/assets/daily-brief-orbs.jpeg.asset.json";
+import { Button } from "@/components/ui/button";
 import { DailyBriefStack } from "@/components/dashboard/hero/daily-brief-stack";
 import { autoFocusUnlessTouch } from "@/lib/mobile-focus";
 
@@ -81,57 +82,40 @@ export function MobileTeamCard() {
 
 
 
-/** MobileDailyBriefCard — mobile hero with a sleek monochrome-graphite finish. */
+/** MobileDailyBriefCard — the same Daily Brief image treatment as desktop. */
 export function MobileDailyBriefCard() {
   const [open, setOpen] = useState(false);
   return (
     <>
-    <button
-      type="button"
-      onClick={() => setOpen(true)}
-      className="relative col-span-2 flex w-full flex-col overflow-hidden p-6 text-left transition-transform active:scale-[0.995]"
-      style={{
-        borderRadius: "var(--radius)",
-        border: "1px solid rgba(255,255,255,0.08)",
-        boxShadow: "0 30px 60px -40px rgba(0,0,0,0.9)",
-        minHeight: 260,
-        isolation: "isolate",
-      }}
-    >
+    <section className="relative isolate flex min-h-[280px] w-full flex-col overflow-hidden rounded-lg border border-border/70 p-6 text-brief-foreground">
       {/* Background image */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 bg-cover bg-center"
         style={{
-          backgroundImage: `url(${heroScenery})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: `url("${briefArtwork.url}")`,
         }}
       />
       {/* Dark overlay */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{
-          background:
-            "linear-gradient(105deg, rgba(6,8,14,0.85) 0%, rgba(6,8,14,0.7) 45%, rgba(6,8,14,0.5) 80%, rgba(6,8,14,0.4) 100%)",
-        }}
+        className="pointer-events-none absolute inset-0 -z-10 bg-[linear-gradient(105deg,var(--brief-scrim),var(--brief-scrim-soft)_70%,transparent)]"
       />
 
-      <div className="relative flex h-full flex-col">
-        <h3 className="font-serif-display mt-5 text-[28px] font-normal leading-[1.05] tracking-[-0.015em] text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.4)]">
+      <div className="relative flex flex-1 flex-col justify-center">
+        <h1 className="font-dm-sans text-[29px] font-normal leading-[1.15]">
           Welcome back, John.
-        </h3>
-        <p className="mt-4 max-w-[22rem] text-[13px] font-medium leading-[1.6] text-white/[0.88] drop-shadow-[0_1px_6px_rgba(0,0,0,0.35)]">
-          4 meetings today. Hartley Trust is your first priority — IPS ready for sign-off.
+        </h1>
+        <p className="mt-3 max-w-[20rem] text-[13px] font-normal leading-[1.6] text-brief-foreground/85">
+          Markets opened steady. Hartley Trust review is your priority, followed by the Marlow rebalance at 11:30.
         </p>
-        <div className="mt-auto pt-6">
-          <span className="inline-flex items-center rounded-full border border-white/70 bg-white/[0.08] px-6 py-2 text-[12.5px] font-medium text-white backdrop-blur-md">
+        <div className="pt-5">
+          <Button variant="outline" onClick={() => setOpen(true)} className="h-9 rounded-full border-brief-foreground/35 bg-brief-glass/60 px-5 font-dm-sans text-[12.5px] font-normal text-brief-foreground backdrop-blur-md hover:bg-brief-glass/85 hover:text-brief-foreground">
             Read daily brief
-          </span>
+          </Button>
         </div>
       </div>
-    </button>
+    </section>
     <DailyBriefStack open={open} onOpenChange={setOpen} />
     </>
   );
