@@ -19,6 +19,7 @@ import {
   MobileRecapCard,
   MobilePlannerCard,
   MobileChannelsCard,
+  MarketChartCard,
 } from "@/components/dashboard/widgets";
 import { useIsMobile } from "@/hooks/use-mobile";
 
@@ -118,6 +119,7 @@ function Home() {
       { id: "planner", x: 0, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <PlannerCard /> },
       { id: "channels", x: 4, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <ChannelsCard /> },
       { id: "workload", x: 8, y: 9, w: 4, h: 4, minW: 3, minH: 3, maxW: 8, maxH: 6, node: <WorkloadCard /> },
+      { id: "markets", x: 0, y: 13, w: 12, h: 4, minW: 6, minH: 3, maxH: 8, node: <MarketChartCard /> },
     ],
     [heroH],
   );
