@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Plus, Paperclip, TrendingUp } from "lucide-react";
 
 import { Panel } from "@/components/ui/panel";
+import { LiveMarketChart } from "@/components/dashboard/market/live-market-chart";
 import { planner, team, channels, docTemplates } from "@/components/dashboard/data";
 import briefArtwork from "@/assets/daily-brief-orbs.jpeg.asset.json";
 import { Button } from "@/components/ui/button";

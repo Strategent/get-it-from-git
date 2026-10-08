@@ -19,6 +19,7 @@ import {
   MobileRecapCard,
   MobilePlannerCard,
   MobileChannelsCard,
+  MarketChartCard,
 } from "@/components/dashboard/widgets";
 import { useIsMobile } from "@/hooks/use-mobile";
 
