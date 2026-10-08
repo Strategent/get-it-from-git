@@ -416,6 +416,15 @@ export function WorkloadCard() {
   );
 }
 
+/** MarketChartCard — live crypto chart (Binance feed) in a dashboard panel. */
+export function MarketChartCard() {
+  return (
+    <Panel label="Markets">
+      <LiveMarketChart />
+    </Panel>
+  );
+}
+
 /** RecapCard — daily market recap glance. */
 export function RecapCard() {
   return (
